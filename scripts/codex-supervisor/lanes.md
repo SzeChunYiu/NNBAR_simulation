@@ -50,17 +50,24 @@ and merges into `main` cannot conflict.
 
 ## L3 — Foundations code (audit, registry, statistics)
 
-- **Branch:** `lane/L3-foundations-code`
-- **Worktree:** `/Volumes/MyDrive/nnbar/nnbar/simulation-L3`
+- **Repo:** `NNBAR_Detector` (separate from the orchestration repo) —
+  remote `github.com/SzeChunYiu/NNBAR_Detector`.
+- **Branch:** `lane/L3-foundations-code` (off `master` HEAD, clean
+  baseline).
+- **Worktree:** `/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3`
 - **Sole writable area:** new files only. Forbidden: editing existing
   reconstruction code.
-  - `NNBAR_Detector/nnbar_reconstruction/audit/` (NEW package)
-  - `NNBAR_Detector/nnbar_reconstruction/registry/` (NEW package)
-  - `NNBAR_Detector/nnbar_reconstruction/statistics/` (NEW package)
-  - `NNBAR_Detector/nnbar_reconstruction/_realism.py` (decorators per plan 01 §5)
-  - `NNBAR_Detector/tests/test_realism_audit.py`
-  - `NNBAR_Detector/tests/test_registry_integrity.py`
-  - `NNBAR_Detector/tests/test_statistics.py`
+  - `nnbar_reconstruction/audit/` (NEW package)
+  - `nnbar_reconstruction/registry/` (NEW package)
+  - `nnbar_reconstruction/statistics/` (NEW package)
+  - `nnbar_reconstruction/_realism.py` (decorators per plan 01 §5)
+  - `tests/test_realism_audit.py`
+  - `tests/test_registry_integrity.py`
+  - `tests/test_statistics.py`
+- **Merging:** L3 does NOT auto-merge to master. Master's working tree
+  contains in-progress rebuild work the user is doing in parallel.
+  L3 commits stay on its branch and are reviewed manually before
+  the user integrates them.
 - **Goal:**
   1. Plan 01 §4 realism audit: AST walker that flags Class B reads
      in functions lacking the permissive decorators.
