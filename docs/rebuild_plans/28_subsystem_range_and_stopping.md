@@ -1,0 +1,61 @@
+---
+id: 28_subsystem_range_and_stopping
+title: Subsystem — range and stopping (leaf C.3)
+version: 0.1
+status: draft
+owner: Charged-PID POG
+depends_on: [00_README, 18_intercalibration, 23_sample_calibration_aux, 24_reconstruction_question_tree, 25_subsystem_tpc_hits_to_tracks]
+outputs:
+  - {path: docs/rebuild_plans/28_subsystem_range_and_stopping.md, schema: this file}
+acceptance:
+  - {test: scintillator range estimate vs truth path-length residual < 1 cm, method: per-sample closure, pass_when: pass}
+  - {test: Bragg-peak position resolved within scintillator bar pitch on stopping protons, method: §3 closure, pass_when: pass}
+risks:
+  - {risk: scintillator hit pitch limits range resolution, mitigation: §3 documented hardware floor}
+estimated_effort: S
+last_updated: 2026-05-09
+---
+
+# Subsystem — range and stopping
+
+*Charter.* Owns leaf C.3 (plan 24 §3). The scintillator stopping
+range distinguishes short-range protons from long-range pions.
+
+## 1. Range estimator
+
+Match scintillator hits to TPC track via configurable angle and
+distance (plan 08 §3.4: `charged_scintillator_match_angle_deg = 10°`,
+`charged_scintillator_match_distance_cm = 15 cm`).
+
+Range = max distance from track entry to last associated scintillator
+hit, projected along the track direction.
+
+Outputs: `range_cm`, `range_eDep` (energy in matched hits).
+
+## 2. Bragg-peak
+
+For stopping protons, the energy-vs-position profile peaks near the
+end of the range. The Bragg-peak position is the inflection in
+cumulative eDep as a function of distance along the track.
+
+Currently not used in PID. Plan 28 v0.2 evaluates whether
+Bragg-peak position adds discrimination beyond {range, dE/dx}.
+
+## 3. Closure
+
+On `cal_singleproton_v1` (plan 23):
+
+- Mean range vs initial KE matches PSTAR proton ranges to within
+  1 cm (or 1 scintillator bar pitch — whichever is larger).
+- Bragg-peak position resolved to within bar pitch on stopping
+  protons.
+
+## 4. Acceptance criteria
+
+- §3 closure passes.
+- §2 Bragg-peak evaluation completed in v0.2.
+
+## 5. Dependencies
+
+- **18, 23, 24, 25** — inputs.
+- *Consumed by:* plan 29 (PID).

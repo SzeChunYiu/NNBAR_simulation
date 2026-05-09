@@ -1,0 +1,110 @@
+# =============================================================================
+# NNBAR simulation rebuild — .gitignore
+# =============================================================================
+# Goal: track source, plans, configs, manifests. Keep heavy externals,
+# build artefacts, and simulation outputs out of git.
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Heavy externals (outside scope; tracked by upstream)
+# -----------------------------------------------------------------------------
+GEANT4_Packages/
+acts_tracking/
+claude-project-builder-tool/
+NNBAR_Detector/external/arrow-src/
+NNBAR_Detector/external/arrow-install/
+NNBAR_Detector/external/arrow-install-linux/
+NNBAR_Detector/external/spdlog-install/
+NNBAR_Detector/external/spdlog-install-linux/
+NNBAR_Detector/external/cry/
+
+# -----------------------------------------------------------------------------
+# Build trees (every variant the rebuild touches)
+# -----------------------------------------------------------------------------
+NNBAR_Detector/build/
+NNBAR_Detector/build-codex/
+NNBAR_Detector/build-codex-native/
+NNBAR_Detector/build-codex-setup/
+NNBAR_Detector/build-codex-setup2/
+NNBAR_Detector/build-prod/
+NNBAR_Detector/build-optical/
+NNBAR_Detector/build-gpu/
+build/
+build-*/
+
+# -----------------------------------------------------------------------------
+# Simulation outputs — samples live in the dataset registry (plan 03),
+# never in git. Manifests + hashes + producing commands ARE tracked
+# (negative patterns below).
+# -----------------------------------------------------------------------------
+NNBAR_Detector/output/
+NNBAR_Detector/digitised/
+NNBAR_Detector/log/
+output/
+log/
+
+# Track registry metadata (manifest.yml, hashes.txt, command.sh, env files)
+# but not the bulk parquet payload.
+data/registry/*/*.parquet
+data/registry/*/raw/
+data/registry/*/output/
+
+# -----------------------------------------------------------------------------
+# Top-level data/ — large numeric snapshots; case-by-case
+# -----------------------------------------------------------------------------
+data/scratch/
+data/tmp/
+
+# -----------------------------------------------------------------------------
+# Codex supervisor runtime artefacts
+# -----------------------------------------------------------------------------
+scripts/codex-supervisor/.merge.lock.d/
+scripts/codex-supervisor/.state/
+scripts/codex-supervisor/log/
+
+# -----------------------------------------------------------------------------
+# macOS / editor / Python
+# -----------------------------------------------------------------------------
+.DS_Store
+._*
+__pycache__/
+*.py[cod]
+*.egg-info/
+*.egg
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+.tox/
+
+# -----------------------------------------------------------------------------
+# IDE / editor
+# -----------------------------------------------------------------------------
+.vscode/
+.idea/
+*.swp
+*.swo
+.iml
+
+# -----------------------------------------------------------------------------
+# Test artefacts in the working tree
+# -----------------------------------------------------------------------------
+NNBAR_Detector/test.parquet
+*.parquet
+*.csv.gz
+*.h5
+*.hdf5
+*.root
+
+# -----------------------------------------------------------------------------
+# Miscellaneous local files
+# -----------------------------------------------------------------------------
+*.log
+*.tmp
+*.bak
+.env
+.env.*
+node_modules/
+.npm/
+.cache/
