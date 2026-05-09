@@ -14,6 +14,10 @@ if [[ ! -x "$SUPERVISOR" ]]; then
     exit 1
 fi
 
+# Use a project-specific tmux session name so we coexist with any other
+# codex-supervisor session already running (e.g. "codex-supervisor").
+export CODEX_SUPERVISOR_SESSION="${CODEX_SUPERVISOR_SESSION:-nnbar-rebuild}"
+
 # Run from this directory so codex-supervisor finds ./codex-prompts.txt.
 cd "$HERE"
 exec "$SUPERVISOR" "$@"
