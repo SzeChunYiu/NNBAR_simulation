@@ -183,6 +183,54 @@ Plan 35 does not specify a runtime CLI command, and it does not cite the
 removed legacy split-study files. Any future fit-study CLI row must pass
 the L3 `--help` verifier before this plan cites it.
 
+### 1.6 Physics derivation for P.7
+
+#### Physics derivation
+
+P.7 physically estimates the most probable π⁰ and event-level
+four-vectors given reconstructed photon measurements and their
+covariance. The truth-side quantity is the generated π⁰ four-vector;
+the production estimator observes only photon energies, directions,
+vertex information, and uncertainty models. A constrained least-squares
+fit is the near-optimal Gaussian estimator when measurement residuals are
+approximately normal and the covariance matrix is calibrated: minimise
+the covariance-weighted residual subject to `M_gg = m_pi0`, then use the
+resulting χ² and ndf only after closure validates their distribution
+\cite{ParticleDataGroup:2024RPP,Kalman:1960new}.
+
+The estimator is therefore a raw-preserving constrained fit: keep every
+plan-34 raw candidate, attempt a mass and/or vertex constraint only when
+finite covariance inputs exist, and write fitted values plus failure
+status. Its dominant biases come from miscalibrated photon covariance,
+wrong-pair combinatorics, non-Gaussian shower tails, and minimizer
+failure. The primary robustness requirement is that non-converged or
+missing-covariance candidates remain in denominators rather than being
+silently dropped.
+
+#### Logic gaps
+
+| Parameter | Status before production | Closure study / target date |
+|---|---|---|
+| `m_pi0 = 134.977 MeV` mass constraint | PDG-grounded physical constant | Verify the exact constant and units in the fit configuration row; target 2026-06-15 |
+| covariance model `diag_energy_angle_plan40_v0` versus full covariance | `OPEN:` diagonal covariance is a candidate approximation | Compare pull widths, χ² shape, and convergence for diagonal and full models; target 2026-06-30 |
+| fit modes `mass_constraint`, `vertex_constraint`, `combined` | `OPEN:` production mode not frozen | Require separate mass-only and vertex-only closure before combined mode can be signed; target 2026-07-05 |
+| minimizer iteration/tolerance settings | `OPEN:` no numeric minimizer controls are frozen in this plan | Stress-test convergence and singular-covariance failures on sparse/high-multiplicity candidates; target 2026-06-25 |
+| closure pass limits: width improvement `>= 20%`, pull width `[0.8, 1.2]`, convergence `>= 0.98`, χ² K-S p-value `> 0.01` | `OPEN:` analysis-quality thresholds need plan-37 impact evidence | Propagate raw-vs-fit rows through event variables and selection; target 2026-07-05 |
+
+#### Closure test for the derivation
+
+1. Build fit-input rows from frozen plan-33 photon and plan-34 pair
+   fixtures, including covariance status for both photons before the fit.
+2. Run raw-only, mass-constrained, vertex-constrained, and combined
+   candidate modes on synthetic π⁰ pairs and `sig_foil_v3` candidates,
+   preserving failed or not-run rows.
+3. Compare raw and fitted mass widths, fitted four-vector pulls, χ²/ndf
+   distributions, convergence rates, and ranking-change rates by mode.
+4. Treat any missing/singular covariance or minimizer failure as a
+   denominator row with null fitted columns and an explicit failure reason.
+5. Repeat after dropping truth four-vectors, parentage, and ancestry
+   aliases; fit outputs, failure statuses, and χ² values must match.
+
 ## 2. Mass-constrained π⁰ fit
 
 For each pair from plan 34 satisfying basic cuts:
