@@ -4,7 +4,7 @@ title: Internal-note template — L1 annex fixture
 version: 0.1
 status: draft
 owner: Software Quality
-depends_on: [55_internal_note_template, 50_reviewer_defense_package, 51_reviewer_question_registry, 52_run_orchestration]
+depends_on: [55_internal_note_template, 50_reviewer_defense_package, 51_reviewer_question_registry, 52_run_orchestration, 52_run_orchestration_l1_command_templates]
 outputs:
   - {path: docs/rebuild_plans/55_internal_note_template_l1_annex_fixture.md, schema: split L1 annex fixture}
 acceptance:
@@ -55,6 +55,7 @@ l1_note_annex:
         rerun_manifest: plan52:EM chain closure
         rerun_transcript: plan52:em_object_chain:transcript-or-null
         command_template_id: validate_reco_allruns_v1
+        command_template_companion: docs/rebuild_plans/52_run_orchestration_l1_command_templates.md
         command_template_verifier: plan52:validate_reco_allruns_v1
         glossary_audit: <plan56-audit-id>
         staleness_summary: <plan50-staleness-id>
@@ -92,6 +93,7 @@ l1_note_annex:
         rerun_manifest: plan52:Ch 10 selection cut-flow
         rerun_transcript: plan52:ch10_cutflow:transcript-or-null
         command_template_id: validate_reco_cutflow_v1
+        command_template_companion: docs/rebuild_plans/52_run_orchestration_l1_command_templates.md
         command_template_verifier: plan52:validate_reco_cutflow_v1
         glossary_audit: <plan56-audit-id>
         staleness_summary: <plan50-staleness-id>
@@ -131,6 +133,7 @@ l1_note_annex:
         rerun_manifest: plan52:Pile-up L11 overlay
         rerun_transcript: plan52:pileup_l11:transcript-or-null
         command_template_id: blocked_missing_input_v1
+        command_template_companion: docs/rebuild_plans/52_run_orchestration_l1_command_templates.md
         command_template_verifier: null
         glossary_audit: <plan56-audit-id>
         staleness_summary: <plan50-staleness-id>
@@ -170,6 +173,7 @@ l1_note_annex:
         rerun_manifest: plan52:Strange V0 contamination
         rerun_transcript: plan52:strange_v0:transcript-or-null
         command_template_id: blocked_missing_input_v1
+        command_template_companion: docs/rebuild_plans/52_run_orchestration_l1_command_templates.md
         command_template_verifier: null
         glossary_audit: <plan56-audit-id>
         staleness_summary: <plan50-staleness-id>
@@ -209,6 +213,7 @@ l1_note_annex:
         rerun_manifest: plan52:TOF timing closure
         rerun_transcript: plan52:tof_timing:transcript-or-null
         command_template_id: blocked_missing_input_v1
+        command_template_companion: docs/rebuild_plans/52_run_orchestration_l1_command_templates.md
         command_template_verifier: null
         glossary_audit: <plan56-audit-id>
         staleness_summary: <plan50-staleness-id>
@@ -249,6 +254,7 @@ l1_note_annex:
         rerun_manifest: plan52:Bayesian limit cross-check
         rerun_transcript: plan52:bayesian_limits:transcript-or-null
         command_template_id: blocked_missing_input_v1
+        command_template_companion: docs/rebuild_plans/52_run_orchestration_l1_command_templates.md
         command_template_verifier: null
         glossary_audit: <plan56-audit-id>
         staleness_summary: <plan50-staleness-id>
@@ -288,6 +294,7 @@ l1_note_annex:
         rerun_manifest: plan52:Unbounded caveat status
         rerun_transcript: plan52:unbounded_caveats:transcript-or-null
         command_template_id: blocked_missing_input_v1
+        command_template_companion: docs/rebuild_plans/52_run_orchestration_l1_command_templates.md
         command_template_verifier: null
         glossary_audit: <plan56-audit-id>
         staleness_summary: <plan50-staleness-id>
@@ -315,7 +322,7 @@ l1_note_annex:
       reviewer_question_ids: [RQ-L1-EM-P1-CLUSTERING, RQ-L1-EM-P2-DISCRIMINANT, RQ-L1-PI0-CUTS, RQ-L1-SELECTION-CUTFLOW, RQ-L1-PILEUP-L11, RQ-L1-STRANGE-BARYON, RQ-L1-TOF, RQ-L1-BAYES-LIMIT, RQ-L1-UNBOUNDED-CAVEATS]
       required_contents: [plan-50 overlay ids match plan-51 questions, plan-52 bundle ids match plan-54 archive pack members, plan-53 report id and plan-56 glossary audit id are current]
       evidence_refs: [l1_defence_routing_crosswalk]
-      review_evidence_links: {overlay_rollup: <plan50-rollup-id>, defence_routing_crosswalk: <plan50-crosswalk-id-or-null>, owner_signoff_refs: [L1-routing-owner:<owner-hash-or-null>], ci_report: <plan53-l1-report-id>, rerun_manifest: plan52:Defence routing, rerun_transcript: plan52:defence_routing:transcript-or-null, command_template_id: blocked_missing_input_v1, command_template_verifier: null, glossary_audit: <plan56-audit-id>, staleness_summary: <plan50-staleness-id>, archive_inventory: <plan54-inventory-id-or-null>, archive_drill: <plan54-drill-id-or-null>}
+      review_evidence_links: {overlay_rollup: <plan50-rollup-id>, defence_routing_crosswalk: <plan50-crosswalk-id-or-null>, owner_signoff_refs: [L1-routing-owner:<owner-hash-or-null>], ci_report: <plan53-l1-report-id>, rerun_manifest: plan52:Defence routing, rerun_transcript: plan52:defence_routing:transcript-or-null, command_template_id: blocked_missing_input_v1, command_template_companion: docs/rebuild_plans/52_run_orchestration_l1_command_templates.md, command_template_verifier: null, glossary_audit: <plan56-audit-id>, staleness_summary: <plan50-staleness-id>, archive_inventory: <plan54-inventory-id-or-null>, archive_drill: <plan54-drill-id-or-null>}
       artifact_hashes: {note_annex: sha256:<hash>, note_annex_fixture: sha256:<hash>, defence_package: sha256:<hash-or-null>, defence_routing_crosswalk: sha256:<hash-or-null>, staleness_summary: sha256:<hash-or-null>, ci_report: sha256:<hash-or-null>, rerun_manifest: sha256:<hash-or-null>, rerun_transcript: sha256:<hash-or-null>, command_template_verifier: null, glossary_audit: sha256:<hash-or-null>, archive_inventory: sha256:<hash-or-null>, archive_drill: sha256:<hash-or-null>}
       caveat_text: <required when any routing fixture hash drifts>
 ```
@@ -327,6 +334,7 @@ Review rules:
 | annex row names match the §1.1 blocks | note drifts from defence package taxonomy |
 | every `applies` row names a defence overlay id | note has no machine-readable package handoff |
 | every thesis-facing row exposes review-evidence links plus note-annex and split-fixture artifact hashes | note cannot be reconciled with package, split fixture, staleness, CI, archive, and glossary evidence |
+| refreshed and blocked rerun rows expose the plan-52 command-template companion | note records a command-template id without the file that defines and verifies it |
 | every `blocked` row carries `caveat_text` | hidden missing evidence in reviewer-facing prose |
 | every low-count note includes the limit-convention row | Bayesian prior sensitivity omitted from sparse-count claims |
 | every L11 note includes the pile-up caveat row | independent-event limitation omitted from acceptance claims |
