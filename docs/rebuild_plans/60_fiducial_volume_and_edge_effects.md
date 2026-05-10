@@ -230,6 +230,7 @@ Leaf-specific fiducial derivations are split into child files so this
 parent plan stays below the 500-line cap. Current children:
 
 - `docs/rebuild_plans/60_fiducial_volume_and_edge_effects/60_v1_tpc_containment_fiducial.md`
+- `docs/rebuild_plans/60_fiducial_volume_and_edge_effects/60_v2_track_fit_containment_fiducial.md`
 - `docs/rebuild_plans/60_fiducial_volume_and_edge_effects/60_v5_foil_acceptance_fiducial.md`
 
 ## 8. Systematics and ledger integration
