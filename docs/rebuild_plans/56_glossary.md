@@ -76,7 +76,7 @@ code-level usage; deltas are flagged.
 | **prior sensitivity** | Difference between Bayesian limits under approved priors, reported as a reviewer caveat when it exceeds plan-64 thresholds. |
 | **defence overlay** | Extra plan-50 package block that must be present when a result depends on L1 EM, selection, timing, pile-up, strange-background, or Bayesian-limit evidence. |
 | **review-evidence links** | Plan-50 and plan-51 machine-readable pointers from an L1 answer to package, CI, note-annex, glossary-audit, rerun, and staleness artifacts. |
-| **review-artifact hashes** | Stable digests carried by plans 50, 51, 54, and 55 for package, CI report, note-annex, and glossary-audit artifacts that support an L1 defence answer. |
+| **review-artifact hashes** | Stable digests carried by plans 50, 51, 52, 53, 54, and 55 for package, CI report, note-annex, glossary-audit, rerun, and staleness artifacts that support an L1 defence answer. |
 | **owner sign-off** | Plan-51 accountable approval recorded before an L1 reviewer-question answer can stop blocking a thesis-facing result. |
 | **rerun transcript** | Plan-52 execution record proving which reviewer-triggered rerun rows actually ran, with input hashes, output hashes, environment identity, and pass/fail/block status. |
 | **command-template id** | Stable plan-52 identifier for the verified rerun command contract used by a transcript row; it records replay semantics without depending on prose. |
@@ -145,7 +145,7 @@ Audit review rules:
 | L1 terms list owner L1 | another lane accidentally owns EM/selection terminology |
 | freshness and staleness terms cite plans 50, 53, 54, and 55 | package-state language drifts across defence, CI, archive, and note surfaces |
 | command-template and verifier-hash terms cite plans 52 and 51 | reviewer answers drift away from the verified command registry |
-| review-evidence and review-artifact terms cite plans 50, 51, 53, 54, and 55 | machine-readable handoff language drifts across package, registry, CI, archive, and note surfaces |
+| review-evidence and review-artifact terms cite plans 50, 51, 52, 53, 54, and 55 | machine-readable handoff language drifts across package, registry, rerun, CI, archive, and note surfaces |
 | owner sign-off term cites plans 50, 51, and 55 | accountability language drifts between registry, package, and note surfaces |
 
 The fixture is consumed by the plan-53 L1 CI checks and by the plan-55
@@ -184,6 +184,8 @@ the same caveat text and the plan-50 overlay roll-up is not marked
   is marked answered.
 - Review-evidence link terminology is covered before a package or registry
   answer is promoted as machine-readable.
+- Review-artifact hash terminology is covered before rerun transcripts,
+  CI reports, archive inventories, or note annexes are promoted.
 - Command-template and verifier-hash terms are covered before any L1 rerun
   transcript is archived or cited by a reviewer-question answer.
 
