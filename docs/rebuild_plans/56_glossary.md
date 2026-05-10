@@ -75,6 +75,7 @@ code-level usage; deltas are flagged.
 | **flat prior** | Bayesian cross-check prior uniform in non-negative signal mean; plan 64 compares it against the Jeffreys-prior result and the plan-46 primary limit. |
 | **prior sensitivity** | Difference between Bayesian limits under approved priors, reported as a reviewer caveat when it exceeds plan-64 thresholds. |
 | **defence overlay** | Extra plan-50 package block that must be present when a result depends on L1 EM, selection, timing, pile-up, strange-background, or Bayesian-limit evidence. |
+| **unbounded caveat status** | Plan-50 overlay state for EM/selection assumptions that cannot yet be assigned a numeric nuisance; it keeps the limitation visible until plan 45 or the owning study supplies a bound. |
 | **review-evidence links** | Plan-50 and plan-51 machine-readable pointers from an L1 answer to package, CI, note-annex, glossary-audit, rerun, and staleness artifacts. |
 | **review-artifact hashes** | Stable digests carried by plans 50, 51, 52, 53, 54, and 55 for package, CI report, note-annex, glossary-audit, rerun, and staleness artifacts that support an L1 defence answer. |
 | **owner sign-off** | Plan-51 accountable approval recorded before an L1 reviewer-question answer can stop blocking a thesis-facing result. |
@@ -143,6 +144,15 @@ l1_glossary_audit:
         - note_annex
       canonical_hashes:
         - sha256:b3cee4613afed558d4704df3dc5b281271aed768965d79a09603f812496806f0
+      thesis_delta: none | flagged
+      owner: L1
+    - term: unbounded caveat status
+      defined_in_section: "1.1"
+      source_plans: [45, 50, 51, 55]
+      required_contexts:
+        - defence_overlay
+        - reviewer_question_registry
+        - note_annex
       thesis_delta: none | flagged
       owner: L1
 ```
