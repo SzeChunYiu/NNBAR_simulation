@@ -73,6 +73,31 @@ Output schema: `{event_id, charged_candidate_id, range_cm,
 range_edep_mev, n_scintillator_hits, last_hit_module_id,
 bragg_peak_position_cm, range_valid}`.
 
+### 1.3 Machine-readable C.3 range fixture
+
+The C.3 fixture freezes the scintillator association and range
+observable before charged-PID scoring or stopping-proton closure reads
+validation labels. It stores one row per charged candidate plus an
+associated-hit sidecar:
+
+| Fixture field | Meaning / invariant |
+|---|---|
+| `event_id`, `charged_candidate_id` | join key inherited from C.1/V.1 |
+| `range_id` | stable method/version label for the configured range estimator |
+| `association_method` | `angular_distance`, `projected_path`, or `legacy_track_id_diagnostic` |
+| `range_cm`, `range_edep_mev` | projected range and associated energy, or null with a failure reason |
+| `n_scintillator_hits`, `last_hit_module_id` | association multiplicity and terminal module |
+| `bragg_peak_position_cm`, `range_valid` | optional stopping diagnostic and production validity flag |
+| `range_quality_state`, `range_failure_reason` | §4 quality contract in machine-readable form |
+| `scintillator_edge_distance_mm`, `scintillator_profile_bin` | plan 60 and closure binning hooks |
+
+The sidecar keyed by `(event_id, charged_candidate_id, range_id)`
+records the ordered scintillator hit ids, projected distance, and
+whether each hit contributes to the Bragg-profile fit. Dropping
+`Track_ID`, `Name`, `Parent_ID`, validation path length, and truth
+species from the production input must not change rows whose
+`association_method` is not explicitly diagnostic.
+
 ## 2. Bragg-peak
 
 For stopping protons, the energy-vs-position profile peaks near the
