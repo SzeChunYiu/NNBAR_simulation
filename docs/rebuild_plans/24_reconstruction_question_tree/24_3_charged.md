@@ -130,6 +130,29 @@ Leaf C.4: charged-track candidates + scintillator hits → hit association
   allowed truth use: validation_only
   downstream consumers: C.3, C.5, C.6; plans 28, 29
 
+Leaf C.5: dE/dx + range + scintillator energy → π/p PID decision
+  inputs (Class A): C.1 charged-candidate table, C.2 dE/dx table,
+                    C.3 range table, C.4 scintillator association
+                    table, and ReconstructionConfig PID thresholds
+  forbidden (Class B): Name, Track_ID, Parent_ID, origin_vol_name,
+                       particle_x, particle_y, particle_z, truth PID
+                       labels from calibration tables
+  decision rule: apply the cut-based plan 29 §1 baseline
+                 (`dedx >= proton_dedx_min` or short-range +
+                 lower-dE/dx proton rule) to every valid charged
+                 candidate; likelihood-ratio or MVA replacements
+                 must be scored on the plan 38 C.5 ladder before
+                 replacing the baseline.
+  output schema: {event_id: int64, charged_candidate_id: int64,
+                  pid: string, proton_score: float64,
+                  pion_score: float64,
+                  dedx_threshold_mev_per_cm: float64,
+                  range_threshold_cm: float64,
+                  decision_rule_version: string,
+                  pid_valid: bool, decision_reason: string}
+  allowed truth use: validation_only
+  downstream consumers: C.6, E.9, S.2; plans 29, 36, 37
+
 ### Next measurement (charged branch)
 
 Per-species reconstructed efficiency on `cal_singlepion*` and
