@@ -198,6 +198,55 @@ The `validation_*` ids are calculation fixtures for plan 46; they are
 not plan-03 sample registrations and cannot be promoted to analysis
 background rates.
 
+### 1.5 Physics derivation for background nodes
+
+#### Physics derivation
+
+Each §1 node physically estimates an expected post-selection background
+contribution. The truth-side quantity is the rate of background events
+from a source channel that enter the detector exposure and survive the
+plan-37 selection. The production estimator observes simulated or
+registered sample counts, selection survivors, exposure or pulse yield,
+and systematic-rate conventions. For cosmic channels, the natural
+factorisation is flux component × exposure × simulated survival
+fraction; for beam-neutron channels it is neutron yield per pulse ×
+sub-channel transport weight × selection survival. CRY and Geant4 supply
+the transport/sample generators, while HIBEAM/NNBAR at ESS fixes the
+beam-context conventions \cite{4437209,Agostinelli2003,HIBEAM_NNBAR_at_ESS}.
+
+The estimator is therefore a node-wise rate ledger, not a single prose
+background number: every central rate must cite a registered sample,
+selection boundary, denominator, interval method, and signed rate-source
+DEC. Its dominant uncertainty is finite survivor statistics for rare
+backgrounds, followed by flux normalisation, beam-yield/sub-channel
+weights, transport-model systematics, and explicitly unmodelled caveats.
+Zero survivors constrain the survival fraction; they do not prove zero
+background \cite{ParticleDataGroup:2024RPP}.
+
+#### Logic gaps
+
+| Parameter | Status before production | Closure study / target date |
+|---|---|---|
+| CRY overburden A/B choice and per-species flux normalisation | `OPEN:` draft convention until `DEC-44-COSMIC-RATE-SOURCE` is signed | Compare overburden A/B survivor intervals and species splits; target 2026-06-30 |
+| beam-neutron yield per pulse and sub-channel weights | `OPEN:` draft convention until `DEC-44-BEAM-RATE-SOURCE` is signed | Recompute direct, scattered, capture-γ, and secondary rates from plan-22 registry rows; target 2026-06-30 |
+| zero-survivor interval `feldman_cousins_90cl` | Required reporting convention, but each denominator must be attached | Verify every zero-survivor node has denominator, interval id, and `epsilon90`; target 2026-06-20 |
+| `rate_included_in_b` switch | `OPEN:` must remain false until sample, interval, and DEC evidence all exist | Audit plan-46 handoff rows for unsigned or caveat rates; target 2026-06-25 |
+| unmodelled caveat sentinels | `OPEN:` explicit caveats until replacement samples are registered | Add replacement-sample tickets and prove caveats survive every total-background handoff; target 2026-07-05 |
+
+#### Closure test for the derivation
+
+1. For every registered §1 node, build a rate-result row with sample id,
+   generated denominator, plan-37 selection config, survivor count, and
+   interval method.
+2. Recompute survival fractions and zero-survivor upper limits from the
+   saved denominators; reject exact-zero central background rows.
+3. Fold only signed rate rows into a draft background-sum handoff and
+   verify all unsigned rates and caveat nodes remain outside `b_expected`.
+4. Vary cosmic overburden and beam sub-channel weights through plan-45
+   nuisance rows, preserving the node ids and selection boundary.
+5. Pass the resulting handoff to plan 46 and confirm central rates,
+   upper-limit constraints, and unmodelled caveats remain separate fields.
+
 ## 2. Zero-survivor handling
 
 Per plan 04 §5: never quote `0 / N = 0`. Every zero-survivor channel
