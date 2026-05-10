@@ -252,6 +252,19 @@ A handoff row is rejected if it changes the Ch 10 baseline fields, lacks
 plan-41 artifact coverage for a touched cut, or uses truth labels outside
 sample-level signal/background identity.
 
+Initial optimisation handoff examples:
+
+| `handoff_id` | `candidate_selection_config_id` | `plan41_artifact_ids` | `touched_cut_columns` | Required held-out evidence | `promotion_dec_id` |
+|---|---|---|---|---|---|
+| `handoff_s3_visible_mass_lower_v0` | `retune_visible_mass_lower_v0` | [`scan_s3_visible_mass`] | [`pass_invariant_mass`] | expected-limit delta with plan-04 interval source and unchanged S.1/S.2/S.4/S.5 columns | `DEC-37-RETUNED-CUTS` |
+| `handoff_s4_sphericity_lower_v0` | `retune_sphericity_lower_v0` | [`scan_s4_sphericity`] | [`pass_sphericity`] | held-out signal efficiency and background-survival curves with sparse-sentinel audit attached | `DEC-37-RETUNED-CUTS` |
+| `handoff_s5_scintillator_balance_v0` | `retune_scintillator_balance_v0` | [`scan_s5_upper_scintillator`, `scan_s5_lower_scintillator`] | [`pass_scintillator_balance`] | paired upper/lower scan result proving neither bound alone creates an unreviewed operating point | `DEC-37-RETUNED-CUTS` |
+| `handoff_s6_bdt_score_v0` | `bdt_s6_candidate_score_v0` | [`scan_s6_candidate_score`] | [`passes_preliminary_selection`] | plan-57 feature freeze, calibration curve, and truth-blind hash equality | `DEC-37-MVA-SELECTION` |
+
+These examples are promotion-ledger row keys, not executable commands.
+They preserve the Ch 10 baseline tuple and require new candidate columns
+for any retuned or MVA selection.
+
 ## 4. Selection alternative comparison matrix
 
 | Candidate | S.6 decision rule | Current/source citation | Class-A status | Comparison metric | Reporting rule |
