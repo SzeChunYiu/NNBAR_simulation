@@ -97,6 +97,62 @@ bitwise unchanged when validation-only truth direction fields are
 removed from the evaluator input; only `pulls_theta_phi` and closure
 artifact rows may change.
 
+### 1.4 Physics derivation
+
+- **What is physically measured:** V.2 measures the reconstructed unit
+  direction and covariance of a charged-particle track segment. The truth-side
+  quantity is the generated momentum direction, used only after the production
+  fit row is frozen.
+- **Estimator rationale:** in the no-curvature baseline, the straight-line
+  total-least-squares/PCA axis is the near-optimal estimator for independent
+  coordinate errors; a Kalman filter becomes the natural extension when
+  process noise, material scattering, or magnetic curvature is introduced.
+  PDG passage-of-particles material establishes multiple-scattering and
+  tracking-error terms, ALICE documents TPC track-fitting practice, and Kalman
+  gives the covariance-recursive formulation
+  \cite{ParticleDataGroup:2024RPP,alice2014performance,Kalman:1960new}.
+- **Statistical character:** the central-value bias comes from sparse
+  first/last-hit fallbacks, unmodelled multiple scattering, and V.1 merge/split
+  errors. The variance budget is hit-count and lever-arm dominated until plan
+  17 supplies per-hit drift uncertainties. Robustness requires explicit
+  `fit_degraded` and `covariance_valid` fields so V.4 can down-weight rather
+  than silently trust under-constrained fits.
+- **Citation:** the three keys above were checked against
+  `/Users/billy/Desktop/projects/overleaf-hibeam-thesis/ref.bib` on
+  2026-05-10.
+
+### 1.5 Logic gaps
+
+1. **Minimum finite coordinates = 2:** two points define a direction but leave
+   zero residual degrees of freedom; production rows with exactly two hits are
+   allowed only as `fit_degraded=true`.
+2. **Covariance minimum hit count = 3:** `_covariance` currently returns zeros
+   below three hits. OPEN: replace zero-vector covariance with
+   `covariance_valid=false` plus a failure reason; target resolution date
+   2026-05-24.
+3. **Per-hit coordinate uncertainty:** OPEN: derive σx, σy, σz from plan-17
+   drift/gain calibration and `cal_singlepion_50to600MeV_v2` residuals; figure
+   of merit is pull width closure by hit-count bin; target resolution date
+   2026-05-24.
+4. **Multiple-scattering/process-noise term:** OPEN: use plan-16 material maps
+   and PDG scattering formulae to set the Kalman process covariance before any
+   Kalman replacement is promoted; target resolution date 2026-05-31.
+5. **Pull tolerance `|mu| < 0.05`, width `[0.9, 1.1]`:** keep the current plan
+   40 gate until a signed plan-05 decision changes the closure tolerance.
+
+### 1.6 Closure test for the derivation
+
+1. Run `fit_track_candidates` on V.1 candidates from
+   `cal_singlepion_50to600MeV_v2`, using only Class-A TPC hit coordinates.
+2. Persist the fit row and residual sidecar, then drop all Class-B truth
+   direction/species columns and assert the production fit row is unchanged.
+3. Join truth momentum only inside a `validation_only` pull scorer; compute
+   `pull_theta` and `pull_phi` in bins of `n_direction_hits`, lever arm, and
+   `fit_degraded` state.
+4. The derivation passes when non-degraded rows close to mean zero and width
+   one under the plan-40 tolerance, while two-hit/degraded rows are excluded or
+   down-weighted explicitly rather than contaminating the nominal pull width.
+
 ## 2. Current implementation and alternatives
 
 - *Legacy current.* `_track_anchor_and_direction` (plan 08 §3.2;

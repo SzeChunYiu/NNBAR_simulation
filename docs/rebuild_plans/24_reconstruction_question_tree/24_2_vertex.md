@@ -125,6 +125,55 @@ Leaf V.2: track candidates → fitted track directions
   allowed truth use: validation_only
   downstream consumers: V.3, V.4, C.2, C.4; plans 26, 27, 29, 30
 
+#### V.2 Physics derivation
+
+- **What is physically measured:** V.2 estimates the charged-particle
+  direction vector in detector coordinates from the Class-A hit positions
+  assigned by V.1; truth momentum is only the validation target for pulls.
+- **Estimator rationale:** with no magnetic-field curvature in the baseline,
+  the optimal straight-track direction under independent Gaussian hit errors is
+  the total-least-squares/PCA principal axis of the hit cloud. PDG tracking and
+  multiple-scattering reviews set the uncertainty budget, ALICE documents TPC
+  straight/curved track fitting practice, and Kalman filtering is the
+  covariance-propagating upgrade path \cite{ParticleDataGroup:2024RPP,alice2014performance,Kalman:1960new}.
+- **Statistical character:** bias is dominated by first/last-hit seeds,
+  multiple scattering, and merged V.1 candidates; variance is driven by hit
+  count, coordinate resolution, lever arm, and drift-time calibration. Robust
+  production rows must expose covariance validity instead of letting V.4 infer
+  trust from missing fields.
+- **Citation:** `ParticleDataGroup:2024RPP`, `alice2014performance`, and
+  `Kalman:1960new` are resolved in the thesis bibliography.
+
+#### V.2 Logic gaps
+
+1. **Two-coordinate direction lower bound:** two finite hit positions define a
+   direction but not residual degrees of freedom; keep as a degraded fallback.
+2. **Covariance minimum hit count = 3:** three points are the lower bound for a
+   residual covariance estimate; rows below this threshold must set
+   `covariance_valid=false` once that field lands.
+3. **Per-hit coordinate σ:** OPEN: derive from plan-17 drift/gain calibration
+   and single-pion residuals; figure of merit is pull width versus hit count;
+   target resolution date 2026-05-24.
+4. **Multiple-scattering material budget:** OPEN: propagate gas, foil, and
+   scintillator material from plan 16 into the V.2 covariance model; target
+   resolution date 2026-05-24.
+5. **Pull acceptance `|mu| < 0.05`, width `[0.9, 1.1]`:** inherited from plan
+   40 until the V.2 closure study has enough statistics to retune it; if
+   changed, the plan-05 decision log must record the replacement tolerance.
+
+#### V.2 Closure test for the derivation
+
+1. Build V.2 fit rows from frozen V.1 candidates on
+   `cal_singlepion_50to600MeV_v2` using only Class-A coordinates.
+2. Compute PCA/least-squares direction, covariance, chi2/ndf, and residual
+   sidecar rows before joining any truth direction.
+3. In a `validation_only` scorer, compare fit direction to truth momentum and
+   assert pull means and widths satisfy the plan-40 V.2 tolerance, with
+   two-hit rows counted separately as degraded.
+4. Pass when V.4 receives only finite directions with explicit covariance
+   validity/degraded flags and the production output is unchanged by dropping
+   Class-B truth direction columns.
+
 Leaf V.3: fitted track directions → foil-plane projections
   inputs (Class A): V.2 direction table
                     (event_id, candidate_id, anchor_xyz,
