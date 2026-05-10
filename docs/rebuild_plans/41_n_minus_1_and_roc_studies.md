@@ -29,8 +29,9 @@ proposal.
 ## 1. N-1 plots
 
 **Verified CLI surface (A+ gate, 2026-05-10).** The live L3
-worktree exposes `summarize`, `scan-pid`, `response-matrix`, and
-`validate-reco` under `python -m nnbar_reconstruction.cli --help`;
+worktree exposes `summarize`, `scan-pid`, `response-matrix`,
+`cutflow`, and `validate-reco` under
+`python -m nnbar_reconstruction.cli --help`;
 `summarize --help` supports `--all-runs`, `--tables-dir`,
 `--table`, `--bootstrap`, and `--json`.
 It does not expose N-1, ROC, or cut-search commands yet, so those
