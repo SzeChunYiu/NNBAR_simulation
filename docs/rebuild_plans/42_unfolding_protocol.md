@@ -35,6 +35,15 @@ level).
 
 ## 2. Response matrix
 
+
+**Verified CLI surface (A+ gate, 2026-05-10).** The live L3
+worktree currently exposes only `summarize`, `scan-pid`, and
+`validate-reco` under `python -m nnbar_reconstruction.cli --help`;
+`summarize --help` supports `--run`, `--json`, and `--tables-dir`.
+Unfolding-specific commands below are therefore documented as L3-owned
+implementation gates, not as runnable invocations, until their `--help`
+surface exists.
+
 For every observable that may be published at particle level, build an
 explicit truth-to-reconstruction response matrix and save the exact
 binning contract used by closure and unfolding. Truth inputs are Class B
@@ -43,32 +52,32 @@ production reconstruction decisions.
 
 ### 2.1 Runnable procedure
 
-1. Produce reconstruction tables with the plan 09 §14 schema:
+1. Produce reconstruction tables with the verified plan 09 §14 schema
+   command, one run at a time until L3 adds a multi-run wrapper:
 
    ```bash
    python -m nnbar_reconstruction.cli summarize \
-       NNBAR_Detector/output/sig_foil_v3 --all-runs \
-       --table output/reco/sig_foil_v3/ --json output/reco/sig_foil_v3/summary.json
+       NNBAR_Detector/output/sig_foil_v3 --run <run> \
+       --tables-dir output/reco/sig_foil_v3/run_<run>/ \
+       --json output/reco/sig_foil_v3/run_<run>/summary.json
    ```
 
-2. Build response matrices from truth parquet plus reconstruction CSVs:
-
-   ```bash
-   python -m nnbar_reconstruction.cli response-matrix \
-       --truth-particle NNBAR_Detector/output/sig_foil_v3/Particle_output_*.parquet \
-       --truth-interaction NNBAR_Detector/output/sig_foil_v3/Interaction_output_*.parquet \
-       --reco-events output/reco/sig_foil_v3/events.csv \
-       --reco-pi0 output/reco/sig_foil_v3/pi0.csv \
-       --observables visible_mass,pi0_mass,sphericity \
-       --bootstrap 200 --out output/unfolding/response/sig_foil_v3/
-   ```
-
-3. For each observable write `response_<observable>.parquet`,
+2. Concatenate the run-level `events.csv` and `pi0.csv` tables only
+   after applying the plan 09 §15 event-id offset, and write input
+   hashes to `output/reco/sig_foil_v3/manifest.json`.
+3. **Blocked L3 implementation gate:** no verified response-matrix CLI
+   exists in the live L3 worktree. L3 must expose a help-verified
+   response-matrix command before this step becomes runnable. The
+   command must read `Particle_output_*.parquet`,
+   `Interaction_output_*.parquet`, `events.csv`, and `pi0.csv`; scan
+   `visible_mass`, `pi0_mass`, and `sphericity`; save 200-bootstrap
+   covariance; and write to `output/unfolding/response/sig_foil_v3/`.
+4. For each observable write `response_<observable>.parquet`,
    `response_<observable>_covariance.npz`, and
    `response_<observable>_metadata.json` containing truth/reco bin
    edges, normalisation convention, bootstrap seed, source file hashes,
    and the plan 38 leaf mapping.
-4. Assert every truth-bin column is normalised to
+5. Assert every truth-bin column is normalised to
    `sum_i R_ij = 1.0 ± 1e-12` after explicit inefficiency/overflow bins
    are included. Bins with fewer than 20 truth events are merged with a
    neighbour before matrix normalisation and the merge is recorded in
@@ -96,18 +105,12 @@ quoted in plan 47.
 
 ### 3.1 Runnable procedure
 
-1. Scan both supported methods over the frozen response artifacts:
-
-   ```bash
-   python -m nnbar_reconstruction.cli unfold-tune \
-       --response-dir output/unfolding/response/sig_foil_v3/ \
-       --observables visible_mass,pi0_mass,sphericity \
-       --method ibu --n-iter 1,2,3,4,5,6,8 \
-       --method svd --k 2,3,4,5,6,8 \
-       --closure-sample output/reco/sig_foil_v3/events.csv \
-       --out output/unfolding/tuning/
-   ```
-
+1. **Blocked L3 implementation gate:** no verified unfolding-tuning
+   CLI exists in the live L3 worktree. Before this section is runnable,
+   L3 must expose a help-verified tuning command that scans the frozen
+   response artifacts for `visible_mass`, `pi0_mass`, and `sphericity`
+   with IBU iterations `{1,2,3,4,5,6,8}` and SVD ranks
+   `{2,3,4,5,6,8}`, then writes to `output/unfolding/tuning/`.
 2. Save one `tuning_<observable>.parquet` grid with method, parameter,
    bias, variance, bin-to-bin correlation, pull mean/width, and closure
    status. Also save diagnostic PNGs for L-curve / iteration curves.
@@ -141,19 +144,13 @@ a statistically independent or reweighted truth distribution.
 
 1. Prepare an alternate closure truth distribution using either a held-out
    run block from `sig_foil_v3` or a plan 13 §4 signal-model reweighting.
-2. Run the closure command with the frozen response and regularisation:
-
-   ```bash
-   python -m nnbar_reconstruction.cli unfold-closure \
-       --response-dir output/unfolding/response/sig_foil_v3/ \
-       --regularisation output/unfolding/tuning/chosen_regularisation.yml \
-       --closure-events output/reco/sig_foil_v3/events.csv \
-       --closure-pi0 output/reco/sig_foil_v3/pi0.csv \
-       --truth-particle NNBAR_Detector/output/sig_foil_v3/Particle_output_*.parquet \
-       --truth-interaction NNBAR_Detector/output/sig_foil_v3/Interaction_output_*.parquet \
-       --bootstrap 200 --out output/unfolding/closure/sig_foil_v3/
-   ```
-
+2. **Blocked L3 implementation gate:** no verified unfolding-closure
+   CLI exists in the live L3 worktree. Before this section is runnable,
+   L3 must expose a help-verified closure command that reads the frozen
+   response directory, `chosen_regularisation.yml`, `events.csv`,
+   `pi0.csv`, `Particle_output_*.parquet`, and
+   `Interaction_output_*.parquet`; runs 200 bootstrap replicas; and
+   writes to `output/unfolding/closure/sig_foil_v3/`.
 3. For each observable write `closure_<observable>.json`,
    `closure_<observable>_pulls.parquet`, and a PNG with truth, folded,
    reconstructed, and unfolded spectra.
@@ -189,20 +186,13 @@ nuisance N5.
    `eta_omega_enhanced`, `eta_omega_suppressed`), create event weights
    or alternate response inputs with the same plan 09 truth/reco columns
    used by §2.
-2. Rebuild and apply the response for each variation:
-
-   ```bash
-   python -m nnbar_reconstruction.cli unfolding-systematics \
-       --nominal-response output/unfolding/response/sig_foil_v3/ \
-       --regularisation output/unfolding/tuning/chosen_regularisation.yml \
-       --signal-models docs/rebuild_plans/13_signal_model.md \
-       --truth-particle NNBAR_Detector/output/sig_foil_v3/Particle_output_*.parquet \
-       --truth-interaction NNBAR_Detector/output/sig_foil_v3/Interaction_output_*.parquet \
-       --reco-events output/reco/sig_foil_v3/events.csv \
-       --reco-pi0 output/reco/sig_foil_v3/pi0.csv \
-       --out output/unfolding/systematics/signal_model/
-   ```
-
+2. **Blocked L3 implementation gate:** no verified signal-model
+   unfolding-systematics CLI exists in the live L3 worktree. Before
+   this section is runnable, L3 must expose a help-verified command
+   that reads the nominal response, `chosen_regularisation.yml`, plan
+   13 signal-model variations, truth parquet, `events.csv`, and
+   `pi0.csv`, then writes to
+   `output/unfolding/systematics/signal_model/`.
 3. Save `signal_model_deltas.parquet`,
    `signal_model_covariance.npz`, and `nuisance_N5.yml` with one row
    per `(observable, bin, variation)`.
