@@ -123,6 +123,22 @@ thesis six-cut baseline.
    columns. The raw pair list, kinematic quantities, cut booleans, and
    `passes_selection` must be unchanged.
 
+### 5.1 Decision-log stubs for π⁰ pairing and cuts
+
+P.5/P.6 choices change candidate multiplicity and the Ch 8 π⁰
+baseline, so threshold or ranking changes require plan-05 approval:
+
+| DEC stub | Decision to freeze | Required evidence before approval |
+|---|---|---|
+| `DEC-34-PAIRING-RULE` | Retain all unordered pairs or select a best-pair / fit-ranked pairing policy | §5 correct-pair efficiency, candidate multiplicity, and runtime comparison |
+| `DEC-34-PI0-CUT-BASELINE` | Freeze the six thesis Ch 8 cuts and their default thresholds as reproduction columns | plan-47 reproduction row plus per-cut pass fractions from §5 |
+| `DEC-34-RETUNED-PI0-CUTS` | Approve any mass, energy, fraction, opening-angle, or prompt-timing retune | N-1/ROC evidence and explicit preservation of the Ch 8 baseline columns |
+| `DEC-34-ACCIDENTAL-LABELING` | Restrict truth-parent labels to validation-only accidental-rate estimates | plan-01 audit and rerun showing pair/cut outputs unchanged without truth columns |
+
+Until approval, alternative pair rankings and retuned cuts are plan-38
+ladder rows only; `passes_selection` remains the Ch 8 reproduction
+baseline.
+
 ## 6. Acceptance criteria
 
 - §2 individual passes_* columns + `passes_selection`.
