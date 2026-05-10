@@ -155,6 +155,53 @@ species from the production input must not change rows whose
    tolerance and failures are classified as no-hit, invalid-fit, or edge-loss
    rather than hidden inside PID thresholds.
 
+### 1.7 C.4 scintillator-association physics derivation
+
+- **What is physically measured:** C.4 measures the observable association
+  between a C.1/V.2 charged TPC candidate and scintillator deposits. The truth
+  particle identity is a validation label only; production association is a
+  geometric and timing compatibility decision.
+- **Estimator rationale:** a charged track extrapolated to an outer scintillator
+  is best matched by positive ray projection, small perpendicular residual,
+  bounded opening angle, and calibrated time residual. The current legacy
+  implementation is `_select_scintillator_hits_for_track`
+  (`nnbar_reconstruction/charged.py:96-138`) with thresholds stored in
+  `ReconstructionConfig`.
+  TPC-to-outer-detector matching practice and PDG passage-of-particles timing
+  context motivate this observable-only association
+  \cite{ParticleDataGroup:2024RPP,alice2014performance}.
+- **Statistical character:** missed scintillator deposits bias range low and can
+  turn stopping protons pion-like; fake deposits bias range high and proton-like.
+  The error budget is dominated by V.2 angular uncertainty, scintillator pitch,
+  timing calibration, and plan-60 edge leakage.
+
+### 1.8 C.4 scintillator-association logic gaps
+
+1. **Projection sign:** `projection >= 0` is derived from downstream propagation
+   from the fitted TPC anchor to scintillator acceptance.
+2. **Angle/distance gates = 10 deg / 15 cm:** OPEN: jointly scan the two gates
+   on locked proton and signal slices, using association fake rate plus C.3
+   range residual as the figure of merit; target resolution date 2026-05-24.
+3. **Timing gate:** OPEN: derive from plan-18 scintillator calibration and
+   plan-60 path length; target resolution date 2026-05-31.
+4. **Exact `Track_ID` fallback:** derived to be validation/legacy diagnostic
+   only; production C.4 rows must be unchanged when `Track_ID` is dropped.
+5. **Scintillator edge buffer:** OPEN: import the plan-60 edge-distance bins and
+   decide `warn` versus `fail` semantics before PID promotion; target
+   resolution date 2026-05-31.
+
+### 1.9 C.4 scintillator-association closure test for the derivation
+
+1. Run the C.4 association builder on frozen C.1/V.2 candidates and Class-A
+   scintillator hits for `cal_singleproton_50to500MeV_v2` and
+   `sig_foil_500MeV_v3`.
+2. Persist associated-hit sidecars and C.3 range rows before any truth ancestry
+   or `Track_ID` diagnostic join.
+3. In validation-only scoring, measure association efficiency, fake association,
+   range residual, and Bragg-endpoint residual by gate, timing, and edge bins.
+4. The derivation passes when the selected observable-only gates keep C.3 range
+   closure inside tolerance and rows are invariant to dropping Class-B columns.
+
 ## 2. Bragg-peak
 
 For stopping protons, the energy-vs-position profile peaks near the

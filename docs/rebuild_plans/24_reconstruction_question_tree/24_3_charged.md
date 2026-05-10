@@ -257,6 +257,55 @@ Leaf C.4: charged-track candidates + scintillator hits → hit association
   allowed truth use: validation_only
   downstream consumers: C.3, C.5, C.6; plans 28, 29
 
+#### C.4 Physics derivation
+
+- **What is physically measured:** C.4 estimates which scintillator deposits are
+  produced by the same charged candidate represented by the C.1/V.2 TPC ray.
+  The truth-side validation quantity is common particle ancestry; production
+  uses only reconstructed hit positions, times, energy deposits, and geometry.
+- **Estimator rationale:** the near-optimal Class-A association is a geometric
+  ray-to-hit compatibility test: positive projection along the fitted track,
+  small perpendicular distance, optional small opening angle, and timing
+  consistency when calibrated. This is the detector analogue of track-to-outer-
+  detector matching used in TPC/PID reconstruction practice
+  \cite{ParticleDataGroup:2024RPP,alice2014performance}.
+- **Statistical character:** false associations bias C.3 range high and C.5 PID
+  proton-like; missed terminal hits bias range low. Dominant uncertainties are
+  V.2 direction error, scintillator granularity, hit multiplicity, and edge
+  leakage.
+- **Current implementation anchor:** the legacy matcher is
+  `_select_scintillator_hits_for_track`
+  (`nnbar_reconstruction/charged.py:96-138`) with thresholds from the live
+  `ReconstructionConfig`; its exact
+  `Track_ID` fallback is diagnostic only.
+
+#### C.4 Logic gaps
+
+1. **Forward projection `projection >= 0`:** derived from downstream
+   propagation from the TPC anchor to scintillator acceptance.
+2. **Opening angle = 10 deg:** OPEN: scan 2-25 deg on
+   `cal_singleproton_50to500MeV_v2` and `sig_foil_500MeV_v3`; optimise C.3
+   range residual and fake-association rate; target resolution date 2026-05-24.
+3. **Closest-approach distance = 15 cm:** OPEN: scan 2-40 cm with the same
+   range/fake-association figure of merit and report dependence on track length;
+   target resolution date 2026-05-24.
+4. **Timing residual gate:** OPEN: use the plan-18 scintillator timing
+   calibration and plan-60 path-length states to choose a ns-scale window;
+   target resolution date 2026-05-31.
+5. **Geometry edge state:** OPEN: classify edge-loss versus no-hit failures from
+   plan-60 scintillator acceptance before C.4 feeds PID; target resolution date
+   2026-05-31.
+
+#### C.4 Closure test for the derivation
+
+1. Run C.4 on frozen C.1/V.2 charged candidates and Class-A scintillator hits
+   after dropping `Track_ID`, `Name`, `Parent_ID`, and truth coordinates.
+2. Persist associated-hit sidecars before joining validation ancestry labels.
+3. In validation-only scoring, measure association efficiency, fake-association
+   rate, and C.3 range bias versus angle, distance, timing, and edge bins.
+4. Pass when the frozen C.4 rule gives stable C.3 range closure and production
+   rows are invariant to removing all Class-B columns.
+
 Leaf C.5: dE/dx + range + scintillator energy → π/p PID decision
   inputs (Class A): C.1 charged-candidate table, C.2 dE/dx table,
                     C.3 range table, C.4 scintillator association
