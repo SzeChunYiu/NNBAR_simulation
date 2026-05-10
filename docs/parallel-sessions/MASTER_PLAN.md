@@ -37,7 +37,7 @@ Every codex lane should read this file at start and at finish to check for new t
 | data_pipeline package | DONE | data-pipeline | Merged |
 | clustering enhancements | DONE | clustering | Merged |
 | End-to-end pipeline runner + tests | DONE | reco-pipeline | Merged, 3 tests pass |
-| **Random Forest Classifier** | NEXT | rfc-classifier | See docs/parallel-sessions/rfc-classifier.md |
+| Random Forest Classifier | DONE | rfc-classifier | RFCClassifier + train_rfc.py merged |
 | π⁰ 60% lead glass cut verification | PLANNED | — | Check object_identification.py thresholds vs thesis Table 10.1 |
 | Opening angle threshold (30°) | PLANNED | — | Verify value in object_identification.py |
 | Material budget analysis script | PLANNED | — | Low priority — analysis only |
