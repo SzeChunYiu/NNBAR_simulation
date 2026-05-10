@@ -33,6 +33,82 @@ The intercalibration is *not* a real-detector calibration; it is a
 self-consistency audit of the simulation pipeline. Any discrepancy
 exposed here propagates into a systematic via plan 45.
 
+## 0.1 Wave 6 derivation — cross-subsystem energy anchor
+
+### Physics derivation
+
+**What is physically measured.** Intercalibration measures whether the
+same Geant4 truth energy deposit maps consistently into TPC electron
+count, scintillator photon-equivalent count, and lead-glass
+calorimetric energy. The ground-truth quantity is `eDep` at hit time;
+the derived quantities are calibration transforms with subsystem-
+specific constants and possible non-linearities.
+
+**Estimator rationale.** A minimum-ionising charged pion crossing both
+TPC gas and scintillator gives a common dE/dx anchor because the same
+Bethe--Bloch energy-loss physics underlies both detectors
+`\cite{ParticleDataGroup:2024RPP,NISTSTAR}`. Plastic-scintillator
+light yield and lead-glass calorimetric response then connect the
+common energy-deposit scale to the detector-specific observables, with
+BC-408 and lead-glass data sheets supplying the material-response
+priors where source constants are insufficient
+`\cite{SaintGobainBC408DataSheet,SchottSF5DataSheet}`. The correct
+intercalibration estimator is therefore a set of closure residuals
+against the same `eDep`, not a tuned rescaling chosen after looking at
+the final event selection.
+
+**Statistical character.** The per-hit truth `eDep` is deterministic
+for a fixed Geant4 trajectory, while TPC electron counts are Poisson-
+sampled and optical photons would add transport/detection variance
+when enabled. The dominant current uncertainty is systematic:
+scintillator fast-mode yield is source-backed but optical yield is
+disabled, calibration macros are absent, and lead-glass optical-mode
+linearity is not yet source-backed. These gaps become plan-45
+intercalibration nuisances or blocked ledger rows.
+
+### Logic gaps
+
+- **MIP residual threshold <5%.** Grounding: §2 uses a practical
+  closure threshold for TPC/scintillator agreement. `OPEN:` derive the
+  allowed residual from downstream dE/dx/PID sensitivity in plans 27
+  and 29, or replace with a detector-calibration requirement; target
+  resolution date 2026-06-22.
+- **Fast scintillator yield 11136 photons/MeV and optical yield 0.**
+  Grounding: DEC-2026-05-10-6 and source line evidence in §3.
+  `OPEN:` restore a nonzero optical yield with provenance or keep
+  optical-mode rows blocked; target resolution date 2026-06-15.
+- **Lead-glass scan energies {50, 100, 200, 500, 1000} MeV and <5%
+  residual.** Grounding: §4 electron-beam closure design. `OPEN:`
+  confirm these points bracket the photon/electron energies in thesis
+  ledger rows and derive the 5% residual from mass/energy-resolution
+  budgets; target resolution date 2026-06-22.
+- **Calibration sample macros.** Grounding: §2 and §4 explicitly mark
+  historical macro paths as absent rather than source facts. `OPEN:`
+  implement or replace `cal_singlepion_mip_v1` and
+  `cal_singleelectron_v1` before promoting this plan out of draft;
+  target resolution date 2026-06-15.
+- **Gain/light non-linearities.** Grounding: plan 02 has a seam but no
+  calibrated curve. `OPEN:` decide whether non-linearity is negligible
+  in the thesis energy range or register a plan-45 nuisance; target
+  resolution date 2026-06-29.
+
+### Closure test for the derivation
+
+1. Build per-hit truth tables with `eDep`, path length, subsystem id,
+   and all derived observables for the MIP pion and electron
+   calibration samples.
+2. For TPC/scintillator MIP tracks, compare dE/dx residuals against a
+   common Bethe--Bloch/NIST reference and bootstrap the detector
+   difference.
+3. For scintillator fast/optical modes, compute photons per MeV by
+   layer and stop with `blocked-disabled-optics` if the source optical
+   yield remains zero.
+4. For lead glass, fit the electron-scan response and record residuals
+   per energy point. Store all constants, covariance matrices, and
+   failure modes in plan 47; do not tune downstream cuts until the
+   intercalibration residual is either closed or propagated as a
+   systematic.
+
 ## 1. Reference quantity
 
 For every hit in every SD, Geant4 records `eDep` (MeV).
