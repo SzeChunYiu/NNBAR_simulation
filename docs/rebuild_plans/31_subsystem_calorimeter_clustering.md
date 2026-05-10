@@ -117,6 +117,20 @@ Fixture review recomputes the energy sums, centroid, and membership hash
 from the member-hit sidecar. A row whose fixture changes after dropping
 Class B columns is rejected before plan 32 or 33 can consume it.
 
+Initial cluster-quality flag examples:
+
+| `cluster_quality_flag` | Trigger condition | Required review action | Downstream rule |
+|---|---|---|---|
+| `nominal_single_shower` | one local maximum, connected membership, finite centroid | closure row may count as nominal response | eligible for P.2/P.3 after Class-B hash passes |
+| `sparse_disconnected_hits` | low-energy islands are accepted only through a documented adjacency bridge | inspect split/merge rates by energy bin | keep flag through plan 32 feature rows |
+| `split_local_maxima` | one seed region is split into two candidate clusters | verify both child hit-membership keys and energy conservation | plan 33 may build separate photons only after closure |
+| `merged_touching_cells` | adjacent candidates are merged by the configured merge rule | record pre/post membership hashes in closure sidecar | plan 34 over-merge guard must see the flag |
+| `class_b_membership_changed` | dropping ancestry/provenance columns changes membership | fail the Class-A audit | blocked from all downstream production rows |
+
+Quality flags are additive. An empty list is allowed only when the row
+has passed the membership-hash audit and no split/merge/sparse condition
+was observed.
+
 ### 2.3 Current-to-target cluster identifier map
 
 The current compact source emits `object_id` and `source_track_id` from
