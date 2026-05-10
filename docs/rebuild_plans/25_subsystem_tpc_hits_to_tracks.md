@@ -202,6 +202,19 @@ module and the plan-side contract is now explicit:
 6. Plan 66 consumes `candidate_quality_state`, `cluster_method`, and
    `class_a_hit_count` as DQM fields once the V.1 table is present.
 
+### 6.1 L3 target module, functions, and tests
+
+- **Target module:** add/extend `nnbar_reconstruction/charged.py`.
+- **Public function:** `reconstruct_track_candidates(tpc)`.
+- **Unit-test target:** add a `tests/test_charged_reco.py` case that
+  constructs a synthetic TPC dataframe with Class A columns only and
+  asserts the V.1 schema, `truth_grouping_used=False`, stable
+  `hit_membership_key`, and no `Track_ID` dependency.
+- **Integration-test target:** add a real-output schema row in the same
+  test file that reads a `TPC` table from a registered
+  `Particle_output_*.parquet`/run fixture and asserts the plan 09 column
+  contract before calling the public function.
+
 ## 7. Acceptance criteria
 
 - §1 inputs match plan 09 (no Class B in production path).
