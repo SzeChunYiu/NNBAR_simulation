@@ -182,9 +182,10 @@ reviewer runs these checks against the current worktrees:
    artifact manifest schema; plans 41-43, 60, and 66 each contain a
    software-handoff manifest schema for their downstream study or
    operations artifacts.
-5. Charged-side Stage E.1 modules in plans 25-28 each contain a fixture
-   matrix that names synthetic, real-output, and unavailable/gated cases
-   before L3 promotes a replacement implementation.
+5. Stage E.1 implementation modules in plans 25-30 each contain a
+   fixture matrix that names synthetic, real-output, and
+   unavailable/gated cases before L3 promotes a replacement
+   implementation.
 6. All L0 writable files remain below the 500-line cap and have no
    unresolved work-marker text or fill-in instructions.
 
@@ -241,10 +242,10 @@ grep -q 'plan60_fiducial_edges@stage-e1' docs/rebuild_plans/60_fiducial_volume_a
 grep -q '66_data_quality_monitoring@stage-e1' docs/rebuild_plans/66_data_quality_monitoring.md || exit 1
 ```
 
-The charged-side fixture-matrix coverage in item 5 is checked with:
+The Stage E.1 fixture-matrix coverage in item 5 is checked with:
 
 ```bash
-for p in 25 26 27 28; do
+for p in 25 26 27 28 29 30; do
   f=$(ls docs/rebuild_plans/${p}_*.md)
   grep -q 'Stage E.1 fixture matrix' "$f" || exit 1
 done
