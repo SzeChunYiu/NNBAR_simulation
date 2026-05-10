@@ -30,6 +30,82 @@ to convert energy deposit to ionisation, and the gain-saturation
 behaviour. These constants are Class C (plan 01 §2.3) and propagate
 into every dE/dx-derived observable.
 
+## 0.1 Wave 6 derivation — TPC drift and ionisation constants
+
+### Physics derivation
+
+**What is physically measured.** TPC calibration measures the mapping
+from an ionising particle's true energy loss and space-time position to
+electron count and drifted hit coordinates. The ground-truth quantities
+are local electric field, drift direction, drift velocity, W-value
+(mean energy per ion pair), gas gain/saturation, and the field-manager
+coverage over all TPC modules.
+
+**Estimator rationale.** A time-projection chamber estimates charged-
+particle trajectories by drifting ionisation electrons in a known
+electric field to a readout plane; the founding TPC concept and modern
+tracking-gas references make drift field, W-value, and gain the
+load-bearing calibration constants `\cite{rubbia1977liquid,sharma1998properties,Garfield}`.
+For this rebuild, Geant4's `ElectricField::GetFieldValue` and stepper
+transport are the deterministic field estimator, while `TPCSD` converts
+energy deposit to an electron-count proxy using a production W-value.
+Because dE/dx and PID thresholds scale nearly linearly with the electron
+count, W-value mismatch is a calibration nuisance rather than a
+reconstruction detail.
+
+**Statistical character.** Field-map uniformity is deterministic for a
+fixed geometry/source tree and only gains numerical sampling error from
+the scan grid. Electron counting has Poisson variance at fixed energy
+deposit, but the dominant uncertainty in current thesis reproduction is
+systematic: the production W-value is lower than literature Ar/CO₂
+references, and only part of the TPC currently has an attached field
+manager. Gain saturation is an unmodelled non-linearity and must remain
+a limitation until calibrated.
+
+### Logic gaps
+
+- **Field-manager coverage.** Grounding: §1 line evidence shows only
+  `TPC_output[0]` and `TPC_output[1]` currently receive the field
+  manager. `OPEN:` attach or explicitly justify all 12 modules before
+  freezing a regenerated TPC sample; target resolution date
+  2026-06-15.
+- **Uniformity threshold <1% and 5 mm field-cage edge exclusion.**
+  Grounding: current §2 acceptance choice. `OPEN:` derive the
+  tolerance from the allowed vertex/dE/dx bias in plans 25 and 27, or
+  replace it with a measured field-map requirement; target resolution
+  date 2026-06-22.
+- **Stepper constants (MinStep = 1 mm, DeltaOneStep = 1 mm,
+  LargestAcceptableStep = 1 cm).** Grounding: source-observed Geant4
+  transport parameters. `OPEN:` run a step-size convergence scan on
+  hit position and electron-count outputs; target resolution date
+  2026-06-22.
+- **Production W-value 23.6 eV vs reference 26.0--27.4 eV.**
+  Grounding: DEC-2026-05-10-5 preserves identity-default reproduction,
+  while gas-mixture references set the closure alternatives
+  `\cite{ParticleDataGroup:2024RPP,sharma1998properties}`. `OPEN:`
+  promote the DEC and bind the chosen values to the Class C registry;
+  target resolution date 2026-06-15.
+- **Gain saturation.** Grounding: current simulation stores bare
+  ionisation counts. `OPEN:` add a calibrated saturation curve or an
+  explicit no-saturation systematic before using high-dE/dx tails as
+  a final PID discriminator; target resolution date 2026-06-29.
+
+### Closure test for the derivation
+
+1. Scan `ElectricField::GetFieldValue` over each TPC module and verify
+   field magnitude/direction, module coverage, and edge-exclusion
+   behaviour.
+2. For fixed energy-deposit steps, compare expected electron-count
+   scaling under 23.6, 26.0, and 27.4 eV W-values; verify the −9.2%
+   and −13.9% reference shifts stated in §3.
+3. Re-run dE/dx/PID rows with W-value reweighting and with a step-size
+   convergence scan. Record hit-count, dE/dx, and PID-threshold shifts
+   in plan 47.
+4. If unfielded modules or gain saturation dominate the closure delta,
+   keep affected TPC ledger rows `mismatch` or `blocked` and propagate
+   a plan-45 calibration nuisance rather than silently retuning
+   reconstruction thresholds.
+
 ## 1. Field source
 
 `NNBAR_Detector/src/ElectricField.cc` provides the TPC drift
