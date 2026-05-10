@@ -34,14 +34,14 @@ Per plan 24 C.1 / C.5 / C.6 schemas:
 | C.6 rejection | C.1-C.5 outputs, Class A lead-glass / shower-shape observables, TPC pair topology, hit timing, geometry side-cars | `Name`, `Track_ID`, `Parent_ID`, `origin_vol_name`, `Interaction`, `particle_x/y/z`, truth PID labels | `{event_id, charged_candidate_id, rejected, rejection_flags, primary_reason, pid_before_rejection, pid_after_rejection, rule_version}` |
 
 Current implementation citation: `reconstruct_charged_objects`
-(`reconstruction.py:352-431`, plan 08 §3.4) owns the current C.1/C.5
+(`charged.py:149-228`, plan 08 §3.4) owns the current C.1/C.5
 path and emits `pid`, `dedx`, `scintillator_range`, `track_anchor`,
 and `track_direction`, with `truth_name` retained for validation only
 after the migration.
 
 ## 2. Cut-based baseline (current code)
 
-`reconstruction.py` `reconstruct_charged_objects` (plan 08 §3.4):
+`charged.py` `reconstruct_charged_objects` (plan 08 §3.4):
 
 ```
 proton if  dedx >= proton_dedx_min                       # default 8.0
@@ -76,7 +76,7 @@ Per plan 57 MVA protocol:
 
 | Alternative | Source paper / codebase | NNBAR-specific adaptation | Expected ladder leaf delta |
 |---|---|---|---|
-| Cut-based baseline | Existing `reconstruct_charged_objects` (`reconstruction.py:352-431`) | Keep thesis Ch 8/9 threshold form but remove the C.1 truth-name gate before production scoring. | Reproduces baseline; ladder delta comes primarily from removing truth substitution. |
+| Cut-based baseline | Existing `reconstruct_charged_objects` (`charged.py:149-228`) | Keep thesis Ch 8/9 threshold form but remove the C.1 truth-name gate before production scoring. | Reproduces baseline; ladder delta comes primarily from removing truth substitution. |
 | Likelihood-ratio PID | Plan 57 MVA protocol / standard likelihood-ratio classifier | Train on plan 23 charged calibration samples using C.2/C.3/C.4 features and locked train/validation/test splits. | Expected to reduce C.5 π/p confusion, especially near stopping-proton boundaries; must beat cut-based on plan 38. |
 
 ## 4. EM and neutral rejection (C.6)
