@@ -72,7 +72,10 @@ defence:
     rerun_manifest: <path-or-null>
     rerun_transcript: <path-or-null>
     command_template_ids: [validate_reco_cutflow_v1]
-    command_template_verifier_hashes: [sha256:<hash>]
+    command_template_verifier_hashes:
+      - sha256:b3cee4613afed558d4704df3dc5b281271aed768965d79a09603f812496806f0
+    command_template_verifier_sources:
+      - plan52:validate_reco_cutflow_v1
     ci_report: <path-or-null>
     archive_inventory: <path-or-null>
     archive_drill: <path-or-null>
