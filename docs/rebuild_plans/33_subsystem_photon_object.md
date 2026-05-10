@@ -344,6 +344,18 @@ Production P.3/P.4 promotion requires all four checks plus signed DEC
 ids for direction, energy, and merge policy. Missing checks keep the
 method as a plan-38 diagnostic rather than a plan-34 input.
 
+Initial evidence-bundle examples:
+
+| `evidence_bundle_id` | Included rows | Reviewer action |
+|---|---|---|
+| `p33_vertex_centroid_candidate_v0` | method bundle, all energy-bin closure rows, fallback audit, Class-B hash | candidate for plan-34 handoff if closure and DEC checks pass |
+| `p33_origin_fallback_diag_v0` | origin-fallback category rows and angular-pull summary | keep separate from primary direction closure; diagnose sparse vertices |
+| `p33_fragment_merge_shadow_v0` | duplicate/over-merge scans plus no-merge baseline ids | allow plan-38 comparison but block production without merge DEC |
+| `p33_scint_only_blocker_v0` | scint-only impact table and Ch 8 guard audit | block plan-34 acceptance if any unsupported row seeds π⁰ selection |
+
+Evidence bundles preserve the source-cluster, direction, and energy
+method context that plan 34 needs to reproduce pair kinematics.
+
 ## 7. Acceptance criteria
 
 - §2, §3 produce photon four-vector with stated semantics.
