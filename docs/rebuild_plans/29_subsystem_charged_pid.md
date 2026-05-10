@@ -95,6 +95,24 @@ path and emits `pid`, `dedx`, `scintillator_range`, `track_anchor`,
 and `track_direction`, with `truth_name` retained for validation only
 after the migration.
 
+### 1.4 Machine-readable charged-PID fixtures
+
+The charged-PID seam is split into three target fixtures so C.1
+candidate formation, C.5 species scoring, and C.6 rejection can be
+tested independently by the ladder:
+
+| Fixture | Required fields | Production invariant |
+|---|---|---|
+| C.1 charged candidate | `event_id`, `charged_candidate_id`, `candidate_id`, `track_quality`, `charged_candidate_valid`, `candidate_failure_reason` | dropping `Name` and `Track_ID` cannot remove a production candidate |
+| C.5 PID score | `event_id`, `charged_candidate_id`, `pid`, `proton_score`, `pion_score`, `thresholds`, `rule_version`, `pid_valid`, `decision_reason` | truth species and truth kinetic energy are absent from scoring input |
+| C.6 rejection | `event_id`, `charged_candidate_id`, `rejected`, `rejection_flags`, `primary_reason`, `pid_before_rejection`, `pid_after_rejection`, `rule_version` | rejection reasons are reconstructed topology or calorimeter states, never truth labels |
+
+Training/validation labels for likelihood-ratio or threshold scans live
+in separate closure artifacts keyed by `(event_id,
+charged_candidate_id, rule_version)`. A production PID fixture is valid
+only if C.2 and C.3 fixture hashes match the dE/dx and range inputs
+used to compute the C.5 row.
+
 ## 2. Cut-based baseline (current code)
 
 `/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/charged.py`
