@@ -248,6 +248,21 @@ single-γ energy bin and direction-source category:
 Diagnostic rows may compare legacy energy aliases, but production rows
 must tie their method id to plan-31/32 cluster and neutral-score inputs.
 
+Required closure row-key inventory:
+
+| `dataset_id` | `energy_bin_mev` | `direction_source` | Required row purpose | Acceptance guard |
+|---|---:|---|---|---|
+| `cal_singlegamma_v1` | 50 | reconstructed vertex | low-energy direction/energy response | §6.1 metrics present; nonzero truth denominator |
+| `cal_singlegamma_v1` | 100 | reconstructed vertex | near-threshold photon response | §6.1 metrics present; nonzero truth denominator |
+| `cal_singlegamma_v1` | 200 | reconstructed vertex | π⁰-relevant photon response | §6.1 metrics present; nonzero truth denominator |
+| `cal_singlegamma_v1` | 500 | reconstructed vertex | mid-energy linearity check | §6.1 metrics present; nonzero truth denominator |
+| `cal_singlegamma_v1` | 1000 | reconstructed vertex | high-energy linearity check | §6.1 metrics present; nonzero truth denominator |
+| `cal_singlegamma_v1` | all | origin fallback | sparse-vertex fallback audit | fallback fraction and separate angular pulls present |
+
+The inventory defines the minimum closure keys. It is not method
+approval until measured metrics, fragment rates, and the Class-B drop
+hash are attached for the selected photon method.
+
 ### 6.2 Decision-log stubs for photon-object choices
 
 P.3/P.4 choices feed π⁰ mass, visible mass, and event selection, so
