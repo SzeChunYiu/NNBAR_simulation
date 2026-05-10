@@ -12,7 +12,7 @@ acceptance:
   - {test: photon energy bias < 1% on cal_singlegamma_v1 in linear regime, method: closure plot, pass_when: pass}
   - {test: scintillator-fed photons (no LG hits) are tagged with leadglass_fraction = 0, method: §2 review, pass_when: implemented}
 risks:
-  - {risk: photon merging by direction proximity (current code) loses well-separated π⁰ daughters at small opening angles, mitigation: §3 angular threshold tuned and DEC-logged}
+  - {risk: adding fragment merging can lose well-separated π⁰ daughters at small opening angles, mitigation: §3 angular threshold tuned and DEC-logged}
 estimated_effort: M
 last_updated: 2026-05-09
 ---
@@ -30,15 +30,14 @@ Leaf P.3/P.4: neutral clusters → photon four-vector objects
   membership, plan-32 `passes_neutral_discriminant` /
   `neutral_score`, plan-30 vertex row, calorimeter energy calibration
   constants from plan 18, and detector geometry.
-- **Current implementation evidence:** plan 08 maps photon-object
-  construction to `reconstruct_photon_objects`
-  (`reconstruction.py:783–1101`). It caches reconstructed vertices at
-  `reconstruction.py:829–849`, computes direction/path inside
-  `build_photon_row` (`reconstruction.py:941–989`), emits
-  lead-glass and scintillator-only source groups at
-  `reconstruction.py:1046–1099`, and declares the current photon
-  output schema at `reconstruction.py:793–822`. Fragment merging is
-  `_merge_photon_fragments` (`reconstruction.py:502–629`).
+- **Current implementation evidence:** the compact current source
+  builds photon-like objects in `reconstruct_photon_objects`
+  (`reconstruction.py:432-573`). That function declares the output
+  columns, caches reconstructed vertices, computes the vertex-to-
+  centroid direction and path length, attaches lead-glass plus
+  scintillator energy for the same key, and emits diagnostic
+  `truth_name` / `source_track_id` provenance fields. There is no
+  separate production fragment-merge helper in the current source.
 - **Decision rule (target):** accept only clusters that passed P.2;
   compute direction from reconstructed vertex to energy-weighted
   cluster centroid; compute energy from calibrated cluster deposits;
@@ -61,8 +60,9 @@ Vertex from plan 30 (V.4). Cluster centroid energy-weighted (per
 plan 31).
 
 When no event vertex is reconstructed (sparse-table fallback), use
-origin → centroid; this is the historical fallback per
-`reconstruction.md` lines 88–94.
+origin → centroid and set the fallback flag. The current source keeps
+that fallback inside `reconstruct_photon_objects`
+(`reconstruction.py:432-573`).
 
 Truth canonical (plan 38 §3.1): gamma momentum direction at
 production.
@@ -74,10 +74,11 @@ Target production energy is the calibrated P.1 cluster sum:
 MeV and both terms derived from Class A cluster membership.
 
 The current reproduction baseline obtains the scintillator
-contribution from gamma-shower descendants via the same ancestry used
-in plan 31 step 1. That value is kept only as the plan-47 baseline
-and closure label; once plan 31 lands, P.4 must consume the
-truth-blind P.1 cluster components instead.
+contribution by matching the same `(Event_ID, Track_ID)` key inside
+`reconstruct_photon_objects` (`reconstruction.py:432-573`). That
+value is kept only as the plan-47 baseline and closure label; once
+plan 31 lands, P.4 must consume the truth-blind P.1 cluster
+components instead.
 
 Scintillator-only photons (no LG cluster) are emitted with
 `leadglass_fraction = 0` so the thesis Ch 8 selection
@@ -88,23 +89,24 @@ compare energy choices without changing the photon-object schema.
 
 ## 4. Photon merging
 
-Truth-labelled neutral gamma fragments with nearly identical
-reconstructed directions are merged before pairing
-(`photon_fragment_merge_angle_deg = 2°`). Class B read; migration:
-geometric direction-proximity merging, blind to truth labels.
+The current compact source emits one photon-like row per accepted
+lead-glass key and does not run a separate fragment-merge step. The
+production target is an optional geometry/time merge that is blind to
+truth labels, with all thresholds DEC-logged before it can affect
+P.3/P.4 four-vectors.
 
 ## 5. Alternative comparison matrix
 
 | Leaf | Candidate | Decision rule | Current/source citation | Class-A status | Comparison metric |
 |---|---|---|---|---|---|
-| P.3 | **Vertex → centroid (baseline target)** | Unit vector from reconstructed vertex to P.1 energy-weighted centroid. | Current row builder uses reconstructed vertex or origin fallback (`reconstruction.py:829–849`, `953–958`, `1030–1035`). | Production-eligible with plan-30 vertex. | Direction pull mean/width on `cal_singlegamma_v1`; downstream π⁰ mass. |
-| P.3 | **Origin → centroid fallback** | Use detector origin when no event vertex exists. | Historical fallback documented in `reconstruction.md` lines 88–94 and plan 08 §3.5.2. | Eligible only as sparse-data fallback with explicit flag. | Pull degradation vs vertex baseline and fallback rate. |
-| P.3 | **Cluster-axis fit** | Fit a shower axis from hit positions/timing and use it as direction. | Replacement for centroid-only direction inside `build_photon_row`. | Eligible if fit uses only hit geometry/timing. | Pull width and small-opening π⁰ separation. |
-| P.4 | **Calibrated cluster sum (baseline target)** | Sum calibrated lead-glass plus scintillator cluster energy from P.1. | Replaces ancestry-derived scintillator descendants in current source grouping (`reconstruction.py:1046–1099`). | Production-eligible after plan-18 calibration. | Energy bias/resolution by single-γ energy bin. |
-| P.4 | **Lead-glass-only energy** | Use only lead-glass cluster deposits; keep scintillator as diagnostic. | Current schema already carries `leadglass_fraction` (`reconstruction.py:793–822`). | Eligible but lower efficiency for scintillator-fed showers. | Bias for no-LG and edge showers; plan-34 selection loss. |
+| P.3 | **Vertex → centroid (baseline target)** | Unit vector from reconstructed vertex to P.1 energy-weighted centroid. | Current row builder uses reconstructed vertex or origin fallback in `reconstruct_photon_objects` (`reconstruction.py:432-573`). | Production-eligible with plan-30 vertex. | Direction pull mean/width on `cal_singlegamma_v1`; downstream π⁰ mass. |
+| P.3 | **Origin → centroid fallback** | Use detector origin when no event vertex exists. | Current fallback is inside `reconstruct_photon_objects` (`reconstruction.py:432-573`) and is flagged by the emitted vertex-use column. | Eligible only as sparse-data fallback with explicit flag. | Pull degradation vs vertex baseline and fallback rate. |
+| P.3 | **Cluster-axis fit** | Fit a shower axis from hit positions/timing and use it as direction. | Replacement for centroid-only direction inside `reconstruct_photon_objects` (`reconstruction.py:432-573`). | Eligible if fit uses only hit geometry/timing. | Pull width and small-opening π⁰ separation. |
+| P.4 | **Calibrated cluster sum (baseline target)** | Sum calibrated lead-glass plus scintillator cluster energy from P.1. | Replaces the same-key raw energy sum inside `reconstruct_photon_objects` (`reconstruction.py:432-573`). | Production-eligible after plan-18 calibration. | Energy bias/resolution by single-γ energy bin. |
+| P.4 | **Lead-glass-only energy** | Use only lead-glass cluster deposits; keep scintillator as diagnostic. | Current photon-like schema carries `leadglass_fraction` in `reconstruct_photon_objects` (`reconstruction.py:432-573`). | Eligible but lower efficiency for scintillator-fed showers. | Bias for no-LG and edge showers; plan-34 selection loss. |
 | P.4 | **Regression calibration** | Predict photon energy from cluster sum plus shower-shape features. | Plan 57-style replacement for raw sums. | Eligible only with frozen features and validation provenance. | Bias/resolution improvement vs calibrated sum. |
-| P.3/P.4 | **Truth-labelled fragment merge (current)** | Merge fragments by neutral truth label and direction proximity. | `_merge_photon_fragments` (`reconstruction.py:502–629`). | Not production-eligible; Class B labels influence membership. | Reproduction baseline only. |
-| P.3/P.4 | **Geometry/time fragment merge** | Merge nearby neutral clusters by angular, centroid, and timing compatibility. | Replaces `_merge_photon_fragments`. | Production-eligible with DEC-logged thresholds. | Duplicate rate, π⁰ daughter over-merge rate, closure pulls. |
+| P.3/P.4 | **No fragment merge (current)** | Keep one photon-like row per accepted cluster key. | Current compact baseline is `reconstruct_photon_objects` (`reconstruction.py:432-573`). | Production-eligible only if plan-31 cluster membership is truth-blind and duplicate rate is acceptable. | Duplicate photon rows can inflate π⁰ combinatorics. |
+| P.3/P.4 | **Geometry/time fragment merge** | Merge nearby neutral clusters by angular, centroid, and timing compatibility. | New truth-blind post-processing after `reconstruct_photon_objects` (`reconstruction.py:432-573`). | Production-eligible with DEC-logged thresholds. | Duplicate rate, π⁰ daughter over-merge rate, closure pulls. |
 
 Plan 38 records separate ladder rows for P.3 direction, P.4 energy,
 and the fragment-merge policy because each can change the photon
