@@ -83,19 +83,52 @@ reconstruction outputs and cut-flow booleans.
 
 ## 2. Per-channel breakdown
 
-Plan 13 §1 lists the major final-state channels. For each channel,
-compute ε per stage:
+Per-channel efficiencies use truth final-state topology for grouping and
+the same staged numerators from §1 for acceptance, reconstruction, and
+selection. The channel label is a diagnostic/ledger dimension; it is not
+read by the reconstruction or selection path.
 
-- π⁺ π⁻ π⁰
-- π⁺ π⁻ 2π⁰
-- π⁺ π⁻ 3π⁰
-- 2π⁺ 2π⁻
-- 2π⁺ 2π⁻ π⁰
-- (other)
+### 2.1 Runnable procedure
 
-Per-channel efficiency reveals which final states the detector
-accepts well (high charged multiplicity favours TPC tracking; low
-charged multiplicity disfavours).
+1. Reuse `output/efficiency/sig_foil_v3/factorisation_manifest.json`
+   from §1 to ensure the event set and hashes are identical.
+2. Run the channel breakdown using plan 13 topology labels:
+
+   ```bash
+   python -m nnbar_reconstruction.cli signal-efficiency \
+       --truth-particle NNBAR_Detector/output/sig_foil_v3/Particle_output_*.parquet \
+       --truth-interaction NNBAR_Detector/output/sig_foil_v3/Interaction_output_*.parquet \
+       --reco-vertices output/reco/sig_foil_v3/vertices.csv \
+       --reco-events output/reco/sig_foil_v3/events.csv \
+       --reco-charged output/reco/sig_foil_v3/charged.csv \
+       --reco-photons output/reco/sig_foil_v3/photons.csv \
+       --reco-pi0 output/reco/sig_foil_v3/pi0.csv \
+       --by-channel docs/rebuild_plans/13_signal_model.md \
+       --bootstrap 200 --out output/efficiency/sig_foil_v3/by_channel/
+   ```
+
+3. Write `channel_efficiency.parquet`, `channel_efficiency.json`,
+   `channel_covariance.npz`, and `channel_manifest.json`. The parquet
+   has one row per `(channel, stage)` with denominator, numerator,
+   conditional efficiency, Wilson interval, and jackknife uncertainty.
+4. Assert at least five named channels plus `other` are present. Any
+   named channel with fewer than 100 generated events is retained in the
+   machine artifact but rolled into `other` for thesis-facing plots.
+
+### 2.2 Channel rows, tolerances, and cross-references
+
+| Channel group | Truth label rule | Reporting tolerance | Ladder leaf | Ledger/systematics hook |
+|---|---|---|---|---|
+| `pi+ pi- pi0` | exactly one π+, one π-, one π0 ancestry in `Interaction_output` | report if denominator ≥100; otherwise merge into `other` for plots. | E.9 / S.6 | plan 13 nominal, plan 47 §1 |
+| `pi+ pi- 2pi0` | one π+, one π-, two π0 ancestors | same denominator rule; covariance with total efficiency saved. | E.9 / S.6 | plan 13 nominal, N5 |
+| `pi+ pi- 3pi0` | one π+, one π-, three π0 ancestors | same denominator rule; selection loss must include S.2/S.3 cut contributions. | E.9 / S.6 | plan 13 nominal, N5 |
+| `2pi+ 2pi-` | two π+ and two π- with no π0 ancestor | same denominator rule; reconstruction factor must cite charged-PID leaves C.1-C.6. | C.1-C.6 / S.6 | plan 29, plan 47 §1 |
+| `2pi+ 2pi- pi0` | two π+, two π-, one π0 ancestor | same denominator rule; store charged and π0 reconstruction losses separately. | C.1-C.6, P.5-P.7 / S.6 | plans 29, 34-35 |
+| `other` | all rare, resonant, η/ω/ρ/K-containing, or low-count groups | always reported; uncertainty can be asymmetric Wilson interval. | E.9 / S.6 | plan 13 §4, plan 45 N5 |
+
+The sum of channel numerators and denominators must reproduce the
+inclusive §1 counts exactly. A mismatch is a blocking event-join or
+truth-labeling bug, not an uncertainty.
 
 ## 3. Acceptance criteria
 
