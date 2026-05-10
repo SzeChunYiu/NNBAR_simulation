@@ -122,6 +122,17 @@ that no truth four-vector or generated π⁰ id enters the fit inputs, and
 that fit-quality fields are null rather than invented when the fit did
 not converge.
 
+Initial fit-mode examples:
+
+| `fit_mode_id` | `fit_mode` | Required inputs | Expected status before DEC | Downstream rule |
+|---|---|---|---|---|
+| `raw_only_repro` | `raw_only` | plan-34 raw candidate fields | `not_run` fit with raw values preserved | Ch 8 reproduction baseline |
+| `mass_constraint_diag_v0` | `mass_constraint` | two photons plus valid energy/direction covariance | diagnostic until §5 closure and `DEC-35-FIT-MODE` | compare mass-width improvement only |
+| `vertex_constraint_diag_v0` | `vertex_constraint` | plan-30 vertex/covariance plus photon covariance | diagnostic until vertex covariance closure | compare event-level fit stability |
+| `combined_fit_diag_v0` | `combined` | mass and vertex inputs both valid | blocked until simpler fits pass separately | no plan-36/37 consumption |
+
+These ids are method examples, not executable CLI names.
+
 ### 1.4 Current-to-target fit input key
 
 The current raw candidate table from `find_pi0_candidates`
