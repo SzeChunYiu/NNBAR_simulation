@@ -165,6 +165,26 @@ registry dataset ids. Their machine-readable rows must carry
 A total-background quote must fail review if it silently treats one of
 these sentinels as zero expected background.
 
+### 3.1 Machine-readable caveat fixture
+
+Unmodelled sources serialise to explicit caveat rows rather than absent
+background nodes:
+
+| Field | Required content | Review rule |
+|---|---|---|
+| `node_id` | stable dotted key, e.g. `unmodelled.environmental_gamma` | never collides with registered §1 nodes |
+| `node_status` | `unregistered_caveat` | distinguishes caveats from zero-survivor samples |
+| `missing_sample_id` | `unregistered_*` sentinel from §3 | not accepted as a plan-03 dataset id |
+| `expected_rate_status` | `unbounded_by_current_rebuild` | blocks numeric folding into `b` |
+| `observable_signature` | §3 signature text | copied to plan-50 defence caveats |
+| `limitation_flags` | plan-01 limitation ids | non-empty for every caveat row |
+| `rate_included_in_b` | `false` | hard fail if true before sample registration |
+| `replacement_sample_required` | boolean | true until plan 03 registers a real sample |
+| `caveat_dec_id` | `DEC-44-UNMODELLED-CAVEATS` | required beside every total-background quote |
+
+Plan 46 and plan 50 must preserve these rows as caveats. They may not
+convert a missing sample into an expected rate of zero.
+
 DEC stub: `DEC-44-UNMODELLED-CAVEATS` — keep these rows out of the
 numeric background sum until simulated samples are registered, but
 require them as plan-50 caveats for every quoted total-background
