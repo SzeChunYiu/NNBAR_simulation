@@ -94,6 +94,7 @@ requirements, not claims that the final workflow file already exists.
 | `l1_defence_rerun_manifest` | Tier 3 weekly | plan-52 defence rerun bundle has rows for EM chain, selection, pile-up, strange, TOF, and Bayesian cross-checks | Tier 3 tracking issue if incomplete |
 | `l1_rerun_transcript_link` | changes to plans 50 or 52 | any ready plan-50 L1 roll-up links both the plan-52 rerun manifest and execution transcript | Tier 1 block |
 | `l1_package_staleness_guard` | changes to plans 50-56 | ready plan-50 L1 packages carry `l1_staleness.status: current` against the latest L1 hashes | Tier 1 block |
+| `l1_note_package_freshness` | changes to plans 50 or 55 | promoted L1 note annexes quote only current packages or include an explicit stale-package caveat | Tier 1 block |
 | `l1_archive_drill_manifest` | thesis-freeze package build | plan-54 L1 archive drill exists, starts from the top-level README, and records blocked rows | Tier 1 block for freeze packages |
 | `l1_glossary_signoff` | changes to plans 50, 55, or 56 | plan-56 sign-off rows cover every L1 term used by defence overlays and note annexes | Tier 1 block |
 
@@ -138,6 +139,7 @@ Report review rules:
 | rerun transcript check appears when roll-up uses refreshed artifacts | package claims rerun evidence without execution proof |
 | answered-question transition evidence is present | reviewer registry closes a question without package evidence |
 | staleness guard appears for ready L1 packages | stale defence package is promoted as current evidence |
+| note freshness check appears for promoted notes | thesis-facing note quotes stale package as current evidence |
 
 A warning status is allowed only for Tier 3 weekly checks. Tier 1 L1
 checks are pass/fail and block the plan-set edit when they fail.
@@ -150,7 +152,8 @@ checks are pass/fail and block the plan-set edit when they fail.
 - §4 coverage targets met on `main`.
 - §5 L1 defence-package CI checks implemented for Stage E.3 plan edits,
   including rerun transcript linkage for refreshed artifacts and
-  answered-question transition evidence, and package staleness guards.
+  answered-question transition evidence, package staleness guards,
+  and note freshness checks.
 - Freeze-mode L1 CI includes archive-drill and glossary-signoff checks.
 
 ## 7. Risks
