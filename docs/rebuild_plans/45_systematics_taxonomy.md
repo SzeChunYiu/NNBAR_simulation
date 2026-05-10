@@ -347,6 +347,15 @@ temporary correlation assumptions, and unbounded limitations. Plan 46
 should consume only frozen bundles for numeric propagation and should
 quote caveat bundles separately.
 
+Initial reviewer audit cases:
+
+| `audit_case_id` | Reviewer question | Required evidence before accept | Reject condition |
+|---|---|---|---|
+| `p45_registry_audit` | Are all consumed nuisances named with variation kind and affected observables? | N1-N10 fixture rows with ±1σ definitions | a quoted result references an unnamed or empty-observable nuisance |
+| `p45_throw_pair_audit` | Can every numeric delta be traced to nominal-linked throws? | plus/minus or envelope throw ids, nominal hash, and status | one-sided or draft throw clears a final uncertainty |
+| `p45_correlation_audit` | Are all consumed correlations explicit and symmetric? | correlation-pair rows, M0 flags, and covariance hash | covariance silently treats missing pairs as final zero |
+| `p45_caveat_audit` | Are unbounded limitations quoted outside numeric covariance? | caveat fixture rows and plan-50 prose stubs | unbounded limitation becomes a zero-width nuisance |
+
 ## 4. Acceptance criteria
 
 - §1 registry complete; ≥ 10 nuisances.
