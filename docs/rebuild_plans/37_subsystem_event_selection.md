@@ -137,6 +137,25 @@ plan-04 interval convention rather than as exact zero background.
    columns. Cut booleans, cumulative counts, and final pass/fail must
    be unchanged.
 
+### 2.1 Machine-readable truth-blind selection audit fixture
+
+Every Ch 10 reproduction run writes a paired audit row proving that
+selection decisions do not depend on upstream truth/provenance fields:
+
+| Field | Required content | Review rule |
+|---|---|---|
+| `selection_config_id` | Ch 10 baseline or approved retune id | must match the cut-flow fixture |
+| `dataset_id` | signal, cosmic, or beam-neutron sample id | every quoted cut-flow sample gets an audit row |
+| `input_event_hash` | hash of the original event table | establishes the audited input snapshot |
+| `truth_blind_event_hash` | hash after dropping Class B/provenance columns | required even when no such columns are present |
+| `cut_boolean_hash_before`, `cut_boolean_hash_after` | hashes of all §1 `pass_*` and final AND columns | must match exactly |
+| `cutflow_counts_before`, `cutflow_counts_after` | cumulative counts from `CUT_ORDER` | must match exactly |
+| `changed_event_ids` | list of event ids whose selection changed | must be empty for production eligibility |
+| `audit_status` | `pass`, `fail`, or `diagnostic_only` | only `pass` rows can support final quotes |
+
+A failed audit keeps the cut-flow row out of plan 47 and blocks
+`DEC-37-TRUTH-BLIND-GATE` until the upstream truth dependency is fixed.
+
 ## 3. N-1 and ROC
 
 Per plan 41:
