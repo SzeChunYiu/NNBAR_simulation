@@ -270,6 +270,15 @@ The inventory defines the minimum closure components. It does not
 authorize new E.6 or fit-aware E.7 variables for plan 37 until measured
 §5.1 rows and DEC evidence are attached.
 
+Initial event-variable closure failure examples:
+
+| `closure_case_id` | Failing pattern | Required status | Review guard |
+|---|---|---|---|
+| `visible_mass_bias_fail` | E.7 row has visible-mass bias above the §5 bound | `fail` | S.3 selection cannot consume the method bundle |
+| `nonfinite_not_sparse` | non-finite value appears outside a declared sparse sentinel case | `fail` | sentinel policy must account for every invalid value |
+| `missing_e8_timing_row` | timing-window closure row absent for a quoted sample | `fail` | out-of-time energy cannot support cosmic rejection claims |
+| `class_b_variable_drift` | event-variable hash changes after diagnostic truth columns are dropped | `fail` | blocks plan-37 use even if closure metrics pass |
+
 ### 5.2 Decision-log stubs for variable use
 
 Plan 36 may add variables, change the source of an existing variable,
