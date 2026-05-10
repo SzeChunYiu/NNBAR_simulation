@@ -105,13 +105,18 @@ Current `NNBAR_Detector/tests/` inventory, read from the L3 worktree on
 | Test file | Primary validation surface | Sanity plot / artifact | Regression budget | CI matrix dimension |
 |---|---|---|---|---|
 | `test_calorimeter_clusters_physics.py` | plan-31 calorimeter clustering physics derivation | cluster-merge and energy-sharing fixtures | physics parameters remain source/plan grounded | `reco-photon-physics` |
+| `test_charged_physics.py` | plan-25 charged reconstruction physics derivation | public charged-function docstring gate | charged docstrings link plans and carry no OPEN markers | `reco-charged-physics` |
+| `test_charged_pid_physics.py` | plan-29 charged PID physics derivation | truth-blind PID fixture | truth columns do not affect PID classification | `charged-pid-physics` |
 | `test_charged_reco.py` | plan-25 charged-track candidates and plan-26 direction/PID helpers | charged track-candidate tables and direction rows | truth columns forbidden; real sample schema stable | `reco-charged` |
 | `test_ci_workflow.py` | plan-53 GitHub Actions contract | workflow YAML path/trigger audit | required fast checks listed for touched paths | `ci-contract` |
 | `test_cli_response_matrix.py` | plan 42 response-matrix CLI and artifact writers | response parquet, covariance NPZ, metadata JSON | flags and output schemas stable | `response-matrix-cli` |
 | `test_cli_summarize_flags.py` | plan 42 summarize `--all-runs` and output flags | offset-table manifest and summary table | event-offset concatenation stable | `summarize-cli` |
 | `test_closure.py` | plan 40 per-leaf closure runner | closure JSON and K-S bias report | unbiased fixture green; biased fixture red | `reco-closure` |
+| `test_dedx_physics.py` | plan-27 dE/dx physics derivation | truncated-mean dE/dx fixture | truth columns do not affect dE/dx estimator | `dedx-physics` |
 | `test_dqm.py` | plan-66 offline DQM status lattice | run-quality table and manifest | fail/warn/pass semantics stable | `dqm-offline` |
+| `test_dqm_physics.py` | plan-66 DQM producer physics derivation | DQM docstring/link fixtures | quality/promotions stay plan-grounded | `dqm-physics` |
 | `test_dqm_promotion.py` | plan-66 DQM promotion guardrails | DQM promotion/degrade fixture report | promotion requires explicit green provenance | `dqm-offline` |
+| `test_electron_physics.py` | electron-pair reconstruction physics derivation | electron docstring link fixture | schema/reconstruction plan links remain present | `electron-physics` |
 | `test_electron_reco.py` | electron-pair candidate reconstruction | electron-pair candidate rows | configured entry cut enforced; missing TPC columns produce empty schema | `reco-electron` |
 | `test_event_variables.py` | plan-36 event-shape variables | event-variable rows from charged/photon vectors | sparse inputs emit finite invalid sentinels | `event-variables` |
 | `test_event_variables_physics.py` | plan-36 event-variable physics derivation | event-shape fixture rows | physics definitions remain plan-grounded | `event-variables-physics` |
@@ -129,9 +134,12 @@ Current `NNBAR_Detector/tests/` inventory, read from the L3 worktree on
 | `test_ladder_substitute.py` | per-leaf truth substitution | substituted event table | explicit leaf outputs preferred | `truth-ladder-core` |
 | `test_ledger_reproduction.py` | plan-47 ledger reproduction command smoke | golden subset command manifest | command strings remain runnable/schema-stable | `ledger-reproduction` |
 | `test_photon_objects_physics.py` | plan-33 photon-object physics derivation | photon-object fixture rows | conversion/isolation assumptions remain plan-grounded | `reco-photon-physics` |
+| `test_photon_physics.py` | legacy photon reconstruction physics derivation | truth-blind photon/π0 fixture | truth columns do not affect legacy photon pairing | `photon-physics` |
 | `test_photon_reco.py` | plan-31 photon/calorimeter reconstruction and plan-32 shower features | calorimeter cluster, photon, and shower-shape rows | truth columns forbidden; real sample schema stable | `reco-photon` |
+| `test_physics_docstring_gate.py` | Wave-6 physics docstring gate | AST scan of public reconstruction functions | public functions include derivation/numerical-parameter blocks | `physics-docstring-gate` |
 | `test_pid_calibration.py` | charged PID threshold scan | PID scan CSV and ROC/score outputs | truth-separating config ranks first | `reco-pid` |
 | `test_pi0_pairing_physics.py` | plan-34 π⁰-pairing physics derivation | pairing fixture rows | invariant-mass and pairing assumptions remain plan-grounded | `pi0-pairing-physics` |
+| `test_range_reco_physics.py` | plan-28 range reconstruction physics derivation | range fixture | truth columns do not affect range estimator | `range-physics` |
 | `test_realism_audit.py` | plan 01/09 truth-read audit | audit JSON with violation list | undecorated Class B reads fail | `realism-audit` |
 | `test_reconstruction_run_summary.py` | reconstruction run tables and thesis cut variables | summary tables and cut-variable rows | thesis calorimeter-direction variables present | `reco-summary` |
 | `test_reconstruction_smoke.py` | end-to-end reconstruction smoke and thesis cutflow/object rules | `output/sanity/{edep,hits,vertex_z,timing}.png` plus reco tables | expected tables written; 395 lines on 2026-05-10, below the 500-line cap | `reco-smoke` |
@@ -143,10 +151,12 @@ Current `NNBAR_Detector/tests/` inventory, read from the L3 worktree on
 | `test_statistics.py` | plan 04 bootstrap, jackknife, Wilson, F-C | statistical interval JSON / pull table | seed binding deterministic | `statistics` |
 | `test_track_fit_physics.py` | plan-26 track-fit physics derivation | track-fit fixture rows | scattering/pull assumptions remain plan-grounded | `track-fit-physics` |
 | `test_verify_citations.py` | A+ source-citation verifier | verifier pass/fail fixtures and temporary source snippets | out-of-range or wrong identifiers fail | `citation-verifier` |
+| `test_vertex_physics.py` | legacy vertex/event-row physics derivation | timing/vertex truth-blind fixture | truth columns do not affect timing annotations | `vertex-physics` |
 | `test_vertex_reco.py` | plan-30 vertex projection, aggregation, and foil acceptance | vertex projection and aggregate rows | geometry-only acceptance uses plan-16 contract | `vertex-reco` |
+| `test_vertex_reco_physics.py` | plan-30 vertex reconstruction physics derivation | foil-projection fixture | truth columns do not affect vertex chain | `vertex-reco-physics` |
 
 Plan 53 runs these via pytest on every PR. The current inventory was
-verified against 40 `test_*.py` files in the L3 `tests/` directory on
+verified against 50 `test_*.py` files in the L3 `tests/` directory on
 2026-05-10. The largest listed tests are below the 500-line cap in this
 worktree (`test_reconstruction_smoke.py` 395 lines,
 `test_photon_reco.py` 388 lines, `test_charged_reco.py` 351 lines), and
@@ -211,23 +221,25 @@ the A+ examiner rejected invented CLI/build surface. Before changing the
 matrix, re-run these checks from the L3 worktree:
 
 ```bash
-grep -R "option\\|WITH_\\|MCPL_BUILD" -n CMakeLists.txt
-find tests -maxdepth 1 -type f -name 'test_*.py' | sort
-find tests -maxdepth 1 -type f -name 'test_*.py' | wc -l
-wc -l tests/test_reconstruction_smoke.py
-ls pytest.ini CMakeLists.txt tests
+rtk proxy grep -R -n "option\\|WITH_\\|MCPL_BUILD" CMakeLists.txt
+rtk proxy sh -c "find tests -maxdepth 1 -type f -name 'test_*.py' | sort"
+rtk proxy sh -c "find tests -maxdepth 1 -type f -name 'test_*.py' | wc -l"
+rtk proxy wc -l tests/test_reconstruction_smoke.py
+rtk ls pytest.ini CMakeLists.txt tests
+rtk proxy test ! -d cmake
 ```
 
 Current 2026-05-10 verifier evidence:
 
-- `find tests -maxdepth 1 -type f -name 'test_*.py' | wc -l` returns 40 files,
+- `rtk proxy sh -c "find tests -maxdepth 1 -type f -name 'test_*.py' | wc -l"` returns 50 files,
   matching §1.
-- `wc -l tests/test_reconstruction_smoke.py` returns 395 lines, so the
+- `rtk proxy wc -l tests/test_reconstruction_smoke.py` returns 395 lines, so the
   file is below the 500-line cap in this L3 worktree.
-- `grep -R "option\\|WITH_\\|MCPL_BUILD" -n CMakeLists.txt` returns
-  only `WITH_GEANT4_UIVIS` and `MCPL_BUILD`; no separate `cmake/`
-  directory is present in the L3 worktree.
-- `ls pytest.ini CMakeLists.txt tests` resolves the CI config, build
+- `rtk proxy grep -R -n "option\\|WITH_\\|MCPL_BUILD" CMakeLists.txt`
+  returns only `WITH_GEANT4_UIVIS` and `MCPL_BUILD`; `rtk proxy test
+  ! -d cmake` confirms no separate `cmake/` directory is present in
+  the L3 worktree.
+- `rtk ls pytest.ini CMakeLists.txt tests` resolves the CI config, build
   config, and test directory paths.
 
 ## 5. Acceptance criteria
