@@ -201,18 +201,23 @@ explicit remaining gates:
 
 ### 5.1 L3 target module, functions, and tests
 
-- **Target module:** add/extend `nnbar_reconstruction/range_reco.py`.
+- **Target module:** extend `nnbar_reconstruction/range_reco.py`.
 - **Public function:** `reconstruct_range_table(candidates, fits,
-  scintillator)`.
-- **Unit-test target:** add a `tests/test_charged_reco.py` case that
-  builds synthetic candidates, V.2 fit rows, and scintillator hits;
-  asserts projected `range_cm`, `range_edep_mev`,
-  `bragg_peak_position_cm`, invalid-row behavior, and no `Track_ID`
-  dependency.
-- **Integration-test target:** add a real-output schema row that chains
-  plan-25 candidates and plan-26 fits into `reconstruct_range_table` on
-  a registered scintillator fixture and verifies the plan 09 Class A
-  columns are sufficient.
+  scintillator)` (`range_reco.py:78-107`).
+- **Current unit coverage:** `tests/test_charged_reco.py` already
+  builds synthetic candidates, V.2 fit rows, and scintillator hits in
+  `test_reconstruct_range_table_projects_scintillator_hits`
+  (`tests/test_charged_reco.py:224-259`) and asserts projected
+  `range_cm`, `range_edep_mev`, `bragg_peak_position_cm`, hit count,
+  module id, and `range_valid`.
+- **Current integration coverage:** the real-output chain is
+  `test_reconstruct_range_table_real_sample_has_plan_28_schema`
+  (`tests/test_charged_reco.py:262-279`), which feeds plan-25
+  candidates and plan-26 fits into `reconstruct_range_table` on a
+  scintillator fixture when available.
+- **Remaining test obligation:** extend those tests for invalid-row
+  behavior, no-`Track_ID` production dependency, geometry
+  edge-distance fields, and the future associated-hit sidecar.
 
 ## 6. Acceptance criteria
 
@@ -221,13 +226,13 @@ explicit remaining gates:
   flag or explicitly null with a reason; any PID promotion cites a
   plan 38 C.3/C.5 ladder delta.
 - §5 Stage E.1 handoff is actionable for L3: the target public
-  function, unit-test path, integration-test path, and required C.3
-  fields (`range_id`, `association_method`, `range_cm`,
+  function, current unit/integration tests, remaining test obligation,
+  and required C.3 fields (`range_id`, `association_method`, `range_cm`,
   `range_edep_mev`, `bragg_peak_position_cm`,
   `range_quality_state`, `range_failure_reason`,
   `scintillator_edge_distance_mm`, `scintillator_profile_bin`, and
-  associated-hit sidecar rows) are all named before implementation
-  begins.
+  associated-hit sidecar rows) are all named before replacement
+  promotion.
 
 ## 7. Dependencies
 
