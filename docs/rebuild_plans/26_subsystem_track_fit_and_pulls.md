@@ -28,6 +28,27 @@ Inputs: track-candidate hit list from V.1.
 Outputs: `(direction, Σ_direction)` per candidate, plus `χ²/ndf` and
 per-hit residuals for closure.
 
+Per plan 24 V.2 schema:
+
+| Class A inputs | Forbidden Class B |
+|---|---|
+| V.1 candidate table; referenced TPC columns `Event_ID`, `x`, `y`, `z`, `t`, `eDep`, `photons`, `px`, `py`, `pz`, `xHitID`, `module_ID`, `step_info`, `vol_name` | `Track_ID`, `Parent_ID`, `Name`, `origin_vol_name`, `particle_x`, `particle_y`, `particle_z` |
+
+Output schema:
+
+```
+event_id
+candidate_id
+anchor_xyz
+direction_xyz
+direction_covariance
+chi2_ndf
+n_direction_hits
+direction_method
+residuals_xyz
+pulls_theta_phi
+```
+
 ## 2. Current vs alternative
 
 - *Current.* `_track_anchor_and_direction` (plan 08 §3.2): direction
