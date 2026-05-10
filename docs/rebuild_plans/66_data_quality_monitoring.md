@@ -84,9 +84,9 @@ python -m nnbar_reconstruction.cli dqm \
     output/reco/<dataset_id>/
 ```
 
-Current source hooks are `dqm` (`cli.py:271-288`),
-`evaluate_run_quality` (`dqm/quality.py:55-120`), and
-`quality_manifest` (`dqm/quality.py:123-147`). The live command reads
+Current source hooks are `dqm` (`nnbar_reconstruction/cli.py:271-288`),
+`evaluate_run_quality` (`nnbar_reconstruction/dqm/quality.py:55-120`), and
+`quality_manifest` (`nnbar_reconstruction/dqm/quality.py:123-147`). The live command reads
 the reconstructed CSV tables and writes §4 artifacts. Validation JSON
 and registry-manifest hash ingestion remain follow-up L3 implementation
 gates; until those flags exist, steps below keep them as separate
