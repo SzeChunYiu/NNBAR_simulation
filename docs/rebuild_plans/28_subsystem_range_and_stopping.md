@@ -32,6 +32,22 @@ hit, projected along the track direction.
 
 Outputs: `range_cm`, `range_eDep` (energy in matched hits).
 
+Per plan 24 C.3 schema:
+
+| Class A inputs | Forbidden Class B |
+|---|---|
+| C.1 charged-candidate table; V.2 direction table; C.4 matched scintillator hit columns `Event_ID`, `x`, `y`, `z`, `t`, `eDep`, `photons`, `module_ID`, `vol_name`, `step_info`; scintillator geometry side-car | `Name`, `Track_ID`, `Parent_ID`, `origin_vol_name`, `particle_x`, `particle_y`, `particle_z` |
+
+Current implementation citation: `reconstruct_charged_objects`
+(`reconstruction.py:430-700`, plan 08 §3.4) reports
+`scintillator_range` after matching hits by angular/distance cuts or,
+for sparse legacy tables, exact `Track_ID` fallback. The fallback is
+not a production C.3 rule.
+
+Output schema: `{event_id, charged_candidate_id, range_cm,
+range_edep_mev, n_scintillator_hits, last_hit_module_id,
+bragg_peak_position_cm, range_valid}`.
+
 ## 2. Bragg-peak
 
 For stopping protons, the energy-vs-position profile peaks near the
