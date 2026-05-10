@@ -41,12 +41,16 @@ Leaf P.3/P.4: neutral clusters → photon four-vector objects
   compute direction from reconstructed vertex to energy-weighted
   cluster centroid; compute energy from calibrated cluster deposits;
   merge duplicate neutral fragments only by geometry/time compatibility.
-- **Outputs:** `event_id`, `object_id`, `cluster_id`, `energy_mev`,
-  `leadglass_edep`, `scintillator_edep`, `leadglass_fraction`,
-  `cluster_x/y/z`, `cluster_time_ns`, `vertex_x/y/z`,
-  `vertex_time_ns`, `photon_path_length_cm`, `ux/uy/uz`,
-  `neutral_score`, `source_cluster_ids`, and diagnostic-only closure
-  labels.
+- **Outputs (target schema):** `event_id`, `object_id`,
+  `cluster_id`, `energy_mev`, `leadglass_edep`,
+  `scintillator_edep`, `leadglass_fraction`, `cluster_x/y/z`,
+  `cluster_time_ns`, `vertex_x/y/z`, `vertex_time_ns`,
+  `photon_path_length_cm`, `ux/uy/uz`, `neutral_score`,
+  `source_cluster_ids`, and diagnostic-only closure labels. Current
+  compact source emits `total_energy`, not `energy_mev`, inside
+  `reconstruct_photon_objects` (`photon.py:60-201`); the rebuild
+  bridge must map that field explicitly rather than implying the
+  target column already exists upstream.
 - **Truth-use boundary:** `truth_name`, source-track aliases, and
   truth charge classes from the current table stay diagnostic; no
   photon four-vector field may depend on them.
@@ -98,6 +102,18 @@ Scintillator-only photons (no LG cluster) are emitted with
 Rows also carry `energy_method` (`cluster_sum`, `leadglass_only`,
 `regression_calibration`, or `legacy_truth_descendant`) so plan 38 can
 compare energy choices without changing the photon-object schema.
+
+### 3.1 Current-to-target energy field map
+
+Until the calibrated plan-18/31 cluster sum is implemented, the
+reproduction bridge may expose current-source `total_energy` as
+`energy_mev` only with `energy_method = legacy_truth_descendant` and
+source provenance that points back to `reconstruct_photon_objects`
+(`photon.py:60-201`). A row with `energy_method = cluster_sum` must
+come from calibrated truth-blind cluster membership, not from the
+current same-key scintillator lookup. This prevents plan 34/37 from
+reading the target column name as evidence that production-calibrated
+energy already exists.
 
 ## 4. Photon merging
 
