@@ -96,7 +96,7 @@ row except rows explicitly labelled `legacy_track_id_diagnostic`.
 ## 2. Current implementation and live redesign hook
 
 Legacy reconstruction still calls `_track_anchor_and_direction(group)`
-(`charged.py:62-81`). It sorts hits by time then input order; takes
+(`nnbar_reconstruction/charged.py:62-81`). It sorts hits by time then input order; takes
 anchor = first coord and direction = (last - first); and exposes no fit,
 covariance, or quality cut beyond ≥ 2 valid coordinates. The legacy
 grouping into "tracks" is driven by `Track_ID` (Class B violation), so
@@ -104,11 +104,11 @@ it remains a reproduction baseline and migration item, not the target
 production V.1 path.
 
 The live L3 charged-side hook for this plan is
-`reconstruct_track_candidates` (`charged.py:245-311`). It builds the
+`reconstruct_track_candidates` (`nnbar_reconstruction/charged.py:245-311`). It builds the
 §1.3 typed V.1 candidate columns from Class A TPC hit coordinates,
 records `cluster_method=geometric_cluster`, writes
 `truth_grouping_used=False`, and uses `_hit_membership_key`
-(`charged.py:231-233`) plus `_track_seed_chi2` (`charged.py:236-242`)
+(`nnbar_reconstruction/charged.py:231-233`) plus `_track_seed_chi2` (`nnbar_reconstruction/charged.py:236-242`)
 for stable membership and seed-quality fields. This is an initial
 schema-producing hook: it unblocks V.2/plan-26 and DQM wiring, while
 §3 alternatives still own the physics-performance upgrade from the
@@ -207,7 +207,7 @@ module and the plan-side contract is now explicit:
 - **Target module:** extend `nnbar_reconstruction/charged.py` without
   reopening Class B truth columns.
 - **Public function:** `reconstruct_track_candidates(tpc)`
-  (`charged.py:245-311`).
+  (`nnbar_reconstruction/charged.py:245-311`).
 - **Current unit coverage:** `tests/test_charged_reco.py` already
   asserts truth-column invariance in
   `test_track_candidates_ignore_forbidden_truth_columns`
@@ -232,9 +232,9 @@ these plan-side invariants:
 
 | Invariant | Current live behavior | Replacement requirement |
 |---|---|---|
-| truth blindness | `reconstruct_track_candidates` (`charged.py:245-311`) reads Class A hit coordinates and emits `truth_grouping_used=False` | replacement finder must remain unchanged when `Track_ID`, `Parent_ID`, `Name`, and `origin_vol_name` are dropped |
-| stable membership | `_hit_membership_key` (`charged.py:231-233`) hashes sorted hit indices | candidate splitting/merging must keep a deterministic `hit_membership_key` for each row and sidecar |
-| seed quality | `_track_seed_chi2` (`charged.py:236-242`) provides the current seed-quality scalar | replacement finder must either keep `chi2_seed` semantics or version the quality field through plan 05 |
+| truth blindness | `reconstruct_track_candidates` (`nnbar_reconstruction/charged.py:245-311`) reads Class A hit coordinates and emits `truth_grouping_used=False` | replacement finder must remain unchanged when `Track_ID`, `Parent_ID`, `Name`, and `origin_vol_name` are dropped |
+| stable membership | `_hit_membership_key` (`nnbar_reconstruction/charged.py:231-233`) hashes sorted hit indices | candidate splitting/merging must keep a deterministic `hit_membership_key` for each row and sidecar |
+| seed quality | `_track_seed_chi2` (`nnbar_reconstruction/charged.py:236-242`) provides the current seed-quality scalar | replacement finder must either keep `chi2_seed` semantics or version the quality field through plan 05 |
 | candidate id stability | current hook emits one `candidate_id=0` row per event | multi-candidate replacements must number candidates deterministically within each event |
 | downstream quality gate | `candidate_quality_state` and `candidate_failure_reason` already exist | replacements must preserve `pass`/`warn`/`fail`/`not_applicable` semantics so plans 26 and 66 do not infer quality from missing rows |
 
