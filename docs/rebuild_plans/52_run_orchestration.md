@@ -133,6 +133,7 @@ l1_defence_rerun_manifest:
         - l1-em-chain
       review_evidence_links:
         package_rollup: <plan50-rollup-id>
+        staleness_summary: <plan50-staleness-id>
         ci_report: <plan53-l1-report-id>
         note_annex: <plan55-annex-id-or-null>
         glossary_audit: <plan56-audit-id>
@@ -147,7 +148,7 @@ Manifest review rules:
 | every ready row records source and output hashes | refreshed artifacts cannot be tied to frozen inputs |
 | every blocked row names the missing input | unavailable samples are hidden as silent skips |
 | overlay ids point back to plan 50 | rerun evidence is disconnected from the defence package |
-| review-evidence links point to package, CI, note, and glossary artifacts | rerun evidence cannot be reconciled with reviewer-facing artifacts |
+| review-evidence links point to package, staleness, CI, note, and glossary artifacts | rerun evidence cannot be reconciled with reviewer-facing artifacts |
 | seed formula matches §2 exactly | reviewer rerun is not bitwise reproducible |
 | answered or closed reviewer questions carry an owner sign-off ref | rerun evidence closes a question without accountable approval |
 
