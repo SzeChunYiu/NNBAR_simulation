@@ -26,12 +26,12 @@ factorisation reveals where loss occurs.
 ## 1. Factorisation
 
 **Verified CLI surface (A+ gate, 2026-05-10).** The live L3
-worktree currently exposes only `summarize`, `scan-pid`, and
+worktree exposes `summarize`, `scan-pid`, `response-matrix`, and
 `validate-reco` under `python -m nnbar_reconstruction.cli --help`;
 `summarize --help` supports `--run`, `--json`, and `--tables-dir`.
-Signal-efficiency commands below are therefore L3/software
-implementation gates, not runnable invocations, until their `--help`
-surface exists.
+It does not expose signal-efficiency commands yet, so those steps below
+are L3/software implementation gates until their `--help` surface
+exists.
 
 The headline efficiency is measured as conditional factors on the same
 registered signal sample, with covariance saved so reviewers can see
