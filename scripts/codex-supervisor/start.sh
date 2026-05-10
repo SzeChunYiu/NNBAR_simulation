@@ -43,23 +43,12 @@ export CODEX_SUPERVISOR_PROMPTS="$HERE/codex-prompts.txt"
 
 cd "$REPO_ROOT"
 
-# Hard-coded behavior: when we `start` the supervisor we ALWAYS open a
-# Terminal window attached to the tmux session. The user wants to see
-# the panes; --no-attach is not a thing here. (Other subcommands —
-# stop/status/restart/etc — pass through unchanged.)
-if [[ "${1:-start}" == "start" ]]; then
-    # Strip --no-attach if someone passed it so we can't be silenced.
-    args=()
-    for a in "$@"; do
-        [[ "$a" == "--no-attach" ]] && continue
-        args+=("$a")
-    done
-    # If no subcommand was given, args is empty; inject "start".
-    [[ ${#args[@]} -eq 0 ]] && args=("start")
-    "$SUPERVISOR" "${args[@]}"
-    # Ensure a Terminal.app window opens regardless of the upstream's
-    # CODEX_SUPERVISOR_OPEN behavior.
-    exec "$SUPERVISOR" attach
-fi
-
+# Behavior: `start` opens a Ghostty/Terminal window attached to the
+# session — but ONLY if no client is already attached. The upstream
+# supervisor's open_terminal_attached now checks `tmux list-clients`
+# first and is idempotent, so calling `start` from a recovery loop
+# won't pile up windows.
+#
+# To bypass attach entirely (silent restart) pass `--no-attach`. The
+# wrapper passes it straight through to the upstream binary.
 exec "$SUPERVISOR" "$@"
