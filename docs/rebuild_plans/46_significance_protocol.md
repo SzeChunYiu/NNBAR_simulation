@@ -95,6 +95,53 @@ DEC stub: `DEC-46-Z0-ASYMPTOTIC` — choose the Cowan Asimov discovery
 formula above for `s > 5` and `b > 5`; require §3 F-C handover for
 zero/near-zero rows. Status: draft, pending Methodology Council sign-off.
 
+### 1.2 Physics derivation for significance and limits
+
+#### Physics derivation
+
+Plan 46 physically estimates discovery sensitivity and exclusion limits
+from selected signal and background event counts. The truth-side
+quantity is the ensemble distribution of observed counts for the real
+experiment; the production estimator observes expected signal `s`,
+expected background `b`, observed count `n_obs`, nuisance throws, and
+caveats from plans 43-45. For sufficiently large Poisson counts, the
+profile-likelihood Asimov formula gives the median discovery
+significance; for sparse and zero-survivor regimes, exact or unified
+Poisson intervals are required because asymptotic approximations can
+overstate sensitivity \cite{Cowan:2011Likelihood,ParticleDataGroup:2024RPP}.
+
+The estimator is therefore a method-dispatch gate before any number is
+returned. High-count discovery rows may use the Asimov `Z_0`; low-count
+or zero-background rows dispatch to Feldman-Cousins-style intervals; CLs
+is a high-count cross-check only when a binned nuisance model exists.
+Dominant uncertainty comes from background-rate provenance, nuisance
+covariance, finite-count discreteness, and unbounded limitations. The
+robustness requirement is that every result row carries its input bundle,
+method decision, confidence level, DEC id, and inherited caveats.
+
+#### Logic gaps
+
+| Parameter | Status before production | Closure study / target date |
+|---|---|---|
+| Asimov domain `s > 5` and `b > 5` | `OPEN:` draft threshold for asymptotic validity | Compare Asimov, F-C, and toy-MC coverage near the boundary; target 2026-06-30 |
+| F-C handover `n_obs <= 5 or b <= 5` | `OPEN:` conservative draft rule pending DEC | Validate dispatch on zero, low-count, and boundary cases; target 2026-06-25 |
+| confidence levels `0.90` primary and `0.95` cross-check | Literature/reporting convention; DEC still draft | Verify every result row records CL and no endpoint is collapsed to zero; target 2026-06-20 |
+| CLs/pyhf high-count path | `OPEN:` allowed only when a binned nuisance model exists | Build or reject binned input bundles explicitly; target 2026-07-05 |
+| validation examples `Z_0 = 8.68`, `3.37`, and `2.44/244000` | arithmetic fixtures, not final analysis results | Recompute from input-bundle rows in the L3 statistics implementation; target 2026-06-30 |
+
+#### Closure test for the derivation
+
+1. Build input bundles for the validation cases and for at least one
+   complete production-like signal/background/nuisance combination.
+2. Run the method-dispatch rule before computing any result and verify
+   low-count rows never emit asymptotic `Z_0`.
+3. Recompute Asimov examples, F-C zero-survivor endpoints, and high-count
+   CLs eligibility from the linked input bundles.
+4. Attach nuisance ids and unbounded limitations from plans 44/45 to the
+   result rows and reject unconditional quotes when caveats are non-empty.
+5. Confirm plan-47/50 handoffs preserve validation fixtures, incomplete
+   provenance blockers, and final quote candidates as separate bundles.
+
 ## 2. Limit conventions
 
 Plan 46 chooses a convention; codex-supervisor implements the chosen
