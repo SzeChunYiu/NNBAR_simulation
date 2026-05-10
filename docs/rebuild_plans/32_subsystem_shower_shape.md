@@ -179,6 +179,17 @@ The bundle is rejected if an inference feature is absent from §1, if a
 truth/provenance column changes the score, or if the threshold cannot be
 replayed from the saved artifact.
 
+Initial discriminator-candidate examples:
+
+| `discriminant_method_id` | `candidate_type` | `feature_contract_id` | `training_dataset_ids` | `validation_split_id` | `model_artifact_id` | `threshold_id`, `threshold_value` | `calibration_artifact_id` | `class_a_audit_hash` | `candidate_status` |
+|---|---|---|---|---|---|---|---|---|---|
+| `legacy_hard_cone_v0` | `legacy_rule` | `p2_legacy_angle_only_v0` | null | `fixed_threshold_repro` | null | `charged_cluster_match_angle_deg`, 8.0 | null | required | `diagnostic` |
+| `rectangular_shape_v0` | `rectangular` | `p2_shape_track_features_v0` | [`cal_singlegamma_v1`, `cal_singleelectron_v1`, `sig_foil_v3`] | `p2_stratified_split_v0` | `rectangular_thresholds_v0` | `neutral_score_threshold`, null | null | required | `candidate` |
+| `bdt_shape_v0` | `bdt` | `p2_shape_track_features_v0` | [`cal_singlegamma_v1`, `cal_singleelectron_v1`, `sig_foil_v3`] | `p2_stratified_split_v0` | `bdt_shape_v0` | `neutral_score_threshold`, null | `bdt_calibration_v0` | required | `candidate` |
+
+The legacy hard-cone row is diagnostic until the Class-A audit proves
+its charged-track inputs are truth-blind.
+
 Plan 38 scores all candidates on identical P.1 cluster inputs. Plan 57
 requires the selected BDT/NN feature list, training split, and threshold
 to be frozen before it can replace the hard-cone baseline.
