@@ -96,7 +96,28 @@ kind, run id when available, event id, and input-row ordinal or a
 future plan-09 hit id. It must not include `Track_ID`, `Parent_ID`,
 `Name`, or process/ancestry aliases.
 
-### 2.2 Current-to-target cluster identifier map
+### 2.2 Machine-readable P.1 cluster fixture
+
+The P.1 output fixture stores one row per cluster plus a separate
+membership sidecar when member-hit lists are too large for a flat table:
+
+| Field | Required content | Review rule |
+|---|---|---|
+| `event_id` | source event id | must join to plan-09 calorimeter rows |
+| `cluster_id` | deterministic dense id from §2.1 | no dependence on `Track_ID` or truth ancestry |
+| `clusterer_method` | selected candidate id from §3 | `legacy_track_key` only for reproduction baseline rows |
+| `membership_config_id` | frozen threshold/config tag | must match the DEC that authorised the clusterer |
+| `hit_membership_key` | stable hash from §2.1 | recomputed by plan-47 audit |
+| `detectors_present` | lead-glass/scintillator bitset | derived from member detector labels |
+| `leadglass_edep`, `scintillator_edep`, `total_edep` | MeV energy sums | non-negative and additive within rounding tolerance |
+| `cluster_x`, `cluster_y`, `cluster_z` | energy-weighted centroid in cm | finite; sparse invalid cases get explicit quality flags |
+| `cluster_quality_flags` | list of split/merge/sparse flags | empty list means no known caveat, not unreviewed |
+
+Fixture review recomputes the energy sums, centroid, and membership hash
+from the member-hit sidecar. A row whose fixture changes after dropping
+Class B columns is rejected before plan 32 or 33 can consume it.
+
+### 2.3 Current-to-target cluster identifier map
 
 The current compact source emits `object_id` and `source_track_id` from
 `reconstruct_photon_objects` (`photon.py:60-201`), not a production
