@@ -5,7 +5,7 @@ version: 0.1
 status: draft
 owner: Methodology Council
 parent: 24_reconstruction_question_tree
-last_updated: 2026-05-09
+last_updated: 2026-05-10
 ---
 
 # Reconstruction question tree - vertex branch
@@ -65,7 +65,7 @@ Leaf V.2: track candidates → fitted track directions
   decision rule: fit or estimate a direction from the ordered Class A
                  hit coordinates; the current baseline is the
                  first-to-last-hit unit vector from plan 08 §3.2
-                 (`reconstruction.py:165–184`), with covariance and
+                 (`reconstruction.py:147-168`), with covariance and
                  residuals supplied by plan 26 before sign-off.
   output schema: {event_id: int64, candidate_id: int64,
                   anchor_xyz: float64[3], direction_xyz: float64[3],
