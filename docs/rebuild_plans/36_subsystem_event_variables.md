@@ -44,7 +44,7 @@ comparison in §5. Current source line references come from plan 08
 | E.1 | `calorimeter_edep` | `Σ scintillator eDep + Σ lead-glass eDep` | MeV | `summarize_events` sums raw calorimeter hits (`vertex.py:322-447`) | baseline |
 | E.2 | `upper/lower_scintillator_edep`, `upper/lower_leadglass_edep` | split raw cal energy by `y > 0` / `y < 0` | MeV | hemisphere sums are emitted by `summarize_events` (`vertex.py:322-447`) | baseline |
 | E.3 | `*_longitudinal_energy`, `calorimeter_longitudinal_energy` | `Σ E_i z_i / r_i` | MeV | `_directional_energy` computes the ratio (`vertex.py:48-67`); event rows emit the columns | baseline |
-| E.4 | `*_transverse_energy`, `calorimeter_transverse_energy` | `Σ E_i sqrt(x_i² + y_i²) / r_i` | MeV | same as E.3 | baseline |
+| E.4 | `*_transverse_energy`, `calorimeter_transverse_energy` | `Σ E_i sqrt(x_i² + y_i²) / r_i` | MeV | `_directional_energy` computes the ratio (`vertex.py:48-67`); event rows emit the columns | baseline |
 | E.5 | `sphericity` | `1.5 * (λ₁ + λ₂)` from normalized momentum tensor | dimensionless | `_sphericity` computes the shape (`vertex.py:255-266`); event rows emit it | baseline |
 | E.6 | `fox_wolfram_h0`, `fox_wolfram_h2`, `fox_wolfram_h4`, `thrust`, `event_shape_valid` | pairwise Legendre moments and thrust axis over reconstructed objects | dimensionless / bool | new variables; no current columns in plan 08 output schema | added |
 | E.7 | `visible_invariant_mass` | `√((Σ E_i)² - |Σ p_i|²)` from charged + photon four-vectors | MeV | `_visible_invariant_mass` computes mass (`vertex.py:269-290`); event rows emit it | baseline |
