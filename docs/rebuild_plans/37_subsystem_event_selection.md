@@ -26,26 +26,26 @@ plus its multivariate replacement.
 
 Inputs are the plan-36 `events.csv` variables. Outputs are the
 `pass_*` booleans below plus `passes_preliminary_selection`. The
-current L3 source defines numeric cut defaults in
-`ReconstructionConfig` (`reconstruction.py:14-41`), computes the
+current L3 source defines numeric cut defaults in the current
+`ReconstructionConfig` selection fields (verified in §1.3), computes the
 production event-row booleans in `_selection_flags`
 (`vertex.py:293-319`), writes the event row in `summarize_events`
 (`vertex.py:322-447`), fixes the cumulative order in `CUT_ORDER`
 (`selection.py:13-20`), computes cumulative counts in `cutflow_counts`
 (`selection.py:95-111`), and exposes them through the CLI `_cutflow`
-wrapper (`cli.py:31-32`):
+wrapper verified in §1.3:
 `pass_scintillator_energy → pass_tpc_foil_track → pass_pion_count →
 pass_invariant_mass → pass_sphericity → pass_scintillator_balance`.
 
 | Leaf | CLI order | Input variable(s) | Produced column | Threshold / rule | Thesis source | Code citation |
 |---|---:|---|---|---|---|---|
-| S.1 | 1 | `scintillator_edep` | `pass_scintillator_energy` | `20 ≤ Σ scintillator eDep ≤ 2000 MeV` | licentiate Ch 10 cut-flow; defaults documented as Ch 9 in plan v0.1 | thresholds in `ReconstructionConfig` (`reconstruction.py:14-41`); input row in `summarize_events` (`vertex.py:322-447`); flag in `_selection_flags` (`vertex.py:293-319`) |
+| S.1 | 1 | `scintillator_edep` | `pass_scintillator_energy` | `20 ≤ Σ scintillator eDep ≤ 2000 MeV` | licentiate Ch 10 cut-flow; defaults documented as Ch 9 in plan v0.1 | thresholds in current `ReconstructionConfig` fields (verified in §1.3); input row in `summarize_events` (`vertex.py:322-447`); flag in `_selection_flags` (`vertex.py:293-319`) |
 | S.1 | 2 | `has_foil_tpc_track` | `pass_tpc_foil_track` | at least one reconstructed TPC track projected to the foil | licentiate Ch 10 cut-flow | input row in `summarize_events` (`vertex.py:322-447`); flag in `_selection_flags` (`vertex.py:293-319`) |
 | S.2 | 3 | `pion_multiplicity` | `pass_pion_count` | `pion_multiplicity ≥ 1` | licentiate Ch 10 cut-flow | input row in `summarize_events` (`vertex.py:322-447`); flag in `_selection_flags` (`vertex.py:293-319`) |
-| S.3 | 4 | `visible_invariant_mass` | `pass_invariant_mass` | finite visible mass `≥ 500 MeV` | licentiate Ch 10 cut-flow | threshold in `ReconstructionConfig` (`reconstruction.py:14-41`); input row in `summarize_events` (`vertex.py:322-447`); flag in `_selection_flags` (`vertex.py:293-319`) |
-| S.4 | 5 | `sphericity` | `pass_sphericity` | finite sphericity `≥ 0.2` | licentiate Ch 10 cut-flow | threshold in `ReconstructionConfig` (`reconstruction.py:14-41`); input row in `summarize_events` (`vertex.py:322-447`); flag in `_selection_flags` (`vertex.py:293-319`) |
-| S.5 | 6 | `upper_scintillator_edep`, `lower_scintillator_edep` | `pass_scintillator_balance` | upper `≤ 320 MeV` and lower `≤ 930 MeV` | licentiate Ch 10 cut-flow | thresholds in `ReconstructionConfig` (`reconstruction.py:14-41`); input row in `summarize_events` (`vertex.py:322-447`); flag in `_selection_flags` (`vertex.py:293-319`) |
-| S.6 | — | all S.1–S.5 booleans | `passes_preliminary_selection` | logical AND of the six cut booleans | licentiate Ch 10 final preselection | AND in `_selection_flags` (`vertex.py:293-319`); order/counts in `CUT_ORDER` and `cutflow_counts` (`selection.py:13-20`, `selection.py:95-111`); CLI wrapper in `_cutflow` (`cli.py:31-32`) |
+| S.3 | 4 | `visible_invariant_mass` | `pass_invariant_mass` | finite visible mass `≥ 500 MeV` | licentiate Ch 10 cut-flow | threshold in current `ReconstructionConfig` fields (verified in §1.3); input row in `summarize_events` (`vertex.py:322-447`); flag in `_selection_flags` (`vertex.py:293-319`) |
+| S.4 | 5 | `sphericity` | `pass_sphericity` | finite sphericity `≥ 0.2` | licentiate Ch 10 cut-flow | threshold in current `ReconstructionConfig` fields (verified in §1.3); input row in `summarize_events` (`vertex.py:322-447`); flag in `_selection_flags` (`vertex.py:293-319`) |
+| S.5 | 6 | `upper_scintillator_edep`, `lower_scintillator_edep` | `pass_scintillator_balance` | upper `≤ 320 MeV` and lower `≤ 930 MeV` | licentiate Ch 10 cut-flow | thresholds in current `ReconstructionConfig` fields (verified in §1.3); input row in `summarize_events` (`vertex.py:322-447`); flag in `_selection_flags` (`vertex.py:293-319`) |
+| S.6 | — | all S.1–S.5 booleans | `passes_preliminary_selection` | logical AND of the six cut booleans | licentiate Ch 10 final preselection | AND in `_selection_flags` (`vertex.py:293-319`); order/counts in `CUT_ORDER` and `cutflow_counts` (`selection.py:13-20`, `selection.py:95-111`); CLI wrapper `_cutflow` verified in §1.3 |
 
 ### 1.1 Per-cut and cumulative accounting
 
@@ -83,13 +83,13 @@ source on 2026-05-10 before the cut-flow table above was frozen:
 
 | Cited contract | Verifier evidence | Status |
 |---|---|---|
-| Numeric cut defaults | `class ReconstructionConfig` resolves at `reconstruction.py:14`, inside the cited `reconstruction.py:14-41` range. | keep citation |
+| Numeric cut defaults | `grep -nE '^(def|class) ReconstructionConfig' nnbar_reconstruction/reconstruction.py` resolves the class in the current L3 source, and `grep -n 'selection_'` resolves the six Ch 10 selection threshold fields in that class body. | keep verified symbol, no stale line citation |
 | Individual cut booleans and final AND | `def _selection_flags` resolves at `vertex.py:293`, inside the cited `vertex.py:293-319` range. | keep citation |
 | Event-row columns consumed by the cuts | `def summarize_events` resolves at `vertex.py:322`, inside the cited `vertex.py:322-447` range. | keep citation |
 | Cumulative order tuple | `CUT_ORDER` resolves at `selection.py:13`, inside the cited `selection.py:13-20` range. | keep citation |
 | Independent table evaluator | `def evaluate_event_selection` resolves at `selection.py:37`, inside the cited `selection.py:37-72` range. | keep citation |
 | Cumulative count implementation | `def cutflow_counts` resolves at `selection.py:95`, inside the cited `selection.py:95-111` range. | keep citation |
-| CLI wrapper | `def _cutflow` resolves at `cli.py:31`, inside the cited `cli.py:31-32` range. | keep citation |
+| CLI wrapper | `grep -nE '^(def|class) _cutflow' nnbar_reconstruction/cli.py` resolves the wrapper in the current L3 source. | keep verified symbol, no stale line citation |
 
 Plan 37 does not specify a runtime CLI command; it cites `CUT_ORDER`
 and `cutflow_counts` for ordering/counts plus the internal `_cutflow`
