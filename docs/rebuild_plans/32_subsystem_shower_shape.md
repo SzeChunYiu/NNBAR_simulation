@@ -271,6 +271,15 @@ they affect production photon rows:
 | `DEC-32-FEATURE-CONTRACT` | Freeze the shower-shape and nearest-track feature list, including sentinel handling | plan-57 feature contract and Class-A audit proving no truth/provenance feature enters inference |
 | `DEC-32-NEUTRAL-THRESHOLD` | Freeze `neutral_score` / cut threshold and operating point | bootstrap AUC, neutral efficiency, charged fake rate, and N-1 stability evidence |
 
+Initial neutral-threshold scan examples:
+
+| `threshold_case_id` | Operating-point pattern | Required closure evidence | Promotion guard |
+|---|---|---|---|
+| `hard_cone_current_point` | reproduce the current cone decision as a fixed single ROC point | Wilson intervals for neutral efficiency and charged fake rate on every §3.1 component | diagnostic unless Class-B drop hash is stable and fake rate meets §3 |
+| `rectangular_loose_neutral` | loosen shower-shape cuts to maximise neutral efficiency | charged fake-rate rise and N-1 stability rows | cannot promote if any charged component exceeds the §3 fake-rate cap |
+| `rectangular_balanced_v0` | choose threshold at the first point satisfying both efficiency and fake-rate bounds | bootstrap AUC plus fixed-threshold intervals | candidate only after `DEC-32-FEATURE-CONTRACT` approval |
+| `bdt_high_purity_v0` | raise score threshold for a low-fake-rate operating point | neutral-efficiency loss and downstream photon-yield impact | cannot replace Ch 10 reproduction without plan-37 cut-flow impact rows |
+
 Until approval, non-current discriminants may be trained and scored
 only as ladder alternatives; the current hard-cone baseline remains
 the reproduction path.
