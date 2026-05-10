@@ -144,6 +144,48 @@ The CI check in plan 53 consumes this fixture shape. A weekly failure is
 acceptable only when the blocked row names an upstream owner and the
 plan-50 defence package marks the same question as not yet reproducible.
 
+
+### 4.2 L1 rerun execution transcript
+
+The manifest in §4.1 names what should be rerun; the execution
+transcript records what actually ran. The transcript is generated beside
+the manifest for each reviewer-triggered rerun and is linked from the
+plan-50 overlay roll-up.
+
+```yaml
+l1_defence_rerun_transcript:
+  transcript_version: 1
+  manifest_hash: sha256:<hash>
+  runner:
+    host_class: local | lunarc | container
+    build_id: build-prod-<rev>
+    environment_lock: <lockfile hash or module snapshot>
+  executed_rows:
+    - bundle_member: Ch 10 selection cut-flow
+      command_template_id: validate_reco_cutflow_v1
+      input_hashes: [sha256:<hash>]
+      output_hashes: [sha256:<hash>]
+      started_at: <timestamp>
+      finished_at: <timestamp>
+      exit_status: pass | fail | blocked
+      verifier_summary: <short status or blocker>
+```
+
+Transcript review rules:
+
+| Rule | Failure caught |
+|---|---|
+| transcript manifest hash matches §4.1 | rerun evidence belongs to a different request |
+| each executed row has input and output hashes | outputs cannot be tied to frozen inputs |
+| failed rows keep verifier summaries | rerun failures are hidden as missing artifacts |
+| blocked rows preserve the upstream owner | reviewer-triggered rerun becomes an unowned deferral |
+| host class and environment lock are recorded | local, LUNARC, and container reruns cannot be compared |
+
+A rerun is promotable only when every `ready` row in §4.1 has a
+matching transcript row with `exit_status: pass`. Blocked rows remain
+visible and propagate to the plan-50 roll-up instead of being excluded
+from the transcript.
+
 ## 5. Pre-submit checks
 
 - Cluster quota (storage + CPU hours).
@@ -156,7 +198,10 @@ plan-50 defence package marks the same question as not yet reproducible.
 - §1 scripts produced for each registered sample (plan 03 entries).
 - §2 seed binding implemented.
 - §3 finaliser job standardised.
-- §5 pre-submit checks land in `scripts/orchestrate/preflight.sh`.
+- §5 pre-submit checks target `scripts/orchestrate/preflight.sh` before
+  production orchestration is promoted.
+- L1 reviewer-triggered reruns produce the §4.2 transcript and link it
+  from the plan-50 overlay roll-up.
 
 ## 7. Dependencies
 
