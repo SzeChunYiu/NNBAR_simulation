@@ -257,6 +257,15 @@ The inventory defines row keys only. It does not count as closure
 evidence until a clusterer writes measured §4.1 metrics and the Class-B
 drop hash matches.
 
+Initial closure-failure examples:
+
+| `closure_case_id` | Failing pattern | Required status | Review guard |
+|---|---|---|---|
+| `zero_denominator_bin` | required energy bin has `n_events = 0` after quality gates | `fail` | cannot average over missing bins or borrow neighbouring energy bins |
+| `class_b_membership_drift` | cluster membership hash changes after dropping ancestry columns | `fail` | blocks production even if response and centroid metrics pass |
+| `overmerge_high_energy` | 1000 MeV row passes response but exceeds the merge-rate budget | `fail` | threshold DEC must show a passing over-merge margin before promotion |
+| `legacy_diagnostic_passlike` | Track_ID-keyed row matches closure metrics but depends on provenance grouping | `diagnostic_only` | cannot support `DEC-31-CLUSTERER-CHOICE` as production evidence |
+
 ### 4.2 Decision-log stubs for the P.1 replacement
 
 The current Track_ID-keyed grouping is a load-bearing baseline.
