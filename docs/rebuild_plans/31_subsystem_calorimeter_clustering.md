@@ -287,9 +287,9 @@ Initial adjacency-threshold scan examples:
 | `sliding_window_overlap_v0` | vary sliding-window overlap merge fraction | closure row records duplicate-cluster and edge-cell inefficiency rates | only diagnostic unless it beats topological closure without truth labels |
 | `class_b_track_key_probe` | repeat the selected scan with Class-B ancestry columns dropped | `class_b_drop_hash` compared to the production scan | any membership change blocks `DEC-31-TRUTH-LABEL-QUARANTINE` approval |
 
-These are stubs, not approved methodology. The approved entries live in
-`docs/governance/DECISION_LOG.md` once the selected implementation and
-closure evidence exist.
+These are stubs, not approved methodology. The approved decision-log
+entries are created by the plan-05 governance workflow once the selected
+implementation and closure evidence exist.
 
 Initial downstream-handoff examples:
 
@@ -299,6 +299,20 @@ Initial downstream-handoff examples:
 | `diagnostic_track_key_quarantine` | Track_ID-keyed reproduction rows kept for comparison | plan 32/33 may read them only as diagnostic ladder inputs | cannot be labelled as production P.1 membership |
 | `split_merge_boundary_panel` | threshold-scan rows near split/merge decision boundaries | plan 33/34 over-merge audits consume duplicate-rate evidence | threshold DEC must cite the exact scan row ids |
 | `blocked_unstable_membership` | cluster membership changes under provenance drop | no downstream production consumer | plan 38 records the blocked method, but plan 32/33 do not consume it |
+
+Initial production-promotion checklist:
+
+| `promotion_check_id` | Evidence required | Blocks promotion when missing |
+|---|---|---|
+| `p31_method_row_present` | selected `clusterer_method` fixture row with stable output schema | downstream plans cannot infer hit membership semantics |
+| `p31_all_energy_bins_pass` | measured §4.1 closure rows for every required energy bin | no averaging over absent or failed calibration points |
+| `p31_truth_drop_stable` | Class-B drop hash matches for the selected method | production cluster membership still depends on provenance labels |
+| `p31_decisions_signed` | relevant DEC ids attached for method and thresholds | threshold or algorithm changes remain diagnostic-only |
+
+A reviewer should reject a P.1 handoff unless all four checks are
+traceable to concrete fixture rows. This checklist is intentionally
+stricter than the prose acceptance criteria so plan 32/33 cannot consume
+a partially promoted clusterer.
 
 ## 5. Acceptance criteria
 
