@@ -107,6 +107,44 @@ fields are absent. A package may mark an overlay `not_applicable` only
 with a reason that references the result's plan-24 leaves or plan-44
 background node.
 
+
+### 2.2 Machine-readable L1 overlay fixture
+
+Each L1 overlay in §2.1 is stored as a list entry under the defence
+package key `l1_overlays`. The generator writes one entry per overlay
+that applies to the result and one explicit `not_applicable` entry for
+every overlay that does not apply. This keeps reviewer routing stable
+when a result changes from an EM-object claim to a pure statistics claim
+or vice versa.
+
+```yaml
+l1_overlays:
+  - overlay_id: selection_cutflow_identity
+    applicability: applies | not_applicable | blocked
+    reason: <why this overlay applies or does not apply>
+    source_plans: [37, 47]
+    required_artifacts:
+      - <path or ledger key>
+    artifact_status: present | blocked | missing
+    reviewer_question_ids: [RQ-L1-SELECTION-CUTFLOW]
+    caveat_text: <one-sentence reviewer-facing caveat, or null>
+    last_verified: YYYY-MM-DD
+```
+
+Review rules:
+
+| Rule | Failure caught |
+|---|---|
+| every package has all seven §2.1 overlay ids | reviewer asks an L1 question with no routing row |
+| `applicability = applies` requires at least one artifact key | prose claims that cannot be replayed |
+| `artifact_status = blocked` requires `caveat_text` | hidden missing evidence |
+| `not_applicable` requires a result-specific reason | blanket suppression of difficult checks |
+| reviewer-question ids must exist in plan 51 | stale overlay/question mapping |
+
+The fixture is intentionally independent of the eventual output format
+(YAML, JSON, or parquet). Plan 53 audits the keys and required status
+fields before any thesis-freeze package is accepted.
+
 ## 3. Generation
 
 A defence package is generated automatically by codex-supervisor
