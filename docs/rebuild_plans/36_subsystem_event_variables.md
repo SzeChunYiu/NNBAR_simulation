@@ -115,6 +115,22 @@ Fixture review recomputes raw sums, object counts, and validity flags from
 upstream fixtures. Dropping diagnostic truth/provenance columns may remove
 closure labels but must not change any production event variable.
 
+### 2.4 Current-to-target event-variable field map
+
+| Leaf(s) | Current emitted field(s) | Target fixture delta | Source evidence |
+|---|---|---|---|
+| E.1/E.2 | raw scintillator, lead-glass, calorimeter, and hemisphere energy sums | retain current names and add the shared `event_variable_method_id` | `summarize_events` (`vertex.py:322-447`) |
+| E.3/E.4 | detector-level and calorimeter-level longitudinal/transverse energies | retain current names; require finite recomputation from hit positions | `_directional_energy` plus `summarize_events` (`vertex.py:48-67`, `vertex.py:322-447`) |
+| E.5 | `sphericity` | add `event_shape_valid` so sparse-event sentinels are reviewable | `_sphericity` (`vertex.py:255-266`) |
+| E.6 | no current production columns | add Fox-Wolfram moments and thrust as disabled-until-approved columns | new plan-36 target fields |
+| E.7 | `visible_invariant_mass` | retain current name and allow null only for declared sparse cases | `_visible_invariant_mass` (`vertex.py:269-290`) |
+| E.8 | timing and out-of-time energy sums for scintillator, lead-glass, and calorimeter | retain current names; require derivation from timing annotations | `annotate_timing_windows` plus `summarize_events` (`vertex.py:86-160`, `vertex.py:322-447`) |
+| E.9 | charged, photon-like, π⁰, pion, proton, PMT, and electron-pair counts | fixture review checks the listed production counts against upstream rows | `summarize_events` (`vertex.py:322-447`) |
+
+This map is the implementation checklist: a future code row may add target
+columns before DEC approval, but plan-37 may not consume new E.6 or
+fit-aware E.7 fields until the relevant §5.1 DEC is signed.
+
 ## 3. Hemisphere convention
 
 The detector is symmetric about z=0 (the foil). "Upper" / "lower"
