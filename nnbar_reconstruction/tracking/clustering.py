@@ -15,6 +15,7 @@ GPU Acceleration:
 
 import logging
 import numpy as np
+from pathlib import Path
 from typing import List, Tuple, Optional, Dict
 from dataclasses import dataclass
 import pandas as pd
@@ -48,6 +49,64 @@ except ImportError:
 
 from ..utils.config import get_config, get_clustering_params, get_tracking_params
 from ..utils.coordinates import cartesian_to_cylindrical
+
+
+_DEFAULT_CLUSTERING_CONFIG = {
+    'dbscan': {
+        'alpha': 1.5,
+        'min_samples': 3,
+        'k': 6,
+        'phi_weight': 5.0,
+        'z_weight': 1.0,
+    },
+    'hdbscan': {
+        'min_cluster_size': 5,
+        'min_samples': 3,
+    },
+    'refinement': {
+        'gap_threshold': 5.0,
+        'd_thresh': 2.0,
+        'angle_thresh_deg': 20.0,
+    },
+}
+
+
+def load_clustering_config(config_path=None) -> dict:
+    """Load clustering parameters from YAML, falling back to defaults.
+
+    Args:
+        config_path: Path to YAML config file. Defaults to
+            ``clustering_config.yaml`` in the same directory as this module.
+
+    Returns:
+        Merged configuration dict with dbscan, hdbscan, and refinement keys.
+    """
+    if config_path is None:
+        config_path = Path(__file__).parent / 'clustering_config.yaml'
+    else:
+        config_path = Path(config_path)
+
+    config = {k: dict(v) for k, v in _DEFAULT_CLUSTERING_CONFIG.items()}
+    if not config_path.exists():
+        return config
+
+    try:
+        import yaml
+        with open(config_path, 'r') as fh:
+            loaded = yaml.safe_load(fh) or {}
+        if not isinstance(loaded, dict):
+            return config
+        for section, values in loaded.items():
+            if section in config and isinstance(values, dict):
+                config[section].update(values)
+        return config
+    except Exception as exc:
+        logger.debug(
+            "Failed to load clustering config from %s (%s); using defaults.",
+            config_path,
+            exc,
+        )
+        return config
 
 
 def _use_gpu_clustering() -> bool:
