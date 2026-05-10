@@ -167,6 +167,34 @@ reviewer runs these checks against the current worktrees:
 5. All L0 writable files remain below the 500-line cap and have no
    unresolved work-marker text or fill-in instructions.
 
+The citation-range check in item 2 is machine-auditable with this
+inline command from the simulation worktree while the repo-level helper
+is not present:
+
+```bash
+python - <<'PY'
+import pathlib, re, sys
+plan_nums = {24, 25, 26, 27, 28, 29, 30, 41, 42, 43, 60, 66}
+base = pathlib.Path("docs/rebuild_plans")
+files = [p for p in base.glob("*.md") if p.name[:2].isdigit() and int(p.name[:2]) in plan_nums]
+files += sorted((base / "24_reconstruction_question_tree").glob("*.md"))
+root = pathlib.Path("/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3")
+pat = re.compile(r"`((?:/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/)?(?:nnbar_reconstruction|tests)/[^`:]+):(\d+)(?:-(\d+))?`")
+issues = []
+for f in files:
+    for m in pat.finditer(f.read_text()):
+        raw = m.group(1)
+        path = pathlib.Path(raw) if raw.startswith("/") else root / raw
+        start, end = int(m.group(2)), int(m.group(3) or m.group(2))
+        lines = path.read_text().splitlines() if path.exists() else []
+        if not lines or not (1 <= start <= end <= len(lines)):
+            issues.append((str(f), raw, start, end))
+        elif path.suffix == ".py" and not any(re.match(r"\s*(def|class)\s+", line) for line in lines[start-1:end]):
+            issues.append((str(f), raw, "no def/class in range"))
+sys.exit(1 if issues else 0)
+PY
+```
+
 Acceptance rule: before any plan-47 ledger row cites a plan-24 leaf,
 that leaf's family must have either an implementation handoff
 subsystem plan or a software handoff study/operations plan, and the
