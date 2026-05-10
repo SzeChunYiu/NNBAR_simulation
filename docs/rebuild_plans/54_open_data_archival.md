@@ -202,6 +202,28 @@ l1_defence_inventory:
       note_annex_hash: sha256:<hash-or-null>
       glossary_audit_hash: sha256:<hash-or-null>
       archive_drill_hash: sha256:<hash-or-null>
+    - pack_member: defence_routing
+      source_plans: [50, 51, 52, 53, 54, 55, 56]
+      artifact_paths:
+        - output/defense/<row_id>.yml
+        - docs/rebuild_plans/51_reviewer_question_registry.md
+        - docs/rebuild_plans/52_run_orchestration.md
+      artifact_hashes:
+        - sha256:<hash-or-null>
+      status: present | blocked | stale
+      caveat: <required if any linked routing artifact is stale or blocked>
+      staleness_summary_hash: sha256:<hash-or-null>
+      owner_signoff_refs: [L1-routing-owner:<owner-hash-or-null>]
+      command_template_ids: [validate_reco_cutflow_v1, validate_reco_allruns_v1, blocked_missing_input_v1]
+      command_template_verifier_hashes:
+        - sha256:b3cee4613afed558d4704df3dc5b281271aed768965d79a09603f812496806f0
+      command_template_verifier_sources:
+        - plan52:validate_reco_cutflow_v1
+        - plan52:validate_reco_allruns_v1
+      ci_report_hash: sha256:<hash-or-null>
+      note_annex_hash: sha256:<hash-or-null>
+      glossary_audit_hash: sha256:<hash-or-null>
+      archive_drill_hash: sha256:<hash-or-null>
 ```
 
 Inventory review rules:
