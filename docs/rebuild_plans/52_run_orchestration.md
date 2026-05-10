@@ -116,6 +116,7 @@ l1_defence_rerun_manifest:
   requested_by: reviewer-question-id
   request_owner: L1-owner-or-methodology-council
   seed_formula: sha256(dataset_id || run_index || "simulation")[:8]
+  bundle_member_ids: {EM chain closure: em_object_chain, Ch 10 selection cut-flow: ch10_cutflow, Pile-up L11 overlay: pileup_l11, Strange V0 contamination: strange_v0, TOF timing closure: tof_timing, Bayesian limit cross-check: bayesian_limits, Unbounded caveat status: unbounded_caveats}
   review_evidence_links: &l1_review_evidence_links
     package_rollup: <plan50-rollup-id>
     staleness_summary: <plan50-staleness-id>
@@ -219,6 +220,7 @@ Manifest review rules:
 | Rule | Failure caught |
 |---|---|
 | every §4 bundle member has one row | reviewer rerun omits a known L1 question family |
+| `bundle_member_ids` matches the plan-53/54 L1 member ids | rerun labels drift from CI/archive member ids |
 | every ready row records source and output hashes | refreshed artifacts cannot be tied to frozen inputs |
 | every blocked row names the missing input | unavailable samples are hidden as silent skips |
 | overlay ids point back to plan 50 | rerun evidence is disconnected from the defence package |
