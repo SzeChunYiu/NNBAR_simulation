@@ -165,6 +165,23 @@ l1_defence_ci_report:
         archive_drill_hash_present: true
         review_artifact_hash_keys: [package, ci_report, archive_inventory, archive_drill, note_annex, glossary_audit]
       remediation: null
+    - check_id: l1_glossary_signoff
+      status: pass | fail
+      files_checked:
+        - docs/rebuild_plans/56_glossary.md
+      evidence:
+        signoff_terms_checked:
+          - pass_* columns
+          - command-template verifier hash
+          - review-evidence links
+          - review-artifact hashes
+          - owner sign-off
+          - package freshness
+        required_fields: [defence_package_refs, note_refs, audit_row_ref, thesis_status, approved_by, caveat_text]
+        missing_signoff_terms: []
+        flagged_delta_rows_have_caveat_text: true
+        approved_or_blocked_rows_visible: true
+      remediation: null
 ```
 
 Report review rules:
