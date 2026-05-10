@@ -147,6 +147,26 @@ l1_glossary_audit:
         - sha256:b3cee4613afed558d4704df3dc5b281271aed768965d79a09603f812496806f0
       thesis_delta: none | flagged
       owner: L1
+    - term: review-evidence links
+      defined_in_section: "1.1"
+      source_plans: [50, 51, 52, 53, 54, 55]
+      required_contexts:
+        - defence_package_rollup
+        - reviewer_question_registry
+        - rerun_manifest
+        - defence_ci_report
+        - archive_inventory
+        - note_annex
+      required_link_keys:
+        - package_rollup
+        - staleness_summary
+        - ci_report
+        - archive_inventory
+        - archive_drill
+        - note_annex
+        - glossary_audit
+      thesis_delta: none | flagged
+      owner: L1
     - term: unbounded caveat status
       defined_in_section: "1.1"
       source_plans: [45, 50, 51, 55]
