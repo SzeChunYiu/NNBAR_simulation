@@ -255,11 +255,14 @@ before plan 43 or plan 47 can quote the result.
 
 ## 10. Software handoff and blocker contract
 
-The verified live CLI can build reconstruction tables and validation
-metrics with `summarize` and `validate-reco`, but it does not yet expose
-a fiducial producer. Until that producer has a help-verified surface,
-this plan's runnable work stops at table production, validation, and
-schema/manifest assertions.
+The verified live CLI can build reconstruction tables, validation
+metrics, and run-quality artifacts with `summarize`, `validate-reco`,
+and `dqm`. The DQM surface is relevant because §7 budget rows may carry
+DQM warn/fail counts alongside edge-loss fractions. The live software
+does not yet expose a detector-wide fiducial producer. Until that
+producer has a help-verified surface, this plan's runnable work stops at
+table production, validation, DQM support, and schema/manifest
+assertions.
 
 The current support surface covers only the plan-30 foil subset:
 `apply_foil_acceptance` (`vertex_reco.py:157-194`) and
@@ -308,7 +311,8 @@ L3/software handoff requirements:
 - §10 software handoff is complete: fiducial production, edge reports,
   and budget export have explicit inputs, outputs, failure assertions,
   provenance fields, the existing foil-only support surface is cited,
-  and a no-invented-CLI rule is in force.
+  the current DQM support surface is cited, and a no-invented-CLI rule
+  is in force.
 
 ## 12. Dependencies
 
