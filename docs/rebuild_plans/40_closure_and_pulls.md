@@ -345,21 +345,21 @@ Run these before editing any file/function/CLI claim in this plan:
 
 ```bash
 cd /Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3
-ls nnbar_reconstruction/closure/__init__.py \
+rtk ls nnbar_reconstruction/closure/__init__.py \
    nnbar_reconstruction/closure/runner.py \
    tests/test_closure.py
-wc -l nnbar_reconstruction/closure/__init__.py \
+rtk wc -l nnbar_reconstruction/closure/__init__.py \
       nnbar_reconstruction/closure/runner.py \
       tests/test_closure.py
-grep -n -E "^(def|class) ClosureBand" nnbar_reconstruction/closure/runner.py
-grep -n -E "^(def|class) ClosureMetric" nnbar_reconstruction/closure/runner.py
-grep -n -E "^(def|class) ClosureReport" nnbar_reconstruction/closure/runner.py
-grep -n -E "^    def as_dict" nnbar_reconstruction/closure/runner.py
-grep -n -E "^def run_closure" nnbar_reconstruction/closure/runner.py
-grep -n -E "^def closure_band_for_leaf" nnbar_reconstruction/closure/runner.py
-grep -n -E "^def test_run_closure" tests/test_closure.py
-python3 -m nnbar_reconstruction.cli --help
-pytest tests/test_closure.py -q
+rtk grep -n -E "^(def|class) ClosureBand" nnbar_reconstruction/closure/runner.py
+rtk grep -n -E "^(def|class) ClosureMetric" nnbar_reconstruction/closure/runner.py
+rtk grep -n -E "^(def|class) ClosureReport" nnbar_reconstruction/closure/runner.py
+rtk grep -n -E "^    def as_dict" nnbar_reconstruction/closure/runner.py
+rtk grep -n -E "^def run_closure" nnbar_reconstruction/closure/runner.py
+rtk grep -n -E "^def closure_band_for_leaf" nnbar_reconstruction/closure/runner.py
+rtk grep -n -E "^def test_run_closure" tests/test_closure.py
+rtk proxy python3 -m nnbar_reconstruction.cli --help
+rtk pytest tests/test_closure.py -q
 ```
 
 On 2026-05-10 these checks resolved: the files existed, line counts were
