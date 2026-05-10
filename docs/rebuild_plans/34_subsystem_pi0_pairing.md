@@ -214,6 +214,18 @@ not the invariant-mass formula itself; it is photon energy scale,
 direction/vertex resolution, combinatorics in multi-photon events, and
 the threshold choice for accepting or rejecting accidental pairs.
 
+The Wave-6 π⁰-pairing derivation ledger is:
+
+| Leaf | Truth-side quantity | Estimator rationale | Dominant uncertainty | Closure assertion |
+|---|---|---|---|---|
+| P.5 | same-π⁰ two-photon candidate identity and four-vector | all unordered photon pairs preserve the complete two-body candidate set before ranking or fitting | photon energy/direction scale and combinatorial multiplicity | selected mass peak and correct-pair efficiency are reported with raw pair denominators |
+| P.6 | accidental pair survival through the same Ch 8 production cuts | no-π⁰ and wrong-parent controls estimate fake-pair contamination without changing production pairing | limited control statistics and truth-label leakage | accidental rows carry finite intervals and truth-drop hash evidence |
+| P.5/P.6 handoff | candidate key, six cut booleans, and strict AND consumed downstream | explicit per-cut booleans let plan 35/37 audit which physics condition selected a candidate | cut retuning and timing-shadow ambiguity | production, shadow, and validation handoffs remain separated in the split companion file |
+
+These leaves make pairing complete before it is selective: ranking,
+retuning, and timing vetoes can only narrow the candidate set as new
+method ids after the all-pairs baseline and accidental controls close.
+
 #### Logic gaps
 
 | Parameter | Status before production | Closure study / target date |
