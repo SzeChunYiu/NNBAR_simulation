@@ -71,6 +71,7 @@ defence:
     rerun_manifest: <path-or-null>
     rerun_transcript: <path-or-null>
     command_template_ids: [validate_reco_cutflow_v1]
+    command_template_verifier_hashes: [sha256:<hash>]
     staleness_status: current | stale | blocked
 ```
 
@@ -169,6 +170,7 @@ l1_overlay_rollup:
     rerun_manifest: present | blocked | missing
     rerun_transcript: present | blocked | missing
     command_template_registry: present | missing
+    command_template_verifiers: present | missing
     ci_report: present | missing
     note_annex: present | missing
     glossary_audit: present | missing
@@ -186,6 +188,7 @@ Promotion rules:
 | rerun manifest status agrees with plan 52 | package says reproducible when the rerun bundle is blocked |
 | rerun transcript status agrees with plan 52 | package says refreshed artifacts exist without execution evidence |
 | command template registry agrees with plan 52 | package transcript uses unsupported or mutable command semantics |
+| command template verifier hashes agree with plan 52 | package trusts refreshed artifacts without A+ command-surface proof |
 | CI report status agrees with plan 53 | stale package skips the A+ citation gate |
 | note annex and glossary audit links are present for quoted notes | thesis prose diverges from package evidence |
 
@@ -255,7 +258,7 @@ The generator joins ledger rows × dataset manifests × ladder matrices
   are claimed.
 - Ready L1 packages carry a current §2.4 staleness summary.
 - The package schema exposes `l1_review_evidence` links for overlays,
-  rerun artifacts, command templates, and staleness status.
+  rerun artifacts, command templates, verifier hashes, and staleness status.
 - §3 generation automated.
 
 ## 5. Dependencies
