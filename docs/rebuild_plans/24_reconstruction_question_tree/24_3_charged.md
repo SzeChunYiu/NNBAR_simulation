@@ -106,6 +106,30 @@ Leaf C.3: charged-track candidates + scintillator hits → stopping range
   allowed truth use: validation_only
   downstream consumers: C.5, C.6; plans 28, 29
 
+Leaf C.4: charged-track candidates + scintillator hits → hit association
+  inputs (Class A): C.1 charged-candidate table, V.2 direction table,
+                    scintillator hit columns (Event_ID, x, y, z, t,
+                    eDep, photons, module_ID, vol_name, step_info),
+                    and scintillator geometry side-car
+  forbidden (Class B): Track_ID, Parent_ID, Name, origin_vol_name,
+                       particle_x, particle_y, particle_z
+  decision rule: associate scintillator hits to a TPC track by
+                 ray-to-hit angle, closest-approach distance, and
+                 optional timing consistency using the
+                 ReconstructionConfig thresholds cited in plan 08
+                 §3.4; exact `Track_ID` matching is not a production
+                 association rule and is retained only for validation
+                 of sparse legacy tables.
+  output schema: {event_id: int64, charged_candidate_id: int64,
+                  scintillator_hit_indices: int64[],
+                  match_angle_deg: float64,
+                  closest_approach_cm: float64,
+                  time_residual_ns: float64,
+                  matched_edep_mev: float64, match_method: string,
+                  association_valid: bool}
+  allowed truth use: validation_only
+  downstream consumers: C.3, C.5, C.6; plans 28, 29
+
 ### Next measurement (charged branch)
 
 Per-species reconstructed efficiency on `cal_singlepion*` and
