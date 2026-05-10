@@ -72,16 +72,20 @@ The rebuild's recommended path: Linear LS → Kalman when momentum
 measurement (curvature in B-field) becomes relevant. Currently no
 B-field, so Linear LS suffices.
 
-## 3. Closure (per plan 40 §2)
+## 3. Closure-test specification (per plan 40 §2)
 
-Per-coordinate pull distribution on `cal_singlepion_v1`:
-
-```
-pull_θ = (θ_fit - θ_true) / σ_θ_fit
-pull_φ = (φ_fit - φ_true) / σ_φ_fit
-```
-
-Acceptance: \|μ\| < 0.05; width ∈ [0.9, 1.1].
+1. **Dataset id:** `cal_singlepion_50to600MeV_v2` from plan 03,
+   using fiducial tracks with a V.1 candidate and validation truth
+   direction available.
+2. **Observable:** per-coordinate pull distributions,
+   `pull_theta = (theta_fit - theta_true) / sigma_theta_fit` and
+   `pull_phi = (phi_fit - phi_true) / sigma_phi_fit`.
+3. **Fitter / matcher:** run the V.2 fitter under test (current,
+   PCA, or Kalman); match to truth only inside a `@validation_only`
+   closure function after the reconstruction output is frozen.
+4. **Pass criterion:** `|mu| < 0.05` and width in `[0.9, 1.1]` for
+   both pull coordinates, with covariance fields present for every
+   non-degraded fitted candidate.
 
 ## 4. Acceptance criteria
 
