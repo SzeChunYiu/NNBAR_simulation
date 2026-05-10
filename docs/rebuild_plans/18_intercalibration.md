@@ -156,10 +156,11 @@ Numbered closure procedure:
 ## 3. Scintillator yield reconciliation
 
 A+ verifier status on 2026-05-10: the fast-mode scintillator SD
-stores a photon-equivalent count as `energyDeposit*11136.` at current
-L3 line 142 of `src/Sensitive_Detector/ScintillatorSD.cc`. The material
+stores a photon-equivalent count as `energyDeposit*11136.` inside
+`ScintillatorSD::ProcessHits` in
+`src/Sensitive_Detector/ScintillatorSD.cc`. The material
 optical-properties table does **not** contain a 10000 photons/MeV
-source value; current L3 line 82 of
+source value; `Scintillator::DefineMaterials` in
 `src/Detector_Module/Scintillator_geometry.cc` sets
 `SCINTILLATIONYIELD` to `0./MeV` and only leaves a comment with older
 candidate values. The previous 10000-vs-11136 comparison was therefore
