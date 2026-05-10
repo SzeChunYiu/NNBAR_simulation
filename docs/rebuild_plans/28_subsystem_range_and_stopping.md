@@ -155,7 +155,7 @@ species from the production input must not change rows whose
    tolerance and failures are classified as no-hit, invalid-fit, or edge-loss
    rather than hidden inside PID thresholds.
 
-### 1.7 C.4 scintillator-association physics derivation
+### 1.7 C.4 scintillator-association Physics derivation
 
 - **What is physically measured:** C.4 measures the observable association
   between a C.1/V.2 charged TPC candidate and scintillator deposits. The truth
@@ -175,7 +175,7 @@ species from the production input must not change rows whose
   The error budget is dominated by V.2 angular uncertainty, scintillator pitch,
   timing calibration, and plan-60 edge leakage.
 
-### 1.8 C.4 scintillator-association logic gaps
+### 1.8 C.4 scintillator-association Logic gaps
 
 1. **Projection sign:** `projection >= 0` is derived from downstream propagation
    from the fitted TPC anchor to scintillator acceptance.
@@ -190,7 +190,7 @@ species from the production input must not change rows whose
    decide `warn` versus `fail` semantics before PID promotion; target
    resolution date 2026-05-31.
 
-### 1.9 C.4 scintillator-association closure test for the derivation
+### 1.9 C.4 scintillator-association Closure test for the derivation
 
 1. Run the C.4 association builder on frozen C.1/V.2 candidates and Class-A
    scintillator hits for `cal_singleproton_50to500MeV_v2` and

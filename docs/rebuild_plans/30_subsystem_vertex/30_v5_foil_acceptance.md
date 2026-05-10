@@ -14,7 +14,7 @@ This split file holds the Wave 6 V.5 scientific derivation for plan 30.
 It is separate from `30_subsystem_vertex.md` only to keep the parent plan
 under the 500-line cap; the parent remains the integration surface for V.3-V.5.
 
-## 1. V.5 physics derivation
+## 1. V.5 Physics derivation
 
 - **What is physically measured:** V.5 measures whether a reconstructed V.4
   event vertex is geometrically compatible with the physical foil volume. Truth
@@ -34,7 +34,7 @@ under the 500-line cap; the parent remains the integration surface for V.3-V.5.
   dominated by off-foil backgrounds, alignment uncertainty, and tails of the V.4
   covariance model.
 
-## 2. V.5 logic gaps
+## 2. V.5 Logic gaps
 
 1. **Foil geometry constants:** OPEN: bind `outer_radius_mm` and
    `half_thickness_mm` to a plan-16 geometry version and side-car hash; target
@@ -53,7 +53,7 @@ under the 500-line cap; the parent remains the integration surface for V.3-V.5.
    and plan 43 before publishing efficiency tables; target resolution date
    2026-05-31.
 
-## 3. V.5 closure test for the derivation
+## 3. V.5 Closure test for the derivation
 
 1. Run `apply_foil_acceptance` on frozen V.4 vertex rows and a plan-16/60
    `FoilGeometry` payload for `sig_foil_v3`, with truth vertices and truth
