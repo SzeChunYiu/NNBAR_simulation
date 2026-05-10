@@ -115,6 +115,16 @@ Fixture review recomputes raw sums, object counts, and validity flags from
 upstream fixtures. Dropping diagnostic truth/provenance columns may remove
 closure labels but must not change any production event variable.
 
+Initial event-variable method examples:
+
+| `event_variable_method_id` | Inputs consumed | Enabled output groups | Method status | Downstream rule |
+|---|---|---|---|---|
+| `current_repro_event_vars` | current `summarize_events` rows | E.1-E.5, E.7-E.9 | baseline | Ch 10 reproduction inputs only |
+| `expanded_shape_diag_v0` | plan-31 through plan-35 fixtures | E.1-E.9 including E.6 | diagnostic | E.6 not consumed by plan 37 before DEC |
+| `fit_aware_mass_diag_v0` | plan-35 fitted rows plus current event variables | E.7 fit-aware comparison | diagnostic | raw visible mass remains S.3 input before DEC |
+
+These method ids are ledger labels, not runtime CLI commands.
+
 ### 2.4 Current-to-target event-variable field map
 
 | Leaf(s) | Current emitted field(s) | Target fixture delta | Source evidence |
