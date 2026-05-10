@@ -16,7 +16,7 @@ acceptance:
   - {test: every subsystem plan 25-37 cites the leaf identities defined here, method: cross-reference, pass_when: zero unmatched}
 risks:
   - {risk: leaves get renamed during subsystem-plan writing → cascading rework, mitigation: this plan is signed before 25-37 start (00_README §2)}
-  - {risk: tree completeness can never be proven, only refuted, mitigation: §10 reviewer challenge inviting new branches}
+  - {risk: tree completeness can never be proven, only refuted, mitigation: §11 reviewer challenge inviting new branches}
 estimated_effort: L
 last_updated: 2026-05-10
 ---
@@ -112,24 +112,50 @@ Root: Can reconstruction prove n̄ annihilation from observables alone?
 33 photon object, 34 π⁰ pairing, 35 kinematic fit, 36 event
 variables, 37 event selection.)
 
-## 9. Acceptance criteria
+## 9. Downstream handoff coverage
+
+The tree is not ready for plan 47 use merely because each leaf is
+named. Each leaf family also needs a downstream handoff that says who
+produces the observable, who consumes it, and which validation gate
+keeps the truth-leakage predicate in §7 enforceable.
+
+Current closure map:
+
+- **Implementation handoffs:** plans 25–30 cover the vertex and
+  charged-object leaves already active in the L3 source migration.
+- **Study and response handoffs:** plans 41–43 cover the study,
+  response-matrix, and efficiency outputs that consume reconstructed
+  leaves downstream.
+- **Operations handoffs:** plans 60 and 66 cover fiducial-volume and
+  data-quality decisions that can veto or stratify reconstructed
+  samples.
+
+Acceptance rule: before any plan-47 ledger row cites a plan-24 leaf,
+that leaf's family must have either an implementation handoff
+subsystem plan or a software handoff study/operations plan, and the
+handoff must name the validation artifact that proves the leaf stayed
+observable-only.
+
+## 10. Acceptance criteria
 
 - §2–§7 are populated with the leaf identities listed.
 - Subsystem plans 25–37 cite the leaf identities (V.1, C.2, P.5,
   …) verbatim and their per-leaf input/output/decision schemas
   populate the templates here.
+- §9 has a downstream handoff entry for every leaf family that plan
+  47 is allowed to consume.
 - Plan 38 truth-substitution ladder uses the leaf identities as
   rungs.
 - Plan 47 reproduction ledger cites leaf identities in its method
   column.
 
-## 10. Reviewer challenge
+## 11. Reviewer challenge
 
 This tree is signed off only after a reviewer has tried to find a
 reconstruction decision that does not fit any leaf above. New leaves
 identified by review become signed §2–§6 revision additions.
 
-## 11. Risks and mitigations
+## 12. Risks and mitigations
 
 - *Risk:* leaf renames after subsystem plans land cascade rework.
   *Mitigation:* this plan is signed before 25–37 start; renames
@@ -142,7 +168,7 @@ identified by review become signed §2–§6 revision additions.
   *Mitigation:* §7 acceptable-answers ladder; sparse-table
   fallbacks remain allowed during migration.
 
-## 12. Dependencies
+## 13. Dependencies
 
 - **00_README** — plan space.
 - **01_realism_contract** — Class A/B/C scheme; §7 audit gate.
@@ -151,7 +177,7 @@ identified by review become signed §2–§6 revision additions.
 - *Consumed by:* plans 25–37, 38 (rungs), 47 (ledger method),
   50 (defence package).
 
-## 13. References
+## 14. References
 
 - `docs/detector_fundamental_question_tree.md` — direct template.
 - `/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/docs/reconstruction.md`
