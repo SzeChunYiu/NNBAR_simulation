@@ -1,0 +1,99 @@
+# Citation verification report
+
+## Summary
+
+- `total`: 84
+- `ok`: 84
+- `skipped`: 0
+- `missing_identifier`: 0
+- `mismatch`: 0
+- `file_not_found`: 0
+- `symbol_not_found`: 0
+- `failures`: 0
+
+## Findings
+
+- ✅ `ok` docs/rebuild_plans/24_reconstruction_question_tree/24_2_vertex.md:68 `_track_anchor_and_direction` `charged.py:61-80` — signature line falls inside cited range; signature lines: 61
+- ✅ `ok` docs/rebuild_plans/25_subsystem_tpc_hits_to_tracks.md:51 `_track_anchor_and_direction` `charged.py:61-80` — signature line falls inside cited range; signature lines: 61
+- ✅ `ok` docs/rebuild_plans/26_subsystem_track_fit_and_pulls.md:55 `_track_anchor_and_direction` `charged.py:61-80` — signature line falls inside cited range; signature lines: 61
+- ✅ `ok` docs/rebuild_plans/26_subsystem_track_fit_and_pulls.md:68 `_track_anchor_and_direction` `charged.py:61-80` — signature line falls inside cited range; signature lines: 61
+- ✅ `ok` docs/rebuild_plans/27_subsystem_dedx.md:44 `reconstruct_charged_objects` `charged.py:149-226` — signature line falls inside cited range; signature lines: 149
+- ✅ `ok` docs/rebuild_plans/27_subsystem_dedx.md:65 `reconstruct_charged_objects` `charged.py:149-226` — signature line falls inside cited range; signature lines: 149
+- ✅ `ok` docs/rebuild_plans/28_subsystem_range_and_stopping.md:42 `reconstruct_charged_objects` `charged.py:149-226` — signature line falls inside cited range; signature lines: 149
+- ✅ `ok` docs/rebuild_plans/28_subsystem_range_and_stopping.md:68 `reconstruct_charged_objects` `charged.py:149-226` — signature line falls inside cited range; signature lines: 149
+- ✅ `ok` docs/rebuild_plans/29_subsystem_charged_pid.md:37 `reconstruct_charged_objects` `charged.py:149-226` — signature line falls inside cited range; signature lines: 149
+- ✅ `ok` docs/rebuild_plans/29_subsystem_charged_pid.md:79 `reconstruct_charged_objects` `charged.py:149-226` — signature line falls inside cited range; signature lines: 149
+- ✅ `ok` docs/rebuild_plans/30_subsystem_vertex.md:36 `reconstruct_event_vertices` `vertex.py:163-252` — signature line falls inside cited range; signature lines: 163
+- ✅ `ok` docs/rebuild_plans/30_subsystem_vertex.md:77 `reconstruct_event_vertices` `vertex.py:163-252` — signature line falls inside cited range; signature lines: 163
+- ✅ `ok` docs/rebuild_plans/31_subsystem_calorimeter_clustering.md:32 `reconstruct_photon_objects` `photon.py:60-201` — signature line falls inside cited range; signature lines: 60
+- ✅ `ok` docs/rebuild_plans/31_subsystem_calorimeter_clustering.md:35 `_weighted_centroid` `photon.py:28-48` — signature line falls inside cited range; signature lines: 28
+- ✅ `ok` docs/rebuild_plans/31_subsystem_calorimeter_clustering.md:59 `reconstruct_photon_objects` `photon.py:60-201` — signature line falls inside cited range; signature lines: 60
+- ✅ `ok` docs/rebuild_plans/31_subsystem_calorimeter_clustering.md:62 `_weighted_centroid` `photon.py:28-48` — signature line falls inside cited range; signature lines: 28
+- ✅ `ok` docs/rebuild_plans/31_subsystem_calorimeter_clustering.md:88 `reconstruct_photon_objects` `photon.py:60-201` — signature line falls inside cited range; signature lines: 60
+- ✅ `ok` docs/rebuild_plans/31_subsystem_calorimeter_clustering.md:89 `reconstruct_photon_objects` `photon.py:60-201` — signature line falls inside cited range; signature lines: 60
+- ✅ `ok` docs/rebuild_plans/31_subsystem_calorimeter_clustering.md:90 `reconstruct_photon_objects` `photon.py:60-201` — signature line falls inside cited range; signature lines: 60
+- ✅ `ok` docs/rebuild_plans/31_subsystem_calorimeter_clustering.md:91 `reconstruct_photon_objects` `photon.py:60-201` — signature line falls inside cited range; signature lines: 60
+- ✅ `ok` docs/rebuild_plans/31_subsystem_calorimeter_clustering.md:91 `_weighted_centroid` `photon.py:28-48` — signature line falls inside cited range; signature lines: 28
+- ✅ `ok` docs/rebuild_plans/32_subsystem_shower_shape.md:35 `reconstruct_photon_objects` `photon.py:60-201` — signature line falls inside cited range; signature lines: 60
+- ✅ `ok` docs/rebuild_plans/32_subsystem_shower_shape.md:37 `ReconstructionConfig` `reconstruction.py:14-56` — signature line falls inside cited range; signature lines: 14
+- ✅ `ok` docs/rebuild_plans/32_subsystem_shower_shape.md:90 `reconstruct_photon_objects` `photon.py:60-201` — signature line falls inside cited range; signature lines: 60
+- ✅ `ok` docs/rebuild_plans/32_subsystem_shower_shape.md:90 `ReconstructionConfig` `reconstruction.py:14-56` — signature line falls inside cited range; signature lines: 14
+- ✅ `ok` docs/rebuild_plans/32_subsystem_shower_shape.md:91 `reconstruct_photon_objects` `photon.py:60-201` — signature line falls inside cited range; signature lines: 60
+- ✅ `ok` docs/rebuild_plans/32_subsystem_shower_shape.md:94 `reconstruct_photon_objects` `photon.py:60-201` — signature line falls inside cited range; signature lines: 60
+- ✅ `ok` docs/rebuild_plans/33_subsystem_photon_object.md:35 `reconstruct_photon_objects` `photon.py:60-201` — signature line falls inside cited range; signature lines: 60
+- ✅ `ok` docs/rebuild_plans/33_subsystem_photon_object.md:96 `reconstruct_photon_objects` `photon.py:60-201` — signature line falls inside cited range; signature lines: 60
+- ✅ `ok` docs/rebuild_plans/33_subsystem_photon_object.md:99 `reconstruct_photon_objects` `photon.py:60-201` — signature line falls inside cited range; signature lines: 60
+- ✅ `ok` docs/rebuild_plans/33_subsystem_photon_object.md:100 `reconstruct_photon_objects` `photon.py:60-201` — signature line falls inside cited range; signature lines: 60
+- ✅ `ok` docs/rebuild_plans/34_subsystem_pi0_pairing.md:36 `find_pi0_candidates` `photon.py:204-260` — signature line falls inside cited range; signature lines: 204
+- ✅ `ok` docs/rebuild_plans/34_subsystem_pi0_pairing.md:60 `ReconstructionConfig` `reconstruction.py:14-56` — signature line falls inside cited range; signature lines: 14
+- ✅ `ok` docs/rebuild_plans/34_subsystem_pi0_pairing.md:60 `find_pi0_candidates` `photon.py:204-260` — signature line falls inside cited range; signature lines: 204
+- ✅ `ok` docs/rebuild_plans/34_subsystem_pi0_pairing.md:61 `ReconstructionConfig` `reconstruction.py:14-56` — signature line falls inside cited range; signature lines: 14
+- ✅ `ok` docs/rebuild_plans/34_subsystem_pi0_pairing.md:61 `find_pi0_candidates` `photon.py:204-260` — signature line falls inside cited range; signature lines: 204
+- ✅ `ok` docs/rebuild_plans/34_subsystem_pi0_pairing.md:62 `ReconstructionConfig` `reconstruction.py:14-56` — signature line falls inside cited range; signature lines: 14
+- ✅ `ok` docs/rebuild_plans/34_subsystem_pi0_pairing.md:62 `find_pi0_candidates` `photon.py:204-260` — signature line falls inside cited range; signature lines: 204
+- ✅ `ok` docs/rebuild_plans/34_subsystem_pi0_pairing.md:63 `ReconstructionConfig` `reconstruction.py:14-56` — signature line falls inside cited range; signature lines: 14
+- ✅ `ok` docs/rebuild_plans/34_subsystem_pi0_pairing.md:63 `find_pi0_candidates` `photon.py:204-260` — signature line falls inside cited range; signature lines: 204
+- ✅ `ok` docs/rebuild_plans/34_subsystem_pi0_pairing.md:64 `ReconstructionConfig` `reconstruction.py:14-56` — signature line falls inside cited range; signature lines: 14
+- ✅ `ok` docs/rebuild_plans/34_subsystem_pi0_pairing.md:64 `find_pi0_candidates` `photon.py:204-260` — signature line falls inside cited range; signature lines: 204
+- ✅ `ok` docs/rebuild_plans/34_subsystem_pi0_pairing.md:65 `ReconstructionConfig` `reconstruction.py:14-56` — signature line falls inside cited range; signature lines: 14
+- ✅ `ok` docs/rebuild_plans/34_subsystem_pi0_pairing.md:65 `find_pi0_candidates` `photon.py:204-260` — signature line falls inside cited range; signature lines: 204
+- ✅ `ok` docs/rebuild_plans/34_subsystem_pi0_pairing.md:96 `find_pi0_candidates` `photon.py:204-260` — signature line falls inside cited range; signature lines: 204
+- ✅ `ok` docs/rebuild_plans/34_subsystem_pi0_pairing.md:99 `ReconstructionConfig` `reconstruction.py:14-56` — signature line falls inside cited range; signature lines: 14
+- ✅ `ok` docs/rebuild_plans/34_subsystem_pi0_pairing.md:99 `find_pi0_candidates` `photon.py:204-260` — signature line falls inside cited range; signature lines: 204
+- ✅ `ok` docs/rebuild_plans/35_subsystem_kinematic_fit.md:36 `find_pi0_candidates` `photon.py:204-260` — signature line falls inside cited range; signature lines: 204
+- ✅ `ok` docs/rebuild_plans/35_subsystem_kinematic_fit.md:94 `find_pi0_candidates` `photon.py:204-260` — signature line falls inside cited range; signature lines: 204
+- ✅ `ok` docs/rebuild_plans/36_subsystem_event_variables.md:44 `summarize_events` `vertex.py:322-444` — signature line falls inside cited range; signature lines: 322
+- ✅ `ok` docs/rebuild_plans/36_subsystem_event_variables.md:45 `summarize_events` `vertex.py:322-444` — signature line falls inside cited range; signature lines: 322
+- ✅ `ok` docs/rebuild_plans/36_subsystem_event_variables.md:46 `_directional_energy` `vertex.py:48-67` — signature line falls inside cited range; signature lines: 48
+- ✅ `ok` docs/rebuild_plans/36_subsystem_event_variables.md:46 `summarize_events` `vertex.py:322-444` — signature line falls inside cited range; signature lines: 322
+- ✅ `ok` docs/rebuild_plans/36_subsystem_event_variables.md:48 `_sphericity` `vertex.py:255-266` — signature line falls inside cited range; signature lines: 255
+- ✅ `ok` docs/rebuild_plans/36_subsystem_event_variables.md:48 `summarize_events` `vertex.py:322-444` — signature line falls inside cited range; signature lines: 322
+- ✅ `ok` docs/rebuild_plans/36_subsystem_event_variables.md:50 `_visible_invariant_mass` `vertex.py:269-290` — signature line falls inside cited range; signature lines: 269
+- ✅ `ok` docs/rebuild_plans/36_subsystem_event_variables.md:50 `summarize_events` `vertex.py:322-444` — signature line falls inside cited range; signature lines: 322
+- ✅ `ok` docs/rebuild_plans/36_subsystem_event_variables.md:51 `annotate_timing_windows` `vertex.py:86-160` — signature line falls inside cited range; signature lines: 86
+- ✅ `ok` docs/rebuild_plans/36_subsystem_event_variables.md:51 `summarize_events` `vertex.py:322-444` — signature line falls inside cited range; signature lines: 322
+- ✅ `ok` docs/rebuild_plans/36_subsystem_event_variables.md:52 `summarize_events` `vertex.py:322-444` — signature line falls inside cited range; signature lines: 322
+- ✅ `ok` docs/rebuild_plans/36_subsystem_event_variables.md:91 `summarize_events` `vertex.py:322-444` — signature line falls inside cited range; signature lines: 322
+- ✅ `ok` docs/rebuild_plans/36_subsystem_event_variables.md:93 `_directional_energy` `vertex.py:48-67` — signature line falls inside cited range; signature lines: 48
+- ✅ `ok` docs/rebuild_plans/36_subsystem_event_variables.md:94 `_sphericity` `vertex.py:255-266` — signature line falls inside cited range; signature lines: 255
+- ✅ `ok` docs/rebuild_plans/36_subsystem_event_variables.md:96 `_visible_invariant_mass` `vertex.py:269-290` — signature line falls inside cited range; signature lines: 269
+- ✅ `ok` docs/rebuild_plans/36_subsystem_event_variables.md:98 `annotate_timing_windows` `vertex.py:86-160` — signature line falls inside cited range; signature lines: 86
+- ✅ `ok` docs/rebuild_plans/36_subsystem_event_variables.md:99 `summarize_events` `vertex.py:322-444` — signature line falls inside cited range; signature lines: 322
+- ✅ `ok` docs/rebuild_plans/37_subsystem_event_selection.md:30 `_selection_flags` `vertex.py:293-319` — signature line falls inside cited range; signature lines: 293
+- ✅ `ok` docs/rebuild_plans/37_subsystem_event_selection.md:31 `summarize_events` `vertex.py:322-444` — signature line falls inside cited range; signature lines: 322
+- ✅ `ok` docs/rebuild_plans/37_subsystem_event_selection.md:32 `_cutflow` `cli.py:29-47` — signature line falls inside cited range; signature lines: 29
+- ✅ `ok` docs/rebuild_plans/37_subsystem_event_selection.md:38 `ReconstructionConfig` `reconstruction.py:14-56` — signature line falls inside cited range; signature lines: 14
+- ✅ `ok` docs/rebuild_plans/37_subsystem_event_selection.md:38 `_selection_flags` `vertex.py:293-319` — signature line falls inside cited range; signature lines: 293
+- ✅ `ok` docs/rebuild_plans/37_subsystem_event_selection.md:39 `_selection_flags` `vertex.py:293-319` — signature line falls inside cited range; signature lines: 293
+- ✅ `ok` docs/rebuild_plans/37_subsystem_event_selection.md:39 `summarize_events` `vertex.py:322-444` — signature line falls inside cited range; signature lines: 322
+- ✅ `ok` docs/rebuild_plans/37_subsystem_event_selection.md:40 `_selection_flags` `vertex.py:293-319` — signature line falls inside cited range; signature lines: 293
+- ✅ `ok` docs/rebuild_plans/37_subsystem_event_selection.md:40 `summarize_events` `vertex.py:322-444` — signature line falls inside cited range; signature lines: 322
+- ✅ `ok` docs/rebuild_plans/37_subsystem_event_selection.md:41 `ReconstructionConfig` `reconstruction.py:14-56` — signature line falls inside cited range; signature lines: 14
+- ✅ `ok` docs/rebuild_plans/37_subsystem_event_selection.md:41 `_selection_flags` `vertex.py:293-319` — signature line falls inside cited range; signature lines: 293
+- ✅ `ok` docs/rebuild_plans/37_subsystem_event_selection.md:42 `ReconstructionConfig` `reconstruction.py:14-56` — signature line falls inside cited range; signature lines: 14
+- ✅ `ok` docs/rebuild_plans/37_subsystem_event_selection.md:42 `_selection_flags` `vertex.py:293-319` — signature line falls inside cited range; signature lines: 293
+- ✅ `ok` docs/rebuild_plans/37_subsystem_event_selection.md:43 `ReconstructionConfig` `reconstruction.py:14-56` — signature line falls inside cited range; signature lines: 14
+- ✅ `ok` docs/rebuild_plans/37_subsystem_event_selection.md:43 `_selection_flags` `vertex.py:293-319` — signature line falls inside cited range; signature lines: 293
+- ✅ `ok` docs/rebuild_plans/37_subsystem_event_selection.md:44 `_selection_flags` `vertex.py:293-319` — signature line falls inside cited range; signature lines: 293
+- ✅ `ok` docs/rebuild_plans/37_subsystem_event_selection.md:97 `_selection_flags` `vertex.py:293-319` — signature line falls inside cited range; signature lines: 293
+- ✅ `ok` docs/rebuild_plans/37_subsystem_event_selection.md:97 `_cutflow` `cli.py:29-47` — signature line falls inside cited range; signature lines: 29
