@@ -17,109 +17,150 @@ last_updated: 2026-05-10
 This split file preserves and deepens plan 08 §6 so the main walkthrough
 stays below the 500-line cap while validation receives function-level detail.
 
-## 6. Validation (validation.py, 204 lines)
+## 6. Validation (validation.py, 509 lines)
 
 `validation.py` is a truth-aware reporting module, not a reconstruction
-decision module. Its public functions consume reconstructed tables after
-`reconstruct_run` and truth/provenance columns carried for diagnostics.
-Class B reads here are validation-only and must not be interpreted as
-permission for reconstruction decision paths to read truth columns.
+decision module. The CLI injects truth tables before validation
+(`cli.py:239–248`), and `reconstruction.md:212–256` describes the
+reported readiness payload. Class B reads here are validation-only and
+must not be interpreted as permission for reconstruction decision paths
+to read truth columns.
 
-### 6.1 Private metric helpers used by the public surface
+### 6.1 Metric helpers used by the public surface
 
-- `_charged_pid_truth(name)` (`validation.py:14–20`) maps Class B
-  `truth_name` values from `charged.csv` (plan 09 §14.2, lines
-  274–280) into validation labels: exact `"proton"` ⇒ `proton`;
-  `"pi+"`, `"pi-"`, or `"charged_pion"` ⇒ `charged_pion`; anything
-  else is ignored.
-- `_photon_charge_truth(name)` (`validation.py:23–42`) maps Class B
-  photon `truth_name` diagnostics from `photons.csv` (plan 09 §14.4,
-  lines 288–293) into validation labels. The hardcoded charged set is
-  `{e+, e-, mu+, mu-, pi+, pi-, proton, antiproton, deuteron, alpha}`;
-  the hardcoded neutral set is `{gamma, neutron, pi0, opticalphoton}`.
-- `_binary_report(...)` (`validation.py:45–83`) computes TP/FP/TN/FN,
-  class counts, accuracy, positive precision/recall, negative recall,
-  and balanced F1. `usable` is hardcoded to require at least one truth
-  positive and one truth negative (`validation.py:69–83`).
-- `_empty_binary_report(...)` (`validation.py:86–101`) returns the same
-  metric keys with zero counts, zero scores, and `usable: false`.
+- `_charged_pid_truth(name)` (`validation.py:35–41`) maps Class B
+  charged `truth_name` diagnostics from `charged.csv` (plan 09 §14.2,
+  lines 274–280): exact `"proton"` ⇒ `proton`; `"pi+"`, `"pi-"`, or
+  `"charged_pion"` ⇒ `charged_pion`; anything else is ignored.
+- `_photon_charge_truth(name)` and `_photon_charge_match_truth(row)`
+  (`validation.py:44–72`) map photon truth diagnostics. The hardcoded
+  charged set is `{e+, e-, mu+, mu-, pi+, pi-, proton, antiproton,
+  deuteron, alpha}`; neutral is `{gamma, neutron, pi0, opticalphoton}`.
+  If `truth_charge_match_class` exists, only `charged` and `neutral`
+  are labelable; `unmatchable_charged` and `unknown` are counted as
+  exclusions (`validation.py:66–72`, `345–369`; reconstruction.md
+  lines 114–118).
+- `_electron_pair_truth(name1, name2)` (`validation.py:84–90`) treats a
+  truth-labelled e+/e- pair as true only when the carried Class B labels
+  multiply to opposite signs. Labels missing or outside `{e-, e+}` are
+  unlabeled.
+- `_binary_report(...)` (`validation.py:93–131`) computes TP/FP/TN/FN,
+  class counts, accuracy, precision/recall, negative recall, and
+  balanced F1. `usable` is hardcoded to require at least one truth
+  positive and one truth negative (`validation.py:117–131`).
+- `_pi0_selection_report(...)` (`validation.py:185–316`) is shared by
+  all π⁰ selector summaries. It derives truth π⁰ event ids from
+  `Particle.Name == "pi0"`, then counts selected truth/non-truth events,
+  selected candidates, candidate lineage/near-track counts, feature
+  summaries, efficiency, false-positive event rate, and usability.
 
 ### 6.2 `evaluate_reconstruction_truth(result)`
 
-**Source:** `NNBAR_Detector/nnbar_reconstruction/validation.py:104–146`.
+**Source:** `NNBAR_Detector/nnbar_reconstruction/validation.py:319–428`.
 
-**Inputs:** a reconstruction result dictionary. The function reads only
-`charged` and `photons` tables from the dict (`validation.py:107–108`).
-For `charged`, it requires `truth_name` and `pid_guess`
-(`validation.py:110`): `truth_name` is Class B diagnostic provenance in
-plan 09 §14.2 (lines 274–280), while `pid_guess` is the reconstructed
-PID output derived from the charged-object rules in plan 08 §3.4. For
-`photons`, it requires `truth_name` and `has_tpc_track`
-(`validation.py:126`): `truth_name` is Class B diagnostic provenance,
-while `has_tpc_track` is the reconstructed charged/neutral match output
-from plan 09 §14.4 (lines 288–293).
+**Inputs:** a reconstruction result dictionary. It reads `charged`,
+`photons`, `electron_pairs`, `events`, `Particle`, and `pi0` tables
+(`validation.py:322–327`). Required and optional columns:
 
-**Decision rule:** missing/empty required tables yield empty reports
-(`validation.py:110–117`, `126–133`). Otherwise charged rows are copied,
-truth labels are produced with `_charged_pid_truth`, non-π/p labels are
-dropped, and predicted positives are rows where `pid_guess == "proton"`
-(`validation.py:113–124`). Photon rows are copied, truth charge labels
-are produced with `_photon_charge_truth`, unlabelled names are dropped,
-and predicted positives are `has_tpc_track.astype(bool)`
-(`validation.py:129–140`). Each side is reduced by `_binary_report`; the
-top-level `overall_usable` is true only when both charged PID and photon
-charged-match reports are usable (`validation.py:142–145`).
+- `charged.truth_name` (Class B diagnostic; plan 09 §14.2, lines
+  274–280) and `charged.pid_guess` (reconstructed PID from plan 08
+  §3.4) drive charged PID validation (`validation.py:329–343`).
+- `photons.truth_name`, optional `photons.truth_charge_match_class`
+  (Class B/provenance diagnostics), and `photons.has_tpc_track`
+  (reconstructed charged/neutral match; plan 09 §14.4, lines 288–293)
+  drive photon charged-match validation (`validation.py:345–369`).
+- `electron_pairs.track1_truth_name` and `track2_truth_name` are Class B
+  validation labels carried by the e+/e- pair table (plan 09 §14.3,
+  lines 283–287; `validation.py:152–181`).
+- `events.event_id` and `events.n_charged_objects` define neutral-event
+  ids for the π⁰-only neutral-event diagnostic (`validation.py:371–375`;
+  plan 09 §14.6, lines 305–312).
+- `Particle.Event_ID` (Class A id) and `Particle.Name` (Class B truth;
+  plan 09 §3, lines 85–89) define truth/non-truth π⁰ events inside
+  `_pi0_selection_report` (`validation.py:216–224`).
+- `pi0.event_id`, `passes_selection`, `passes_mass_window`,
+  `near_charged_track_photons`, `total_energy`,
+  `max_abs_vertex_time_residual_ns`, lineage/pair-label diagnostics,
+  and feature columns are read when present (plan 09 §14.5, lines
+  295–303; `validation.py:225–287`).
 
-**Outputs:** a dict with `charged_pid`, `photon_charged_match`, and
-`overall_usable` (`validation.py:142–146`). Each report contains the
-metric keys listed in §6.1.
+**Decision rule:** missing/empty charged or photon required columns yield
+empty binary reports (`validation.py:329–360`). Otherwise charged truth
+labels are reduced to proton-vs-charged-pion and predictions are
+`pid_guess == "proton"` (`validation.py:332–343`). Photon labels prefer
+`truth_charge_match_class`; excluded counts are recorded for
+`unmatchable_charged` and `unknown`; predictions are
+`has_tpc_track.astype(bool)` (`validation.py:350–369`). Neutral-event ids
+are events where `n_charged_objects == 0` (`validation.py:371–375`). The
+π⁰ summaries are produced with hardcoded selector variants: strict
+`passes_selection`; mass-window; mass-window plus
+`near_charged_track_photons == 0`; mass-window plus neutral event;
+combined isolated-neutral; mass-window plus `total_energy >= 400 MeV`;
+and mass-window plus prompt timing where
+`max_abs_vertex_time_residual_ns <= DEFAULT_CONFIG.pi0_prompt_time_max_abs_residual_ns`
+(`validation.py:376–426`). The default prompt timing threshold is 2 ns
+per `reconstruction.md:238–241`.
 
-**Truth reads:** Class B `truth_name` from reconstructed charged/photon
-diagnostic columns. This is expected validation-only truth use, not a
-reconstruction decision-path read under plan 08 §3.7.
+**Outputs:** a dict containing `charged_pid`, `photon_charged_match`,
+`electron_pairs`, `pi0_selection`, `pi0_mass_window_selection`,
+`pi0_mass_window_track_isolated_selection`,
+`pi0_mass_window_neutral_event_selection`,
+`pi0_mass_window_isolated_neutral_event_selection`,
+`pi0_mass_window_high_energy_selection`,
+`pi0_mass_window_prompt_timing_selection`, and `overall_usable`
+(`validation.py:376–428`). `overall_usable` is true only when charged PID
+and photon charged-match are both usable (`validation.py:427`).
+
+**Truth reads:** Class B truth/provenance columns `truth_name`,
+`truth_charge_match_class`, electron-pair truth names, `Particle.Name`,
+and π⁰ pair/lineage diagnostics. This is expected validation-only truth
+use, not reconstruction decision-path use under plan 08 §3.7.
 
 ### 6.3 `aggregate_reconstruction_truth(results)`
 
-**Source:** `NNBAR_Detector/nnbar_reconstruction/validation.py:149–164`.
+**Source:** `NNBAR_Detector/nnbar_reconstruction/validation.py:431–446`.
 
 **Inputs:** a list of reconstruction result dictionaries. Inputs are the
-same reconstructed tables required by `evaluate_reconstruction_truth`
-after aggregation; no parquet columns are read directly by this function.
+same tables required by `evaluate_reconstruction_truth` after aggregation;
+no parquet columns are read directly here.
 
 **Decision rule:** collect the union of table keys across all result
-dicts (`validation.py:152–154`), concatenate all present non-empty
-DataFrames for each key with `ignore_index=True`, and use an empty
-DataFrame when no non-empty table exists (`validation.py:156–163`). The
-combined dict is passed to `evaluate_reconstruction_truth`
-(`validation.py:164`). There are no hardcoded numerical thresholds.
+dicts, concatenate present non-empty DataFrames for each key with
+`ignore_index=True`, and substitute an empty DataFrame when none exist
+(`validation.py:434–445`). The combined dict is delegated to
+`evaluate_reconstruction_truth` (`validation.py:446`).
 
 **Outputs:** the same validation report schema as
 `evaluate_reconstruction_truth`.
 
-**Truth reads:** none directly; Class B truth diagnostics are consumed
-only by the delegated `evaluate_reconstruction_truth` call.
+**Truth reads:** none directly; Class B diagnostics are consumed only by
+the delegated `evaluate_reconstruction_truth` call.
 
-### 6.4 `assess_validation_readiness(report, *, min_class_count=1, min_accuracy=0.0, min_balanced_f1=0.0)`
+### 6.4 `assess_validation_readiness(report, *, min_class_count=1, min_accuracy=0.0, min_balanced_f1=0.0, min_electron_pair_purity=1.0, min_pi0_efficiency=0.0)`
 
-**Source:** `NNBAR_Detector/nnbar_reconstruction/validation.py:167–204`.
-The CLI exposes the same defaults as `--min-class-count 1`,
-`--min-accuracy 0.0`, and `--min-balanced-f1 0.0` (`cli.py:261–270`);
-`reconstruction.md:117–125` describes the JSON readiness block.
+**Source:** `NNBAR_Detector/nnbar_reconstruction/validation.py:449–509`.
+The CLI exposes the same readiness floors as command-line arguments
+(`cli.py:402–421`) and can turn failed readiness into exit code 1 with
+`--fail-on-not-ready` (`cli.py:287–294`).
 
-**Inputs:** a validation report dict, not raw parquet tables. The report
-is expected to contain `charged_pid` with `true_proton`/`true_pion`, and
+**Inputs:** a validation report dict, not raw parquet tables. Required
+metric sections are `charged_pid` with `true_proton`/`true_pion`, and
 `photon_charged_match` with `true_charged`/`true_neutral`
-(`validation.py:176–179`).
+(`validation.py:460–463`). Optional readiness checks inspect
+`electron_pairs.n_labeled`/`purity` and `pi0_selection.usable`/`efficiency`
+(`validation.py:480–497`).
 
-**Decision rule:** for each section, fail if `usable` is false, any
-required class count is below `min_class_count`, `accuracy` is below
-`min_accuracy`, or `balanced_f1` is below `min_balanced_f1`
-(`validation.py:180–194`). Failure messages include the exact metric,
-observed value, and threshold.
+**Decision rule:** for charged PID and photon charged-match, fail if
+`usable` is false, any required class count is below `min_class_count`,
+`accuracy` is below `min_accuracy`, or `balanced_f1` is below
+`min_balanced_f1` (`validation.py:464–478`). If any electron pairs are
+truth-labelled, fail when purity is below `min_electron_pair_purity`
+(`validation.py:480–487`). Only when `min_pi0_efficiency > 0` does the
+π⁰ gate require usable strict π⁰ selection and efficiency above that
+floor (`validation.py:489–497`).
 
 **Outputs:** a dict with `passed`, `failed_requirements`, and a
-`requirements` echo of the three thresholds cast to `int`/`float`
-(`validation.py:196–204`).
+`requirements` echo of all five threshold values (`validation.py:499–509`).
 
 **Truth reads:** none. Truth dependence is already summarized into the
 input validation report.
