@@ -123,6 +123,19 @@ production target is an optional geometry/time merge that is blind to
 truth labels, with all thresholds DEC-logged before it can affect
 P.3/P.4 four-vectors.
 
+### 4.1 A+ citation audit for current photon-object baseline
+
+Current-source claims in §1-§5 were re-checked against the L3 worktree
+before this plan was committed:
+
+| Cited contract | Verifier evidence | Status |
+|---|---|---|
+| current photon-like row builder, direction fallback, energy alias, and no-fragment-merge baseline | `def reconstruct_photon_objects` resolves at `photon.py:60`, inside the cited `photon.py:60-201` range. | keep citation |
+
+Plan 33 does not specify a runtime CLI command, and it does not cite the
+removed legacy split-study files. Any future photon-object study CLI row
+must pass the L3 `--help` verifier before this plan cites it.
+
 ## 5. Alternative comparison matrix
 
 | Leaf | Candidate | Decision rule | Current/source citation | Class-A status | Comparison metric |
