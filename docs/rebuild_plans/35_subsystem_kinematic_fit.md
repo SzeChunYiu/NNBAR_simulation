@@ -324,6 +324,19 @@ raw, fitted-diagnostic, fit-quality-shadow, or fallback handoff. Mixed
 raw/fitted columns under the same field name are rejected because they
 would hide fit failures and bias plan-37 selection studies.
 
+Initial production-promotion checklist:
+
+| `promotion_check_id` | Evidence required | Blocks promotion when missing |
+|---|---|---|
+| `p35_raw_candidate_preserved` | raw plan-34 candidate fields kept for every fit attempt | fit failures could remove events from reproduction denominators |
+| `p35_covariance_inputs_valid` | covariance fixture rows for both photons and selected fit mode | fitted four-vectors would have unreviewed uncertainty inputs |
+| `p35_closure_metrics_pass` | width improvement, pulls, convergence, and χ² rows pass §5 | fit quality cannot be used downstream |
+| `p35_fit_quality_dec_signed` | DEC ids for fit mode, covariance model, and selection use | plan 37 may not cut or rank on fit outputs |
+
+A fitted P.7 quantity can replace a raw value only when these checks are
+complete. Otherwise plan 36/37 consume the raw baseline and keep fit
+outputs as diagnostic sidecars.
+
 ## 6. Acceptance criteria
 
 - §2 implementation lands; §5 closure passes.
