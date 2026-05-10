@@ -252,6 +252,25 @@ to edit L3 code. The matching L3 patch must update
 (`tests/test_charged_reco.py:331-350`) so the synthetic and real-output
 chains assert the provenance, rejection, and truth-invariance fields.
 
+### 6.2 Stage E.1 promotion invariants
+
+C.5 is the first charged-side decision that can directly alter the
+analysis category, so promotion requires more than a schema match. L3
+may replace or extend the cut rule only if these invariants stay true:
+
+| Invariant | Current live behavior | Replacement requirement |
+|---|---|---|
+| truth blindness | `classify_charged_candidates` (`charged_pid.py:60-118`) consumes C.1 candidates plus C.2 dE/dx and C.3 range rows | production C.5/C.6 rows must be unchanged when `Name`, `Track_ID`, truth kinetic energy, and interaction labels are removed |
+| calibration separation | `scan-pid` and `scan_charged_pid_thresholds` (`calibration.py:27-134`) may score truth labels for calibration | the calibrated threshold or likelihood artifact must be frozen before production scoring and cited through plan 57/plan 05 |
+| rule identity | current rows emit `rule_version=plan29_cut_pid_v0` and threshold values | any threshold, likelihood-ratio, or rejection-taxonomy change must version the rule and keep old rows reproducible |
+| input provenance | current C.5 rows read dE/dx and range values but do not persist consumed-row hashes | promoted rows must hash the exact C.2, C.3, and later C.4 sidecar rows used for each PID decision |
+| observable-only rejection | current invalid rows use `invalid_candidate_or_dedx` | EM, neutral, conversion, and geometry rejections must come from observable lead-glass/timing/topology fields, never truth `Name` or `Interaction` |
+| test invariance | current tests cover thresholds and real-output schema | tests must explicitly drop Class B columns and assert identical C.1/C.5/C.6 production rows before plan 38 ladder scoring |
+
+These invariants keep C.5 as a reproducible analysis rule rather than a
+hidden truth filter. They also define what the future likelihood-ratio
+replacement must prove before it can supersede the cut-based baseline.
+
 ## 7. Acceptance criteria
 
 - §2 cut-based baseline reproduced.
@@ -261,9 +280,9 @@ chains assert the provenance, rejection, and truth-invariance fields.
   reproduced.
 - §6 Stage E.1 handoff is actionable for L3: current production and
   calibration hooks are cited, production C.1/C.5/C.6 inputs and
-  outputs are named, current charged-reco tests are cited, and the
-  remaining tests must prove the production scorer is invariant to
-  dropping Class B truth columns.
+  outputs are named, promotion invariants are explicit, current
+  charged-reco tests are cited, and the remaining tests must prove the
+  production scorer is invariant to dropping Class B truth columns.
 
 ## 8. Risks
 
