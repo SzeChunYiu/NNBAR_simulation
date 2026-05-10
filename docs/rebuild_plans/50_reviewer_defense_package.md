@@ -240,7 +240,7 @@ Promotion rules:
 | rerun manifest status agrees with plan 52 | package says reproducible when the rerun bundle is blocked |
 | rerun transcript status agrees with plan 52 | package says refreshed artifacts exist without execution evidence |
 | command template registry agrees with plan 52 | package transcript uses unsupported or mutable command semantics |
-| command template verifier hashes agree with plan 52 | package trusts refreshed artifacts without A+ command-surface proof |
+| command template verifier hashes and sources agree with plan 52 | package trusts refreshed artifacts without A+ command-surface proof |
 | CI report status agrees with plan 53 | stale package skips the A+ citation gate |
 | note annex and glossary audit links are present for quoted notes | thesis prose diverges from package evidence |
 | review-artifact hashes agree with the plan-54 inventory | package links cannot be proven to match archived review artifacts |
@@ -318,7 +318,7 @@ The generator joins ledger rows × dataset manifests × ladder matrices
   are claimed.
 - Ready L1 packages carry a current §2.4 staleness summary.
 - The package schema exposes `l1_review_evidence` links for overlays, owner
-  sign-off, rerun artifacts, command templates, verifier hashes, CI reports,
+  sign-off, rerun artifacts, command templates, verifier hashes/sources, CI reports,
   note annexes, glossary audits, staleness summaries, review-artifact hashes,
   and staleness status.
 - §3 generation automated.
