@@ -146,6 +146,29 @@ Per plan 41:
   upper/lower scint).
 - Significance scan to identify a possibly better operating point.
 
+### 3.1 Machine-readable optimisation handoff fixture
+
+Plan 41 may propose thresholds or an S.6 replacement, but plan 37 owns
+the selection contract. Each proposed optimisation therefore enters this
+plan as one handoff row before any DEC can promote it:
+
+| Field | Required content | Review rule |
+|---|---|---|
+| `handoff_id` | stable key for the proposed retune or model | unique within the plan-37 selection family |
+| `baseline_selection_config_id` | Ch 10 baseline tuple id | must preserve the §1 cut thresholds and `CUT_ORDER` |
+| `candidate_selection_config_id` | proposed cut tuple or S.6 model id | cannot overwrite baseline columns |
+| `plan41_artifact_ids` | N-1/ROC/cut-search JSON ids | every touched variable must have a plan-41 artifact |
+| `touched_cut_columns` | subset of §1 `pass_*` columns or `passes_preliminary_selection` | no hidden variable promotion |
+| `objective` | signed objective name from plan 41 §3 | required before comparing against baseline |
+| `test_split_result_id` | held-out result row | validation-only gains cannot promote a candidate |
+| `expected_limit_or_Z0_delta` | candidate minus baseline with uncertainty | must include plan-04 interval source |
+| `promotion_dec_id` | `DEC-37-RETUNED-CUTS` or `DEC-37-MVA-SELECTION` | draft DEC keeps row diagnostic-only |
+| `ledger_status` | `baseline`, `diagnostic`, `candidate`, or `promoted` | only `promoted` rows may feed non-Ch10 quotes |
+
+A handoff row is rejected if it changes the Ch 10 baseline fields, lacks
+plan-41 artifact coverage for a touched cut, or uses truth labels outside
+sample-level signal/background identity.
+
 ## 4. Selection alternative comparison matrix
 
 | Candidate | S.6 decision rule | Current/source citation | Class-A status | Comparison metric | Reporting rule |
