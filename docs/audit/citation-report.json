@@ -11,7 +11,7 @@
       "identifier": "_track_anchor_and_direction",
       "message": "signature line falls inside cited range",
       "signature_lines": [
-        61
+        62
       ],
       "source_path": "charged.py",
       "start": 61,
@@ -28,7 +28,7 @@
       "identifier": "_track_anchor_and_direction",
       "message": "signature line falls inside cited range",
       "signature_lines": [
-        61
+        62
       ],
       "source_path": "charged.py",
       "start": 61,
@@ -45,7 +45,7 @@
       "identifier": "_track_anchor_and_direction",
       "message": "signature line falls inside cited range",
       "signature_lines": [
-        61
+        62
       ],
       "source_path": "charged.py",
       "start": 61,
@@ -62,7 +62,7 @@
       "identifier": "_track_anchor_and_direction",
       "message": "signature line falls inside cited range",
       "signature_lines": [
-        61
+        62
       ],
       "source_path": "charged.py",
       "start": 61,
@@ -79,7 +79,7 @@
       "identifier": "reconstruct_charged_objects",
       "message": "signature line falls inside cited range",
       "signature_lines": [
-        149
+        151
       ],
       "source_path": "charged.py",
       "start": 149,
@@ -96,7 +96,7 @@
       "identifier": "reconstruct_charged_objects",
       "message": "signature line falls inside cited range",
       "signature_lines": [
-        149
+        151
       ],
       "source_path": "charged.py",
       "start": 149,
@@ -113,7 +113,7 @@
       "identifier": "reconstruct_charged_objects",
       "message": "signature line falls inside cited range",
       "signature_lines": [
-        149
+        151
       ],
       "source_path": "charged.py",
       "start": 149,
@@ -130,7 +130,7 @@
       "identifier": "reconstruct_charged_objects",
       "message": "signature line falls inside cited range",
       "signature_lines": [
-        149
+        151
       ],
       "source_path": "charged.py",
       "start": 149,
@@ -147,7 +147,7 @@
       "identifier": "reconstruct_charged_objects",
       "message": "signature line falls inside cited range",
       "signature_lines": [
-        149
+        151
       ],
       "source_path": "charged.py",
       "start": 149,
@@ -164,7 +164,7 @@
       "identifier": "reconstruct_charged_objects",
       "message": "signature line falls inside cited range",
       "signature_lines": [
-        149
+        151
       ],
       "source_path": "charged.py",
       "start": 149,
@@ -1168,7 +1168,7 @@
       "identifier": "_cutflow",
       "message": "signature line falls inside cited range",
       "signature_lines": [
-        29
+        31
       ],
       "source_path": "cli.py",
       "start": 29,
@@ -1424,7 +1424,7 @@
       "identifier": "_cutflow",
       "message": "signature line falls inside cited range",
       "signature_lines": [
-        29
+        31
       ],
       "source_path": "cli.py",
       "start": 29,
