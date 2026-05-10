@@ -80,6 +80,27 @@ The fallback flag is a production column, not a truth label. Closure
 plots must report angular pulls separately for vertex-sourced and
 origin-fallback rows before the fallback policy can be frozen.
 
+### 2.2 Machine-readable P.3/P.4 photon fixture
+
+The photon-object fixture stores one row per accepted neutral object and
+makes the four-vector source auditable:
+
+| Field | Required content | Review rule |
+|---|---|---|
+| `event_id`, `object_id`, `cluster_id` | stable join keys from plans 31-32 | `cluster_id` must resolve to a P.1 fixture row |
+| `source_cluster_ids` | one or more P.1 clusters after merge | empty only for explicitly invalid rows |
+| `energy_mev`, `energy_method` | selected P.4 energy and method tag | legacy aliases cannot masquerade as calibrated sums |
+| `leadglass_edep`, `scintillator_edep`, `leadglass_fraction` | calorimeter energy components | additive with `energy_mev` for `cluster_sum` rows |
+| `vertex_x`, `vertex_y`, `vertex_z`, `used_reconstructed_vertex` | P.3 direction source | fallback rows counted separately in closure |
+| `ux`, `uy`, `uz`, `photon_path_length_cm` | normalized direction and path length | finite and derived from cluster/vertex geometry |
+| `neutral_score`, `passes_neutral_discriminant` | consumed P.2 decision | no truth-label override is allowed |
+| `merge_method_id`, `fragment_merge_flag` | duplicate-fragment policy | threshold changes require the plan-33 DEC |
+
+Fixture review recomputes the direction unit vector and energy component
+consistency from upstream P.1/P.2 rows. Dropping truth/provenance columns
+may remove diagnostic labels but must not change photon four-vector
+fields or merge decisions.
+
 Truth canonical (plan 38 §3.1): gamma momentum direction at
 production.
 
