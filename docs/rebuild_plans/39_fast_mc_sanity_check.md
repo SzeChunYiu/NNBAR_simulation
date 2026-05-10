@@ -135,10 +135,39 @@ print(json.dumps(report.as_dict(), indent=2))
 PY
 ```
 
+For an immediately runnable smoke without sample files:
+
+```bash
+cd /Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3
+python3 - <<'PY'
+import pandas as pd
+from nnbar_reconstruction.fast_mc.closure_test import compare_distributions, smear_truth
+
+truth = pd.DataFrame({"visible_invariant_mass_truth": [100.0, 101.0, 102.0, 103.0]})
+reco = pd.Series([100.5, 101.5, 102.5, 103.5])
+smeared = smear_truth(truth, {
+    "seed": 3901,
+    "rules": {
+        "visible_invariant_mass_truth": {
+            "distribution": "gaussian",
+            "sigma": 1.0,
+            "output": "visible_invariant_mass_smeared",
+        }
+    },
+})
+report = compare_distributions(
+    reco,
+    smeared["visible_invariant_mass_smeared"],
+    observable="visible_invariant_mass",
+)
+print(report.as_dict())
+PY
+```
+
 The command is intentionally explicit: it records the truth input, reco
 input, smearing rule, output directory, and report JSON in the shell log.
 A future `fast-mc` CLI may wrap this API, but plans must not cite that
-CLI until `python3 -m nnbar_reconstruction.cli fast-mc --help` resolves.
+CLI until L3 exposes it and a help check resolves.
 
 ## 4. Numbered closure workflow
 
