@@ -224,7 +224,27 @@ module and the plan-side contract is now explicit:
   `hit_membership_key`, and no-`Track_ID` production behavior stay
   invariant across the replacement.
 
-### 6.2 Stage E.1 promotion invariants
+### 6.2 Stage E.1 code-gap checklist
+
+The live L3 hook is a safe V.1 bridge, but the promoted replacement
+track finder still needs explicit sidecar, multiplicity, and quality
+coverage. L3 can promote a new finder only after these gaps close in
+`reconstruct_track_candidates`
+(`nnbar_reconstruction/charged.py:245-311`):
+
+| Gap | Current live behavior | Required promotion behavior |
+|---|---|---|
+| finder identity | `cluster_method=geometric_cluster` labels the current event-scoped seed | add or version a stable finder id when DBSCAN, Hough, or Kalman-seeded finders are enabled |
+| hit sidecar | hit membership is stored as `hit_indices` plus `_hit_membership_key` (`nnbar_reconstruction/charged.py:231-233`) | persist the ordered hit-membership sidecar keyed by `(event_id, candidate_id, hit_membership_key)` before plan 40/47 consumes V.1 |
+| multi-candidate events | the current hook emits one `candidate_id=0` row per event | replacement finders may split/merge candidates only with deterministic candidate numbering and unchanged row keys under input reordering |
+| sparse-event reason | `_track_seed_chi2` (`nnbar_reconstruction/charged.py:236-242`) returns NaN for under-constrained rows and the hook emits `insufficient_finite_hits` | expand the failure taxonomy only through documented `candidate_failure_reason` values consumed by plans 26 and 66 |
+| geometry context | edge proximity is not yet available in V.1 rows | once plan 60 side-cars exist, warn-state candidates near TPC drift or foil edges must carry the geometry/profile key rather than retuning clustering thresholds |
+| replacement tests | current tests prove schema and no-truth grouping for the bridge | replacement patches must add overlapping-track and dropped-Class-B cases before plan 38 scores V.1 |
+
+This checklist is the L3 implementation payload for the charged-side
+V.1 replacement; L0 owns the contract, while L3 owns code and tests.
+
+### 6.3 Stage E.1 promotion invariants
 
 The current live hook is schema-complete enough to unblock V.2, but
 any physics-performance replacement for the event-scoped seed must keep
@@ -256,7 +276,7 @@ real-output chains prove the invariants.
   V.1 expected-delta observables for plan 49 to consume.
 - §6 Stage E.1 handoff is actionable for L3: the target public
   function, current unit/integration tests, remaining test obligation,
-  and mandatory V.1 fields (`candidate_id`, hit indices, anchor,
+  code-gap checklist, promotion invariants, and mandatory V.1 fields (`candidate_id`, hit indices, anchor,
   direction, hit count, `cluster_method`, `candidate_quality_state`,
   `candidate_failure_reason`, `truth_grouping_used=False`, and
   `hit_membership_key`) are all named before replacement promotion.
