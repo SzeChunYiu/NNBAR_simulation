@@ -54,6 +54,7 @@ selection claims without reconstructing the whole plan tree by hand.
 | strange V0 | plan-59 branching snapshot, V0 candidate summary, and residual intervals | preserves K_S/Lambda/Sigma contamination evidence |
 | TOF timing | plan-61 TOF candidate summaries, resolution budgets, and ROC rows | preserves timing-separation evidence and caveats |
 | Bayesian limits | plan-64 prior-sensitivity table and plan-46 comparison ratios | preserves low-count prior-sensitivity evidence |
+| unbounded caveats | plan-45 caveat-only limitations, plan-50 `unbounded_caveat_status` overlays, and plan-55 note rows | prevents caveat-only assumptions from disappearing from the freeze record |
 | defence routing | plan-50 overlays, plan-51 question seeds, plan-52 rerun manifests, transcripts, and command-template registry, plan-55 annex, plan-56 glossary terms | lets a future reader map artifacts to reviewer questions |
 
 If a pack member is blocked at freeze, archive the blocked manifest row,
