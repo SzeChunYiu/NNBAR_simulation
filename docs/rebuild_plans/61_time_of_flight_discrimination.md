@@ -97,6 +97,53 @@ scintillator timing, or timing that is out of the plan-36 prompt window.
 Invalid TOF rows are carried into denominators. They cannot be silently
 removed from signal-efficiency or background-rejection closure.
 
+### 2.2 Physics derivation for TOF discrimination
+
+#### Physics derivation
+
+Plan 61 physically estimates particle time of flight and promptness from
+reconstructed timing and path length. The truth-side quantity is the
+particle velocity and production time; the production estimator observes
+TPC time anchors, scintillator hit times, reconstructed vertex/path
+geometry, and optional PID beta hypotheses. Relativistic kinematics gives
+`TOF = path / (beta c)`, so prompt signal-like candidates should have
+residuals compatible with the calibrated timing-resolution budget, while
+cosmics and delayed beam backgrounds can produce unphysical beta,
+top/bottom asymmetry, or out-of-window residuals
+\cite{ParticleDataGroup:2024RPP}.
+
+The estimator is therefore a validity-gated residual and score sidecar:
+compute observed TOF, derive beta, compare to a hypothesis residual, and
+propagate every invalid case into denominators. Dominant uncertainty is
+timing resolution (TPC anchor, scintillator hit, clock, vertex time),
+followed by path-length uncertainty, PID beta uncertainty, generation
+window assumptions for cosmics, and ideal-timing bias from current
+simulation. A zero-resolution TOF score is invalid because it would treat
+perfect simulation timestamps as detector performance.
+
+#### Logic gaps
+
+| Parameter | Status before production | Closure study / target date |
+|---|---|---|
+| `c_cm_per_ns` and beta hypothesis masses | physics constants; exact config source still needs DEC trace | Verify constants and units in `DEC-61-TOF-ESTIMATOR`; target 2026-06-20 |
+| beta validity allowance `(0, 1.2]` | `OPEN:` resolution allowance, not a physical beta limit | Scan allowance under timing smearing and require stable invalid-rate accounting; target 2026-06-30 |
+| timing-resolution terms in §5 | `OPEN:` every term starts unmeasured and L2 remains open | Measure cal_* residual widths and assign nonzero nuisance terms; target 2026-07-05 |
+| residual-cut multiplier `k` and score threshold | `OPEN:` no production operating point frozen | ROC scan on cal_* and cosmic_* slices with plan-37 signal-loss intervals; target 2026-07-05 |
+| TOF selection use | sidecar-only until `DEC-61-TOF-SELECTION` | Compare E.8-only versus TOF sidecar rejection and prevent baseline overwrite; target 2026-07-10 |
+
+#### Closure test for the derivation
+
+1. Build TOF candidate rows from reconstructed TPC, scintillator, vertex,
+   and PID sidecars with every invalid reason preserved.
+2. Measure prompt residual distributions on cal_* slices and cosmic
+   rejection on CRY overburden A/B slices with intervals.
+3. Decompose the residual width into the §5 resolution terms and reject
+   any configuration with zero total timing variance.
+4. Run ROC/N-1 comparisons between E.8 timing variables and TOF scores,
+   keeping TOF as a shadow selection unless the DEC is signed.
+5. Drop truth labels and generated times; TOF scores, validity reasons,
+   and candidate pass/fail decisions must remain unchanged.
+
 ## 3. Candidate score and discrimination modes
 
 The v0.1 score is a sidecar with three modes:
