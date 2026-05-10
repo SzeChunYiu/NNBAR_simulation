@@ -101,6 +101,17 @@ consistency from upstream P.1/P.2 rows. Dropping truth/provenance columns
 may remove diagnostic labels but must not change photon four-vector
 fields or merge decisions.
 
+### 2.3 Current-to-target photon identity map
+
+The current `object_id` from `reconstruct_photon_objects`
+(`photon.py:60-201`) may be preserved only as
+`legacy_photon_object_id` in reproduction rows. The target
+`cluster_id` must come from the accepted plan-31 cluster fixture, and
+`source_cluster_ids` records the one-or-more neutral clusters consumed
+after any fragment merge. Current `source_track_id` and `truth_name`
+columns remain diagnostic provenance; they cannot seed `cluster_id`,
+`source_cluster_ids`, merge decisions, or the P.3/P.4 four-vector.
+
 Truth canonical (plan 38 §3.1): gamma momentum direction at
 production.
 
