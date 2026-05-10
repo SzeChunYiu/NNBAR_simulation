@@ -218,6 +218,20 @@ bin so plan 38 and plan 47 can compare algorithms without parsing plots:
 A `diagnostic_only` row may document the Track_ID-keyed baseline, but a
 production clusterer needs `closure_status = pass` in every energy bin.
 
+Required closure row-key inventory:
+
+| `dataset_id` | `energy_bin_mev` | Required row purpose | Acceptance guard |
+|---|---:|---|---|
+| `cal_singlegamma_v1` | 50 | low-energy shower response and split/merge check | all §4.1 metrics present; no zero denominator |
+| `cal_singlegamma_v1` | 100 | near-threshold photon-object response | all §4.1 metrics present; no zero denominator |
+| `cal_singlegamma_v1` | 200 | Ch 8 π⁰-relevant photon response | all §4.1 metrics present; no zero denominator |
+| `cal_singlegamma_v1` | 500 | mid-energy linearity check | all §4.1 metrics present; no zero denominator |
+| `cal_singlegamma_v1` | 1000 | high-energy linearity and over-merge stress test | all §4.1 metrics present; no zero denominator |
+
+The inventory defines row keys only. It does not count as closure
+evidence until a clusterer writes measured §4.1 metrics and the Class-B
+drop hash matches.
+
 ### 4.2 Decision-log stubs for the P.1 replacement
 
 The current Track_ID-keyed grouping is a load-bearing baseline.
