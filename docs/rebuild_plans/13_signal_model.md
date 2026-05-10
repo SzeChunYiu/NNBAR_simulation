@@ -69,19 +69,23 @@ alternatives in §4 either replace the table or reweight events.
 
 ## 3. Citation chain
 
-The branching-ratio reference set used by the audit:
+The branching-ratio reference set used by the audit is explicit and
+ordered by evidential role:
 
-- *n̄p annihilation at rest* — measurements from LEAR (CERN) and
-  Brookhaven AGS in the 1980s–1990s. Reviewed in
-  C. Amsler & F. Myhrer, *Annu. Rev. Nucl. Part. Sci.* 41 (1991) 219.
-- *n̄-nucleus annihilation* — theoretical extrapolation; primary
-  references Friedman & Gal, *Phys. Rep.* 452 (2007) 89; and
-  reviews on antinucleon-nucleus interactions.
-- *NNBAR signal MC tradition* — the licentiate Chapter 5 and the
-  papers cited there (Phillips et al., Sym 2019; HIBEAM/NNBAR TDR).
+| Role | Full reference | Local bibliography status | Use in the audit |
+|---|---|---|---|
+| Low-energy n̄p / p̄p annihilation review | Claude Amsler and F. Myhrer, "Low Energy Antiproton Physics," *Annual Review of Nuclear and Particle Science* **41**, 219--267 (1991), doi:10.1146/annurev.ns.41.120191.001251. | **Missing from `overleaf-hibeam-thesis/ref.bib` in the current scan; add key `AmslerMyhrer1991LowEnergyAntiproton` before thesis freeze.** | Primary source for at-rest annihilation branching and resonance content used by `branching_amsler1991`. |
+| Nuclear-medium extrapolation | E. Friedman and A. Gal, "In-medium nuclear interactions of low-energy hadrons," *Physics Reports* **452**(4--5), 89--153 (2007), doi:10.1016/j.physrep.2007.08.002. | **Missing from `ref.bib` in the current scan; add key `FriedmanGal2007InMedium`.** The current file instead has `Friedman:2008es` (Phys. Rev. D **78**, 016002, 2008). | Physics basis for the nuclear-medium alternative and the carbon/silicon target systematic. |
+| Antineutron-specific review | T. Bressani and A. Filippi, "Antineutron physics," *Physics Reports* **383**, 213--297 (2003), doi:10.1016/S0370-1573(03)00233-3. | Present as `Bressani:2003pv`. | Cross-check that the n̄p-derived branching model is not relying solely on antiproton data. |
+| Low-energy n̄-nucleus model | E. S. Golubeva and L. A. Kondratyuk, "Annihilation of low energy antineutrons on nuclei," *Nucl. Phys. B Proc. Suppl.* **56**, 103--107 (1997), doi:10.1016/S0920-5632(97)00260-0. | Present as `Golubeva:1997`. | Nuclear-target correction and multiplicity-shape comparison. |
+| NNBAR intranuclear model | E. S. Golubeva, J. L. Barrow, and C. G. Ladd, "Model of n̄ annihilation in experimental searches for n̄ transformations," *Phys. Rev. D* **99**, 035002 (2019), doi:10.1103/PhysRevD.99.035002. | Present as `Golubeva:2018mrz`. | Modern event-generator alternative for `branching_intranuclear2019`. |
+| NNBAR detector tradition | S.-C. Yiu *et al.*, "Status of the Design of an Annihilation Detector to Observe Neutron-Antineutron Conversions at the European Spallation Source," *Symmetry* **14**, 76 (2022), doi:10.3390/sym14010076; F. Backman *et al.*, "The development of the NNBAR experiment," *JINST* **17**, P10046 (2022), doi:10.1088/1748-0221/17/10/P10046. | Present as `sym14010076` and `Backman_2022`. | Binds this rebuild's signal observables to prior NNBAR simulation figures and selections. |
 
 Plan 47 ledger records which reference each thesis number cites; plan
-50 defence package binds them to the result.
+50 defence package binds them to the result. Bibliography gaps in the
+table above are not methodology blockers for Wave 2 planning, but they
+are thesis-freeze blockers because plan 13 acceptance requires every
+reference to resolve to `ref.bib`.
 
 ## 4. Alternative models (systematic variations)
 
