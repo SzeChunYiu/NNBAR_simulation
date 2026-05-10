@@ -31,7 +31,7 @@ Leaf P.3/P.4: neutral clusters → photon four-vector objects
   `neutral_score`, plan-30 vertex row, calorimeter energy calibration
   constants from plan 18, and detector geometry.
 - **Current implementation evidence:** the compact current source
-  builds photon-like objects in `reconstruct_photon_objects` (`reconstruction.py:432-573`). That function declares the output
+  builds photon-like objects in `reconstruct_photon_objects` (`photon.py:60-201`). That function declares the output
   columns, caches reconstructed vertices, computes the vertex-to-
   centroid direction and path length, attaches lead-glass plus
   scintillator energy for the same key, and emits diagnostic
@@ -60,7 +60,7 @@ plan 31).
 
 When no event vertex is reconstructed (sparse-table fallback), use
 origin → centroid and set the fallback flag. The current source keeps
-that fallback inside `reconstruct_photon_objects` (`reconstruction.py:432-573`).
+that fallback inside `reconstruct_photon_objects` (`photon.py:60-201`).
 
 Truth canonical (plan 38 §3.1): gamma momentum direction at
 production.
@@ -73,7 +73,7 @@ MeV and both terms derived from Class A cluster membership.
 
 The current reproduction baseline obtains the scintillator
 contribution by matching the same `(Event_ID, Track_ID)` key inside
-`reconstruct_photon_objects` (`reconstruction.py:432-573`). That
+`reconstruct_photon_objects` (`photon.py:60-201`). That
 value is kept only as the plan-47 baseline and closure label; once
 plan 31 lands, P.4 must consume the truth-blind P.1 cluster
 components instead.
@@ -97,14 +97,14 @@ P.3/P.4 four-vectors.
 
 | Leaf | Candidate | Decision rule | Current/source citation | Class-A status | Comparison metric |
 |---|---|---|---|---|---|
-| P.3 | **Vertex → centroid (baseline target)** | Unit vector from reconstructed vertex to P.1 energy-weighted centroid. | Current row builder uses reconstructed vertex or origin fallback in `reconstruct_photon_objects` (`reconstruction.py:432-573`). | Production-eligible with plan-30 vertex. | Direction pull mean/width on `cal_singlegamma_v1`; downstream π⁰ mass. |
-| P.3 | **Origin → centroid fallback** | Use detector origin when no event vertex exists. | Current fallback is inside `reconstruct_photon_objects` (`reconstruction.py:432-573`) and is flagged by the emitted vertex-use column. | Eligible only as sparse-data fallback with explicit flag. | Pull degradation vs vertex baseline and fallback rate. |
-| P.3 | **Cluster-axis fit** | Fit a shower axis from hit positions/timing and use it as direction. | Replacement for centroid-only direction inside `reconstruct_photon_objects` (`reconstruction.py:432-573`). | Eligible if fit uses only hit geometry/timing. | Pull width and small-opening π⁰ separation. |
-| P.4 | **Calibrated cluster sum (baseline target)** | Sum calibrated lead-glass plus scintillator cluster energy from P.1. | Replaces the same-key raw energy sum inside `reconstruct_photon_objects` (`reconstruction.py:432-573`). | Production-eligible after plan-18 calibration. | Energy bias/resolution by single-γ energy bin. |
-| P.4 | **Lead-glass-only energy** | Use only lead-glass cluster deposits; keep scintillator as diagnostic. | Current photon-like schema carries `leadglass_fraction` in `reconstruct_photon_objects` (`reconstruction.py:432-573`). | Eligible but lower efficiency for scintillator-fed showers. | Bias for no-LG and edge showers; plan-34 selection loss. |
+| P.3 | **Vertex → centroid (baseline target)** | Unit vector from reconstructed vertex to P.1 energy-weighted centroid. | Current row builder uses reconstructed vertex or origin fallback in `reconstruct_photon_objects` (`photon.py:60-201`). | Production-eligible with plan-30 vertex. | Direction pull mean/width on `cal_singlegamma_v1`; downstream π⁰ mass. |
+| P.3 | **Origin → centroid fallback** | Use detector origin when no event vertex exists. | Current fallback is inside `reconstruct_photon_objects` (`photon.py:60-201`) and is flagged by the emitted vertex-use column. | Eligible only as sparse-data fallback with explicit flag. | Pull degradation vs vertex baseline and fallback rate. |
+| P.3 | **Cluster-axis fit** | Fit a shower axis from hit positions/timing and use it as direction. | Replacement for centroid-only direction inside `reconstruct_photon_objects` (`photon.py:60-201`). | Eligible if fit uses only hit geometry/timing. | Pull width and small-opening π⁰ separation. |
+| P.4 | **Calibrated cluster sum (baseline target)** | Sum calibrated lead-glass plus scintillator cluster energy from P.1. | Replaces the same-key raw energy sum inside `reconstruct_photon_objects` (`photon.py:60-201`). | Production-eligible after plan-18 calibration. | Energy bias/resolution by single-γ energy bin. |
+| P.4 | **Lead-glass-only energy** | Use only lead-glass cluster deposits; keep scintillator as diagnostic. | Current photon-like schema carries `leadglass_fraction` in `reconstruct_photon_objects` (`photon.py:60-201`). | Eligible but lower efficiency for scintillator-fed showers. | Bias for no-LG and edge showers; plan-34 selection loss. |
 | P.4 | **Regression calibration** | Predict photon energy from cluster sum plus shower-shape features. | Plan 57-style replacement for raw sums. | Eligible only with frozen features and validation provenance. | Bias/resolution improvement vs calibrated sum. |
-| P.3/P.4 | **No fragment merge (current)** | Keep one photon-like row per accepted cluster key. | Current compact baseline is `reconstruct_photon_objects` (`reconstruction.py:432-573`). | Production-eligible only if plan-31 cluster membership is truth-blind and duplicate rate is acceptable. | Duplicate photon rows can inflate π⁰ combinatorics. |
-| P.3/P.4 | **Geometry/time fragment merge** | Merge nearby neutral clusters by angular, centroid, and timing compatibility. | New truth-blind post-processing after `reconstruct_photon_objects` (`reconstruction.py:432-573`). | Production-eligible with DEC-logged thresholds. | Duplicate rate, π⁰ daughter over-merge rate, closure pulls. |
+| P.3/P.4 | **No fragment merge (current)** | Keep one photon-like row per accepted cluster key. | Current compact baseline is `reconstruct_photon_objects` (`photon.py:60-201`). | Production-eligible only if plan-31 cluster membership is truth-blind and duplicate rate is acceptable. | Duplicate photon rows can inflate π⁰ combinatorics. |
+| P.3/P.4 | **Geometry/time fragment merge** | Merge nearby neutral clusters by angular, centroid, and timing compatibility. | New truth-blind post-processing after `reconstruct_photon_objects` (`photon.py:60-201`). | Production-eligible with DEC-logged thresholds. | Duplicate rate, π⁰ daughter over-merge rate, closure pulls. |
 
 Plan 38 records separate ladder rows for P.3 direction, P.4 energy,
 and the fragment-merge policy because each can change the photon
