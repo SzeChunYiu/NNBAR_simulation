@@ -326,6 +326,24 @@ Until the relevant DEC is approved, alternative S.6 outputs are
 diagnostic/ladder artifacts only and cannot supersede the baseline
 cut-flow.
 
+### 4.2 Initial downstream-handoff examples
+
+Selection outputs feed several analysis plans, so the handoff must name
+whether it carries the Ch 10 baseline, a retune candidate, or a shadow
+MVA score:
+
+| `handoff_case_id` | Downstream consumer | Required payload | Required guard |
+|---|---|---|---|
+| `ch10_cutflow_to_p47` | plan 47 reproduction ledger | cut identity rows, independent counts, cumulative counts, and final acceptance | uses baseline config id and unchanged `CUT_ORDER` |
+| `zero_survivor_to_p44_p46` | plans 44 and 46 background/significance rows | survivor counts plus interval-method handoff for cosmic and beam samples | zero survivors are upper-limit inputs, never exact-zero background claims |
+| `retune_candidate_to_p41` | plan 41 optimisation review | candidate config id, touched columns, held-out result id, and objective delta | diagnostic until retune DEC approval and truth-blind audit pass |
+| `mva_shadow_to_p57` | plan 57 MVA protocol and plan 38 ladder | baseline booleans, shadow score, feature-freeze id, and calibration summary | cannot overwrite `passes_preliminary_selection` before MVA DEC approval |
+
+Any downstream quote that omits the handoff case id is rejected because
+it becomes impossible to tell baseline reproduction from an optimisation
+proposal. Plan 37 owns the canonical selection contract; downstream
+plans may aggregate its rows but may not rename or silently retune them.
+
 ## 5. Acceptance criteria
 
 - §1 cuts implemented exactly.
