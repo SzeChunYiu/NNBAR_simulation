@@ -73,7 +73,7 @@ Per plan 57 MVA protocol:
 
 ## 4. EM and neutral rejection (C.6)
 
-When `Name` filter is removed (§1 migration), the candidate set
+When `Name` filter is removed (§2 migration), the candidate set
 includes:
 
 - Truth electrons / positrons (gamma conversions in detector
