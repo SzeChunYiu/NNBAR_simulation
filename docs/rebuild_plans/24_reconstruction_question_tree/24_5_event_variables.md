@@ -161,6 +161,25 @@ Leaf E.7: reconstructed object four-vectors → visible invariant mass
   allowed truth use: validation_only
   downstream consumers: S.3, S.6; plans 36, 37, 41
 
+Leaf E.8: calorimeter hit timing → in-time / out-of-time energy split
+  inputs (Class A): Scintillator and LeadGlass hit columns
+                    (Event_ID, eDep, t, x, y, z, module_ID), V.4
+                    vertex time/position when available, and Ch 7
+                    timing-window constants
+  forbidden (Class B): truth particle time of flight, Track_ID,
+                       Parent_ID, Name, Interaction ancestry
+  decision rule: classify hit energy as in-time or out-of-time using
+                 reconstructed timing residuals and the configured Ch 7
+                 window; truth flight time can only be used in closure
+                 plots.
+  output schema: {event_id: int64, in_time_energy_mev: float64,
+                  out_of_time_energy_mev: float64,
+                  timing_window_ns: float64,
+                  n_in_time_hits: int32, n_out_of_time_hits: int32,
+                  timing_reference: string}
+  allowed truth use: validation_only
+  downstream consumers: S.1, S.6; plans 36, 37, 41
+
 ### Next measurement (event-variable branch)
 
 Per-variable distribution comparison: signal sample (plan 20) vs
