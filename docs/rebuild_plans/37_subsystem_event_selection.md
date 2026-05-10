@@ -26,10 +26,9 @@ plus its multivariate replacement.
 
 Inputs are the plan-36 `events.csv` variables. Outputs are the
 `pass_*` booleans below plus `passes_preliminary_selection`. Plan 08
-identifies `_selection_flags` as the producer
-(`reconstruction.py:877-903`) and `summarize_events` as the writer
-(`reconstruction.py:906-1032`). The CLI cumulative order is fixed by
-`_cutflow` (`cli.py:27-45`, plan 08 §4.1):
+identifies `_selection_flags` (`reconstruction.py:877-903`) as the
+producer and `summarize_events` (`reconstruction.py:906-1032`) as the
+writer. The CLI cumulative order is fixed by `_cutflow` (`cli.py:27-45`, plan 08 §4.1):
 `pass_scintillator_energy → pass_tpc_foil_track → pass_pion_count →
 pass_invariant_mass → pass_sphericity → pass_scintillator_balance`.
 
