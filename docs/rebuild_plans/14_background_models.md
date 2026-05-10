@@ -17,7 +17,7 @@ risks:
   - {risk: cosmic flux changes with solar cycle / location / date; choosing one fixes a number that is itself uncertain, mitigation: §1 settings recorded; plan 45 propagates a "cosmic-flux" systematic}
   - {risk: beam-induced background underestimated by missing pile-up, mitigation: limitation L11 in plan 01; plan 02 digitisation seam closes when commissioning}
 estimated_effort: M
-last_updated: 2026-05-09
+last_updated: 2026-05-10
 ---
 
 # Background models — cosmic, beam-neutron, capture-gamma
@@ -209,3 +209,8 @@ appear in plan 01 §6 limitations registry.
 - LLNL CRY library: <https://nuclear.llnl.gov/simulation/>
 - ESS Beam Line technical design (HIBEAM project documents).
 - Geant4 G4NDL data documentation.
+
+2026-05-10 bib audit: this plan has no BibTeX citation commands and no
+author-year paper prose requiring conversion to `ref.bib`. The references
+above are external software/project documentation entries, not unresolved
+thesis bibliography keys.
