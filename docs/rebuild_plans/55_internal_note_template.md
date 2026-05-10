@@ -116,6 +116,7 @@ l1_note_annex:
         ci_report: <plan53-l1-report-id>
         rerun_manifest: plan52:EM chain closure
         rerun_transcript: <plan52-transcript-row-or-null>
+        command_template_id: validate_reco_allruns_v1
         command_template_verifier: plan52:validate_reco_allruns_v1
         glossary_audit: <plan56-audit-id>
         staleness_summary: <plan50-staleness-id>
@@ -148,6 +149,7 @@ l1_note_annex:
         ci_report: <plan53-l1-report-id>
         rerun_manifest: plan52:Ch 10 selection cut-flow
         rerun_transcript: <plan52-transcript-row-or-null>
+        command_template_id: validate_reco_cutflow_v1
         command_template_verifier: plan52:validate_reco_cutflow_v1
         glossary_audit: <plan56-audit-id>
         staleness_summary: <plan50-staleness-id>
@@ -182,6 +184,7 @@ l1_note_annex:
         ci_report: <plan53-l1-report-id>
         rerun_manifest: plan52:Pile-up L11 overlay
         rerun_transcript: <plan52-transcript-row-or-null>
+        command_template_id: blocked_missing_input_v1
         glossary_audit: <plan56-audit-id>
         staleness_summary: <plan50-staleness-id>
         archive_inventory: <plan54-inventory-id-or-null>
@@ -214,6 +217,7 @@ l1_note_annex:
         ci_report: <plan53-l1-report-id>
         rerun_manifest: plan52:Strange V0 contamination
         rerun_transcript: <plan52-transcript-row-or-null>
+        command_template_id: blocked_missing_input_v1
         glossary_audit: <plan56-audit-id>
         staleness_summary: <plan50-staleness-id>
         archive_inventory: <plan54-inventory-id-or-null>
@@ -246,6 +250,7 @@ l1_note_annex:
         ci_report: <plan53-l1-report-id>
         rerun_manifest: plan52:TOF timing closure
         rerun_transcript: <plan52-transcript-row-or-null>
+        command_template_id: blocked_missing_input_v1
         glossary_audit: <plan56-audit-id>
         staleness_summary: <plan50-staleness-id>
         archive_inventory: <plan54-inventory-id-or-null>
@@ -279,6 +284,7 @@ l1_note_annex:
         ci_report: <plan53-l1-report-id>
         rerun_manifest: plan52:Bayesian limit cross-check
         rerun_transcript: <plan52-transcript-row-or-null>
+        command_template_id: blocked_missing_input_v1
         glossary_audit: <plan56-audit-id>
         staleness_summary: <plan50-staleness-id>
         archive_inventory: <plan54-inventory-id-or-null>
@@ -311,6 +317,7 @@ l1_note_annex:
         ci_report: <plan53-l1-report-id>
         rerun_manifest: plan52:Unbounded caveat status
         rerun_transcript: <plan52-transcript-row-or-null>
+        command_template_id: blocked_missing_input_v1
         glossary_audit: <plan56-audit-id>
         staleness_summary: <plan50-staleness-id>
         archive_inventory: <plan54-inventory-id-or-null>
