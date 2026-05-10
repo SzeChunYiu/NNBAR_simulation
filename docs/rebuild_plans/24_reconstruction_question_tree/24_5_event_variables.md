@@ -144,6 +144,23 @@ Leaf E.6: reconstructed object momenta → Fox-Wolfram moments
   allowed truth use: validation_only
   downstream consumers: S.6; plans 36, 37, 41
 
+Leaf E.7: reconstructed object four-vectors → visible invariant mass
+  inputs (Class A): accepted charged-object four-vectors, photon
+                    four-vectors, π0 fitted candidates, and their
+                    covariance summaries
+  forbidden (Class B): truth visible mass, truth particle four-vectors,
+                       truth decay ancestry, Track_ID, Parent_ID, Name
+  decision rule: sum reconstructed visible four-vectors and compute
+                 `sqrt(E^2 - |p|^2)`, recording failures when the
+                 object covariance or energy is invalid; plan 08 §3.6
+                 treats the result as an analysis surface.
+  output schema: {event_id: int64, visible_invariant_mass_mev:
+                  float64, visible_energy_mev: float64,
+                  visible_momentum_mev: float64[3], n_objects_used:
+                  int32, mass_valid: bool}
+  allowed truth use: validation_only
+  downstream consumers: S.3, S.6; plans 36, 37, 41
+
 ### Next measurement (event-variable branch)
 
 Per-variable distribution comparison: signal sample (plan 20) vs
