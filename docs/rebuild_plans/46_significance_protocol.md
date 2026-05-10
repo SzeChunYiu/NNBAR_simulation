@@ -290,6 +290,22 @@ Initial input-bundle rejection examples:
 | `draft_nuisance_throw` | plan-45 nuisance throw is draft or missing paired nominal hash | `incomplete` | result carries missing-systematic flag and cannot be final |
 | `unbounded_limitation_hidden` | inherited plan-45 caveat list is non-empty but absent from result row | `blocked` | plan-50 unconditional defence claim is rejected |
 
+### 3.5 Initial downstream-handoff examples
+
+Significance outputs are publishable only through explicit ledger and
+defence handoffs:
+
+| `handoff_case_id` | Downstream consumer | Required payload | Required guard |
+|---|---|---|---|
+| `validation_case_to_p47` | plan 47 reproduction ledger | validation case, input bundle, dispatch row, result row, and recomputed value | all linked rows agree on method, counts, confidence level, and rounding |
+| `final_result_to_p50` | plan 50 defence package | complete result row, convention DEC ids, nuisance ids, and caveat list | rejected if any unbounded limitation blocks an unconditional quote |
+| `fc_zero_survivor_to_p44` | plan 44 background summary | F-C upper-limit result id and interval endpoint | never converted into central expected background zero |
+| `incomplete_bundle_to_review` | plan 05/47 review | missing signal/background/nuisance provenance reason and blocked result id | no result number may be quoted until provenance is complete |
+
+These handoff ids keep validation fixtures, draft calculations, and final
+analysis quotes separable. A naked `Z_0`, limit, or upper-limit number
+without this linkage is rejected even if the arithmetic is correct.
+
 ## 4. Acceptance criteria
 
 - §1 Z_0 target implementation lands in the L3-owned
