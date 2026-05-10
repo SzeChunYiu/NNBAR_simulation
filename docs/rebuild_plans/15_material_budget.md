@@ -233,8 +233,9 @@ from primary charged tracks.
 - NIST PML radiation-length tables.
 - Geant4 `G4MaterialTable` runtime API.
 
-2026-05-10 bib audit: this plan has no BibTeX citation commands and no
-author-year paper prose requiring conversion to `ref.bib`. Source-file
-references in §1 intentionally name verified files without line numbers;
-runtime `G4MaterialTable` dumps remain the sign-off source for exact
-material constants.
+2026-05-10 bib audit: the Wave 6 citation keys used above resolve in
+`/Users/billy/Desktop/projects/overleaf-hibeam-thesis/ref.bib`:
+`ParticleDataGroup:2024RPP`, `NISTSTAR`, `Agostinelli2003`, and
+`Allison2016`. Source-file references in §1 intentionally name verified
+files without line numbers; runtime `G4MaterialTable` dumps remain the
+sign-off source for exact material constants.
