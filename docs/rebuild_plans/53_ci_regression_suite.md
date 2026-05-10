@@ -233,6 +233,20 @@ l1_defence_ci_report:
         refreshed_artifact_keys: [rerun_command_template_id, rerun_command_template_verifier_hash, rerun_command_template_verifier_source]
         transition_matrix_checked: true
       remediation: null
+    - check_id: l1_defence_overlay_schema
+      status: pass | fail
+      files_checked:
+        - docs/rebuild_plans/50_reviewer_defense_package.md
+        - docs/rebuild_plans/51_reviewer_question_registry.md
+        - docs/rebuild_plans/55_internal_note_template.md
+        - docs/rebuild_plans/56_glossary.md
+      evidence:
+        overlay_ids_checked: [em_cluster_truth_blindness, pi0_cut_decomposition, selection_cutflow_identity, pileup_l11_status, strange_v0_contamination, tof_timing_resolution, bayesian_prior_sensitivity, unbounded_caveat_status]
+        required_overlay_fields: [overlay_id, applicability, reason, source_plans, required_artifacts, artifact_status, reviewer_question_ids, caveat_text, last_verified]
+        question_overlay_links_present: true
+        note_overlay_links_present: true
+        glossary_refs_present: true
+      remediation: null
 ```
 
 Report review rules:
