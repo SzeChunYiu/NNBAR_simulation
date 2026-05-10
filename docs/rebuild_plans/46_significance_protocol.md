@@ -66,6 +66,19 @@ cross-check.
 90% C.L. is the default reporting level; 95% C.L. is reported in
 parallel for cross-comparison with literature.
 
+Decision table:
+
+| Quantity | Primary convention | Cross-check | Worked example / expected output |
+|---|---|---|---|
+| zero-survivor background upper limit | Feldman-Cousins 90% C.L. | none required | `n_obs=0`, `b=0`, `N=244000` gives `ε90 = 2.44 / 244000 = 1.0e-5` per plan 04 §5 |
+| nonzero low-count observed limit | Feldman-Cousins unified interval | CLs only if a pyhf model exists | `n_obs=3`, `b=1.2` dispatches to F-C table/toy construction, not asymptotic Z |
+| high-count expected/observed limit | CLs via `pyhf` | Feldman-Cousins spot-check | `b>5` and binned nuisance model present: report CLs 90% and 95% in the appendix |
+
+DEC stub: `DEC-46-LIMIT-CONVENTION` — choose Feldman-Cousins as the
+primary low-count and zero-survivor limit convention; use CLs as the
+high-count cross-check when a pyhf model is available. Status: draft,
+pending Methodology Council sign-off.
+
 ## 3. Finite-sample handover
 
 When observed `n_obs ≤ 5` or expected `b ≤ 5`, the asymptotic Z_0
