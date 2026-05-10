@@ -144,6 +144,9 @@ when a result changes from an EM-object claim to a pure statistics claim
 or vice versa.
 
 ```yaml
+required_l1_overlay_ids: [em_cluster_truth_blindness, pi0_cut_decomposition,
+  selection_cutflow_identity, pileup_l11_status, strange_v0_contamination,
+  tof_timing_resolution, bayesian_prior_sensitivity, unbounded_caveat_status]
 l1_overlays:
   - overlay_id: selection_cutflow_identity
     applicability: applies | not_applicable | blocked
@@ -172,7 +175,7 @@ Review rules:
 
 | Rule | Failure caught |
 |---|---|
-| every package has all eight §2.1 overlay ids | reviewer asks an L1 question with no routing row |
+| every package has exactly the `required_l1_overlay_ids` set | reviewer asks an L1 question with no routing row |
 | `applicability = applies` requires at least one artifact key | prose claims that cannot be replayed |
 | `artifact_status = blocked` requires `caveat_text` | hidden missing evidence |
 | `not_applicable` requires a result-specific reason | blanket suppression of difficult checks |
