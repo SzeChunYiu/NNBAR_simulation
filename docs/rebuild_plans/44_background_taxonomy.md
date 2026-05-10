@@ -310,6 +310,15 @@ Evidence bundles keep background accounting conservative: measured,
 limited, missing, and draft channels remain different objects instead of
 collapsing into one background-sum scalar.
 
+Initial reviewer audit cases:
+
+| `audit_case_id` | Reviewer question | Required evidence before accept | Reject condition |
+|---|---|---|---|
+| `p44_node_registry_audit` | Is every background node registered with sample, rate, and limitation status? | node fixture rows plus sample ids and limitation flags | unregistered source contributes to a numeric total |
+| `p44_authorised_rate_audit` | Are central expected rates signed and intervalled? | rate rows, survivor denominators, intervals, and rate-source DEC ids | draft or unsigned rate is included in `b_expected` |
+| `p44_zero_survivor_audit` | Are zero survivors represented as limits rather than zero backgrounds? | F-C interval id, `epsilon90`, exposure label, and denominator | zero-survivor row becomes central `b = 0` |
+| `p44_caveat_audit` | Do unmodelled caveats survive every total-background handoff? | caveat ids, defence text, and affected-node list | missing sample is omitted or treated as zero rate |
+
 ## 4. Acceptance criteria
 
 - §1 tree complete.
