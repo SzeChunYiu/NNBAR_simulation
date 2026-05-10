@@ -109,6 +109,58 @@ aggregation_method, foil_geometry_version)`. The production V.5 fixture
 is valid only when its consumed V.3/V.4 fixture hashes and geometry tag
 match the manifest used by plan 43 signal efficiency.
 
+### 1.5 V.3 Physics derivation
+
+- **What is physically measured:** V.3 measures the reconstructed intersection
+  of each fitted charged-track ray with the annihilation foil surface. Truth
+  vertices are validation targets only after the projection row is frozen.
+- **Estimator rationale:** with no magnetic curvature, the V.2 state is a
+  straight ray. The physically motivated estimator is therefore the analytic
+  intersection of that ray with the plan-16 foil plane, followed by Jacobian
+  propagation of V.2 covariance into the projected point. PDG tracking guidance
+  bounds multiple-scattering contributions, while HIBEAM/NNBAR design papers
+  define the foil/instrument geometry context
+  \cite{ParticleDataGroup:2024RPP,HIBEAM_NNBAR_at_ESS,Santoro2024NNBARCDR}.
+- **Statistical character:** the main bias terms are foil-plane misalignment,
+  direction-z near-parallel tracks, and V.2 candidate merges/splits. The main
+  variance terms are direction covariance, anchor covariance, and lever arm to
+  the foil. Robustness is achieved by explicit `projection_valid`,
+  `skipped_reason`, and geometry-version fields.
+- **Citation:** the cited keys above were checked against
+  `/Users/billy/Desktop/projects/overleaf-hibeam-thesis/ref.bib` on
+  2026-05-10.
+
+### 1.6 V.3 Logic gaps
+
+1. **Foil plane `z = 0`:** current reproduction uses the nominal coordinate
+   plane; production promotion must replace this with a plan-16
+   geometry-versioned plane normal and offset.
+2. **Parallel threshold on `direction_z`:** OPEN: scan the threshold on
+   `sig_foil_v3` and `cal_singlepion_50to600MeV_v2`; figure of merit is V.3
+   residual bias, skipped-track fraction, and downstream V.4 vertex pull width;
+   target resolution date 2026-05-24.
+3. **Projection covariance:** OPEN: implement the plane-intersection Jacobian
+   using the full V.2 covariance components and mark rows invalid when
+   `covariance_valid=false`; target resolution date 2026-05-31.
+4. **Alignment / planarity uncertainty:** OPEN: import foil normal, offset, and
+   alignment covariance from plan 16 and feed the nuisance to plan 45; target
+   resolution date 2026-05-31.
+5. **Projection envelope:** OPEN: decide whether out-of-radius intersections
+   are invalid at V.3 or deferred to V.5; compare both policies in plan 60;
+   target resolution date 2026-06-07.
+
+### 1.7 V.3 Closure test for the derivation
+
+1. Run `project_tracks_to_foil` on frozen V.2 fit rows and plan-16 geometry for
+   `sig_foil_v3`, with truth vertices absent from the production input.
+2. Save projection rows plus consumed V.2 and geometry hashes before any truth
+   join.
+3. In a `validation_only` scorer, compute residuals to generated vertex
+   coordinates in bins of `direction_z`, lever arm, and foil radius.
+4. The derivation passes when valid projections close within the plan-40 V.3
+   tolerance and every skipped ray has a deterministic `skipped_reason` rather
+   than a silently substituted truth point.
+
 ## 2. Current implementation
 
 `vertex.py` (plan 08 §3.3):
