@@ -119,6 +119,19 @@ shower-shape features from the P.1 cluster and reconstructed-track
 inputs. Dropping `Name`, `Track_ID`, `Parent_ID`, and ancestry aliases
 must leave production features and pass/fail unchanged.
 
+Initial feature-contract examples:
+
+| `feature_contract_id` | Feature set | Allowed candidate types | Required audit | Promotion rule |
+|---|---|---|---|---|
+| `p2_legacy_angle_only_v0` | `nearest_track_angle_deg` plus hard-cone threshold | `legacy_rule` | Class-B drop hash for charged-match columns | reproduction baseline only |
+| `p2_shape_track_features_v0` | all §1.1 shower-shape features plus nearest-track distance/angle | `rectangular`, `bdt`, `nn` | feature recomputation from P.1/P.2 inputs and provenance-drop hash | eligible after `DEC-32-FEATURE-CONTRACT` |
+| `p2_shape_no_timing_ablation_v0` | same as full set but excludes `cluster_time_rms_ns` | `rectangular`, `bdt` | paired ablation row against the full feature set | diagnostic unless timing uncertainty remains unbounded |
+| `p2_truth_label_oracle_blocked` | generated particle name, parent id, or source ancestry | none in production | blocked by truth-use boundary | validation labels only; never an inference contract |
+
+Feature contracts are immutable once referenced by a candidate row. A
+new contract id is required for any feature addition, removal, sentinel
+change, or Class-A audit-scope change.
+
 ### 1.4 Current-to-target neutral-decision field map
 
 The current compact source does not emit `neutral_score` or
