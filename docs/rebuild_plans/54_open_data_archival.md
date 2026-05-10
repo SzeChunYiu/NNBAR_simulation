@@ -84,6 +84,8 @@ l1_defence_inventory:
       caveat: <required until P.1-P.7 closure rows are present>
       staleness_summary_hash: sha256:<hash-or-null>
       owner_signoff_refs: [RQ-L1-EM-P1-CLUSTERING:<owner-hash-or-null>]
+      rerun_manifest_hash: sha256:<hash-or-null>
+      rerun_transcript_hash: sha256:<hash-or-null>
       command_template_ids: [validate_reco_allruns_v1]
       command_template_verifier_hashes:
         - sha256:b3cee4613afed558d4704df3dc5b281271aed768965d79a09603f812496806f0
@@ -103,6 +105,8 @@ l1_defence_inventory:
       caveat: null
       staleness_summary_hash: sha256:<hash-or-null>
       owner_signoff_refs: [RQ-L1-SELECTION-CUTFLOW:<owner-hash>]
+      rerun_manifest_hash: sha256:<hash-or-null>
+      rerun_transcript_hash: sha256:<hash-or-null>
       command_template_ids: [validate_reco_cutflow_v1]
       command_template_verifier_hashes:
         - sha256:b3cee4613afed558d4704df3dc5b281271aed768965d79a09603f812496806f0
@@ -123,6 +127,8 @@ l1_defence_inventory:
       caveat: <required until paired pile-up closure is present>
       staleness_summary_hash: sha256:<hash-or-null>
       owner_signoff_refs: [RQ-L1-PILEUP-L11:<owner-hash-or-null>]
+      rerun_manifest_hash: sha256:<hash-or-null>
+      rerun_transcript_hash: sha256:<hash-or-null>
       command_template_ids: [blocked_missing_input_v1]
       command_template_verifier_hashes: []
       command_template_verifier_sources: []
@@ -141,6 +147,8 @@ l1_defence_inventory:
       caveat: <required until Lambda-enriched closure is present>
       staleness_summary_hash: sha256:<hash-or-null>
       owner_signoff_refs: [RQ-L1-STRANGE-BARYON:<owner-hash-or-null>]
+      rerun_manifest_hash: sha256:<hash-or-null>
+      rerun_transcript_hash: sha256:<hash-or-null>
       command_template_ids: [blocked_missing_input_v1]
       command_template_verifier_hashes: []
       command_template_verifier_sources: []
@@ -159,6 +167,8 @@ l1_defence_inventory:
       caveat: <required until cal and cosmic TOF closure rows are present>
       staleness_summary_hash: sha256:<hash-or-null>
       owner_signoff_refs: [RQ-L1-TOF:<owner-hash-or-null>]
+      rerun_manifest_hash: sha256:<hash-or-null>
+      rerun_transcript_hash: sha256:<hash-or-null>
       command_template_ids: [blocked_missing_input_v1]
       command_template_verifier_hashes: []
       command_template_verifier_sources: []
@@ -177,6 +187,8 @@ l1_defence_inventory:
       caveat: <required until Jeffreys and flat-prior comparison rows exist>
       staleness_summary_hash: sha256:<hash-or-null>
       owner_signoff_refs: [RQ-L1-BAYES-LIMIT:<owner-hash-or-null>]
+      rerun_manifest_hash: sha256:<hash-or-null>
+      rerun_transcript_hash: sha256:<hash-or-null>
       command_template_ids: [blocked_missing_input_v1]
       command_template_verifier_hashes: []
       command_template_verifier_sources: []
@@ -195,6 +207,8 @@ l1_defence_inventory:
       caveat: <required unless status is present>
       staleness_summary_hash: sha256:<hash-or-null>
       owner_signoff_refs: [RQ-L1-UNBOUNDED-CAVEATS:<owner-hash-or-null>]
+      rerun_manifest_hash: sha256:<hash-or-null>
+      rerun_transcript_hash: sha256:<hash-or-null>
       command_template_ids: [blocked_missing_input_v1]
       command_template_verifier_hashes: []
       command_template_verifier_sources: []
@@ -214,6 +228,8 @@ l1_defence_inventory:
       caveat: <required if any linked routing artifact is stale or blocked>
       staleness_summary_hash: sha256:<hash-or-null>
       owner_signoff_refs: [L1-routing-owner:<owner-hash-or-null>]
+      rerun_manifest_hash: sha256:<hash-or-null>
+      rerun_transcript_hash: sha256:<hash-or-null>
       command_template_ids: [validate_reco_cutflow_v1, validate_reco_allruns_v1, blocked_missing_input_v1]
       command_template_verifier_hashes:
         - sha256:b3cee4613afed558d4704df3dc5b281271aed768965d79a09603f812496806f0
@@ -233,6 +249,8 @@ Inventory review rules:
 | every §1.1 pack member appears exactly once | DOI omits a reviewer-critical evidence class |
 | `present` rows have at least one hash | archived artifact cannot be integrity-checked |
 | owner sign-off refs are archived for answered rows | future reader cannot identify who approved question closure |
+| rerun manifest hashes are archived for every pack member | archived evidence cannot be tied to the plan-52 request bundle |
+| rerun transcript hashes are archived or explicitly null for blocked rows | archived rerun evidence cannot distinguish planned from executed work |
 | command-template ids are archived with rerun rows | future rerun cannot know which verified command contract applied |
 | command-template verifier hashes are archived | future rerun cannot prove the command surface was verified |
 | CI, note-annex, and glossary hashes are archived | package evidence cannot be traced to review, prose, and term-signoff artifacts |
