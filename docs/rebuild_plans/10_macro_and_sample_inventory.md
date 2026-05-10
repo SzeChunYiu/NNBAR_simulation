@@ -92,6 +92,18 @@ helper; that helper is a one-line `/run/beamOn 1000` wrapper, so the
 status remains legacy rather than retired. Plan 21 replaces all per-species
 cosmic MCPL replays with a CRY-driven active sample path.
 
+#### 1.3.2 `macro/cosmic_macro/cosmic_gamma/`
+
+| Macro | Purpose | Key commands invoked | Output / sample target | Status |
+|---|---|---|---|---|
+| `macro/cosmic_macro/cosmic_gamma/BeamOn.mac` | Shared gamma-cosmic batch primitive | `/run/beamOn 1000` | Caller-selected `output/cosmic_gamma/cosmic_gamma_<i>/*_output_<run>.parquet` | legacy |
+| `macro/cosmic_macro/cosmic_gamma/run_0.mac` | Gamma-cosmic MCPL partition 0 replay | `/run/initialize`; `/physics_engine/neutron/timeLimit 10000 s`; `/particle_generator/set_folder_name cosmic_{name}/cosmic_{name}_{i}`; `/particle_generator/set_mcpl_file ./mcpl_files/cosmic_{name}_{i}.mcpl`; `/particle_generator/set_run_number 0`; `/particle_generator/set_event_number 1`; `/control/loop ./macro/cosmic_macro/cosmic_gamma/BeamOn.mac a 0 999 1` | `output/cosmic_gamma/cosmic_gamma_0/*_output_<run>.parquet`; target 1000 × `beamOn 1000` from `cosmic_gamma_0.mcpl` | legacy |
+| `macro/cosmic_macro/cosmic_gamma/run_1.mac` | Gamma-cosmic MCPL partition 1 replay | same as `run_0.mac` with `i=1` | `output/cosmic_gamma/cosmic_gamma_1/*_output_<run>.parquet`; target 1M events from `cosmic_gamma_1.mcpl` | legacy |
+| `macro/cosmic_macro/cosmic_gamma/run_2.mac` | Gamma-cosmic MCPL partition 2 replay | same as `run_0.mac` with `i=2` | `output/cosmic_gamma/cosmic_gamma_2/*_output_<run>.parquet`; target 1M events from `cosmic_gamma_2.mcpl` | legacy |
+| `macro/cosmic_macro/cosmic_gamma/run_3.mac` | Gamma-cosmic MCPL partition 3 replay | same as `run_0.mac` with `i=3` | `output/cosmic_gamma/cosmic_gamma_3/*_output_<run>.parquet`; target 1M events from `cosmic_gamma_3.mcpl` | legacy |
+| `macro/cosmic_macro/cosmic_gamma/run_4.mac` | Gamma-cosmic MCPL partition 4 replay | same as `run_0.mac` with `i=4` | `output/cosmic_gamma/cosmic_gamma_4/*_output_<run>.parquet`; target 1M events from `cosmic_gamma_4.mcpl` | legacy |
+| `macro/cosmic_macro/cosmic_gamma/run_5.mac` | Gamma-cosmic MCPL partition 5 replay | same as `run_0.mac` with `i=5` | `output/cosmic_gamma/cosmic_gamma_5/*_output_<run>.parquet`; target 1M events from `cosmic_gamma_5.mcpl` | legacy |
+
 These per-species macros use Geant4 GPS-style cosmic-like primaries
 *without* a true atmospheric spectrum source. They are the licentiate
 baseline; **plan 21 retires them** and replaces them with a single
