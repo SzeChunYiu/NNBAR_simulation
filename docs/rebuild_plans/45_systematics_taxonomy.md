@@ -356,6 +356,11 @@ quote caveat bundles separately.
   numeric nuisance).
 - Plan 47 ledger and plan 50 defence package cite nuisance IDs by
   name.
+- Promotion checks prove registry completeness, paired throw evidence,
+  consumed correlations, and carried caveats before plan 46 treats the
+  covariance as final.
+- Evidence bundles keep frozen covariance, incomplete throws, M0
+  placeholders, and unbounded limitations separate.
 
 ## 5. Risks
 
