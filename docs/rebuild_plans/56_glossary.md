@@ -78,6 +78,7 @@ code-level usage; deltas are flagged.
 | **unbounded caveat status** | Plan-50 overlay state for EM/selection assumptions that cannot yet be assigned a numeric nuisance; it keeps the limitation visible until plan 45 or the owning study supplies a bound. |
 | **review-evidence links** | Plan-50 and plan-51 machine-readable pointers from an L1 answer to package, CI, note-annex, glossary-audit, rerun, and staleness artifacts. |
 | **review-artifact hashes** | Stable digests carried by plans 50, 51, 52, 53, 54, and 55 for package, CI report, note-annex, glossary-audit, rerun, and staleness artifacts that support an L1 defence answer. |
+| **L1 archive pack member** | Stable plan-54 evidence-class id in the thesis-freeze archive inventory; plan 53 checks that every EM/selection defence class remains represented before freeze. |
 | **owner sign-off** | Plan-51 accountable approval recorded before an L1 reviewer-question answer can stop blocking a thesis-facing result. |
 | **rerun transcript** | Plan-52 execution record proving which reviewer-triggered rerun rows actually ran, with input hashes, output hashes, environment identity, and pass/fail/block status. |
 | **command-template id** | Stable plan-52 identifier for the verified rerun command contract used by a transcript row; it records replay semantics without depending on prose. |
@@ -155,6 +156,25 @@ l1_glossary_audit:
         - note_annex
       thesis_delta: none | flagged
       owner: L1
+    - term: L1 archive pack member
+      defined_in_section: "1.1"
+      source_plans: [53, 54, 55]
+      required_contexts:
+        - archive_inventory
+        - archive_drill
+        - defence_ci_report
+        - note_annex
+      expected_member_ids:
+        - em_object_chain
+        - ch10_cutflow
+        - pileup_l11
+        - strange_v0
+        - tof_timing
+        - bayesian_limits
+        - unbounded_caveats
+        - defence_routing
+      thesis_delta: none | flagged
+      owner: L1
 ```
 
 Audit review rules:
@@ -167,6 +187,7 @@ Audit review rules:
 | `pass_* columns` always lists plan 37 | cut-flow terminology drifts away from the canonical selection plan |
 | L1 terms list owner L1 | another lane accidentally owns EM/selection terminology |
 | freshness and staleness terms cite plans 50, 53, 54, and 55 | package-state language drifts across defence, CI, archive, and note surfaces |
+| L1 archive pack member row lists the same eight ids as plan 54 | glossary and CI describe a different freeze-package evidence set |
 | command-template and verifier-hash terms cite plans 52 and 51 | reviewer answers drift away from the verified command registry |
 | review-evidence and review-artifact terms cite plans 50, 51, 52, 53, 54, and 55 | machine-readable handoff language drifts across package, registry, rerun, CI, archive, and note surfaces |
 | owner sign-off term cites plans 50, 51, and 55 | accountability language drifts between registry, package, and note surfaces |
