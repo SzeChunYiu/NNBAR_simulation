@@ -119,6 +119,7 @@ l1_defence_rerun_manifest:
   bundle_member_ids: {EM chain closure: em_object_chain, Ch 10 selection cut-flow: ch10_cutflow, Pile-up L11 overlay: pileup_l11, Strange V0 contamination: strange_v0, TOF timing closure: tof_timing, Bayesian limit cross-check: bayesian_limits, Unbounded caveat status: unbounded_caveats, Defence routing: defence_routing}
   review_evidence_links: &l1_review_evidence_links
     overlay_rollup: <plan50-rollup-id>
+    defence_routing_crosswalk: <plan50-crosswalk-id-or-null>
     staleness_summary: <plan50-staleness-id>
     ci_report: <plan53-l1-report-id>
     archive_inventory: <plan54-inventory-id-or-null>
@@ -237,7 +238,7 @@ Manifest review rules:
 | every ready row records source and output hashes | refreshed artifacts cannot be tied to frozen inputs |
 | every blocked row names the missing input | unavailable samples are hidden as silent skips |
 | overlay ids point back to plan 50 | rerun evidence is disconnected from the defence package |
-| review-evidence links point to overlay roll-up, rerun transcript, staleness, CI, archive, note, and glossary artifacts | rerun evidence cannot be reconciled with reviewer-facing artifacts |
+| review-evidence links point to overlay roll-up, defence-routing crosswalk, rerun transcript, staleness, CI, archive, note, and glossary artifacts | rerun evidence cannot be reconciled with reviewer-facing artifacts |
 | seed formula matches §2 exactly | reviewer rerun is not bitwise reproducible |
 | answered or closed reviewer questions carry an owner sign-off ref | rerun evidence closes a question without accountable approval |
 
@@ -277,6 +278,7 @@ l1_defence_rerun_transcript:
         rerun_manifest: sha256:<hash>
         rerun_transcript: sha256:<hash>
         command_template_verifier: sha256:b3cee4613afed558d4704df3dc5b281271aed768965d79a09603f812496806f0
+        defence_routing_crosswalk: sha256:<hash-or-null>
         staleness_summary: sha256:<hash>
         ci_report: sha256:<hash>
         archive_inventory: sha256:<hash-or-null>
@@ -298,6 +300,7 @@ l1_defence_rerun_transcript:
         rerun_manifest: sha256:<hash-or-null>
         rerun_transcript: sha256:<hash-or-null>
         command_template_verifier: null
+        defence_routing_crosswalk: sha256:<hash-or-null>
         staleness_summary: sha256:<hash-or-null>
         ci_report: sha256:<hash-or-null>
         archive_inventory: sha256:<hash-or-null>
@@ -317,7 +320,7 @@ Transcript review rules:
 | blocked rows preserve the upstream owner | reviewer-triggered rerun becomes an unowned deferral |
 | host class and environment lock are recorded | local, LUNARC, and container reruns cannot be compared |
 | transcript owner sign-off refs match the manifest and plan 51 | execution evidence is promoted under a different approval than the request |
-| transcript review-artifact hashes match plan 50/53/54/55/56 links | execution evidence is promoted after review artifacts drift |
+| transcript review-artifact hashes match plan 50/53/54/55/56 links, including the defence-routing crosswalk | execution evidence is promoted after review artifacts drift |
 
 A rerun is promotable only when every `ready` row in §4.1 has a
 matching transcript row with `exit_status: pass`. Blocked rows remain
