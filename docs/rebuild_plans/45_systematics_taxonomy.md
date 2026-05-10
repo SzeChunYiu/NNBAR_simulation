@@ -96,11 +96,34 @@ appears as a Class C constant uncertainty (plan 04 §6) it does not
 also appear as a nuisance parameter; if it appears as a nuisance, the
 Class C value is the nominal.
 
+### 3.1 Limitation coverage map
+
+Plan 01 §6 limitations are not all numeric nuisances yet. The ledger
+must therefore distinguish *bounded by a §1 nuisance* from
+*unbounded caveat carried to plan 50*:
+
+| Plan-01 limitation | Coverage in this registry | Reporting rule |
+|---|---|---|
+| L1 position exact / no sensor resolution | N8 geometry alignment plus plan-40 closure pulls | quote residual geometry/position envelope; cite digitisation seam as missing if no smearing run exists |
+| L2 timing exact / no jitter | unbounded until timing-jitter scenario exists | carry as timing caveat on E.8, S.1/S.6 results |
+| L3 no energy noise / threshold / non-linearity | N2, N3, N9 cover gain/response; thresholds remain unbounded | quote calibration envelope and separately flag threshold/noise absence |
+| L4 no dead or hot channels | unbounded until channel-mask scenario exists | plan-50 caveat for acceptance and fake-rate claims |
+| L5 no trigger/dead-time/buffer model | unbounded | no live-rate or DAQ-efficiency claim without explicit caveat |
+| L6 no beam bunch structure | N7 covers flux only | beam-timing background claims carry bunch-structure caveat |
+| L7 exact geometry / no alignment systematics | N8 | include N8 in vertex, matching, π⁰, and selection results |
+| L8 no ageing / temperature drift | unbounded | long-run stability claims require caveat |
+| L9 no B-field | out of current scope | no charge-sign or magnetic-momentum claim may be quoted |
+| L10 MC-tuned calibration constants | N1, N2, N3, N9 | include detector-calibration group in all energy/PID results |
+| L11 no cosmic+signal pile-up | unbounded | total-background and overlay claims require caveat |
+| L12 optical-path on/off changes lead-glass observable | N9 | include optical nuisance in photon/π⁰/visible-mass results |
+
 ## 4. Acceptance criteria
 
 - §1 registry complete; ≥ 10 nuisances.
 - §2 correlation matrix populated.
-- §3 single-source rule audited (no double-counting).
+- §3 single-source rule and §3.1 limitation coverage audited (no
+  double-counting; no unbounded limitation silently folded into a
+  numeric nuisance).
 - Plan 47 ledger and plan 50 defence package cite nuisance IDs by
   name.
 
@@ -108,9 +131,9 @@ Class C value is the nominal.
 
 - *Risk:* nuisances missing for unmodelled effects (plan 01 §6
   limitations).
-  *Mitigation:* §1 N* assignments include "limitation" rows for L1,
-  L2, L3, L4 explicitly; plan 50 surfaces them as "unbounded by
-  current rebuild".
+  *Mitigation:* §3.1 maps every limitation either to a named nuisance
+  or to an explicit "unbounded by current rebuild" caveat surfaced by
+  plan 50.
 
 ## 6. Dependencies
 
