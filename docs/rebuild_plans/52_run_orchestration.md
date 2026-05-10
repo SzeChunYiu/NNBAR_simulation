@@ -215,6 +215,37 @@ CLI surface. If L3 later adds a dedicated cut-flow or response-matrix CLI,
 that new command must receive a new template id rather than changing the
 meaning of these archived templates.
 
+
+### 4.4 L1 command-template verifier transcript
+
+Each command template in §4.3 carries a verifier transcript so the A+
+examiner gate can be replayed without trusting the plan prose. The
+transcript is captured when a template is introduced or changed.
+
+```yaml
+l1_command_template_verifier:
+  template_id: validate_reco_cutflow_v1
+  verified_command: python -m nnbar_reconstruction.cli validate-reco --help
+  verified_from: /Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3
+  required_options: [--runs, --all-runs, --json]
+  verifier_exit_status: 0
+  help_output_hash: sha256:<hash>
+  verified_at: <timestamp>
+```
+
+Verifier review rules:
+
+| Rule | Failure caught |
+|---|---|
+| verifier command exits zero | template points to a missing CLI surface |
+| required options are present in help output | template uses an unsupported flag |
+| help hash changes reopen template review | CLI semantics drift after the template is archived |
+| verifier path is the L3 worktree | orchestration repo accidentally checks the wrong module |
+| blocked templates carry no verifier command | unavailable inputs are not represented as fake CLI success |
+
+The verifier transcript is archived with the command-template registry and
+is consumed by plan 53's command-template CI check.
+
 ## 5. Pre-submit checks
 
 - Cluster quota (storage + CPU hours).
@@ -233,6 +264,7 @@ meaning of these archived templates.
   from the plan-50 overlay roll-up.
 - Transcript rows use a §4.3 command template with verified CLI surface or
   an explicit blocked template.
+- Executable L1 command templates carry the §4.4 verifier transcript.
 
 ## 7. Dependencies
 
