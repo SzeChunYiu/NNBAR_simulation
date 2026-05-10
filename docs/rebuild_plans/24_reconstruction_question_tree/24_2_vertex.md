@@ -266,6 +266,56 @@ Leaf V.4: foil-plane projections → event vertex estimate
   allowed truth use: validation_only
   downstream consumers: V.5, P.3, P.7, E.7, S.1; plans 30, 33, 35, 36, 37
 
+#### V.4 Physics derivation
+
+- **What is physically measured:** V.4 estimates the event-level annihilation
+  vertex coordinate from the ensemble of truth-blind V.3 track-to-foil
+  projection points. Truth primary or interaction vertices are validation targets
+  only after the V.4 row is frozen.
+- **Estimator rationale:** if V.3 projection residuals are independent and
+  approximately Gaussian, the maximum-likelihood vertex is the inverse-
+  covariance weighted mean of valid projections; the current mean-of-projections
+  implementation is the equal-covariance limit. Adaptive vertex fitting is the
+  robust extension for outlier tracks from conversions or secondary
+  interactions \cite{ParticleDataGroup:2024RPP,Fruehwirth:2007AdaptiveVertex}.
+- **Statistical character:** variance falls with usable projection count and
+  projection covariance; bias is dominated by V.2/V.3 misalignment, merged
+  tracks, edge leakage, and non-primary outliers. `radial_rms_mm` is therefore a
+  diagnostic of both uncertainty and outlier contamination.
+- **Current implementation anchor:** `aggregate_event_vertices`
+  (`nnbar_reconstruction/vertex_reco.py:90-132`) implements the equal-weight
+  baseline and `_vertex_covariance` (`nnbar_reconstruction/vertex_reco.py:150-154`)
+  publishes the current covariance sidecar.
+
+#### V.4 Logic gaps
+
+1. **Minimum valid projections:** OPEN: compare one-track reproduction mode,
+   two-track physics minimum, and N>=3 robust fits on `sig_foil_v3`; optimise
+   V.4 residual width and V.5 acceptance stability; target resolution date
+   2026-05-24.
+2. **Weighting model:** OPEN: replace equal weights with inverse V.3 covariance
+   after plan 26/30 covariance closure; figure of merit is pull width versus
+   track multiplicity; target resolution date 2026-05-31.
+3. **Outlier rejection / adaptive weight scale:** OPEN: scan adaptive-vertex
+   weight floors and radial-residual cutoffs only inside plan 38 ladder rows;
+   target resolution date 2026-06-07.
+4. **Radial RMS warning threshold:** OPEN: derive from validation residual tails
+   and plan-60 edge bins before any S.1 selection consumes it; target resolution
+   date 2026-05-31.
+
+#### V.4 Closure test for the derivation
+
+1. Run V.4 aggregation on frozen V.3 projection rows with truth vertices absent
+   from the production input.
+2. Persist vertex rows, covariance, skipped-track counts, and method/version
+   hashes before joining validation labels.
+3. In validation-only scoring, compare vertex residuals and pulls against
+   generated vertices in bins of track multiplicity, V.3 covariance, radial RMS,
+   and plan-60 edge state.
+4. Pass when the chosen aggregation method has unbiased residuals within the
+   plan-40 V.4 pull band and production rows are invariant to dropping truth
+   vertices, `Track_ID`, and particle names.
+
 Leaf V.5: event vertex estimate → foil-compatible vertex flag
   inputs (Class A): V.4 vertex table
                     (event_id, vertex_xyz, vertex_covariance,
