@@ -111,8 +111,8 @@ a limitation until calibrated.
 `NNBAR_Detector/src/ElectricField.cc` provides the TPC drift
 field through `ElectricField::GetFieldValue`. `DetectorConstruction.cc`
 attaches the field manager to **only `TPC_output[0]` and
-`TPC_output[1]`** at the current L3 lines 259--260 — the first two LVs
-of the 12 TPC modules.
+`TPC_output[1]`** inside `DetectorConstruction::ConstructSDandField` —
+the first two LVs of the 12 TPC modules.
 
 This is a known incompleteness. The remaining 10 modules drift in
 the world's null field. Plan 25 (vertex) quantifies the consequence
@@ -133,8 +133,9 @@ edges within 5 mm of the field cage).
 
 ## 3. Drift velocity and W-value
 
-The TPC SD (`src/Sensitive_Detector/TPCSD.cc`) uses **W-value = 23.6 eV** at the current L3 line 99 to convert
-step `eDep` to electron count via Poisson sampling. The reference
+The TPC SD (`src/Sensitive_Detector/TPCSD.cc`) uses **W-value = 23.6 eV** inside
+`TPCSD::ProcessHits` to convert step `eDep` to electron count via
+Poisson sampling. The reference
 W-value for the Ar/CO₂ mixture (90/10) is 26–27.4 eV depending on
 the source (PDG; Sauli, *Principles of operation of multiwire
 proportional and drift chambers*, CERN 77–09).
@@ -182,7 +183,7 @@ current source facts.
 
 Geant4 does not natively model gas-gain saturation. The current
 simulation stores the bare ionisation electron count
-(`src/Sensitive_Detector/TPCSD.cc`, current L3 line 142 stores the
+(`TPCSD::ProcessHits` in `src/Sensitive_Detector/TPCSD.cc` stores the
 count through `SetPhotons`); the reconstruction's `dedx` is computed
 from this count and the step length.
 
