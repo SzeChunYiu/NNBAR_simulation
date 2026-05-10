@@ -204,16 +204,25 @@ module and the plan-side contract is now explicit:
 
 ### 6.1 L3 target module, functions, and tests
 
-- **Target module:** add/extend `nnbar_reconstruction/charged.py`.
-- **Public function:** `reconstruct_track_candidates(tpc)`.
-- **Unit-test target:** add a `tests/test_charged_reco.py` case that
-  constructs a synthetic TPC dataframe with Class A columns only and
-  asserts the V.1 schema, `truth_grouping_used=False`, stable
-  `hit_membership_key`, and no `Track_ID` dependency.
-- **Integration-test target:** add a real-output schema row in the same
-  test file that reads a `TPC` table from a registered
-  `Particle_output_*.parquet`/run fixture and asserts the plan 09 column
-  contract before calling the public function.
+- **Target module:** extend `nnbar_reconstruction/charged.py` without
+  reopening Class B truth columns.
+- **Public function:** `reconstruct_track_candidates(tpc)`
+  (`charged.py:245-311`).
+- **Current unit coverage:** `tests/test_charged_reco.py` already
+  asserts truth-column invariance in
+  `test_track_candidates_ignore_forbidden_truth_columns`
+  (`tests/test_charged_reco.py:61-70`) and V.1 schema/quality fields in
+  `test_track_candidates_emit_plan_25_schema_and_quality`
+  (`tests/test_charged_reco.py:73-103`).
+- **Current integration coverage:** the real-output schema path is
+  `test_track_candidates_real_sample_reads_particle_and_tpc_schema`
+  (`tests/test_charged_reco.py:106-117`), which reads paired
+  `Particle_output_*.parquet` / `TPC_output_*.parquet` fixtures before
+  calling the public function.
+- **Remaining test obligation:** any new candidate finder must extend
+  those same tests so `truth_grouping_used=False`,
+  `hit_membership_key`, and no-`Track_ID` production behavior stay
+  invariant across the replacement.
 
 ## 7. Acceptance criteria
 
@@ -222,11 +231,11 @@ module and the plan-side contract is now explicit:
 - §3 alternatives each list source, NNBAR adaptation, and plan 38
   V.1 expected-delta observables for plan 49 to consume.
 - §6 Stage E.1 handoff is actionable for L3: the target public
-  function, unit-test path, integration-test path, and mandatory V.1
-  fields (`candidate_id`, hit indices, anchor, direction, hit count,
-  `cluster_method`, `candidate_quality_state`,
+  function, current unit/integration tests, remaining test obligation,
+  and mandatory V.1 fields (`candidate_id`, hit indices, anchor,
+  direction, hit count, `cluster_method`, `candidate_quality_state`,
   `candidate_failure_reason`, `truth_grouping_used=False`, and
-  `hit_membership_key`) are all named before implementation begins.
+  `hit_membership_key`) are all named before replacement promotion.
 
 ## 8. Dependencies
 
