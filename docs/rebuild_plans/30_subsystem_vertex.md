@@ -237,16 +237,35 @@ to edit L3 code. The matching L3 patch must update
 (`tests/test_vertex_reco.py:103-118`) so synthetic and real-output
 chains assert the provenance and truth-invariance fields.
 
+### 7.2 Stage E.1 promotion invariants
+
+The split V.3/V.4/V.5 hooks are the production fixture boundary for
+vertexing. L3 may replace the projection or aggregation algorithms only
+if these invariants survive in the fixture rows and regression tests:
+
+| Invariant | Current live behavior | Replacement requirement |
+|---|---|---|
+| truth blindness | `project_tracks_to_foil` (`vertex_reco.py:45-87`) consumes V.2 fit rows, and `apply_foil_acceptance` (`vertex_reco.py:157-194`) consumes geometry | V.3/V.4/V.5 rows must be unchanged when `Track_ID`, truth vertices, truth origin labels, and particle names are dropped |
+| fixture separation | projection, event-vertex, and foil-acceptance rows are emitted by separate hooks | replacements must keep V.3, V.4, and V.5 fixtures separately materialized and hash the consumed upstream table for each stage |
+| geometry provenance | `FoilGeometry` (`vertex_reco.py:13-18`) supplies radius, half-thickness, and version | promoted V.5 rows must carry `foil_geometry_version` plus the plan 60 geometry side-car hash and edge-distance fields |
+| aggregation identity | `aggregate_event_vertices` (`vertex_reco.py:90-132`) emits `aggregation_method=mean_projection` | Billoir or adaptive fits must version the aggregation method and land only after a plan 38 V.4 row plus plan 05 decision |
+| covariance semantics | current projection and vertex covariance fields are flattened vectors | promoted rows must either expand component fields or publish a deterministic vector order consumed by plans 40 and 43 |
+| invalid-state visibility | projection and acceptance reasons are explicit, while invalid V.4 rows rely on `vertex_valid=false` | replacements must expose a V.4 invalid reason so plan 47 caveats and plan 66 DQM do not infer failure modes from null coordinates |
+
+These invariants keep the vertex fixture chain independent from closure
+truth and from the legacy `reconstruct_event_vertices`
+(`vertex.py:163-254`) reproduction hook.
+
 ## 8. Acceptance criteria
 
 - §3 migration complete.
 - §4 ladder benchmark recorded.
 - §6 closure passes.
 - §7 Stage E.1 handoff is actionable for L3: the legacy reproduction
-  hook, split V.3/V.4/V.5 fixture hooks, and vertex-reco regression
-  tests are cited; the fixtures remain split from closure artifacts;
-  and vertex-reco tests must prove the foil gate is invariant to
-  dropping Class B truth columns.
+  hook, split V.3/V.4/V.5 fixture hooks, promotion invariants, and
+  vertex-reco regression tests are cited; the fixtures remain split
+  from closure artifacts; and vertex-reco tests must prove the foil
+  gate is invariant to dropping Class B truth columns.
 
 ## 9. Dependencies
 
