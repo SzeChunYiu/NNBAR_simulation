@@ -112,6 +112,22 @@ quotes the selected Class-A replacement and the residual difference.
    `Name`, `Process`, and `Interaction` columns. Any change in
    production cluster membership fails the Class-A gate.
 
+### 4.1 Decision-log stubs for the P.1 replacement
+
+The current ancestry grouping is a load-bearing algorithm. Replacing
+it, and freezing any topological threshold, requires plan-05 DEC
+entries before implementation can be signed:
+
+| DEC stub | Decision to freeze | Required evidence before approval |
+|---|---|---|
+| `DEC-31-CLUSTERER-CHOICE` | Select topological, sliding-window, or particle-flow-style clustering as the production P.1 algorithm | plan-38 ladder row plus the §4 closure table on `cal_singlegamma_v1` |
+| `DEC-31-ADJACENCY-THRESHOLDS` | Freeze adjacency radius / cell-neighbour rule, seed threshold, and split/merge thresholds | N-1 threshold scan showing closure pass margins and π⁰ over-merge rate |
+| `DEC-31-TRUTH-LABEL-QUARANTINE` | Keep `Parent_ID` / `Interaction` ancestry only in validation labels and plan-47 reproduction baselines | plan-01 audit output showing production membership unchanged after Class B columns are dropped |
+
+These are stubs, not approved methodology. The approved entries live in
+`docs/governance/DECISION_LOG.md` once the selected implementation and
+closure evidence exist.
+
 ## 5. Acceptance criteria
 
 - §1 violation removed.
