@@ -78,14 +78,34 @@ PR diff path determines the tier:
   `nnbar_reconstruction/` minus test files.
 - Plan-file YAML header coverage = 100%.
 
-## 5. Acceptance criteria
+## 5. L1 defence-package CI checks
+
+Stage E.3 adds plan-set checks that prevent EM/selection reviewer
+questions from drifting after plans 50-56 are edited. These are CI audit
+requirements, not claims that the final workflow file already exists.
+
+| Check id | Trigger | Assertion | Failure semantics |
+|---|---|---|---|
+| `l1_defence_overlay_schema` | changes to plans 50, 51, 55, or 56 | every L1 overlay/question/note/glossary term has a stable id and a required artifact field | Tier 1 block |
+| `l1_wave4_plan_presence` | changes under `docs/rebuild_plans/` | plans 58, 59, 61, and 64 exist and remain between 200 and 300 lines unless a split plan is declared | Tier 1 block |
+| `l1_no_stale_cli_or_code_cites` | changes to L1-owned plans | grep for `*.py:<line>` and nnbar module commands, then require the A+ verifier transcript or remove the claim | Tier 1 block |
+| `l1_cutflow_identity_guard` | changes to plans 37, 50, 51, or 55 | canonical singular `pass_*` selection columns remain named in defence overlays and note annexes | Tier 1 block |
+| `l1_defence_rerun_manifest` | Tier 3 weekly | plan-52 defence rerun bundle has rows for EM chain, selection, pile-up, strange, TOF, and Bayesian cross-checks | Tier 3 tracking issue if incomplete |
+
+The checks are deliberately text-and-manifest based so they can run
+before L3 has implemented every statistics or reconstruction producer. A
+missing downstream artifact is represented as a blocked row with a named
+owner, not as a skipped CI check.
+
+## 6. Acceptance criteria
 
 - §1 tiers implemented in `.github/workflows/` (or equivalent).
 - §2 triggering wired by path filter.
 - §3 failure semantics documented and enforced.
 - §4 coverage targets met on `main`.
+- §5 L1 defence-package CI checks implemented for Stage E.3 plan edits.
 
-## 6. Risks
+## 7. Risks
 
 - *Risk:* nightly load is heavy; cluster contention.
   *Mitigation:* nightly Tier 2 batches across 24 hours; Tier 3
@@ -93,12 +113,12 @@ PR diff path determines the tier:
 - *Risk:* smoke samples drift from being representative.
   *Mitigation:* Tier 3 ledger refresh is the production check.
 
-## 7. Dependencies
+## 8. Dependencies
 
 - **01, 03, 19, 47** — checks consumed by tiers.
 - *Consumed by:* every other plan's "CI rule" entry.
 
-## 8. References
+## 9. References
 
 - pytest + GitHub Actions standard practice.
 - ATLAS / CMS CI conventions.
