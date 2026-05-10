@@ -82,6 +82,7 @@ l1_defence_inventory:
       caveat: null
       staleness_summary_hash: sha256:<hash-or-null>
       command_template_ids: [validate_reco_cutflow_v1]
+      command_template_verifier_hashes: [sha256:<hash>]
 ```
 
 Inventory review rules:
@@ -91,6 +92,7 @@ Inventory review rules:
 | every §1.1 pack member appears exactly once | DOI omits a reviewer-critical evidence class |
 | `present` rows have at least one hash | archived artifact cannot be integrity-checked |
 | command-template ids are archived with rerun rows | future rerun cannot know which verified command contract applied |
+| command-template verifier hashes are archived | future rerun cannot prove the command surface was verified |
 | `stale` rows keep package and staleness hashes | future readers cannot tell why archived evidence was not quote-ready |
 | `blocked` rows carry a caveat and owning plan | open limitations disappear at freeze |
 | retired parquet rows keep manifests | retention policy removes replay provenance |
@@ -122,6 +124,7 @@ l1_archive_drill:
     - open_plan50_defence_package
     - follow_plan52_rerun_manifest
     - inspect_plan52_execution_transcript
+    - inspect_plan52_command_template_verifier
     - compare_plan55_note_annex
   result: pass | fail
   failure_reason: null
@@ -136,6 +139,7 @@ Drill review rules:
 | blocked rows are included in the drill | archive hides unresolved L1 caveats |
 | inventory and package hashes are compared | DOI package and local freeze diverge |
 | rerun transcript is inspected after the manifest | archive proves planned reruns but not executed reruns |
+| command-template verifier is inspected after the transcript | archive preserves execution output but not the verified command contract |
 | note annex is checked against package overlay | thesis prose cannot be traced to evidence |
 
 The drill transcript is archived beside the inventory manifest and is
