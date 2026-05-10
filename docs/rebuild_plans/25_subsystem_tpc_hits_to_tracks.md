@@ -30,6 +30,30 @@ PID. Improvements at this leaf propagate to V.2, V.3, V.4, C.1, …
 
 Per plan 24 §2.1 V.1 schema:
 
+### 1.1 Leaf schema block
+
+Leaf V.1 — TPC hits to track candidates
+
+- **inputs (Class A):** `Event_ID`, `x`, `y`, `z`, `t`, `eDep`,
+  `photons`, `px`, `py`, `pz`, `xHitID`, `module_ID`, `step_info`,
+  `vol_name`.
+- **forbidden (Class B):** `Track_ID`, `Parent_ID`, `Name`,
+  `origin_vol_name`.
+- **decision rule:** build track candidates from spatially and
+  temporally compatible Class A TPC hits only. The current
+  `Track_ID` grouping is a reproduction baseline and validation
+  oracle, not an allowed production grouping rule.
+- **output schema:** `candidate_id: int`, `event_id: int`,
+  `hit_indices: list[int]`, `anchor_xyz: float[3]`,
+  `direction_xyz: float[3]`, `n_hits: int`, `chi2_seed: float`.
+- **allowed truth use:** `validation_only` for closure matching and
+  ladder scoring; no Class B column may enter the production V.1
+  candidate builder.
+- **downstream consumers:** plans 26, 30, 38, and the charged-object
+  reconstruction inputs consumed by plans 27–29.
+
+### 1.2 Column contract
+
 | Class A inputs (TPC parquet) | Forbidden Class B |
 |---|---|
 | `Event_ID`, `x`, `y`, `z`, `t`, `eDep`, `photons` (= electrons), `px`, `py`, `pz`, `xHitID`, `module_ID`, `step_info`, `vol_name` | `Track_ID`, `Parent_ID`, `Name`, `origin_vol_name` |
