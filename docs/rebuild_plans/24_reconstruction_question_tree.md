@@ -210,6 +210,26 @@ Plan 08 §3.4 documents the current code path. Plan 01 §4 audit
 flags the current `Name`-gated PID as a Class B violation; the leaf
 C.1 exit criterion is the migration of that gate.
 
+Leaf C.1: V.1/V.2 tracks → charged-track candidates
+  inputs (Class A): V.1 candidate-track table, V.2 direction table,
+                    and referenced TPC columns
+                    (Event_ID, x, y, z, t, eDep, photons, px, py,
+                    pz, xHitID, module_ID, step_info, vol_name)
+  forbidden (Class B): Name, Track_ID, Parent_ID, origin_vol_name,
+                       particle_x, particle_y, particle_z
+  decision rule: admit reconstructed track candidates by Class A
+                 quality cuts (hit count, fitted direction, χ²/ndf,
+                 and detector geometry) rather than by truth particle
+                 name; plan 08 §3.4/§3.7 documents the current
+                 `Name` gate that must move to validation only.
+  output schema: {event_id: int64, charged_candidate_id: int64,
+                  candidate_id: int64, anchor_xyz: float64[3],
+                  direction_xyz: float64[3], n_tpc_hits: int32,
+                  track_quality: float64,
+                  charged_candidate_valid: bool}
+  allowed truth use: validation_only
+  downstream consumers: C.2, C.3, C.4, C.5, C.6; plans 27, 28, 29
+
 ### Next measurement (charged branch)
 
 Per-species reconstructed efficiency on `cal_singlepion*` and
