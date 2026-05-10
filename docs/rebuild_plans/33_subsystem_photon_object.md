@@ -331,6 +331,19 @@ Initial downstream-handoff examples:
 | `fragment_merge_shadow` | merged-photon rows written beside no-merge baseline | plan 34/38 may compare pair multiplicity and over-merge rates | baseline photon ids and source clusters remain reviewable |
 | `scint_only_selection_guard` | scintillator-only photons carry `leadglass_fraction = 0` | plan 34/37 must reject them from Ch 8 π⁰ selection | impact table must show zero accidental accepted candidates |
 
+Initial production-promotion checklist:
+
+| `promotion_check_id` | Evidence required | Blocks promotion when missing |
+|---|---|---|
+| `p33_fourvector_contract_present` | stable photon id, source clusters, direction method, and energy method | plan 34 cannot recompute pair kinematics reproducibly |
+| `p33_all_energy_bins_pass` | closure rows for every required energy bin and direction-source category | photon response is not bounded across the calibration range |
+| `p33_fragment_policy_stable` | duplicate/over-merge metrics and Class-B drop hash for fragment handling | π⁰ daughter separation can change under hidden provenance |
+| `p33_scint_only_guard_audited` | impact rows for scintillator-only and low lead-glass-fraction photons | Ch 8 selection may accept unsupported photon rows |
+
+Production P.3/P.4 promotion requires all four checks plus signed DEC
+ids for direction, energy, and merge policy. Missing checks keep the
+method as a plan-38 diagnostic rather than a plan-34 input.
+
 ## 7. Acceptance criteria
 
 - §2, §3 produce photon four-vector with stated semantics.
