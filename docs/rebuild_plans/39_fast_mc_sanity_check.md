@@ -60,7 +60,10 @@ the discrepancy isolates either an under-modelled detector response, a
 row-alignment/selection mismatch, or a biased reconstruction leaf. The
 K-S comparison is useful here because it detects shape differences
 without assuming the observable is Gaussian, while mean and RMS metrics
-retain interpretable bias and resolution checks.
+retain interpretable bias and resolution checks. The statistical
+conventions for these goodness-of-fit and uncertainty checks follow the
+PDG statistics review and likelihood-based HEP testing references
+`\cite{ParticleDataGroup:2024RPP,Cowan:2011Likelihood}`.
 
 **Statistical character.** The smearing seed introduces Monte Carlo
 variance, and finite row counts broaden the K-S and moment estimates.
@@ -68,6 +71,8 @@ The dominant risk is systematic leakage: constants tuned on the same
 reco distribution would make the closure circular. Therefore every
 smearing constant must come from plan 18, plan 04, external detector
 requirements, or a prior registry entry before the row is evaluated.
+This independence rule is the plan-level guard that keeps the fast-MC
+comparison from becoming a post-hoc fit.
 
 ### Logic gaps
 
