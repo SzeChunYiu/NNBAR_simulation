@@ -14,7 +14,7 @@ acceptance:
 risks:
   - {risk: adding fragment merging can lose well-separated π⁰ daughters at small opening angles, mitigation: §3 angular threshold tuned and DEC-logged}
 estimated_effort: M
-last_updated: 2026-05-09
+last_updated: 2026-05-10
 ---
 
 # Subsystem — photon object
@@ -61,6 +61,20 @@ plan 31).
 When no event vertex is reconstructed (sparse-table fallback), use
 origin → centroid and set the fallback flag. The current source keeps
 that fallback inside `reconstruct_photon_objects` (`photon.py:60-201`).
+
+### 2.1 Direction fallback contract
+
+Every photon row must make the direction source auditable without
+inspecting upstream tables:
+
+| Condition | Required row values | Reporting use |
+|---|---|---|
+| reconstructed event vertex exists | `used_reconstructed_vertex = true`; `vertex_x/y/z` are the plan-30 vertex coordinates; `photon_path_length_cm = |cluster - vertex|` | primary P.3 direction closure |
+| no reconstructed vertex exists | `used_reconstructed_vertex = false`; `vertex_x/y/z = 0`; direction is origin→centroid; row contributes to the fallback-origin fraction | sparse-data fallback audit |
+
+The fallback flag is a production column, not a truth label. Closure
+plots must report angular pulls separately for vertex-sourced and
+origin-fallback rows before the fallback policy can be frozen.
 
 Truth canonical (plan 38 §3.1): gamma momentum direction at
 production.
