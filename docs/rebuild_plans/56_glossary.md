@@ -257,13 +257,27 @@ l1_glossary_audit:
         - defence_routing
       thesis_delta: none | flagged
       owner: L1
+    - term_group: physics-study shorthand
+      defined_in_section: "1.1"
+      terms: [pile-up / L11, V0 topology, K_S, Lambda, Sigma, TOF, TOF sidecar, Jeffreys prior, flat prior, prior sensitivity]
+      source_plans: [50, 55, 58, 59, 61, 64]
+      required_contexts: [defence_overlay, note_annex, glossary_audit]
+      thesis_delta: none | flagged
+      owner: L1
+    - term_group: defence-workflow shorthand
+      defined_in_section: "1.1"
+      terms: [defence overlay, rerun transcript, command-template id, CLI verifier transcript, blocked template, stale package]
+      source_plans: [50, 52, 53, 54, 55]
+      required_contexts: [defence_package_rollup, rerun_transcript, command_template_registry, archive_inventory]
+      thesis_delta: none | flagged
+      owner: L1
 ```
 
 Audit review rules:
 
 | Rule | Failure caught |
 |---|---|
-| every §1.1 term appears in the fixture | glossary entry cannot be traced into defence evidence |
+| every §1.1 term appears in the fixture as either a `term` row or a `term_group` member | glossary entry cannot be traced into defence evidence |
 | every fixture term has at least one source plan | term is defined without an accountable plan owner |
 | every `thesis_delta: flagged` row names a reviewer note | thesis-facing language diverges without explanation |
 | `pass_* columns` always lists plan 37 | cut-flow terminology drifts away from the canonical selection plan |
