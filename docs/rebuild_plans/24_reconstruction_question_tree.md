@@ -146,6 +146,27 @@ Truth labels can join only in downstream validation, unfolding, or
 ledger artifacts after the production table and manifest hashes are
 frozen.
 
+### 9.1 Reviewer verification checklist
+
+Before a plan-47 ledger row consumes any L0 reconstruction leaf, the
+reviewer runs these checks against the current worktrees:
+
+1. `grep -rE 'reconstruction\.py:[0-9]' docs/rebuild_plans/{24,25,26,27,28,29,30}*`
+   returns no stale monolithic citations.
+2. Every Python citation in L0 plans resolves to an existing
+   `nnbar_reconstruction/` or `tests/` file, with a `def` or `class`
+   inside the cited range.
+3. The live CLI help surfaces used by L0 plans exist for
+   `summarize`, `response-matrix`, `cutflow`, `validate-reco`, `dqm`,
+   and `scan-pid`; missing help output blocks adding a runnable command
+   to any plan.
+4. Plans 25-30 each contain a Stage E.1 verification command and
+   artifact manifest schema; plans 41-43, 60, and 66 each contain a
+   software-handoff manifest schema for their downstream study or
+   operations artifacts.
+5. All L0 writable files remain below the 500-line cap and have no
+   unresolved work-marker text or fill-in instructions.
+
 Acceptance rule: before any plan-47 ledger row cites a plan-24 leaf,
 that leaf's family must have either an implementation handoff
 subsystem plan or a software handoff study/operations plan, and the
