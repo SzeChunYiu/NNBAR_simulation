@@ -122,13 +122,14 @@ position/dimension/material level in v0.2.
 
 ## 2. Geometry verifier gap
 
-A+ verifier status on 2026-05-10: the L3 CLI exposes only
-`summarize`, `scan-pid`, `response-matrix`, and `validate-reco`;
-`geometry-audit` is not a registered subcommand. The files
-`NNBAR_Detector/docs/Detector_Geometry_Reference.md` and
-`nnbar_reconstruction/geometry_audit.py` are also absent in the L3
-worktree. Therefore Plan 16 must treat geometry-audit as a blocking
-implementation gap, not as an existing command.
+A+ verifier status on 2026-05-10: the L3 CLI exposes
+`summarize`, `scan-pid`, `response-matrix`, `cutflow`, `dqm`, and
+`validate-reco`; `geometry-audit` is not a registered subcommand. A
+L3 worktree file-existence check also finds no
+`docs/Detector_Geometry_Reference.md` and no
+`nnbar_reconstruction/geometry_audit.py`. Therefore Plan 16 must treat
+geometry-audit as a blocking implementation gap, not as an existing
+command.
 
 Before any sample is registered as `frozen` (plan 03 §6), L3/Sim
 Production must either restore a geometry-audit implementation or
