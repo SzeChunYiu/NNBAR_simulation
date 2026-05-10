@@ -310,6 +310,23 @@
       "candidate_files": [
         "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/charged.py"
       ],
+      "citation": "nnbar_reconstruction/charged.py:245-311",
+      "doc": "docs/rebuild_plans/25_subsystem_tpc_hits_to_tracks.md",
+      "doc_line": 287,
+      "end": 311,
+      "identifier": "reconstruct_track_candidates",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        245
+      ],
+      "source_path": "nnbar_reconstruction/charged.py",
+      "start": 245,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/charged.py"
+      ],
       "citation": "nnbar_reconstruction/charged.py:62-81",
       "doc": "docs/rebuild_plans/26_subsystem_track_fit_and_pulls.md",
       "doc_line": 103,
@@ -1379,6 +1396,23 @@
     },
     {
       "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/charged_pid.py"
+      ],
+      "citation": "nnbar_reconstruction/charged_pid.py:60-118",
+      "doc": "docs/rebuild_plans/29_subsystem_charged_pid.md",
+      "doc_line": 290,
+      "end": 118,
+      "identifier": "classify_charged_candidates",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        60
+      ],
+      "source_path": "nnbar_reconstruction/charged_pid.py",
+      "start": 60,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
         "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/vertex.py"
       ],
       "citation": "nnbar_reconstruction/vertex.py:163-254",
@@ -1732,6 +1766,23 @@
       ],
       "source_path": "nnbar_reconstruction/vertex.py",
       "start": 163,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/vertex_reco.py"
+      ],
+      "citation": "nnbar_reconstruction/vertex_reco.py:45-194",
+      "doc": "docs/rebuild_plans/30_subsystem_vertex.md",
+      "doc_line": 275,
+      "end": 194,
+      "identifier": "apply_foil_acceptance",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        157
+      ],
+      "source_path": "nnbar_reconstruction/vertex_reco.py",
+      "start": 45,
       "status": "ok"
     },
     {
@@ -4056,9 +4107,9 @@
     "file_not_found": 0,
     "mismatch": 0,
     "missing_identifier": 0,
-    "ok": 238,
+    "ok": 241,
     "skipped": 0,
     "symbol_not_found": 0,
-    "total": 238
+    "total": 241
   }
 }

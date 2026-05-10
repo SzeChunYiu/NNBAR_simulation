@@ -268,7 +268,26 @@ to edit L3 code. The matching L3 replacement patch must update
 (`tests/test_charged_reco.py:106-117`) so both synthetic and
 real-output chains prove the invariants.
 
-### 6.4 Stage E.1 verification command
+### 6.4 Stage E.1 producer/consumer contract
+
+The L3 V.1 patch must define the first charged-side table boundary so
+V.2, C.2, C.3, C.5, plan 40, and plan 66 can consume candidate rows
+without reopening TPC truth columns:
+
+| Contract item | Required behavior | Downstream check |
+|---|---|---|
+| input table | consume Class A TPC rows keyed by `(event_id, hit_index)` plus deterministic row order | hit membership is reproducible after dropping `Track_ID`, `Parent_ID`, `Name`, and `origin_vol_name` |
+| output key | emit one V.1 row keyed by `(event_id, candidate_id, hit_membership_key)` for each attempted candidate | V.2/C.2/C.3 joins never infer a candidate from raw TPC rows |
+| hit sidecar | write ordered hit indices keyed by `(event_id, candidate_id, hit_membership_key)` | plan 40 and plan 47 can audit residuals and candidate multiplicity without re-running clustering |
+| finder provenance | record `cluster_method`, candidate numbering rule, and input/output hashes in the manifest | plan 05 can audit DBSCAN, Hough, or Kalman-seeded replacements before promotion |
+| quality taxonomy | emit `candidate_quality_state` and `candidate_failure_reason` for sparse or invalid candidates | plan 26 and plan 66 consume explicit quality states, not missing-row inference |
+| truth diagnostic boundary | allow legacy `Track_ID` grouping only in validation artifacts marked `legacy_track_id_diagnostic` | production V.1 manifests keep `truth_grouping_used=false` before plan 38 scoring |
+
+This contract keeps `reconstruct_track_candidates`
+(`nnbar_reconstruction/charged.py:245-311`) as the Stage E.1 V.1
+producer until L3 replaces the finder behind the same keys.
+
+### 6.5 Stage E.1 verification command
 
 L3's V.1 patch is promotable only when the charged-reco test slice is
 run with selectors that exercise the synthetic truth-drop, schema, and
@@ -288,7 +307,7 @@ fixture is unavailable, the patch is not promoted; it remains a local
 unit-test-only bridge until a real paired `Particle_output`/`TPC_output`
 fixture is present.
 
-### 6.5 Stage E.1 artifact manifest schema
+### 6.6 Stage E.1 artifact manifest schema
 
 The V.1 producer must write a small manifest next to the candidate table
 so downstream plans can prove which hit grouping rule was active:
@@ -320,8 +339,8 @@ trust V.1 row counts or candidate-quality fractions.
   V.1 expected-delta observables for plan 49 to consume.
 - §6 Stage E.1 handoff is actionable for L3: the target public
   function, current unit/integration tests, remaining test obligation,
-  code-gap checklist, promotion invariants, verification command,
-  artifact manifest schema, and mandatory V.1 fields (`candidate_id`, hit indices, anchor,
+  code-gap checklist, promotion invariants, producer/consumer contract,
+  verification command, artifact manifest schema, and mandatory V.1 fields (`candidate_id`, hit indices, anchor,
   direction, hit count, `cluster_method`, `candidate_quality_state`,
   `candidate_failure_reason`, `truth_grouping_used=False`, and
   `hit_membership_key`) are all named before replacement promotion.

@@ -2,8 +2,8 @@
 
 ## Summary
 
-- `total`: 238
-- `ok`: 238
+- `total`: 241
+- `ok`: 241
 - `skipped`: 0
 - `missing_identifier`: 0
 - `mismatch`: 0
@@ -31,6 +31,7 @@
 - ✅ `ok` docs/rebuild_plans/25_subsystem_tpc_hits_to_tracks.md:264 `test_track_candidates_ignore_forbidden_truth_columns` `tests/test_charged_reco.py:61-70` — signature line falls inside cited range; signature lines: 61
 - ✅ `ok` docs/rebuild_plans/25_subsystem_tpc_hits_to_tracks.md:266 `test_track_candidates_emit_plan_25_schema_and_quality` `tests/test_charged_reco.py:73-103` — signature line falls inside cited range; signature lines: 73
 - ✅ `ok` docs/rebuild_plans/25_subsystem_tpc_hits_to_tracks.md:268 `test_track_candidates_real_sample_reads_particle_and_tpc_schema` `tests/test_charged_reco.py:106-117` — signature line falls inside cited range; signature lines: 106
+- ✅ `ok` docs/rebuild_plans/25_subsystem_tpc_hits_to_tracks.md:287 `reconstruct_track_candidates` `nnbar_reconstruction/charged.py:245-311` — signature line falls inside cited range; signature lines: 245
 - ✅ `ok` docs/rebuild_plans/26_subsystem_track_fit_and_pulls.md:103 `_track_anchor_and_direction` `nnbar_reconstruction/charged.py:62-81` — signature line falls inside cited range; signature lines: 62
 - ✅ `ok` docs/rebuild_plans/26_subsystem_track_fit_and_pulls.md:105 `fit_track_candidates` `nnbar_reconstruction/track_fit.py:55-117` — signature line falls inside cited range; signature lines: 55
 - ✅ `ok` docs/rebuild_plans/26_subsystem_track_fit_and_pulls.md:107 `_fit_line` `nnbar_reconstruction/track_fit.py:32-43` — signature line falls inside cited range; signature lines: 32
@@ -94,6 +95,7 @@
 - ✅ `ok` docs/rebuild_plans/29_subsystem_charged_pid.md:252 `test_classify_charged_candidates_real_sample_has_plan_29_schema` `tests/test_charged_reco.py:331-350` — signature line falls inside cited range; signature lines: 331
 - ✅ `ok` docs/rebuild_plans/29_subsystem_charged_pid.md:263 `classify_charged_candidates` `nnbar_reconstruction/charged_pid.py:60-118` — signature line falls inside cited range; signature lines: 60
 - ✅ `ok` docs/rebuild_plans/29_subsystem_charged_pid.md:264 `scan_charged_pid_thresholds` `nnbar_reconstruction/calibration.py:27-134` — signature line falls inside cited range; signature lines: 27
+- ✅ `ok` docs/rebuild_plans/29_subsystem_charged_pid.md:290 `classify_charged_candidates` `nnbar_reconstruction/charged_pid.py:60-118` — signature line falls inside cited range; signature lines: 60
 - ✅ `ok` docs/rebuild_plans/30_subsystem_vertex.md:88 `reconstruct_event_vertices` `nnbar_reconstruction/vertex.py:163-254` — signature line falls inside cited range; signature lines: 163
 - ✅ `ok` docs/rebuild_plans/30_subsystem_vertex.md:147 `reconstruct_event_vertices` `nnbar_reconstruction/vertex.py:163-254` — signature line falls inside cited range; signature lines: 163
 - ✅ `ok` docs/rebuild_plans/30_subsystem_vertex.md:175 `reconstruct_event_vertices` `nnbar_reconstruction/vertex.py:163-254` — signature line falls inside cited range; signature lines: 163
@@ -115,6 +117,7 @@
 - ✅ `ok` docs/rebuild_plans/30_subsystem_vertex.md:250 `FoilGeometry` `nnbar_reconstruction/vertex_reco.py:13-18` — signature line falls inside cited range; signature lines: 13
 - ✅ `ok` docs/rebuild_plans/30_subsystem_vertex.md:251 `aggregate_event_vertices` `nnbar_reconstruction/vertex_reco.py:90-132` — signature line falls inside cited range; signature lines: 90
 - ✅ `ok` docs/rebuild_plans/30_subsystem_vertex.md:257 `reconstruct_event_vertices` `nnbar_reconstruction/vertex.py:163-254` — signature line falls inside cited range; signature lines: 163
+- ✅ `ok` docs/rebuild_plans/30_subsystem_vertex.md:275 `apply_foil_acceptance` `nnbar_reconstruction/vertex_reco.py:45-194` — signature line falls inside cited range; signature lines: 157
 - ✅ `ok` docs/rebuild_plans/31_subsystem_calorimeter_clustering.md:31 `reconstruct_photon_objects` `photon.py:60-201` — signature line falls inside cited range; signature lines: 60
 - ✅ `ok` docs/rebuild_plans/31_subsystem_calorimeter_clustering.md:34 `_weighted_centroid` `photon.py:28-48` — signature line falls inside cited range; signature lines: 28
 - ✅ `ok` docs/rebuild_plans/31_subsystem_calorimeter_clustering.md:58 `reconstruct_photon_objects` `photon.py:60-201` — signature line falls inside cited range; signature lines: 60
