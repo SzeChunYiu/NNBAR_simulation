@@ -199,6 +199,21 @@ explicit remaining gates:
 6. Plan 66 consumes range quality, edge-distance, and association-method
    fractions once the §4 fields are present.
 
+### 5.1 L3 target module, functions, and tests
+
+- **Target module:** add/extend `nnbar_reconstruction/range_reco.py`.
+- **Public function:** `reconstruct_range_table(candidates, fits,
+  scintillator)`.
+- **Unit-test target:** add a `tests/test_charged_reco.py` case that
+  builds synthetic candidates, V.2 fit rows, and scintillator hits;
+  asserts projected `range_cm`, `range_edep_mev`,
+  `bragg_peak_position_cm`, invalid-row behavior, and no `Track_ID`
+  dependency.
+- **Integration-test target:** add a real-output schema row that chains
+  plan-25 candidates and plan-26 fits into `reconstruct_range_table` on
+  a registered scintillator fixture and verifies the plan 09 Class A
+  columns are sufficient.
+
 ## 6. Acceptance criteria
 
 - §3 closure passes.
