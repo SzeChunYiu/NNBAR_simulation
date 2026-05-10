@@ -129,7 +129,7 @@ closure labels but must not change any production event variable.
 
 This map is the implementation checklist: a future code row may add target
 columns before DEC approval, but plan-37 may not consume new E.6 or
-fit-aware E.7 fields until the relevant §5.1 DEC is signed.
+fit-aware E.7 fields until the relevant §5.2 DEC is signed.
 
 ## 3. Hemisphere convention
 
@@ -176,7 +176,28 @@ against the thesis baseline without deleting the reproduced Ch 10 inputs.
    dropped. Event-variable outputs must be unchanged except for
    closure-only comparison columns.
 
-### 5.1 Decision-log stubs for variable use
+### 5.1 Machine-readable event-variable closure fixture
+
+Each event-variable method bundle writes one closure-result row per
+sample and variable group:
+
+| Field | Required content | Review rule |
+|---|---|---|
+| `event_variable_method_id` | source/method tag from §2.3 | must match the event fixture rows under test |
+| `dataset_id` | `sig_foil_v3` or plan-41 signal/background sample | every quoted sample gets a row |
+| `variable_group` | E.1/E.2, E.3/E.4, E.5/E.6, E.7, E.8, or E.9 | groups map back to §2 leaves |
+| `n_events`, `n_valid_events` | denominator and finite-value count | sparse cases must be counted explicitly |
+| `visible_mass_bias_mev`, `visible_mass_pull_width` | E.7 primary closure metrics | required for E.7 rows and fit-aware comparisons |
+| `shape_test_statistic`, `shape_test_pvalue` | KS or χ² comparison for distributions | required for added E.6 rows |
+| `multiplicity_agreement_rate` | Wilson-interval category agreement | required for E.9 rows |
+| `nonfinite_outside_sparse_count` | invalid values outside declared sparse cases | must be zero for production rows |
+| `class_b_drop_hash` | rerun artifact without diagnostic truth columns | production event variables must match |
+| `closure_status` | `pass`, `fail`, or `diagnostic_only` | only `pass` rows may support plan-37 use |
+
+Rows for new E.6 variables or fit-aware E.7 remain diagnostic until the
+matching plan-38 ladder row and §5.2 DEC evidence are present.
+
+### 5.2 Decision-log stubs for variable use
 
 Plan 36 may add variables, change the source of an existing variable,
 or make an event-shape variable eligible for plan-37 selection. Those
