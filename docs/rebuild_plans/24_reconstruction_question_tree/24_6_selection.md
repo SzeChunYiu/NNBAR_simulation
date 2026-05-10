@@ -58,6 +58,24 @@ Leaf S.1: vertex + scintillator energy → pre-selection flags
   allowed truth use: validation_only
   downstream consumers: S.6; plans 37, 41, 47
 
+Leaf S.2: reconstructed pion counts → pion-multiplicity cut
+  inputs (Class A): E.9 object multiplicities, C.5/C.6 charged PID
+                    outputs, P.5-P.7 selected π0 candidates, and plan
+                    37 pion-count threshold
+  forbidden (Class B): truth pion multiplicity, truth particle Name,
+                       Track_ID, Parent_ID, Interaction ancestry
+  decision rule: count reconstructed charged-pion and π0 candidates
+                 that survive their observable validity gates and pass
+                 the licentiate baseline when pion multiplicity is at
+                 least one; truth final-state multiplicity is only a
+                 validation target.
+  output schema: {event_id: int64, n_reconstructed_pions: int32,
+                  n_charged_pions: int32, n_pi0: int32,
+                  pion_count_threshold: int32,
+                  pass_pion_count: bool}
+  allowed truth use: validation_only
+  downstream consumers: S.6; plans 37, 41, 47
+
 ### Next measurement (selection branch)
 
 Reproduce the licentiate's cut-flow on the registered signal sample
