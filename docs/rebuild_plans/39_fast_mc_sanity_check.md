@@ -354,10 +354,10 @@ alignment.
 
 ## 11. A+ verifier transcript
 
-Run these before editing any file/function/CLI claim in this plan:
+Run these from `/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3`
+before editing any file/function/CLI claim in this plan:
 
 ```bash
-cd /Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3
 rtk ls nnbar_reconstruction/fast_mc/__init__.py \
    nnbar_reconstruction/fast_mc/closure_test.py \
    tests/test_fast_mc.py
