@@ -300,6 +300,15 @@ reproduction baseline:
 | `DEC-33-FRAGMENT-MERGE` | Freeze truth-blind fragment-merge thresholds and duplicate policy | duplicate/over-merge rate scan and plan-01 audit proving no truth-label dependence |
 | `DEC-33-SCINT-ONLY-PHOTONS` | Freeze `leadglass_fraction = 0` semantics and downstream handling for scintillator-only photon rows | plan-34/37 impact table showing they do not enter Ch 8 π⁰ selection accidentally |
 
+Initial scintillator-only downstream-impact examples:
+
+| `impact_case_id` | Photon row pattern | Required downstream handling | Review guard |
+|---|---|---|---|
+| `scint_only_no_lg` | `leadglass_edep = 0`, `scintillator_edep > 0`, `leadglass_fraction = 0` | row may contribute to photon-efficiency diagnostics but cannot seed the Ch 8 π⁰ selection | plan-34/37 impact table shows zero accepted Ch 8 candidates from this case |
+| `low_lg_fraction_edge` | both components positive but `leadglass_fraction < 0.55` | row remains a valid photon-object row while failing the Ch 8 lead-glass fraction guard | cut-flow audit separates object creation from selection rejection |
+| `merged_with_lg_cluster` | scintillator-heavy fragment merges with a lead-glass fragment under an approved threshold | recompute `leadglass_fraction` from merged calibrated components rather than forcing zero | `DEC-33-FRAGMENT-MERGE` and `DEC-33-SCINT-ONLY-PHOTONS` evidence agree on the merged row |
+| `legacy_truth_descendant_scint` | current reproduction alias supplies same-key scintillator energy without a target P.1 cluster sum | diagnostic only; cannot approve production P.4 energy or Ch 8 selection behavior | plan-38 ladder labels it non-production until plan-31/32 inputs exist |
+
 Until approval, alternative direction/energy/merge outputs remain
 plan-38 ladder rows; the Ch 10 reproduction keeps the current
 baseline semantics.
