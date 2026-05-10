@@ -123,6 +123,21 @@ beam sub-channel samples, and truth-sidecar leakage. A reco-object-only
 overlay can diagnose stress but cannot close L11 for thesis-facing
 claims.
 
+The Wave-6 overlay derivation ledger is:
+
+| Overlay leaf | Truth-side quantity | Estimator rationale | Dominant uncertainty | Closure assertion |
+|---|---|---|---|---|
+| `pileup.time_model` | real ESS pulse phase and live-time window for each candidate | 14 Hz period and 2.86 ms long pulse define the minimal clock needed to separate in-pulse beam activity from period-wide cosmics | rectangular-profile approximation and clock/timing resolution | every study row names `time_model_id` and carries L11 until the model DEC is signed |
+| `pileup.source_multiplicity` | number of cosmic and beam-background events overlapping one pulse/window | Poisson rate folding is the baseline estimator for independent rare overlays with explicit per-event/per-pulse/per-second units | source normalisation and possible correlated beam substructure | rate rows must show unit conversion factors before a multiplicity draw is accepted |
+| `pileup.hit_overlay` | merged detector-hit content seen by reconstruction in one synthetic event | hit-level merging is the only path that can stress reconstruction, occupancy, and selection without truth labels | missing detector jitter and high-occupancy tails | reco-object overlays remain diagnostic and cannot close L11 |
+| `pileup.occupancy_response` | subsystem occupancy and event-variable shifts induced by overlays | compare baseline versus overlaid reconstruction with the same plan-37 selection boundary | p95/p99 occupancy tails and sparse survivor intervals | TPC, scintillator, lead-glass, and cut-flow deltas are all saved with intervals |
+| `pileup.limitation_handoff` | residual limitation status after overlay closure | L11 closes only if rates, time model, hit-level reconstruction, and intervalled survivor evidence all exist | missing source samples or unsigned normalisation DECs | plan-47/50 handoffs preserve blocked/caveat rows instead of quoting negligible pile-up |
+
+These leaves keep pile-up as an exposure-and-occupancy calculation, not a
+post-hoc prose caveat. Each quoted pile-up result must be reproducible
+from source rates, a deterministic overlay seed, and before/after
+reconstruction artifacts.
+
 #### Logic gaps
 
 | Parameter | Status before production | Closure study / target date |
