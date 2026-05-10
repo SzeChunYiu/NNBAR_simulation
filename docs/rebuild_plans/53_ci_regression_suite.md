@@ -86,7 +86,7 @@ requirements, not claims that the final workflow file already exists.
 
 | Check id | Trigger | Assertion | Failure semantics |
 |---|---|---|---|
-| `l1_defence_overlay_schema` | changes to plans 50, 51, 55, or 56 | every L1 overlay/question/note/glossary term has a stable id and a required artifact field | Tier 1 block |
+| `l1_defence_overlay_schema` | changes to plans 50, 51, 55, or 56 | every L1 overlay/question/note/glossary term has a stable id and required artifact field, and Plan 50's `required_l1_overlay_ids` set matches all routed L1 overlays | Tier 1 block |
 | `l1_review_evidence_links` | changes to plan 50 | package schema exposes overlay roll-up, owner sign-off, rerun manifest, rerun transcript, command-template ids, verifier hashes, CI report, archive inventory/drill, note annex, glossary audit, staleness summary, review-artifact hashes, and staleness status | Tier 1 block |
 | `l1_question_status_transition` | changes to plan 51 | answered L1 reviewer-question rows carry artifact, overlay, owner sign-off, review-evidence links, review-artifact hashes, and rerun manifest/transcript/template ids plus verifier hash when refreshed evidence is claimed | Tier 1 block |
 | `l1_wave4_plan_presence` | changes under `docs/rebuild_plans/` | plans 58, 59, 61, and 64 exist and remain between 200 and 300 lines unless a split plan is declared | Tier 1 block |
@@ -242,6 +242,9 @@ l1_defence_ci_report:
         - docs/rebuild_plans/56_glossary.md
       evidence:
         overlay_ids_checked: [em_cluster_truth_blindness, pi0_cut_decomposition, selection_cutflow_identity, pileup_l11_status, strange_v0_contamination, tof_timing_resolution, bayesian_prior_sensitivity, unbounded_caveat_status]
+        required_l1_overlay_ids_present: true
+        required_l1_overlay_ids_match_plan50_table: true
+        required_l1_overlay_ids_match_plan51_and_plan55: true
         required_overlay_fields: [overlay_id, applicability, reason, source_plans, required_artifacts, artifact_status, reviewer_question_ids, caveat_text, last_verified]
         question_overlay_links_present: true
         note_overlay_links_present: true
