@@ -303,6 +303,15 @@ The inventory defines the minimum closure components. It does not freeze
 any pairing or cut decision until measured §5.1 rows and the relevant
 DEC evidence are attached.
 
+Initial π⁰-closure failure examples:
+
+| `closure_case_id` | Failing pattern | Required status | Review guard |
+|---|---|---|---|
+| `missing_no_pi0_control` | signal row exists but `cal_singlepion_mip_v1` accidental row is absent | `fail` | π⁰ efficiency without accidental rate cannot approve P.6 |
+| `mass_peak_bias_fail` | selected `M_γγ` peak mean misses the §5 window | `fail` | retuned cuts cannot hide a biased photon/π⁰ reconstruction |
+| `accidental_interval_missing` | zero selected accidental pairs reported without a finite interval | `fail` | zero-survivor convention mirrors plan-44/46 interval handling |
+| `truth_parent_pair_drift` | dropping truth/provenance changes pair list or selected booleans | `fail` | evaluator labels may not influence pair construction |
+
 ### 5.2 Decision-log stubs for π⁰ pairing and cuts
 
 P.5/P.6 choices change candidate multiplicity and the Ch 8 π⁰
