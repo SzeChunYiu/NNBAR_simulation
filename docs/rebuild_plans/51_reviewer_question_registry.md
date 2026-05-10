@@ -117,7 +117,7 @@ audit when a seed becomes attached to a concrete ledger result.
   rerun_command_template_verifier_hash: sha256:b3cee4613afed558d4704df3dc5b281271aed768965d79a09603f812496806f0
   rerun_command_template_verifier_source: plan52:validate_reco_cutflow_v1
   rerun_manifest_id: plan52:Ch 10 selection cut-flow
-  rerun_transcript_id: <plan52-transcript-row-or-null>
+  rerun_transcript_id: null
 - id: RQ-L1-EM-P1-CLUSTERING
   asked_by: anticipated_examiner
   asked_on: 2026-05-10
@@ -140,7 +140,7 @@ audit when a seed becomes attached to a concrete ledger result.
   rerun_command_template_verifier_hash: sha256:b3cee4613afed558d4704df3dc5b281271aed768965d79a09603f812496806f0
   rerun_command_template_verifier_source: plan52:validate_reco_allruns_v1
   rerun_manifest_id: plan52:EM chain closure
-  rerun_transcript_id: <plan52-transcript-row-or-null>
+  rerun_transcript_id: null
 - id: RQ-L1-EM-P2-DISCRIMINANT
   asked_by: anticipated_examiner
   asked_on: 2026-05-10
@@ -163,7 +163,7 @@ audit when a seed becomes attached to a concrete ledger result.
   rerun_command_template_verifier_hash: sha256:b3cee4613afed558d4704df3dc5b281271aed768965d79a09603f812496806f0
   rerun_command_template_verifier_source: plan52:validate_reco_allruns_v1
   rerun_manifest_id: plan52:EM chain closure
-  rerun_transcript_id: <plan52-transcript-row-or-null>
+  rerun_transcript_id: null
 - id: RQ-L1-PI0-CUTS
   asked_by: anticipated_examiner
   asked_on: 2026-05-10
@@ -186,7 +186,7 @@ audit when a seed becomes attached to a concrete ledger result.
   rerun_command_template_verifier_hash: sha256:b3cee4613afed558d4704df3dc5b281271aed768965d79a09603f812496806f0
   rerun_command_template_verifier_source: plan52:validate_reco_cutflow_v1
   rerun_manifest_id: plan52:EM chain closure
-  rerun_transcript_id: <plan52-transcript-row-or-null>
+  rerun_transcript_id: null
 - id: RQ-L1-PILEUP-L11
   asked_by: anticipated_examiner
   asked_on: 2026-05-10
@@ -209,7 +209,7 @@ audit when a seed becomes attached to a concrete ledger result.
   rerun_command_template_verifier_hash: null
   rerun_command_template_verifier_source: null
   rerun_manifest_id: plan52:Pile-up L11 overlay
-  rerun_transcript_id: <plan52-transcript-row-or-null>
+  rerun_transcript_id: null
 - id: RQ-L1-STRANGE-BARYON
   asked_by: anticipated_examiner
   asked_on: 2026-05-10
@@ -232,7 +232,7 @@ audit when a seed becomes attached to a concrete ledger result.
   rerun_command_template_verifier_hash: null
   rerun_command_template_verifier_source: null
   rerun_manifest_id: plan52:Strange V0 contamination
-  rerun_transcript_id: <plan52-transcript-row-or-null>
+  rerun_transcript_id: null
 - id: RQ-L1-TOF
   asked_by: anticipated_examiner
   asked_on: 2026-05-10
@@ -255,7 +255,7 @@ audit when a seed becomes attached to a concrete ledger result.
   rerun_command_template_verifier_hash: null
   rerun_command_template_verifier_source: null
   rerun_manifest_id: plan52:TOF timing closure
-  rerun_transcript_id: <plan52-transcript-row-or-null>
+  rerun_transcript_id: null
 - id: RQ-L1-BAYES-LIMIT
   asked_by: anticipated_examiner
   asked_on: 2026-05-10
@@ -278,7 +278,7 @@ audit when a seed becomes attached to a concrete ledger result.
   rerun_command_template_verifier_hash: null
   rerun_command_template_verifier_source: null
   rerun_manifest_id: plan52:Bayesian limit cross-check
-  rerun_transcript_id: <plan52-transcript-row-or-null>
+  rerun_transcript_id: null
 - id: RQ-L1-UNBOUNDED-CAVEATS
   asked_by: anticipated_examiner
   asked_on: 2026-05-10
@@ -301,7 +301,7 @@ audit when a seed becomes attached to a concrete ledger result.
   rerun_command_template_verifier_hash: null
   rerun_command_template_verifier_source: null
   rerun_manifest_id: plan52:Unbounded caveat status
-  rerun_transcript_id: <plan52-transcript-row-or-null>
+  rerun_transcript_id: null
 ```
 
 Review rules:
