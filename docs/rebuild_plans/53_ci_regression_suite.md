@@ -97,7 +97,7 @@ requirements, not claims that the final workflow file already exists.
 | `l1_command_template_registry` | changes to plan 52 | transcript command-template ids are registered, immutable, limited to verified CLI help output or explicit blocked templates, and carry verifier transcripts | Tier 1 block |
 | `l1_package_staleness_guard` | changes to plans 50-56 | ready plan-50 L1 packages carry `l1_staleness.status: current` against the latest L1 hashes, including plan-54 archive inventory/drill hashes | Tier 1 block |
 | `l1_note_package_freshness` | changes to plans 50 or 55 | promoted L1 note annexes quote only current packages or include an explicit stale-package caveat, and carry note/package/CI/glossary artifact hashes plus staleness id | Tier 1 block |
-| `l1_archive_drill_manifest` | thesis-freeze package build | plan-54 L1 archive drill exists, starts from the top-level README, and records blocked rows plus owner sign-off refs and review-artifact hashes | Tier 1 block for freeze packages |
+| `l1_archive_drill_manifest` | thesis-freeze package build | plan-54 L1 archive drill exists, starts from the top-level README, and records blocked rows plus owner sign-off refs, archive-drill hash, and review-artifact hashes | Tier 1 block for freeze packages |
 | `l1_glossary_signoff` | changes to plans 50, 55, or 56 | plan-56 sign-off rows cover every L1 term used by defence overlays and note annexes | Tier 1 block |
 
 The checks are deliberately text-and-manifest based so they can run
@@ -128,6 +128,7 @@ l1_defence_ci_report:
         owner_signoff_refs_present: true
         review_evidence_link_keys: [package, staleness_summary, ci_report, note_annex, glossary_audit]
         review_artifact_hash_keys: [package, staleness_summary, ci_report, note_annex, glossary_audit]
+        archive_drill_hash_present: true
         command_template_verifier_hashes: [sha256:<hash>]
       remediation: null
 ```
@@ -141,7 +142,7 @@ Report review rules:
 | line-count evidence is numeric, not prose | 500-line and Wave-4 depth gates become auditable |
 | stale-citation evidence includes match count | A+ examiner gate is not reduced to a checkbox |
 | report git rev matches package git rev | archived defence artifacts and CI evidence diverge |
-| archive and glossary checks are present when freeze mode runs | freeze package omits L1 drill, owner sign-off refs, review-artifact hashes, or term sign-off evidence |
+| archive and glossary checks are present when freeze mode runs | freeze package omits L1 drill, archive-drill hash, owner sign-off refs, review-artifact hashes, or term sign-off evidence |
 | rerun transcript check appears with review-evidence links and artifact hashes when roll-up uses refreshed artifacts | package claims rerun evidence without execution proof or artifact parity |
 | command-template registry check includes verifier transcript | transcript uses unsupported, unverified, or mutable command surface |
 | answered-question transition evidence includes command-template ids and verifier hash | reviewer registry closes a refreshed-evidence question without replay contract or A+ verifier proof |
