@@ -142,6 +142,28 @@ Plan 46 may sum `expected_rate` into `b` only from rows with
 `rate_included_in_b = true`; all other rows remain caveats or validation
 artifacts in plan 47 and plan 50.
 
+### 1.4 Machine-readable background-sum handoff fixture
+
+Plan 46 receives a background sum, not a prose table. Each handoff row
+records exactly which rate results were folded into `b` and which
+caveats stayed outside the numeric sum:
+
+| Field | Required content | Review rule |
+|---|---|---|
+| `background_sum_id` | stable key for the summed background hypothesis | referenced by plan-46 input bundles |
+| `rate_result_ids` | list of §1.3 rows included in the sum | every row must have `rate_included_in_b = true` |
+| `excluded_caveat_node_ids` | §3 caveat nodes not folded into `b` | copied to plan-46 `unbounded_limitations` |
+| `selection_config_id` | plan-37 cut-flow or retune id | must match every included rate result |
+| `exposure_label` | exposure or pulse-count label for the quote | must match signal and limit rows |
+| `b_expected` | numeric expected background after authorised folds | null when any required rate-source DEC is unsigned |
+| `b_expected_formula` | reproducible expression from included rates | no hand-entered total without terms |
+| `included_nuisance_ids` | plan-45 nuisance throws applied to rates | copied to plan-46 input bundles |
+| `rate_source_dec_ids` | signed DEC ids authorising the folds | draft DEC keeps the handoff provisional |
+| `handoff_status` | `draft`, `complete`, or `blocked` | only `complete` rows may feed final significance quotes |
+
+The handoff row is rejected if it includes an unregistered caveat as a
+numeric zero or omits a caveat from the limitation list.
+
 ## 2. Zero-survivor handling
 
 Per plan 04 §5: never quote `0 / N = 0`. Every zero-survivor channel
