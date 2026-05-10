@@ -224,6 +224,30 @@ module and the plan-side contract is now explicit:
   `hit_membership_key`, and no-`Track_ID` production behavior stay
   invariant across the replacement.
 
+### 6.2 Stage E.1 promotion invariants
+
+The current live hook is schema-complete enough to unblock V.2, but
+any physics-performance replacement for the event-scoped seed must keep
+these plan-side invariants:
+
+| Invariant | Current live behavior | Replacement requirement |
+|---|---|---|
+| truth blindness | `reconstruct_track_candidates` (`charged.py:245-311`) reads Class A hit coordinates and emits `truth_grouping_used=False` | replacement finder must remain unchanged when `Track_ID`, `Parent_ID`, `Name`, and `origin_vol_name` are dropped |
+| stable membership | `_hit_membership_key` (`charged.py:231-233`) hashes sorted hit indices | candidate splitting/merging must keep a deterministic `hit_membership_key` for each row and sidecar |
+| seed quality | `_track_seed_chi2` (`charged.py:236-242`) provides the current seed-quality scalar | replacement finder must either keep `chi2_seed` semantics or version the quality field through plan 05 |
+| candidate id stability | current hook emits one `candidate_id=0` row per event | multi-candidate replacements must number candidates deterministically within each event |
+| downstream quality gate | `candidate_quality_state` and `candidate_failure_reason` already exist | replacements must preserve `pass`/`warn`/`fail`/`not_applicable` semantics so plans 26 and 66 do not infer quality from missing rows |
+
+Acceptance of this checklist is a plan-side gate, not a request for L0
+to edit L3 code. The matching L3 replacement patch must update
+`test_track_candidates_ignore_forbidden_truth_columns`
+(`tests/test_charged_reco.py:61-70`),
+`test_track_candidates_emit_plan_25_schema_and_quality`
+(`tests/test_charged_reco.py:73-103`), and
+`test_track_candidates_real_sample_reads_particle_and_tpc_schema`
+(`tests/test_charged_reco.py:106-117`) so both synthetic and
+real-output chains prove the invariants.
+
 ## 7. Acceptance criteria
 
 - §1 inputs match plan 09 (no Class B in production path).
