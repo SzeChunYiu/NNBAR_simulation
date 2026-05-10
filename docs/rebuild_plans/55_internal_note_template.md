@@ -76,6 +76,7 @@ leaf or plan-44 background node.
 | Strange-background caveat | beam-neutron or EM-fake background result | K_S/Lambda/Sigma branch snapshot, V0 rejection closure, residual survivor interval | 14, 44, 59 |
 | Timing/TOF cross-check | cosmic rejection or timing-result note | TOF method id, nonzero resolution budget, cal/cosmic closure slices, comparison to E.8 | 36, 45, 61 |
 | Limit-convention cross-check | low-count limit or zero-survivor row | plan-46 primary method, Jeffreys and flat prior limits, prior-sensitivity status | 04, 46, 64 |
+| Unbounded-caveat status | any EM/selection result with a limitation that lacks a numeric nuisance bound | limitation id, affected result ids, caveat text, owner, and reopening condition | 01, 45, 50 |
 
 The annex is not a substitute for the defence package. It is the note
 reader's compact route map to the exact package fields that answer the
@@ -134,6 +135,7 @@ Review rules:
 | every `blocked` row carries `caveat_text` | hidden missing evidence in reviewer-facing prose |
 | every low-count note includes the limit-convention row | Bayesian prior sensitivity omitted from sparse-count claims |
 | every L11 note includes the pile-up caveat row | independent-event limitation omitted from acceptance claims |
+| every unbounded limitation includes the unbounded-caveat row | caveat-only systematics are hidden as if they were zero-width nuisances |
 
 The note author may add prose after the structured annex, but the
 structured row is the reviewable source of truth for CI and plan-50
