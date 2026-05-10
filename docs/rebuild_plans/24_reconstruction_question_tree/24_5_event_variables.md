@@ -180,6 +180,23 @@ Leaf E.8: calorimeter hit timing → in-time / out-of-time energy split
   allowed truth use: validation_only
   downstream consumers: S.1, S.6; plans 36, 37, 41
 
+Leaf E.9: selected reconstructed objects → object multiplicities
+  inputs (Class A): post-rejection charged-object table (C.6),
+                    photon-like object table (P.2-P.4), selected π0
+                    table (P.5-P.7), and validity flags
+  forbidden (Class B): truth multiplicities, truth particle names,
+                       Track_ID, Parent_ID, Interaction ancestry
+  decision rule: count only reconstruction objects that pass their
+                 observable validity and rejection gates, preserving
+                 separate charged, photon, and π0 multiplicities for
+                 selection and cut-flow accounting.
+  output schema: {event_id: int64, n_charged: int32,
+                  n_photons: int32, n_pi0: int32,
+                  n_rejected_charged: int32,
+                  multiplicity_rule_version: string}
+  allowed truth use: validation_only
+  downstream consumers: S.2, S.6; plans 36, 37, 41
+
 ### Next measurement (event-variable branch)
 
 Per-variable distribution comparison: signal sample (plan 20) vs
