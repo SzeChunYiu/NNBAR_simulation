@@ -81,6 +81,7 @@ l1_defence_inventory:
       status: present | blocked | retired | stale
       caveat: null
       staleness_summary_hash: sha256:<hash-or-null>
+      owner_signoff_refs: [RQ-L1-SELECTION-CUTFLOW:<owner-hash>]
       command_template_ids: [validate_reco_cutflow_v1]
       command_template_verifier_hashes: [sha256:<hash>]
 ```
@@ -91,6 +92,7 @@ Inventory review rules:
 |---|---|
 | every §1.1 pack member appears exactly once | DOI omits a reviewer-critical evidence class |
 | `present` rows have at least one hash | archived artifact cannot be integrity-checked |
+| owner sign-off refs are archived for answered rows | future reader cannot identify who approved question closure |
 | command-template ids are archived with rerun rows | future rerun cannot know which verified command contract applied |
 | command-template verifier hashes are archived | future rerun cannot prove the command surface was verified |
 | `stale` rows keep package and staleness hashes | future readers cannot tell why archived evidence was not quote-ready |
@@ -191,7 +193,8 @@ reproduce a numeric claim by:
 - §4 a sample reviewer pull-and-reproduce drill is executed once
   before final freeze.
 - L1 archive drill in §1.3 passes for at least one EM/selection member
-  and records any blocked rows plus verifier hashes for refreshed rows.
+  and records any blocked rows, owner sign-off refs, and verifier hashes
+  for refreshed rows.
 
 ## 6. Dependencies
 
