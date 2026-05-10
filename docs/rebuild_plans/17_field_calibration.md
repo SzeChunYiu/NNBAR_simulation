@@ -228,19 +228,21 @@ limitation L3 (plan 01 §6).
 
 ## 9. A+ verifier transcript
 
-Re-run these L3 checks before changing any field/W-value source claim:
+Re-run these checks from `/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3`
+before changing any field/W-value source claim:
 
 ```bash
-nl -ba src/DetectorConstruction.cc | sed -n '252,264p'
-nl -ba src/Sensitive_Detector/TPCSD.cc | sed -n '94,104p;136,146p'
-grep -n "^void ElectricField::GetFieldValue" src/ElectricField.cc
-find . -name '*TPCDriftManager*' -o -name '*Garfield*'
-grep -R "WITH_GARFIELD_GPU" -n CMakeLists.txt src include 2>/dev/null || true
+rtk proxy sh -c "nl -ba src/DetectorConstruction.cc | sed -n '252,264p'"
+rtk proxy sh -c "nl -ba src/Sensitive_Detector/TPCSD.cc | sed -n '94,104p;136,146p'"
+rtk proxy grep -n "^void ElectricField::GetFieldValue" src/ElectricField.cc
+rtk proxy find . -name '*TPCDriftManager*' -o -name '*Garfield*'
+rtk proxy sh -c 'grep -R "WITH_GARFIELD_GPU" -n CMakeLists.txt src include 2>/dev/null || true'
 ```
 
-Current 2026-05-10 evidence: the line excerpts show field-manager
-attachment only for `TPC_output[0]` and `TPC_output[1]`, W-value
-conversion at 23.6 eV, and electron count stored through `SetPhotons`.
-The `GetFieldValue` grep resolves in `src/ElectricField.cc`; the
-TPC-drift-manager/Garfield searches produce no source-backed drift-mode
-surface in the local L3 worktree.
+Current 2026-05-10 evidence: the RTK-safe line excerpts show
+field-manager attachment only for `TPC_output[0]` and `TPC_output[1]`,
+W-value conversion at 23.6 eV, and electron count stored through
+`SetPhotons`. The `rtk proxy grep` check resolves
+`ElectricField::GetFieldValue` in `src/ElectricField.cc`; the
+TPC-drift-manager/Garfield and `WITH_GARFIELD_GPU` searches produce no
+source-backed drift-mode surface in the local L3 worktree.
