@@ -6,7 +6,8 @@ status: draft
 owner: Physics Modeling
 depends_on: [00_README, 07_simulation_atomic_walkthrough]
 inputs:
-  - {path: NNBAR_Detector/src/detector/*.cc, schema: geometry source}
+  - {path: NNBAR_Detector/src/Detector_Module/*.cc, schema: geometry source}
+  - {path: NNBAR_Detector/src/DetectorConstruction.cc, schema: top-level geometry source}
 outputs:
   - {path: docs/rebuild_plans/15_material_budget.md, schema: this file}
   - {path: output/studies/material_budget/, schema: traversal scans}
@@ -18,7 +19,7 @@ risks:
   - {risk: material additions in geometry refactors silently change X0, mitigation: plan 53 CI tracks total per-region X0 against a baseline}
   - {risk: scintillator-plastic composition discrepancy vs. real plastic, mitigation: §6 cited composition}
 estimated_effort: M
-last_updated: 2026-05-09
+last_updated: 2026-05-10
 ---
 
 # Material budget
@@ -37,32 +38,33 @@ inventory records: name, composition, density, radiation length X₀,
 nuclear interaction length λ_I, and citation/status. Values below are
 Wave-2 planning values: elemental X₀ values are from NIST PML / PDG
 material tables, λ_I values are PDG nuclear-interaction lengths, and
-mixture values are mass-weighted from the `src/detector/*.cc` source
-composition until a runtime `G4MaterialTable` dump supersedes them.
+mixture values are mass-weighted from the `src/Detector_Module/*.cc`
+and `src/DetectorConstruction.cc` source composition until a runtime
+`G4MaterialTable` dump supersedes them.
 Centimetre values are computed with the density used in source.
 
 | Material | Active volume(s) / source | Composition and density | X₀ (g/cm²; cm) | λ_I (g/cm²; cm) | Citation / status |
 |---|---|---|---|---|---|
-| `Galactic` | World/default filler; `DetectorConstruction.cc:102` | H-like vacuum, `universe_mean_density` | effectively ∞ | effectively ∞ | Geant4 vacuum convention; no material budget contribution. |
-| `Carbon_target` | Foil; `DetectorConstruction.cc:110` | C, 3.52 g/cm³ | 42.70; 12.1 | 86.8; 24.7 | NIST/PDG carbon values recast to code density. Prior 18.8 cm graphite value used lower density; code density must win. |
-| `Aluminum` | Beampipe and TPC walls; `beampipe_geometry.cc:196`, `TPC_geometry.cc:108` | Al, 2.70 g/cm³ | 24.01; 8.89 | 106.4; 39.4 | NIST/PDG Al. |
-| `Copper` | Beam stop/conductors; `beampipe_geometry.cc:158` | Cu, 8.90 g/cm³ | 12.86; 1.45 | 137.3; 15.4 | NIST/PDG Cu. |
-| `StainlessSteel` | Beampipe/cosmic shielding steel; `beampipe_geometry.cc:200`, `Cosmic_Shielding_geometry.cc:159` | Fe 0.68, Cr 0.19, Ni 0.10, Mn 0.02, Si 0.01; 8.02 g/cm³ | ≈13.9; 1.73 | ≈132; 16.5 | Mass-weighted PDG element table; alloy grade needs engineering citation. |
-| `Silicon` | Silicon detectors; `Silicon_geometry.cc:49` | Si, 2.33 g/cm³ | 21.82; 9.36 | 106.0; 45.5 | NIST/PDG Si. |
-| `B4C` | Beam coating/shield component; `beampipe_geometry.cc:183`, `Silicon_geometry.cc:53` | B 0.80, C 0.20; 2.52 g/cm³ | ≈50.1; 19.9 | ≈86; 34.1 | Mass-weighted B/C; verify against vendor B4C grade. |
-| `el_Li6` | Beam coating isotope; `beampipe_geometry.cc:166`, `Silicon_geometry.cc:63` | ⁶Li, 0.460 g/cm³ | ≈82.8; 180 | ≈82; 178 | Isotopic Li approximation; confirm via Geant4 isotope material dump. |
-| `Li6F` | Silicon/beampipe coating; `beampipe_geometry.cc:170`, `Silicon_geometry.cc:67` | ⁶Li 0.475, F 0.500, natural Li 0.025; 2.635 g/cm³ | ≈39.5; 15.0 | ≈86; 32.6 | Mass-weighted Li/F; isotope treatment needs MaterialTable dump. |
-| `LiF` | Beampipe coating; `beampipe_geometry.cc:177` | Li 0.50, F 0.50; 2.635 g/cm³ | ≈39.5; 15.0 | ≈86; 32.6 | Mass-weighted Li/F. |
-| `el_Cd` | Beam coating/absorber; `beampipe_geometry.cc:189` | Cd, 8.65 g/cm³ | 8.91; 1.03 | ≈158; 18.3 | NIST/PDG Cd. |
-| `Lead` / `Lead_shield` | Cosmic and beampipe shielding; `Cosmic_Shielding_geometry.cc:124`, `beampipe_shielding_geometry.cc:52` | Pb, 11.29 g/cm³ | 6.37; 0.564 | 199.6; 17.7 | NIST/PDG Pb. |
-| `CO2` | TPC gas component; `TPC_geometry.cc:71` | CO₂, 1.84 mg/cm³ | ≈36.2; 1.97×10⁴ | ≈90; 4.9×10⁴ | NIST/PDG compound estimate; active only as `Gas` component. |
-| `Gas` | TPC drift gas; `TPC_geometry.cc:80` | Ar/CO₂ 80/20 by volume (≈0.78/0.22 by mass), 1.70 mg/cm³ | ≈22.3; 1.31×10⁴ | ≈113; 6.65×10⁴ | Source comments define mixture; confirm with runtime MaterialTable. |
-| `Scint` | Scintillator modules; `Scintillator_geometry.cc:59` | H 0.524573, C 0.475427; 1.023 g/cm³ | ≈45; ≈44 | ≈79; ≈77 | **Needs vendor citation.** Source comment says BC-408 datasheet, but no datasheet/key is present; H/C mass fractions also need audit. |
-| `LeadGlass` | Lead-glass calorimeter; `LeadGlass_geometry.cc:117` | O 0.156453, Si 0.080866, Ti 0.008092, As 0.002651, Pb 0.751938; 6.22 g/cm³ | ≈7.87; 1.27 | ≈158; 25.4 | **Needs vendor citation.** Source says PDG, but glass type/vendor and composition provenance are not cited. |
-| `AlMgF2` | Lead-glass coating; `LeadGlass_geometry.cc:121` | Al 0.331, F 0.408, Mg 0.261; 2.9007 g/cm³ | ≈27.5; 9.48 | ≈94.6; 32.6 | Mass-weighted PDG element values; coating stack needs vendor citation. |
-| `PMT_window_mat` | PMT/quartz window; `LeadGlass_geometry.cc:125` | SiO₂, 2.200 g/cm³ | ≈27.1; 12.3 | ≈97.5; 44.3 | NIST/PDG fused-silica/quartz proxy. |
-| `PE_B4C_concrete` | Cosmic shielding alternative; `Cosmic_Shielding_geometry.cc:127` | 15-element concrete/B4C/PE mix, 1.97 g/cm³ | ≈32.6; 16.5 | ≈86; 43.7 | Source mass fractions; needs shielding vendor/engineering citation. |
-| `MagnadenseHC` | Cosmic shielding baseline; `Cosmic_Shielding_geometry.cc:145` | Fe-heavy concrete (Fe 0.579, O 0.332, plus minor elements), 3.8 g/cm³ | ≈18.3; 4.82 | ≈114; 30.0 | Source mass fractions; needs Magnadense HC product citation. |
+| `Galactic` | World/default filler; `src/DetectorConstruction.cc` material block | H-like vacuum, `universe_mean_density` | effectively ∞ | effectively ∞ | Geant4 vacuum convention; no material budget contribution. |
+| `Carbon_target` | Foil; `src/DetectorConstruction.cc` volume block | C, 3.52 g/cm³ | 42.70; 12.1 | 86.8; 24.7 | NIST/PDG carbon values recast to code density. Prior 18.8 cm graphite value used lower density; code density must win. |
+| `Aluminum` | Beampipe and TPC walls; `src/Detector_Module/beampipe_geometry.cc`, `src/Detector_Module/TPC_geometry.cc` | Al, 2.70 g/cm³ | 24.01; 8.89 | 106.4; 39.4 | NIST/PDG Al. |
+| `Copper` | Beam stop/conductors; `src/Detector_Module/beampipe_geometry.cc` | Cu, 8.90 g/cm³ | 12.86; 1.45 | 137.3; 15.4 | NIST/PDG Cu. |
+| `StainlessSteel` | Beampipe/cosmic shielding steel; `src/Detector_Module/beampipe_geometry.cc`, `src/Detector_Module/Cosmic_Shielding_geometry.cc` | Fe 0.68, Cr 0.19, Ni 0.10, Mn 0.02, Si 0.01; 8.02 g/cm³ | ≈13.9; 1.73 | ≈132; 16.5 | Mass-weighted PDG element table; alloy grade needs engineering citation. |
+| `Silicon` | Silicon detectors; `src/Detector_Module/Silicon_geometry.cc` | Si, 2.33 g/cm³ | 21.82; 9.36 | 106.0; 45.5 | NIST/PDG Si. |
+| `B4C` | Beam coating/shield component; `src/Detector_Module/beampipe_geometry.cc`, `src/Detector_Module/Silicon_geometry.cc` | B 0.80, C 0.20; 2.52 g/cm³ | ≈50.1; 19.9 | ≈86; 34.1 | Mass-weighted B/C; verify against vendor B4C grade. |
+| `el_Li6` | Beam coating isotope; `src/Detector_Module/beampipe_geometry.cc`, `src/Detector_Module/Silicon_geometry.cc` | ⁶Li, 0.460 g/cm³ | ≈82.8; 180 | ≈82; 178 | Isotopic Li approximation; confirm via Geant4 isotope material dump. |
+| `Li6F` | Silicon/beampipe coating; `src/Detector_Module/beampipe_geometry.cc`, `src/Detector_Module/Silicon_geometry.cc` | ⁶Li 0.475, F 0.500, natural Li 0.025; 2.635 g/cm³ | ≈39.5; 15.0 | ≈86; 32.6 | Mass-weighted Li/F; isotope treatment needs MaterialTable dump. |
+| `LiF` | Beampipe coating; `src/Detector_Module/beampipe_geometry.cc` | Li 0.50, F 0.50; 2.635 g/cm³ | ≈39.5; 15.0 | ≈86; 32.6 | Mass-weighted Li/F. |
+| `el_Cd` | Beam coating/absorber; `src/Detector_Module/beampipe_geometry.cc` | Cd, 8.65 g/cm³ | 8.91; 1.03 | ≈158; 18.3 | NIST/PDG Cd. |
+| `Lead` / `Lead_shield` | Cosmic and beampipe shielding; `src/Detector_Module/Cosmic_Shielding_geometry.cc`, `src/Detector_Module/beampipe_shielding_geometry.cc` | Pb, 11.29 g/cm³ | 6.37; 0.564 | 199.6; 17.7 | NIST/PDG Pb. |
+| `CO2` | TPC gas component; `src/Detector_Module/TPC_geometry.cc` | CO₂, 1.84 mg/cm³ | ≈36.2; 1.97×10⁴ | ≈90; 4.9×10⁴ | NIST/PDG compound estimate; active only as `Gas` component. |
+| `Gas` | TPC drift gas; `src/Detector_Module/TPC_geometry.cc` | Ar/CO₂ 80/20 by volume (≈0.78/0.22 by mass), 1.70 mg/cm³ | ≈22.3; 1.31×10⁴ | ≈113; 6.65×10⁴ | Source comments define mixture; confirm with runtime MaterialTable. |
+| `Scint` | Scintillator modules; `src/Detector_Module/Scintillator_geometry.cc` | H 0.524573, C 0.475427; 1.023 g/cm³ | ≈45; ≈44 | ≈79; ≈77 | **Needs vendor citation.** Source comment says BC-408 datasheet, but no datasheet/key is present; H/C mass fractions also need audit. |
+| `LeadGlass` | Lead-glass calorimeter; `src/Detector_Module/LeadGlass_geometry.cc` | O 0.156453, Si 0.080866, Ti 0.008092, As 0.002651, Pb 0.751938; 6.22 g/cm³ | ≈7.87; 1.27 | ≈158; 25.4 | **Needs vendor citation.** Source says PDG, but glass type/vendor and composition provenance are not cited. |
+| `AlMgF2` | Lead-glass coating; `src/Detector_Module/LeadGlass_geometry.cc` | Al 0.331, F 0.408, Mg 0.261; 2.9007 g/cm³ | ≈27.5; 9.48 | ≈94.6; 32.6 | Mass-weighted PDG element values; coating stack needs vendor citation. |
+| `PMT_window_mat` | PMT/quartz window; `src/Detector_Module/LeadGlass_geometry.cc` | SiO₂, 2.200 g/cm³ | ≈27.1; 12.3 | ≈97.5; 44.3 | NIST/PDG fused-silica/quartz proxy. |
+| `PE_B4C_concrete` | Cosmic shielding alternative; `src/Detector_Module/Cosmic_Shielding_geometry.cc` | 15-element concrete/B4C/PE mix, 1.97 g/cm³ | ≈32.6; 16.5 | ≈86; 43.7 | Source mass fractions; needs shielding vendor/engineering citation. |
+| `MagnadenseHC` | Cosmic shielding baseline; `src/Detector_Module/Cosmic_Shielding_geometry.cc` | Fe-heavy concrete (Fe 0.579, O 0.332, plus minor elements), 3.8 g/cm³ | ≈18.3; 4.82 | ≈114; 30.0 | Source mass fractions; needs Magnadense HC product citation. |
 
 **Inventory gaps to close before plan-15 sign-off:** dump
 `G4Material::GetRadlen()` and `GetNuclearInterLength()` for every row,
@@ -148,3 +150,9 @@ from primary charged tracks.
   Matter" chapter.
 - NIST PML radiation-length tables.
 - Geant4 `G4MaterialTable` runtime API.
+
+2026-05-10 bib audit: this plan has no BibTeX citation commands and no
+author-year paper prose requiring conversion to `ref.bib`. Source-file
+references in §1 intentionally name verified files without line numbers;
+runtime `G4MaterialTable` dumps remain the sign-off source for exact
+material constants.
