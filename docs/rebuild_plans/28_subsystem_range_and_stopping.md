@@ -220,6 +220,14 @@ explicit remaining gates:
 - §2 Bragg-peak diagnostic is either written with a valid fit-status
   flag or explicitly null with a reason; any PID promotion cites a
   plan 38 C.3/C.5 ladder delta.
+- §5 Stage E.1 handoff is actionable for L3: the target public
+  function, unit-test path, integration-test path, and required C.3
+  fields (`range_id`, `association_method`, `range_cm`,
+  `range_edep_mev`, `bragg_peak_position_cm`,
+  `range_quality_state`, `range_failure_reason`,
+  `scintillator_edge_distance_mm`, `scintillator_profile_bin`, and
+  associated-hit sidecar rows) are all named before implementation
+  begins.
 
 ## 7. Dependencies
 
