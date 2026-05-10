@@ -304,6 +304,22 @@ These rows prevent missing limitations from being converted into
 zero-width Gaussian nuisances. A bounded replacement must add a new §1
 nuisance or cite a DEC proof that the limitation is irrelevant.
 
+### 3.4 Initial downstream-handoff examples
+
+Systematics handoffs must expose whether a result is using frozen throws,
+seed correlations, or caveat-only limitations:
+
+| `handoff_case_id` | Downstream consumer | Required payload | Required guard |
+|---|---|---|---|
+| `frozen_throw_bundle_to_p46` | plan 46 significance protocol | nominal result id, paired throw ids, nuisance ids, and covariance pair ids | every throw is measured/frozen and every consumed `M0` pair has a ledger flag or measurement |
+| `draft_throw_caveat_to_p47` | plan 47 reproduction ledger | draft or incomplete throw ids plus missing evidence reason | cannot clear a systematic-coverage checklist item |
+| `unbounded_limitation_to_p50` | plan 50 defence package | limitation id, affected observables, caveat sentence, and closure path | not converted to a numeric nuisance or zero-width uncertainty |
+| `single_source_conflict_to_review` | plan 05/47 review | duplicate source ids, proposed owning nuisance, and result rows affected | blocked until exactly one source owns the uncertainty |
+
+Any significance bundle lacking these handoff ids is incomplete because
+it cannot prove which nuisance set, correlations, and unbounded caveats
+were applied to the quoted result.
+
 ## 4. Acceptance criteria
 
 - §1 registry complete; ≥ 10 nuisances.
