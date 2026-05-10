@@ -35,20 +35,57 @@ level).
 
 ## 2. Response matrix
 
-For every observable that the rebuild may publish at particle level:
+For every observable that may be published at particle level, build an
+explicit truth-to-reconstruction response matrix and save the exact
+binning contract used by closure and unfolding. Truth inputs are Class B
+and are allowed only inside this analysis/unfolding protocol, not inside
+production reconstruction decisions.
 
-1. Bin truth values from `Particle_output` and reco values from the
-   reconstruction.
-2. Compute response matrix `R_ij = P(reco bin i | truth bin j)`
-   from the signal sample.
-3. Save the matrix and its statistical uncertainty (per plan 04 §2
-   bootstrap).
+### 2.1 Runnable procedure
 
-Initial coverage:
+1. Produce reconstruction tables with the plan 09 §14 schema:
 
-- Visible invariant mass (E.7).
-- π⁰ mass (P.5 fitted).
-- Sphericity (E.5).
+   ```bash
+   python -m nnbar_reconstruction.cli summarize \
+       NNBAR_Detector/output/sig_foil_v3 --all-runs \
+       --table output/reco/sig_foil_v3/ --json output/reco/sig_foil_v3/summary.json
+   ```
+
+2. Build response matrices from truth parquet plus reconstruction CSVs:
+
+   ```bash
+   python -m nnbar_reconstruction.cli response-matrix \
+       --truth-particle NNBAR_Detector/output/sig_foil_v3/Particle_output_*.parquet \
+       --truth-interaction NNBAR_Detector/output/sig_foil_v3/Interaction_output_*.parquet \
+       --reco-events output/reco/sig_foil_v3/events.csv \
+       --reco-pi0 output/reco/sig_foil_v3/pi0.csv \
+       --observables visible_mass,pi0_mass,sphericity \
+       --bootstrap 200 --out output/unfolding/response/sig_foil_v3/
+   ```
+
+3. For each observable write `response_<observable>.parquet`,
+   `response_<observable>_covariance.npz`, and
+   `response_<observable>_metadata.json` containing truth/reco bin
+   edges, normalisation convention, bootstrap seed, source file hashes,
+   and the plan 38 leaf mapping.
+4. Assert every truth-bin column is normalised to
+   `sum_i R_ij = 1.0 ± 1e-12` after explicit inefficiency/overflow bins
+   are included. Bins with fewer than 20 truth events are merged with a
+   neighbour before matrix normalisation and the merge is recorded in
+   metadata.
+
+### 2.2 Observable binning and tolerances
+
+| Observable | Truth/reco inputs from plan 09 | Matrix binning / tolerance | Ladder leaf | Subsystem / ledger hook |
+|---|---|---|---|---|
+| visible invariant mass | truth four-vectors from `Particle_output`; reco `events.csv` visible mass | 25 MeV bins over 0-2500 MeV plus under/overflow; response columns normalise to `1 ± 1e-12`. | E.7 | plan 36; plan 47 §1 mass rows |
+| π0 mass | truth photons/π0 ancestry from `Interaction_output`; reco `pi0.csv` mass-window candidates | 5 MeV bins over 0-300 MeV plus no-candidate bin; bins with <20 truth entries are merged. | P.5-P.7 | plans 34-35; plan 47 §1 π0 rows |
+| sphericity | truth-derived event variables; reco `events.csv` sphericity | 0.02 bins on [0, 1]; bootstrap covariance must be saved for every populated bin. | E.5 | plan 36; plan 41 ROC/N-1 hooks |
+
+Initial coverage is limited to these three observables because they are
+explicit in plan 38's observable budget and have reconstruction-side
+tables in plan 09 §14. New particle-level observables require a new row
+here before they can be unfolded or quoted in plan 47.
 
 ## 3. Regularisation
 
