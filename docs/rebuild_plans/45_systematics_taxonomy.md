@@ -46,25 +46,47 @@ frozen; otherwise they default to independent.
 
 ## 2. Correlation matrix
 
-A nuisance is fully correlated with itself, fully anti-correlated
-with its inverse, and otherwise nominally uncorrelated. Special
-cases are seeded from the §1 flags:
+A nuisance is fully correlated with itself. The up/down throws of a
+single nuisance are anti-correlated by construction, but that
+anti-correlation is encoded inside the throw pair rather than in the
+inter-nuisance matrix. Until paired variation runs exist, `M0` means
+"correlation to be measured; use numeric 0.0 in interim covariance and
+carry the missing-correlation flag in the ledger."
+
+Explicit seed matrix (rows/columns are the §1 nuisance IDs):
+
+| Row | N1 | N2 | N3 | N4 | N5 | N6 | N7 | N8 | N9 | N10 |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| N1 | 1.0 | M0 | M0 | M0 | 0.0 | 0.0 | 0.0 | 0.0 | M0 | 0.0 |
+| N2 | M0 | 1.0 | M0 | 0.0 | 0.0 | 0.0 | 0.0 | M0 | M0 | 0.0 |
+| N3 | M0 | M0 | 1.0 | 0.0 | 0.0 | 0.0 | 0.0 | M0 | M0 | 0.0 |
+| N4 | M0 | 0.0 | 0.0 | 1.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | M0 |
+| N5 | 0.0 | 0.0 | 0.0 | 0.0 | 1.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| N6 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 1.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| N7 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 1.0 | 0.0 | 0.0 | 0.0 |
+| N8 | 0.0 | M0 | M0 | 0.0 | 0.0 | 0.0 | 0.0 | 1.0 | M0 | M0 |
+| N9 | M0 | M0 | M0 | 0.0 | 0.0 | 0.0 | 0.0 | M0 | 1.0 | 0.0 |
+| N10 | 0.0 | 0.0 | 0.0 | M0 | 0.0 | 0.0 | 0.0 | M0 | 0.0 | 1.0 |
+
+Freeze rules:
 
 | Pair / group | Initial correlation | How it is frozen |
 |---|---:|---|
 | same nuisance varied up/down | -1.0 | analytic by construction |
-| same correlation flag, e.g. N2/N3/N9 `calorimeter_energy` | `rho_measured` | paired toy/reconstruction runs; default 0 until measured |
-| N1/N4 ionisation-model overlap | `rho_measured` | paired W-value and physics-list variation |
-| N5 signal branching vs N6/N7 background fluxes | 0.0 | independent source models |
-| N8 geometry vs N10 material budget | `rho_measured` | geometry/material paired scenario envelope |
+| N1/N2/N3/N9 detector-calibration group | M0 | paired calibration throws; default numeric 0.0 until measured |
+| N2/N3/N8/N9 calorimeter-energy group | M0 | paired calorimeter and geometry runs; default numeric 0.0 until measured |
+| N1/N4 ionisation-model overlap | M0 | paired W-value and physics-list variation |
+| N4/N10 background-shape overlap | M0 | paired physics-list and material-budget variation |
+| N6 cosmic flux vs N7 beam-neutron flux | 0.0 | independent source normalisations despite sharing a broad background-normalisation label |
+| N8 geometry vs N10 material budget | M0 | geometry/material paired scenario envelope |
 | no shared flag and no listed exception | 0.0 | default independence |
 
 DEC stubs:
 
 | DEC id | Convention to sign | Default |
 |---|---|---|
-| `DEC-45-CORRELATION-SEED` | initial correlation policy before paired runs exist | self = +1, up/down = -1, unshared pairs = 0 |
-| `DEC-45-CALIBRATION-GROUPING` | whether N2/N3/N9 share the `calorimeter_energy` group | group them and require paired runs before final covariance |
+| `DEC-45-CORRELATION-SEED` | initial correlation policy before paired runs exist | self = +1, up/down = -1, unshared pairs = 0, M0 pairs numerically 0.0 but flagged |
+| `DEC-45-CALIBRATION-GROUPING` | whether N1/N2/N3/N9 share detector-calibration correlations and whether N2/N3/N8/N9 share `calorimeter_energy` | group them and require paired runs before final covariance |
 | `DEC-45-GEOMETRY-MATERIAL-GROUPING` | whether N8/N10 are correlated | treat as measured-only correlation, default 0 |
 
 ## 3. Single-source rule
