@@ -199,29 +199,34 @@ with explicit remaining gates:
 
 ### 5.1 L3 target module, functions, and tests
 
-- **Target module:** add/extend `nnbar_reconstruction/track_fit.py`.
-- **Public function:** `fit_track_candidates(candidates, tpc)`.
-- **Unit-test target:** add a `tests/test_charged_reco.py` case that
-  builds synthetic V.1 candidates plus Class A TPC coordinates and
-  asserts finite direction, `direction_method=linear_pca`, covariance
-  shape, residual rows, and explicit failure state for a one-hit
-  candidate.
-- **Integration-test target:** add a real-output schema row that chains
-  the plan-25 candidate function into `fit_track_candidates` on a
-  registered TPC fixture and verifies no Class B truth columns are
-  required.
+- **Target module:** extend `nnbar_reconstruction/track_fit.py`.
+- **Public function:** `fit_track_candidates(candidates, tpc)`
+  (`track_fit.py:55-117`).
+- **Current unit coverage:** `tests/test_charged_reco.py` already
+  asserts the V.2 direction schema, finite PCA direction, covariance
+  vector, residual rows, and `direction_method=linear_pca` in
+  `test_fit_track_candidates_emits_plan_26_direction_schema`
+  (`tests/test_charged_reco.py:120-151`).
+- **Current integration coverage:** the real-output chain from plan-25
+  candidates into the V.2 fitter is
+  `test_fit_track_candidates_real_sample_consumes_candidate_rows`
+  (`tests/test_charged_reco.py:153-165`).
+- **Remaining test obligation:** extend the same test file with an
+  explicit one-hit / missing-coordinate failure-state case once L3 adds
+  `fit_id`, `fit_failure_reason`, `covariance_valid`, `fit_degraded`,
+  and `n_residual_degrees_of_freedom`.
 
 ## 6. Acceptance criteria
 
 - §3 closure passes on calibration sample.
 - Direction covariance is reported into output schema.
 - §5 Stage E.1 handoff is actionable for L3: the target public
-  function, unit-test path, integration-test path, and required V.2
-  fields (`fit_id`, direction components, covariance components,
-  `chi2_ndf`, `n_residual_degrees_of_freedom`, `direction_method`,
-  residual sidecar rows, `fit_quality_state`, `fit_failure_reason`,
-  `covariance_valid`, and `fit_degraded`) are all named before
-  implementation begins.
+  function, current unit/integration tests, remaining failure-state test
+  obligation, and required V.2 fields (`fit_id`, direction components,
+  covariance components, `chi2_ndf`, `n_residual_degrees_of_freedom`,
+  `direction_method`, residual sidecar rows, `fit_quality_state`,
+  `fit_failure_reason`, `covariance_valid`, and `fit_degraded`) are all
+  named before replacement promotion.
 
 ## 7. Dependencies
 
