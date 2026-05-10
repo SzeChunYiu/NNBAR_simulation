@@ -32,7 +32,7 @@ Leaf P.7: raw π⁰ candidates → fitted four-vectors and fit quality
   vertex/covariance when available, and calibrated resolution models
   from plans 18 and 40.
 - **Current implementation evidence:** the compact current baseline
-  has only raw π⁰ kinematics in `find_pi0_candidates` (`reconstruction.py:777-836`). It emits mass, opening angle, energy
+  has only raw π⁰ kinematics in `find_pi0_candidates` (`photon.py:204-263`). It emits mass, opening angle, energy
   sums, lead-glass fraction, and the strict `passes_selection` flag,
   but no fitted four-vector, covariance, `fit_chi2`, or `fit_ndf`.
 - **Decision rule (target):** for every candidate selected for fit,
@@ -88,7 +88,7 @@ Used by plan 37 (event selection) as an additional cut variable.
 
 | Candidate | P.7 decision rule | Current/source citation | Class-A status | Comparison metric | Failure mode to inspect |
 |---|---|---|---|---|---|
-| **No fit / raw mass (current)** | Use raw `M_γγ` from photon four-vectors and six cuts. | Current raw candidate baseline is `find_pi0_candidates` (`reconstruction.py:777-836`), which has no fit columns. | Production-eligible baseline. | Raw mass width, pull bias, π⁰ efficiency. | Worse resolution; limited accidental rejection. |
+| **No fit / raw mass (current)** | Use raw `M_γγ` from photon four-vectors and six cuts. | Current raw candidate baseline is `find_pi0_candidates` (`photon.py:204-263`), which has no fit columns. | Production-eligible baseline. | Raw mass width, pull bias, π⁰ efficiency. | Worse resolution; limited accidental rejection. |
 | **Mass-constrained π⁰ fit** | Adjust photon four-vectors within covariance subject to `M_γγ = m_π⁰`. | New P.7 module after plan-34 output. | Eligible after covariance closure. | Width improvement, pull mean/width, χ² K-S p-value. | Bad covariance can fake improvement and miscalibrate χ². |
 | **Vertex-constrained event fit** | Constrain photon and charged-object origins to the reconstructed vertex. | Consumes plan-30 vertex and plan-33/29 objects. | Eligible only when vertex covariance exists. | Event χ², visible-mass resolution, selection stability. | Sparse-vertex events need explicit no-fit path. |
 | **Combined mass+vertex fit** | Fit π⁰ mass and common vertex constraints simultaneously. | Extends §§2–3. | Eligible after separate constraints pass. | Global χ² and downstream S.3/S.4 separation. | Harder failure diagnosis; do after simpler fits. |
