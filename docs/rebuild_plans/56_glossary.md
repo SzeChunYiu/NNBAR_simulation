@@ -76,7 +76,8 @@ code-level usage; deltas are flagged.
 | **prior sensitivity** | Difference between Bayesian limits under approved priors, reported as a reviewer caveat when it exceeds plan-64 thresholds. |
 | **defence overlay** | Extra plan-50 package block that must be present when a result depends on L1 EM, selection, timing, pile-up, strange-background, or Bayesian-limit evidence. |
 | **unbounded caveat status** | Plan-50 overlay state for EM/selection assumptions that cannot yet be assigned a numeric nuisance; it keeps the limitation visible until plan 45 or the owning study supplies a bound. |
-| **review-evidence links** | Plan-50 and plan-51 machine-readable pointers from an L1 answer to package, CI, note-annex, glossary-audit, rerun, and staleness artifacts. |
+| **overlay roll-up** | Plan-50 compact status block summarising all L1 defence overlays, blockers, required review links, and current/stale package state for one quoted result. |
+| **review-evidence links** | Plan-50 and plan-51 machine-readable pointers from an L1 answer to the overlay roll-up, CI, note-annex, glossary-audit, rerun, archive, and staleness artifacts. |
 | **review-artifact hashes** | Stable digests carried by plans 50, 51, 52, 53, 54, and 55 for package, CI report, note-annex, glossary-audit, rerun, and staleness artifacts that support an L1 defence answer. |
 | **L1 archive pack member** | Stable plan-54 evidence-class id in the thesis-freeze archive inventory; plan 53 checks that every EM/selection defence class remains represented before freeze. |
 | **owner sign-off** | Plan-51 accountable approval recorded before an L1 reviewer-question answer can stop blocking a thesis-facing result. |
@@ -151,14 +152,14 @@ l1_glossary_audit:
       defined_in_section: "1.1"
       source_plans: [50, 51, 52, 53, 54, 55]
       required_contexts:
-        - defence_package_rollup
+        - l1_overlay_rollup
         - reviewer_question_registry
         - rerun_manifest
         - defence_ci_report
         - archive_inventory
         - note_annex
       required_link_keys:
-        - package_rollup
+        - overlay_rollup
         - staleness_summary
         - ci_report
         - archive_inventory
@@ -171,7 +172,7 @@ l1_glossary_audit:
       defined_in_section: "1.1"
       source_plans: [50, 51, 52, 53, 54, 55]
       required_contexts:
-        - defence_package_rollup
+        - l1_overlay_rollup
         - reviewer_question_registry
         - rerun_manifest
         - defence_ci_report
@@ -266,9 +267,9 @@ l1_glossary_audit:
       owner: L1
     - term_group: defence-workflow shorthand
       defined_in_section: "1.1"
-      terms: [defence overlay, rerun transcript, command-template id, CLI verifier transcript, blocked template, stale package]
+      terms: [defence overlay, overlay roll-up, rerun transcript, command-template id, CLI verifier transcript, blocked template, stale package]
       source_plans: [50, 52, 53, 54, 55]
-      required_contexts: [defence_package_rollup, rerun_transcript, command_template_registry, archive_inventory]
+      required_contexts: [l1_overlay_rollup, rerun_transcript, command_template_registry, archive_inventory]
       thesis_delta: none | flagged
       owner: L1
 ```
