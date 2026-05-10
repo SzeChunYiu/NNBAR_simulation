@@ -33,31 +33,27 @@ defence package (plan 50).
 
 All Class A.
 
-## 2. Variable inventory
+## 2. Per-leaf variable schema and current evidence
 
-| Leaf | Variable | Formula | Units |
-|---|---|---|---|
-| E.1 | total calorimeter energy | `Σ scint_eDep + Σ LG_eDep` | MeV |
-| E.2.1 | upper scint energy | per-hemisphere split | MeV |
-| E.2.2 | lower scint energy | per-hemisphere split | MeV |
-| E.2.3 | upper LG energy | per-hemisphere split | MeV |
-| E.2.4 | lower LG energy | per-hemisphere split | MeV |
-| E.3 | longitudinal energy `EL` | `Σ E_i cos α_i` (α from object direction vs +z) | MeV |
-| E.4 | transverse energy `ET` | `Σ E_i sin α_i` | MeV |
-| E.5 | sphericity | tensor eigenvalue formula (PDG) | dimensionless |
-| E.6.1 | Fox-Wolfram H₀ | `Σ \|p_i\|\|p_j\| P_ℓ(cos θ_ij) / E_vis²`, ℓ=0 | dimensionless |
-| E.6.2 | Fox-Wolfram H₂ | same with ℓ=2 | dimensionless |
-| E.6.3 | thrust | `max_n̂ Σ \|p_i · n̂\| / Σ \|p_i\|` | dimensionless |
-| E.7 | visible invariant mass | `√((Σ E_i)² - \|Σ p_i\|²)` | MeV |
-| E.8.1 | in-time energy | hits within Ch 7 timing window | MeV |
-| E.8.2 | out-of-time energy | hits outside window | MeV |
-| E.9.1 | charged multiplicity | count of charged objects | int |
-| E.9.2 | photon multiplicity | count of photon objects | int |
-| E.9.3 | π⁰ multiplicity | count of selected π⁰ candidates | int |
+Each row is Class A in production; truth labels enter only the closure
+comparison in §5. Current source line references come from plan 08
+§3.6.2 unless marked new.
 
-E.6 (Fox-Wolfram + thrust) is *added* by this plan; the licentiate
-used only sphericity. They are extra discriminants, scored on the
-ladder.
+| Leaf | Output column(s) | Formula / decision rule | Units | Current source citation | Ladder status |
+|---|---|---|---|---|---|
+| E.1 | `calorimeter_edep` | `Σ scintillator eDep + Σ lead-glass eDep` | MeV | `summarize_events` sums raw cal hits (`reconstruction.py:1624–1638`, `1688–1709`) | baseline |
+| E.2 | `upper/lower_scintillator_edep`, `upper/lower_leadglass_edep` | split raw cal energy by `y > 0` / `y < 0` | MeV | hemisphere sums at `reconstruction.py:1624–1638` | baseline |
+| E.3 | `*_longitudinal_energy`, `calorimeter_longitudinal_energy` | `Σ E_i z_i / r_i` | MeV | `_directional_energy` and event rows (`reconstruction.py:244–264`, `1653–1654`, `1710–1715`) | baseline |
+| E.4 | `*_transverse_energy`, `calorimeter_transverse_energy` | `Σ E_i sqrt(x_i² + y_i²) / r_i` | MeV | same as E.3 | baseline |
+| E.5 | `sphericity` | `1.5 * (λ₁ + λ₂)` from normalized momentum tensor | dimensionless | `_sphericity` plus event row (`reconstruction.py:1533–1544`, `1728–1729`) | baseline |
+| E.6 | `fox_wolfram_h0`, `fox_wolfram_h2`, `thrust` | pairwise Legendre moments and thrust axis over reconstructed objects | dimensionless | new variables; no current columns in plan 08 output schema | added |
+| E.7 | `visible_invariant_mass` | `√((Σ E_i)² - |Σ p_i|²)` from charged + photon four-vectors | MeV | `_visible_invariant_mass` (`reconstruction.py:1547–1570`, `1726`) | baseline |
+| E.8 | `calorimeter_timing_edep`, `calorimeter_out_of_time_edep` plus detector splits | sum hits inside/outside timing windows | MeV | `annotate_timing_windows` (`reconstruction.py:283–358`) and event sums (`1639–1652`, `1697–1709`) | baseline |
+| E.9 | `n_charged_objects`, `n_photon_like`, `n_pi0`, `pion_multiplicity` | counts reconstructed objects and selected π⁰ rows | int | object filtering and row output (`reconstruction.py:1658–1677`, `1716–1724`) | baseline |
+
+Per-leaf **inputs** are the tables in §1; **outputs** are the listed
+`events.csv` columns. E.6 is added by this plan because the licentiate
+used only sphericity; plan 38 scores it as an optional discriminator.
 
 ## 3. Hemisphere convention
 
