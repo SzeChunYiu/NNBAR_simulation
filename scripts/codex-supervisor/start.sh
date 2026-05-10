@@ -1,15 +1,19 @@
 #!/usr/bin/env bash
 # Wrapper that launches the upstream codex-supervisor with this project's
-# prompt file. Resolves the upstream binary via $CODEX_SUPERVISOR or a
-# default path under ~/Desktop/projects/codex-supervisor/.
+# prompt file and a session name disjoint from any other supervisor
+# (notably babbloo's).
 
 set -euo pipefail
 
 HERE="$(cd "$(dirname "$0")" && pwd)"
-# Use a renamed local copy of the supervisor so its command line does NOT
-# contain "codex-supervisor", which would otherwise be caught by another
-# instance's reap_stale_daemons grep and killed.
-SUPERVISOR="${CODEX_SUPERVISOR:-$HERE/nnbar-supervisor.sh}"
+
+# Point at the upstream binary directly. The historical rename to
+# `nnbar-supervisor.sh` was a workaround for a stale `reap_stale_daemons`
+# implementation that matched on filename; that function is now session-
+# aware (matches `--session <SESSION>` explicitly), so the rename is
+# unnecessary. Override via CODEX_SUPERVISOR if the upstream lives
+# elsewhere.
+SUPERVISOR="${CODEX_SUPERVISOR:-$HOME/Desktop/projects/codex-supervisor/codex-supervisor.sh}"
 
 if [[ ! -x "$SUPERVISOR" ]]; then
     echo "error: codex-supervisor not found at $SUPERVISOR" >&2
@@ -17,38 +21,29 @@ if [[ ! -x "$SUPERVISOR" ]]; then
     exit 1
 fi
 
-# Use a project-specific tmux session name so we coexist with any other
-# codex-supervisor session already running (e.g. "codex-supervisor").
+# Project-specific tmux session name so we coexist with any other
+# codex-supervisor session (babbloo, etc).
 export CODEX_SUPERVISOR_SESSION="${CODEX_SUPERVISOR_SESSION:-nnbar-rebuild}"
 
 # After each /goal "Goal achieved", re-send the original prompt so the
-# lane reads the (possibly updated) per-lane spec and starts a fresh
-# pursuit. Equivalent to "start a new session after every goal" — codex
-# treats /goal as a context reset, and the lane spec re-read picks up
-# any wave changes that landed since the last iteration.
+# respawned codex reads the (possibly updated) per-lane spec.
 export CODEX_SUPERVISOR_ON_COMPLETE="${CODEX_SUPERVISOR_ON_COMPLETE:-redo}"
 
-# When a goal is achieved, kill+respawn the codex CLI process before
-# sending the next /goal. This guarantees a fresh codex (no accumulated
-# context, no leaked worktree handles, no stale MCP children) per
-# iteration — equivalent to "restart codex instead of giving a new /goal
-# in the same session". Trade-off: ~10 s of MCP boot per iteration.
+# Kill+respawn codex on goal completion → fresh context every iteration.
 export CODEX_SUPERVISOR_RESPAWN_ON_GOAL="${CODEX_SUPERVISOR_RESPAWN_ON_GOAL:-1}"
 
-# Launch from the simulation repo root so codex panes' working directory
-# resolves docs/parallel-sessions.md and docs/parallel-sessions/L*.md as
-# relative paths. Pass the prompts file explicitly via env var.
+# Run from repo root so panes' cwd resolves docs/parallel-sessions/*.md.
 REPO_ROOT="$(cd "$HERE/../.." && pwd)"
 export CODEX_SUPERVISOR_PROMPTS="$HERE/codex-prompts.txt"
 
 cd "$REPO_ROOT"
 
-# Behavior: `start` opens a Ghostty/Terminal window attached to the
-# session — but ONLY if no client is already attached. The upstream
-# supervisor's open_terminal_attached now checks `tmux list-clients`
-# first and is idempotent, so calling `start` from a recovery loop
-# won't pile up windows.
-#
-# To bypass attach entirely (silent restart) pass `--no-attach`. The
-# wrapper passes it straight through to the upstream binary.
+# On `start`, pass --session as a CLI flag (in addition to the env var)
+# so the upstream reap_stale_daemons matches our daemon by session name
+# and only reaps OUR own stale daemons, not babbloo's. Other subcommands
+# (stop, status, etc.) read the session from the env var.
+if [[ "${1:-start}" == "start" ]]; then
+    shift 2>/dev/null || true
+    exec "$SUPERVISOR" start --session "$CODEX_SUPERVISOR_SESSION" "$@"
+fi
 exec "$SUPERVISOR" "$@"

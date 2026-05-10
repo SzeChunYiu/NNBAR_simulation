@@ -1,1 +1,0 @@
-/Users/billy/Desktop/projects/codex-supervisor/codex-supervisor.sh
