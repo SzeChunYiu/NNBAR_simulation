@@ -195,6 +195,16 @@ sys.exit(1 if issues else 0)
 PY
 ```
 
+The CLI check in item 3 is equally mechanical from the L3 worktree:
+
+```bash
+cd /Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3
+for cmd in summarize response-matrix cutflow validate-reco dqm scan-pid; do
+  python -m nnbar_reconstruction.cli "$cmd" --help >/tmp/nnbar_cli_${cmd//-/_}.help
+done
+python -m nnbar_reconstruction.cli --help >/tmp/nnbar_cli_root.help
+```
+
 Acceptance rule: before any plan-47 ledger row cites a plan-24 leaf,
 that leaf's family must have either an implementation handoff
 subsystem plan or a software handoff study/operations plan, and the
