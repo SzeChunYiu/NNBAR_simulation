@@ -84,6 +84,9 @@ l1_defence_inventory:
       owner_signoff_refs: [RQ-L1-SELECTION-CUTFLOW:<owner-hash>]
       command_template_ids: [validate_reco_cutflow_v1]
       command_template_verifier_hashes: [sha256:<hash>]
+      ci_report_hash: sha256:<hash-or-null>
+      note_annex_hash: sha256:<hash-or-null>
+      glossary_audit_hash: sha256:<hash-or-null>
 ```
 
 Inventory review rules:
@@ -95,6 +98,7 @@ Inventory review rules:
 | owner sign-off refs are archived for answered rows | future reader cannot identify who approved question closure |
 | command-template ids are archived with rerun rows | future rerun cannot know which verified command contract applied |
 | command-template verifier hashes are archived | future rerun cannot prove the command surface was verified |
+| CI, note-annex, and glossary hashes are archived | package evidence cannot be traced to review, prose, and term-signoff artifacts |
 | `stale` rows keep package and staleness hashes | future readers cannot tell why archived evidence was not quote-ready |
 | `blocked` rows carry a caveat and owning plan | open limitations disappear at freeze |
 | retired parquet rows keep manifests | retention policy removes replay provenance |
