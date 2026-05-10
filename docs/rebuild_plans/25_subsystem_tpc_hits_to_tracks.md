@@ -48,7 +48,7 @@ chi2_seed             # quality estimator from fitter
 
 ## 2. Current implementation (per plan 08 §3.2)
 
-`_track_anchor_and_direction(group)` (`reconstruction.py:147-168`).
+`_track_anchor_and_direction(group)` (`charged.py:61-80`).
 Sorts hits by time then input order; takes anchor = first coord,
 direction = (last - first). No fit; no covariance; no quality cut
 beyond ≥ 2 valid coords.
