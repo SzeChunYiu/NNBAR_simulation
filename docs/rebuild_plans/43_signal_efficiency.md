@@ -159,8 +159,8 @@ truth-labeling bug, not an uncertainty.
 - Reproducible from `sig_foil_v3` only.
 - §4 software handoff is complete: inclusive and by-channel producers
   have explicit inputs, outputs, failure assertions, provenance fields,
-  the existing jackknife support helper is cited, and a no-invented-CLI
-  rule is in force.
+  the existing cut-flow and jackknife support helpers are cited, and a
+  no-invented-CLI rule is in force.
 
 ### 3.1 Machine-checkable gate mapping
 
