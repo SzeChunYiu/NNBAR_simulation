@@ -130,7 +130,7 @@ l1_defence_ci_report:
         allowed_line_range: [200, 300]
         stale_citation_matches: 0
         owner_signoff_refs_present: true
-        review_evidence_link_keys: [overlay_rollup, owner_signoff_refs, rerun_manifest, rerun_transcript, command_template_ids, command_template_verifier_hashes, staleness_summary, ci_report, archive_inventory, archive_drill, note_annex, glossary_audit]
+        review_evidence_link_keys: [overlay_rollup, owner_signoff_refs, rerun_manifest, rerun_transcript, command_template_ids, command_template_verifier_hashes, command_template_verifier_sources, staleness_summary, ci_report, archive_inventory, archive_drill, note_annex, glossary_audit]
         review_artifact_hash_keys: [package, rerun_manifest, rerun_transcript, command_template_verifier, staleness_summary, ci_report, archive_inventory, archive_drill, note_annex, glossary_audit]
         archive_drill_hash_present: true
         command_template_verifier_hashes: [sha256:b3cee4613afed558d4704df3dc5b281271aed768965d79a09603f812496806f0]
@@ -221,7 +221,7 @@ l1_defence_ci_report:
       files_checked:
         - docs/rebuild_plans/50_reviewer_defense_package.md
       evidence:
-        required_link_keys: [overlay_rollup, owner_signoff_refs, rerun_manifest, rerun_transcript, command_template_ids, command_template_verifier_hashes, ci_report, archive_inventory, archive_drill, note_annex, glossary_audit, staleness_summary]
+        required_link_keys: [overlay_rollup, owner_signoff_refs, rerun_manifest, rerun_transcript, command_template_ids, command_template_verifier_hashes, command_template_verifier_sources, ci_report, archive_inventory, archive_drill, note_annex, glossary_audit, staleness_summary, staleness_status]
         required_hash_keys: [package, rerun_manifest, rerun_transcript, command_template_verifier, ci_report, note_annex, glossary_audit, staleness_summary, archive_inventory, archive_drill]
         staleness_status_key_present: true
         command_template_verifier_hashes_present: true
