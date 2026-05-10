@@ -324,6 +324,27 @@ geometry version is missing, or if truth-origin fields are listed as
 production inputs. Plans 43, 47, and 60 consume this manifest before
 using foil compatibility or vertex residual rows.
 
+### 7.6 Stage E.1 fixture matrix
+
+The V.3/V.4/V.5 replacement patch must prove the vertex chain remains
+split, geometry-versioned, and truth-blind before efficiency, fiducial,
+or ledger consumers read the vertex manifest:
+
+| Fixture case | Required input condition | Required assertion |
+|---|---|---|
+| truth-column drop | V.2 fit rows are run with and without `Track_ID`, particle names, truth vertices, and origin labels | V.3 projection rows, V.4 vertices, V.5 foil decisions, and failure reasons are unchanged |
+| invalid V.2 row | one candidate has a failed, covariance-invalid, or missing fit state | V.3 emits an invalid projection reason and V.4/V.5 do not infer a vertex from raw TPC rows |
+| multi-track event | one event has two or more valid V.2 tracks crossing the foil region | V.4 aggregation records the configured `aggregation_method`, covariance convention, and projection-table hash |
+| geometry boundary | event vertex lies near the foil radius or half-thickness boundary | V.5 records `foil_geometry_version`, geometry sidecar hash, and `acceptance_reason` before plan 60 consumes the row |
+| algorithm successor | Billoir or adaptive fitter output is supplied during review | promotion remains blocked unless plan 38 V.4 ladder evidence and a plan 05 decision version the aggregation method |
+| real V.2 to V.5 chain | real paired output flows through plan 26 fit rows before vertex production | the split V.3/V.4/V.5 hashes are separate and no legacy `Track_ID` grouping is used outside reproduction artifacts |
+
+The review artifact for any vertex replacement must map each fixture
+row to the synthetic or real-output selector in §7.4. Rows gated on plan
+60 geometry sidecars must still expose manifest-level unavailable
+states so plans 43 and 66 do not infer fiducial acceptance from missing
+vertex rows.
+
 ## 8. Acceptance criteria
 
 - §3 migration complete.
@@ -332,7 +353,7 @@ using foil compatibility or vertex residual rows.
 - §7 Stage E.1 handoff is actionable for L3: the legacy reproduction
   hook, split V.3/V.4/V.5 fixture hooks, promotion invariants,
   producer/consumer contract, verification command, artifact manifest
-  schema, and vertex-reco regression tests are cited; the fixtures remain split
+  schema, fixture matrix, and vertex-reco regression tests are cited; the fixtures remain split
   from closure artifacts; and vertex-reco tests must prove the foil
   gate is invariant to dropping Class B truth columns.
 
