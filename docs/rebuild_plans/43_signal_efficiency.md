@@ -159,8 +159,8 @@ truth-labeling bug, not an uncertainty.
 - Reproducible from `sig_foil_v3` only.
 - §4 software handoff is complete: inclusive and by-channel producers
   have explicit inputs, outputs, failure assertions, provenance fields,
-  the existing cut-flow and jackknife support helpers are cited, and a
-  no-invented-CLI rule is in force.
+  a required manifest schema, the existing cut-flow and jackknife
+  support helpers are cited, and a no-invented-CLI rule is in force.
 
 ### 3.1 Machine-checkable gate mapping
 
@@ -216,6 +216,36 @@ L3/software handoff requirements:
 5. New command lines may be added only after their CLI surfaces are
    verified under the A+ examiner gate. Until then, the blocked sections
    remain precise software requirements, not runnable instructions.
+
+### 4.1 Efficiency artifact manifest schema
+
+The inclusive and by-channel efficiency producers must write manifest
+rows that bind every quoted number to frozen reconstruction, fiducial,
+and DQM inputs:
+
+```yaml
+schema_version: plan43_signal_efficiency@stage-e1
+dataset_id: sig_foil_v3
+plan03_registry_id: sig_foil_500MeV_v3
+producer_mode: inclusive | by_channel
+truth_inputs_hash: <sha256 of Particle/Interaction truth inputs>
+reco_table_hashes: {vertices: <sha256>, events: <sha256>, charged: <sha256>, photons: <sha256>, pi0: <sha256>}
+fiducial_manifest_hash: <sha256 of plan-60 manifest>
+dqm_manifest_hash: <sha256 of plan-66 manifest>
+geometry_version: <plan-16 geometry/alignment tag>
+fiducial_profile: none | loose | tight
+bootstrap_replicas: 200
+uncertainty_artifacts: {wilson: <path>, jackknife: <path>, covariance: <path>}
+factorisation_closure: pass | warn | fail
+channel_count_closure: pass | warn | fail | not_applicable
+ledger_rows: [LIC-CH06, LIC-CH10-NUM-1, LIC-CH10-CUTFLOW]
+producer_help_verified: true
+```
+
+The manifest is invalid if any efficiency row lacks a fiducial profile,
+geometry version, DQM status, or direct/product closure status. A
+by-channel manifest is also invalid unless the named channels in §2.2
+plus `other` sum back to the inclusive counts.
 
 ## 5. Risks
 
