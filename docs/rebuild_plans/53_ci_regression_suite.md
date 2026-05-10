@@ -195,6 +195,23 @@ l1_defence_ci_report:
         review_evidence_link_keys: [package, staleness_summary, ci_report, archive_inventory, archive_drill, note_annex, glossary_audit]
         review_artifact_hash_keys: [package, staleness_summary, ci_report, archive_inventory, archive_drill, note_annex, glossary_audit]
       remediation: null
+    - check_id: l1_package_staleness_guard
+      status: pass | fail
+      files_checked:
+        - docs/rebuild_plans/50_reviewer_defense_package.md
+        - docs/rebuild_plans/51_reviewer_question_registry.md
+        - docs/rebuild_plans/52_run_orchestration.md
+        - docs/rebuild_plans/53_ci_regression_suite.md
+        - docs/rebuild_plans/54_open_data_archival.md
+        - docs/rebuild_plans/55_internal_note_template.md
+        - docs/rebuild_plans/56_glossary.md
+      evidence:
+        ready_package_count: <n>
+        ready_packages_with_current_staleness: <n>
+        checked_hash_inputs: [plan51_question_registry, plan52_rerun_bundle, plan53_ci_report, plan54_archive_inventory, plan54_archive_drill, plan55_note_annex, plan56_glossary_audit]
+        archive_hashes_present: true
+        stale_ready_packages: []
+      remediation: null
 ```
 
 Report review rules:
