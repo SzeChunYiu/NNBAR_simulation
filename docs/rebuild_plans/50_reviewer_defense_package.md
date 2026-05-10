@@ -155,6 +155,17 @@ l1_overlays:
     reviewer_question_ids: [RQ-L1-SELECTION-CUTFLOW]
     caveat_text: <one-sentence reviewer-facing caveat, or null>
     last_verified: YYYY-MM-DD
+  - overlay_id: unbounded_caveat_status
+    applicability: applies | not_applicable | blocked
+    reason: <limitation id and affected EM/selection result>
+    source_plans: [1, 45, 50, 55]
+    required_artifacts:
+      - plan45_caveat_or_numeric_bound_row
+      - plan55_unbounded_caveat_note_row
+    artifact_status: present | blocked | missing
+    reviewer_question_ids: [RQ-L1-UNBOUNDED-CAVEATS]
+    caveat_text: <reviewer-facing caveat required when artifact_status is blocked>
+    last_verified: YYYY-MM-DD
 ```
 
 Review rules:
