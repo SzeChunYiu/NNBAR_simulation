@@ -294,6 +294,34 @@ V.2 artifact manifest fields `fit_id`, `direction_method`,
 rows cannot feed plan 30 or plan 40; the real-output selector must run
 against the paired V.1 candidate fixture before promotion.
 
+### 5.6 Stage E.1 artifact manifest schema
+
+The V.2 producer must write a manifest that freezes fitter identity,
+source hashes, and covariance conventions before any downstream vertex,
+range, dE/dx, or pull artifact consumes the fit rows:
+
+```yaml
+schema_version: plan26_v2_fits@stage-e1
+dataset_id: <plan-03 dataset id>
+producer: fit_track_candidates
+fit_id: <stable fitter version>
+direction_method: linear_pca | kalman | degraded_first_last
+input_v1_hash: <sha256 of V.1 candidate table>
+input_tpc_hash: <sha256 of TPC input table>
+output_fit_hash: <sha256 of V.2 fit table>
+residual_sidecar_hash: <sha256 of residual sidecar>
+covariance_representation: six_components | row_major_3x3_vector
+covariance_valid_values: [true, false]
+fit_degraded_values: [true, false]
+quality_states_allowed: [pass, warn, fail, not_applicable]
+failure_reasons_allowed: [none, insufficient_class_a_hits, nonfinite_class_a_coordinates, singular_covariance, degraded_fallback]
+```
+
+The manifest is invalid if V.2 rows are silently dropped relative to the
+V.1 input key set or if covariance order is omitted. Plans 27, 28, 30,
+40, and 66 consume this manifest before trusting direction covariance or
+fit-quality fractions.
+
 ## 6. Acceptance criteria
 
 - §3 closure passes on calibration sample.
@@ -301,7 +329,8 @@ against the paired V.1 candidate fixture before promotion.
 - §5 Stage E.1 handoff is actionable for L3: the target public
   function, current unit/integration tests, remaining failure-state test
   obligation, promotion invariants, producer/consumer contract,
-  verification command, and required V.2 fields (`fit_id`, direction components,
+  verification command, artifact manifest schema, and required V.2
+  fields (`fit_id`, direction components,
   covariance components, `chi2_ndf`, `n_residual_degrees_of_freedom`,
   `direction_method`, residual sidecar rows, `fit_quality_state`,
   `fit_failure_reason`, `covariance_valid`, and `fit_degraded`) are all
