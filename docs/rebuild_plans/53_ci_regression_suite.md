@@ -222,6 +222,17 @@ l1_defence_ci_report:
         staleness_status_key_present: true
         command_template_verifier_hashes_present: true
       remediation: null
+    - check_id: l1_question_status_transition
+      status: pass | fail
+      files_checked:
+        - docs/rebuild_plans/51_reviewer_question_registry.md
+      evidence:
+        answered_rows_checked: <n>
+        required_answer_keys: [artifact, owner_signoff, review_evidence_links, review_artifact_hashes]
+        required_transition_keys: [old_status, new_status, required_artifact_status, l1_overlay_id]
+        refreshed_artifact_keys: [rerun_command_template_id, rerun_command_template_verifier_hash, rerun_command_template_verifier_source]
+        transition_matrix_checked: true
+      remediation: null
 ```
 
 Report review rules:
