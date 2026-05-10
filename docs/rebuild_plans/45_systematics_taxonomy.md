@@ -134,6 +134,25 @@ must therefore distinguish *bounded by a §1 nuisance* from
 | L11 no cosmic+signal pile-up | unbounded | total-background and overlay claims require caveat |
 | L12 optical-path on/off changes lead-glass observable | N9 | include optical nuisance in photon/π⁰/visible-mass results |
 
+### 3.2 Unbounded limitation handling rule
+
+An `unbounded` entry in §3.1 is not a hidden nuisance parameter. It is
+a blocking caveat until a bounded scenario or calibration study creates
+a named §1 nuisance with a ±1σ definition. Quoted results therefore
+follow this rule:
+
+1. Do not assign Gaussian, log-normal, or envelope weights to an
+   `unbounded` limitation.
+2. Any result whose observable touches an `unbounded` limitation carries
+   an explicit plan-47 ledger field `unbounded_limitations: [...]` and
+   a plan-50 caveat sentence.
+3. If the limitation can change an acceptance, fake-rate, or live-rate
+   conclusion, the result is labelled `conditional_on_current_rebuild_model`
+   and cannot be used as an unconditional defence claim.
+4. Closing the caveat requires either adding a bounded §1 nuisance row
+   or a DEC entry that proves the limitation is irrelevant for the
+   quoted observable.
+
 ## 4. Acceptance criteria
 
 - §1 registry complete; ≥ 10 nuisances.
