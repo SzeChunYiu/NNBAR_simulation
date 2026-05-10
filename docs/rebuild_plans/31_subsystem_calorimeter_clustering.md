@@ -44,6 +44,11 @@ Leaf P.1: calorimeter hits → neutral-shower cluster candidates
   `t` from plan 09 §§9–10. Geometry side-cars from plan 09 §13 may
   be used to define nearest-neighbour topology, cell adjacency, and
   detector-component labels.
+- **Column / unit contract:** plan 09 records calorimeter `x`, `y`,
+  and `z` in **cm** and `eDep` in MeV for both LeadGlass and
+  Scintillator rows. P.1 outputs therefore use cm for centroids and
+  MeV for energies; if legacy column names omit `_cm` / `_mev`
+  suffixes, plan 09 §14 must state those units explicitly.
 - **Current implementation evidence:** plan 08 identifies the present
   source resolver as `_leadglass_shower_sources`
   (`reconstruction.py:407–499`) and its use inside
@@ -56,8 +61,8 @@ Leaf P.1: calorimeter hits → neutral-shower cluster candidates
   energy maxima, grow by detector adjacency / spatial proximity, and
   split or merge clusters using only hit energy, hit position, timing,
   and calibrated detector geometry. No `Track_ID`, `Parent_ID`,
-  `Name`, `Process`, or `Interaction` ancestry may decide cluster
-  membership.
+  `Name`, `Proc` / process alias, or `Interaction` ancestry may
+  decide cluster membership.
 - **Outputs:** one row per cluster with `event_id`, `cluster_id`,
   `detectors_present`, `n_leadglass_hits`, `n_scintillator_hits`,
   `leadglass_edep`, `scintillator_edep`, `total_edep`,
