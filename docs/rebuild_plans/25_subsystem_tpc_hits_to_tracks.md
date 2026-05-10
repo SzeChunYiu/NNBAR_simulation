@@ -6,8 +6,8 @@ status: draft
 owner: Tracking POG
 depends_on: [00_README, 01_realism_contract, 08_reconstruction_atomic_walkthrough, 09_io_schema_data_dictionary, 24_reconstruction_question_tree]
 inputs:
-  - {path: data/registry/sig_foil_v3, schema: signal sample}
-  - {path: data/registry/cal_singlepion*, schema: charged calibration}
+  - {path: docs/rebuild_plans/20_sample_signal.md, schema: signal sample definition for `sig_foil_v3`}
+  - {path: docs/rebuild_plans/03_dataset_registry.md, schema: charged calibration dataset id `cal_singlepion_50to600MeV_v2`}
 outputs:
   - {path: docs/rebuild_plans/25_subsystem_tpc_hits_to_tracks.md, schema: this file}
 acceptance:
