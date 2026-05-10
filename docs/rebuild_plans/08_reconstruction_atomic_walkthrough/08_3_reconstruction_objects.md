@@ -17,26 +17,76 @@ last_updated: 2026-05-10
 This split file preserves and deepens plan 08 §§3.3–3.5 so the main
 walkthrough stays below the 500-line cap.
 
-### 3.3 Vertex reconstruction (located by section heading near reconstruction.py:200–~430)
+### 3.3 Vertex reconstruction
 
-The current vertex function, per `reconstruction.md`:
+#### 3.3.1 Helper: `_is_pion_proton_candidate_track(group)`
 
-- Builds candidate charged tracks from TPC hits (per plan 07 §6.1,
-  TPCSD writes only first/last steps in volume).
-- For each candidate track with valid TPC entry/exit points,
-  computes the projection to the foil plane `z = 0`.
-- The reported event vertex is the *mean of valid track projections*
-  (cf. licentiate Ch 7 description).
-- Reports the RMS radial spread and the count of "skipped" tracks
-  that could not project (parallel to foil, missing endpoints).
-- Truth-labelled EM, neutral, neutrino, and nuclear-fragment tracks
-  are excluded from vertex seeding (this is a Class B *exclusion*
-  — see §3.7 for the policy).
-- Sparse legacy tables without truth labels fall back to using all
-  geometrically valid tracks.
+**Source:** `NNBAR_Detector/nnbar_reconstruction/reconstruction.py:691–698`.
 
-Plan 25 takes this as the baseline; alternatives (Billoir χ², iterative
-weighted projection) are evaluated against it.
+**Inputs:** one TPC track group. It reads `Name` when present; plan 09
+classifies TPC `Name` as Class B truth (`docs/rebuild_plans/09_io_schema_data_dictionary.md:151–155`).
+If `Name` is absent or all labels are missing, the helper returns true
+and lets the geometric projection path run (`reconstruction.py:691–696`).
+
+**Decision rule:** keep a labelled group only when any label is one of
+`pi+`, `pi-`, `charged_pion`, `proton`, or `antiproton`
+(`reconstruction.py:697–698`). This is a Class B exclusion of EM,
+neutral, neutrino, and fragment tracks in the current baseline.
+
+**Outputs:** boolean keep/drop flag.
+
+**Truth reads:** `Name` (Class B). This is one of the current
+truth-labelled reconstruction exclusions tracked by plan 08 §3.7.
+
+#### 3.3.2 `reconstruct_event_vertices(tpc)`
+
+**Source:** `NNBAR_Detector/nnbar_reconstruction/reconstruction.py:1221–1313`.
+
+**Inputs:** the TPC hit table. Required columns are `Event_ID`,
+`Track_ID`, `x`, `y`, and `z` (`reconstruction.py:1234–1236`). Plan 09
+classifies `Event_ID` as Class A, `Track_ID` as Class B Geant4 track
+identity, and hit `x/y/z` as Class A position with limitation L1
+(`docs/rebuild_plans/09_io_schema_data_dictionary.md:151–159`). Optional
+`t` is Class A timing with limitation L2 and enables vertex-time
+projection (`plan 09:159`; `reconstruction.py:1240–1244`, `1252–1257`).
+Optional `Name` is read only through `_is_pion_proton_candidate_track` as
+Class B truth filtering (§3.3.1).
+
+**Decision rule:** empty/missing required columns return an empty vertex
+table with the output schema (`reconstruction.py:1224–1236`). Otherwise
+hits are sorted by event, track, optional time, and original row order
+(`reconstruction.py:1238–1244`). For each `(Event_ID, Track_ID)` group,
+non-pion/proton truth-labelled tracks are skipped without entering the
+projection counters (`reconstruction.py:1246–1250`). Numeric finite
+positions are required; groups with fewer than two valid points increment
+`n_skipped_tracks` for that event (`reconstruction.py:1251–1260`). The
+track line is `start = first valid hit`, `stop = last valid hit`,
+`direction = stop - start`; a non-finite direction or `abs(direction[2]) <
+1.0e-12` is skipped because it cannot project to the foil plane
+(`reconstruction.py:1262–1267`). The projection scale is
+`-start[2] / direction[2]`, giving `vertex = start + scale * direction`
+with `projected_z = 0.0` (`reconstruction.py:1269–1287`). If two finite
+hit times exist, projected time is linearly interpolated with the same
+scale (`reconstruction.py:1271–1273`). Non-finite projected vertices are
+skipped (`reconstruction.py:1274–1276`).
+
+Per event, the reconstructed vertex is the mean of projected `x/y`, with
+`vertex_z = 0.0`; `vertex_time_ns` is the mean finite projected time;
+`vertex_radial_spread` is the RMS transverse spread around the mean;
+`n_projected_tracks` counts accepted projections; `n_skipped_tracks`
+comes from failed projection attempts (`reconstruction.py:1292–1313`).
+
+**Outputs:** DataFrame columns exactly as declared in code:
+`event_id`, `vertex_x`, `vertex_y`, `vertex_z`, `vertex_time_ns`,
+`vertex_radial_spread`, `n_projected_tracks`, and `n_skipped_tracks`
+(`reconstruction.py:1224–1233`). Plan 09 §14.1 documents the same vertex
+surface concept but still names older aliases (`vertex_radial_rms`,
+`n_tracks_used`, `n_tracks_skipped`); the source code is authoritative
+for the current output names.
+
+**Truth reads:** `Name` through `_is_pion_proton_candidate_track` and
+`Track_ID` for grouping are Class B in plan 09. The geometric projection
+itself uses Class A `x/y/z` and optional `t`.
 
 ### 3.4 Charged-object reconstruction (lines ≈ 430–700)
 
