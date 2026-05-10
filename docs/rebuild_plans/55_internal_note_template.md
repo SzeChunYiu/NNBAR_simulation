@@ -123,6 +123,30 @@ l1_note_annex:
         archive_inventory: sha256:<hash-or-null>
         archive_drill: sha256:<hash-or-null>
       caveat_text: null
+    - annex_block: unbounded_caveat_status
+      applicability: applies | not_applicable | blocked
+      source_plans: [1, 45, 50]
+      defence_overlay_id: unbounded_caveat_status
+      reviewer_question_ids: [RQ-L1-UNBOUNDED-CAVEATS]
+      required_contents:
+        - limitation id and affected result ids
+        - reviewer-facing caveat text
+        - owner and reopening condition
+      evidence_refs:
+        - plan45_caveat_or_numeric_bound_row
+        - plan50_unbounded_caveat_overlay
+      review_evidence_links:
+        package_rollup: <plan50-rollup-id>
+        ci_report: <plan53-l1-report-id>
+        glossary_audit: <plan56-audit-id>
+        staleness_summary: <plan50-staleness-id>
+      artifact_hashes:
+        note_annex: sha256:<hash>
+        defence_package: sha256:<hash-or-null>
+        staleness_summary: sha256:<hash-or-null>
+        ci_report: sha256:<hash-or-null>
+        glossary_audit: sha256:<hash-or-null>
+      caveat_text: <required unless applicability is not_applicable>
 ```
 
 Review rules:
