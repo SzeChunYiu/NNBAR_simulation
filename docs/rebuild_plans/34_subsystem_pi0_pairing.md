@@ -87,6 +87,16 @@ Fixture review recomputes every cut boolean, final AND, and failure
 reason list from the stored kinematics. Truth parent labels may be added
 only to validation sidecars for accidental-rate studies.
 
+### 1.3 Current-to-target π⁰ candidate key map
+
+The current `find_pi0_candidates` rows (`photon.py:204-263`) are
+identified by `event_id`, `photon1_id`, and `photon2_id`; they do not
+emit a stable `candidate_id`. The rebuild bridge must derive
+`candidate_id` from the ordered photon ids, `pairing_method_id`, and
+cut-config id before plan 35 consumes the row. Row ordinal, truth
+parentage, and generated π⁰ ids are diagnostic-only and cannot enter
+that key.
+
 ## 2. Selection per candidate
 
 Thesis Ch 8 defaults are held in the current `ReconstructionConfig`
