@@ -77,8 +77,9 @@ l1_defence_inventory:
         - output/defense/<row_id>.yml
       artifact_hashes:
         - sha256:<hash>
-      status: present | blocked | retired
+      status: present | blocked | retired | stale
       caveat: null
+      staleness_summary_hash: sha256:<hash-or-null>
 ```
 
 Inventory review rules:
@@ -87,12 +88,16 @@ Inventory review rules:
 |---|---|
 | every §1.1 pack member appears exactly once | DOI omits a reviewer-critical evidence class |
 | `present` rows have at least one hash | archived artifact cannot be integrity-checked |
+| `stale` rows keep package and staleness hashes | future readers cannot tell why archived evidence was not quote-ready |
 | `blocked` rows carry a caveat and owning plan | open limitations disappear at freeze |
 | retired parquet rows keep manifests | retention policy removes replay provenance |
 | inventory hash is listed in the top-level README | reviewer cannot discover the L1 defence pack |
 
 This inventory is small enough to archive even when the underlying sample
-parquet is retired under the plan-03 Tier C policy.
+parquet is retired under the plan-03 Tier C policy. A stale defence package is
+archived for provenance, but the inventory status prevents it from being used
+as current thesis evidence without the plan-50 staleness summary regenerating
+to `current`.
 
 
 ### 1.3 L1 archive pull-and-reproduce drill
