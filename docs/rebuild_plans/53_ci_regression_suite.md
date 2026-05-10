@@ -93,7 +93,7 @@ requirements, not claims that the final workflow file already exists.
 | `l1_no_stale_cli_or_code_cites` | changes to L1-owned plans | grep for `*.py:<line>` and nnbar module commands, then require the A+ verifier transcript or remove the claim | Tier 1 block |
 | `l1_cutflow_identity_guard` | changes to plans 37, 50, 51, or 55 | canonical singular `pass_*` selection columns remain named in defence overlays and note annexes | Tier 1 block |
 | `l1_defence_rerun_manifest` | Tier 3 weekly | plan-52 defence rerun bundle has rows for EM chain, selection, pile-up, strange, TOF, and Bayesian cross-checks | Tier 3 tracking issue if incomplete |
-| `l1_rerun_transcript_link` | changes to plans 50 or 52 | any ready plan-50 L1 roll-up links both the plan-52 rerun manifest and execution transcript | Tier 1 block |
+| `l1_rerun_transcript_link` | changes to plans 50 or 52 | any ready plan-50 L1 roll-up links both the plan-52 rerun manifest and execution transcript, and plan-52 rows carry review-evidence links plus review-artifact hashes | Tier 1 block |
 | `l1_command_template_registry` | changes to plan 52 | transcript command-template ids are registered, immutable, limited to verified CLI help output or explicit blocked templates, and carry verifier transcripts | Tier 1 block |
 | `l1_package_staleness_guard` | changes to plans 50-56 | ready plan-50 L1 packages carry `l1_staleness.status: current` against the latest L1 hashes | Tier 1 block |
 | `l1_note_package_freshness` | changes to plans 50 or 55 | promoted L1 note annexes quote only current packages or include an explicit stale-package caveat, and carry note/package/CI/glossary artifact hashes plus staleness id | Tier 1 block |
@@ -142,7 +142,7 @@ Report review rules:
 | stale-citation evidence includes match count | A+ examiner gate is not reduced to a checkbox |
 | report git rev matches package git rev | archived defence artifacts and CI evidence diverge |
 | archive and glossary checks are present when freeze mode runs | freeze package omits L1 drill, owner sign-off refs, review-artifact hashes, or term sign-off evidence |
-| rerun transcript check appears when roll-up uses refreshed artifacts | package claims rerun evidence without execution proof |
+| rerun transcript check appears with review-evidence links and artifact hashes when roll-up uses refreshed artifacts | package claims rerun evidence without execution proof or artifact parity |
 | command-template registry check includes verifier transcript | transcript uses unsupported, unverified, or mutable command surface |
 | answered-question transition evidence includes command-template ids and verifier hash | reviewer registry closes a refreshed-evidence question without replay contract or A+ verifier proof |
 | answered-question transition evidence includes owner sign-off | reviewer registry closes a question without accountable approval |
@@ -162,7 +162,7 @@ checks are pass/fail and block the plan-set edit when they fail.
 - §3 failure semantics documented and enforced.
 - §4 coverage targets met on `main`.
 - §5 L1 defence-package CI checks implemented for Stage E.3 plan edits,
-  including rerun transcript linkage for refreshed artifacts and
+  including rerun transcript linkage plus review-artifact parity for refreshed artifacts and
   answered-question transition evidence with command-template ids plus verifier
   hashes, owner sign-off, review-artifact hashes, package staleness guards,
   review-evidence link checks, note freshness checks, and command-template
