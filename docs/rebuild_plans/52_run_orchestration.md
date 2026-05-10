@@ -99,6 +99,51 @@ overlay ids refreshed by the rerun. If one member is not yet implementable
 blocked row with the missing input named rather than silently omitting the
 question.
 
+
+### 4.1 Defence rerun manifest fixture
+
+The bundle is materialised as a small YAML manifest so reviewers can see
+which EM/selection artifacts were refreshed together. It is intentionally
+separate from the physics dataset registry: registry rows define frozen
+samples, while this manifest defines a reproducible reviewer rerun over
+those samples.
+
+```yaml
+l1_defence_rerun_manifest:
+  manifest_version: 1
+  requested_by: reviewer-question-id
+  seed_formula: sha256(dataset_id || run_index || "simulation")[:8]
+  rows:
+    - bundle_member: EM chain closure
+      status: ready | blocked
+      required_inputs:
+        - dataset_id: cal_singlegamma_v1
+          run_indices: [0, 1, 2]
+          source_hash: <sha256>
+      refreshes:
+        - artifact_id: p1_p7_closure_rows
+          output_hash: <sha256>
+        - artifact_id: photon_pi0_response_summary
+          output_hash: <sha256>
+      defence_overlay_ids:
+        - l1-em-chain
+      blocker: null
+```
+
+Manifest review rules:
+
+| Rule | Failure caught |
+|---|---|
+| every §4 bundle member has one row | reviewer rerun omits a known L1 question family |
+| every ready row records source and output hashes | refreshed artifacts cannot be tied to frozen inputs |
+| every blocked row names the missing input | unavailable samples are hidden as silent skips |
+| overlay ids point back to plan 50 | rerun evidence is disconnected from the defence package |
+| seed formula matches §2 exactly | reviewer rerun is not bitwise reproducible |
+
+The CI check in plan 53 consumes this fixture shape. A weekly failure is
+acceptable only when the blocked row names an upstream owner and the
+plan-50 defence package marks the same question as not yet reproducible.
+
 ## 5. Pre-submit checks
 
 - Cluster quota (storage + CPU hours).
