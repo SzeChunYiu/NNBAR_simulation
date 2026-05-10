@@ -84,6 +84,29 @@ questions map:
 - *"What if the sample is unphysical?"* → `acceptance_footprint`
   + `limitations_flags`.
 
+
+### 2.1 L1 EM/selection defence overlays
+
+The L1 slice adds result-specific overlays for EM-object and selection
+questions seeded in plan 51 §2.1. A package for any result that depends
+on plans 31-37, 58, 59, 61, or 64 must include the matching overlay
+rows below in addition to the generic §1 blocks.
+
+| Overlay id | Applies when result uses | Required package fields | Reviewer question answered |
+|---|---|---|---|
+| `em_cluster_truth_blindness` | P.1/P.2/P.3 photon or cluster rows | clusterer method id, Class-B drop hash, closure row ids, selected DEC ids | whether EM reconstruction used truth grouping |
+| `pi0_cut_decomposition` | pi0 or Ch 8/Ch 10 selection rows | six pi0 cut booleans, final AND column, cut-config id, failure-reason schema | whether the pi0 acceptance can be audited cut-by-cut |
+| `selection_cutflow_identity` | plan-37 S.1-S.6 rows | canonical `pass_*` column names, cumulative order, independent and cumulative counts | whether the cut-flow is reproducible from current tables |
+| `pileup_l11_status` | any acceptance or background row with L11 open | plan-58 study id, overlay mode, paired cosmic rows, occupancy tails, limitation status | whether pile-up changes the quoted result |
+| `strange_v0_contamination` | beam-neutron or EM fake background rows | plan-59 source node, PDG branching snapshot, V0 rejection closure, residual interval | whether K_S/Lambda/Sigma leakage is bounded |
+| `tof_timing_resolution` | timing or cosmic-rejection rows | TOF method id, nonzero resolution budget, cal/cosmic closure rows, E.8 comparison | whether timing rejection survives detector resolution |
+| `bayesian_prior_sensitivity` | low-count limit rows | Jeffreys and flat prior upper limits, ratios to plan-46 primary limit, sensitivity status | whether the limit is prior-sensitive |
+
+The generator must fail closed if an overlay applies but the required
+fields are absent. A package may mark an overlay `not_applicable` only
+with a reason that references the result's plan-24 leaves or plan-44
+background node.
+
 ## 3. Generation
 
 A defence package is generated automatically by codex-supervisor
