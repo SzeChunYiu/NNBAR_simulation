@@ -14,7 +14,7 @@ acceptance:
 risks:
   - {risk: replacing the Track_ID-keyed grouping loses showers whose calorimeter deposits are sparse or disconnected, mitigation: §3 topological clustering captures contiguous deposits}
 estimated_effort: L
-last_updated: 2026-05-09
+last_updated: 2026-05-10
 ---
 
 # Subsystem — calorimeter clustering
@@ -78,6 +78,23 @@ Leaf P.1: calorimeter hits → neutral-shower cluster candidates
   only for closure labels and reproduction-ledger comparison; the
   production P.1 output is invalid if cluster membership changes when
   Class B columns are removed.
+
+### 2.1 Hit-membership key contract
+
+Every P.1 candidate must carry enough information for plan 32/33 and
+plan 47 to reproduce cluster membership exactly:
+
+| Output field | Meaning |
+|---|---|
+| `cluster_id` | dense per-event integer assigned after deterministic sorting by seed energy, then centroid coordinates |
+| `hit_membership_key` | stable hash of the sorted member-hit keys, detector labels, and reconstruction config id |
+| `member_hit_keys` | validation/debug artifact listing the sorted member-hit keys; may be stored out-of-row if the table format requires it |
+| `membership_config_id` | clusterer name plus frozen threshold/version id from the relevant DEC |
+
+A member-hit key is built from Class-A table position only: detector
+kind, run id when available, event id, and input-row ordinal or a
+future plan-09 hit id. It must not include `Track_ID`, `Parent_ID`,
+`Name`, or process/ancestry aliases.
 
 ## 3. Replacement candidates and comparison matrix
 
