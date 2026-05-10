@@ -215,6 +215,13 @@ with explicit remaining gates:
 
 - §3 closure passes on calibration sample.
 - Direction covariance is reported into output schema.
+- §5 Stage E.1 handoff is actionable for L3: the target public
+  function, unit-test path, integration-test path, and required V.2
+  fields (`fit_id`, direction components, covariance components,
+  `chi2_ndf`, `n_residual_degrees_of_freedom`, `direction_method`,
+  residual sidecar rows, `fit_quality_state`, `fit_failure_reason`,
+  `covariance_valid`, and `fit_degraded`) are all named before
+  implementation begins.
 
 ## 7. Dependencies
 
