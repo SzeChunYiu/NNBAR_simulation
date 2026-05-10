@@ -109,14 +109,63 @@ without consuming truth labels in the production decision path.
    scintillator bar pitch, whichever is larger; Bragg peak is resolved
    within one bar pitch for stopping protons.
 
-## 4. Acceptance criteria
+## 4. Range-quality and edge diagnostics
+
+The range estimator must publish diagnostic state separately from the
+PID decision so that plan 66 can flag run-quality drift without changing
+plan 29 scoring. The minimum diagnostic fields are:
+
+| Field | Meaning | Consumer |
+|---|---|---|
+| `range_quality_state` | `pass`, `warn`, `fail`, or `not_applicable` for the C.3 object | plan 66 DQM |
+| `range_failure_reason` | first blocking reason, if any | plan 47 caveat text |
+| `scintillator_edge_distance_mm` | signed distance of the terminal associated hit to the nearest active-module edge | plan 60 edge studies |
+| `scintillator_profile_bin` | coarse longitudinal bin used for Bragg-profile closure | plan 28 closure and plan 45 systematics |
+| `association_method` | `angular_distance`, `legacy_track_id_diagnostic`, or future method label | plan 38 ladder rows |
+
+Quality semantics:
+
+- `pass` means at least one Class A scintillator association exists, the
+  projected range is finite, and the object is not in the configured
+  scintillator edge buffer.
+- `warn` means the object is usable for diagnostic plots but has sparse
+  scintillator coverage, missing Bragg fit, or an edge-distance warning.
+- `fail` means the range is non-finite, negative, or based only on a
+  production-forbidden exact `Track_ID` association.
+- `not_applicable` is reserved for charged candidates that do not enter
+  the scintillator acceptance volume under plan 60.
+
+These flags do not change the PID label by themselves. Promotion of any
+quality state into a hard PID veto is a methodology change that requires
+plan 05 approval and a plan 38 C.3/C.5 ladder delta.
+
+## 5. Stage E.1 implementation handoff
+
+For L3's charged-side redesign, this plan needs C.3 to be a typed module
+with a stable seam:
+
+1. Inputs are C.1 charged candidates, V.2 direction/covariance rows,
+   Class A scintillator hits, and the plan 60 geometry side-car.
+2. The production association path is angular/distance or projected
+   path-length matching; exact `Track_ID` is retained only under an
+   explicitly named diagnostic mode.
+3. The module writes both the physics observables in §1 and the quality
+   fields in §4 in one row per charged candidate.
+4. The closure runner compares range and Bragg position only after the
+   output table is frozen, with truth path length held in a validation
+   namespace.
+5. Plan 29 consumes only `range_cm`, `range_edep_mev`,
+   `bragg_peak_position_cm`, and `range_valid` unless a later DEC
+   promotes a quality field into PID.
+
+## 6. Acceptance criteria
 
 - §3 closure passes.
 - §2 Bragg-peak diagnostic is either written with a valid fit-status
   flag or explicitly null with a reason; any PID promotion cites a
   plan 38 C.3/C.5 ladder delta.
 
-## 5. Dependencies
+## 7. Dependencies
 
 - **18, 23, 24, 25** — inputs.
 - *Consumed by:* plan 29 (PID).
