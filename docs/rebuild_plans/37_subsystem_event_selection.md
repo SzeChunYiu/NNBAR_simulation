@@ -304,6 +304,15 @@ load-bearing analysis decision and needs plan-05 approval before plan
 | `DEC-37-MVA-SELECTION` | Permit BDT or NN S.6 replacement to be reported beside the cut-flow baseline | plan-57 feature freeze, plan-38 ladder row, calibration curve, and background-rejection evidence |
 | `DEC-37-TRUTH-BLIND-GATE` | Declare the selection eligible for final quotes after upstream truth leaks are removed | plan-01 audit plus rerun showing all `pass_*` booleans unchanged when truth/provenance columns are dropped |
 
+Initial selection-change approval examples:
+
+| `approval_case_id` | Selection output pattern | Allowed use before DEC approval | Promotion guard |
+|---|---|---|---|
+| `ch10_cutflow_freeze` | §1 six-cut baseline with current `CUT_ORDER` | plan-47 reproduction control and all cumulative count audits | requires signal and background count reproduction before final quote |
+| `retuned_rectangular_diag` | one or more S.1-S.5 thresholds retuned in plan-41 scans | diagnostic N-1/expected-limit comparison only | must keep original Ch 10 columns unchanged and add separate retuned columns |
+| `mva_s6_shadow` | BDT/NN S.6 score written beside `passes_preliminary_selection` | shadow ladder output only | needs feature freeze, calibration, and background rejection before `DEC-37-MVA-SELECTION` |
+| `truth_blind_gate_blocked` | pass booleans change after truth/provenance columns are removed upstream | no final selection quote | blocks `DEC-37-TRUTH-BLIND-GATE` until upstream leak is removed |
+
 Until the relevant DEC is approved, alternative S.6 outputs are
 diagnostic/ladder artifacts only and cannot supersede the baseline
 cut-flow.
