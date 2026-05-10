@@ -168,8 +168,8 @@ checks are pass/fail and block the plan-set edit when they fail.
   hashes, owner sign-off, review-artifact hashes, package staleness guards,
   review-evidence link checks, note freshness checks, and command-template
   registry/verifier checks.
-- Freeze-mode L1 CI includes archive-drill, owner-signoff, and
-  glossary-signoff checks.
+- Freeze-mode L1 CI includes archive-drill, archive-evidence hash,
+  owner-signoff, and glossary-signoff checks.
 
 ## 7. Risks
 
