@@ -316,7 +316,7 @@ Review rules:
 | answered rows expose review evidence links | registry answer cannot be traced into package, CI, note, and glossary artifacts |
 | answered rows expose review artifact hashes | answer links can drift to different package/CI/note/glossary evidence |
 | refreshed-artifact rows name a command template id | reviewer answer cannot replay the verified command contract |
-| command-template verifier hash is recorded | reviewer answer trusts a command template without A+ verifier evidence |
+| command-template verifier hash and source are recorded | reviewer answer trusts a command template without A+ verifier evidence |
 | every row carries a `rerun_manifest_id` matching a plan-52 bundle member | reviewer question cannot be scheduled into the rerun manifest |
 | `rerun_transcript_id` stays null only while the row is open or blocked | answered evidence closes without an execution transcript |
 | `blocked_missing_input_v1` rows keep verifier hash and source null until inputs exist | blocked templates masquerade as verified runnable commands |
@@ -337,7 +337,7 @@ thesis-facing result.
 | From | To | Required evidence | Forbidden shortcut |
 |---|---|---|---|
 | `open` | `blocked` | missing input named in plan 52 or plan 50 | closing because the artifact is not yet producible |
-| `open` | `answered` | artifact id, ledger row, defence overlay id, rerun manifest/transcript/template ids plus verifier hash when refreshed, owner sign-off, review-evidence links including staleness/archive evidence, and review-artifact hashes | answering with a plan paragraph only |
+| `open` | `answered` | artifact id, ledger row, defence overlay id, rerun manifest/transcript/template ids plus verifier hash/source when refreshed, owner sign-off, review-evidence links including staleness/archive evidence, and review-artifact hashes | answering with a plan paragraph only |
 | `blocked` | `open` | upstream input now exists or owner has a rerun date | leaving stale blocker text in the package |
 | `answered` | `open` | new reviewer challenge or changed input hash | editing the answer without reopening review |
 | `answered` | `clarified` | wording-only update with unchanged artifact hash | hiding a numerical change as prose |
@@ -353,13 +353,14 @@ Status-transition review rules:
 | changed review-artifact hashes reopen affected questions | answer keeps pointing at superseded package, staleness, CI, archive, note, or glossary evidence |
 | refreshed-artifact answers name the rerun transcript id | registry says answered before execution evidence exists |
 | command-template changes reopen refreshed-artifact answers | answered row keeps old command semantics after plan-52 drift |
-| verifier-hash changes reopen refreshed-artifact answers | answered row keeps stale CLI verifier proof |
+| verifier-hash or verifier-source changes reopen refreshed-artifact answers | answered row keeps stale CLI verifier proof |
 | clarified rows preserve artifact hashes | numerical result changes bypass review |
 
 These rules keep the registry append-only in spirit even when the living
 registry file is rendered as current-state YAML. A reviewer question that
 requires regenerated EM/selection evidence remains `open` or `blocked` until
-the plan-52 manifest, execution transcript, command-template id, and verifier hash are linked.
+the plan-52 manifest, execution transcript, command-template id, verifier hash,
+and verifier source are linked.
 
 ## 3. Update protocol
 
