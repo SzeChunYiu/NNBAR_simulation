@@ -40,6 +40,73 @@ package CLI is cited in this plan; the runnable commands below therefore
 use the verified API directly and write the same artifacts a future CLI
 should produce.
 
+## 0.1 Wave 6 derivation — smearing closure as bias detector
+
+### Physics derivation
+
+**What is physically measured.** Fast-MC closure measures whether truth
+observables, after applying detector-resolution smearing fixed outside
+the row under study, reproduce the reconstructed observable
+distribution. The ground-truth quantity is the row-aligned truth
+observable; the measured closure outputs are mean bias, RMS ratio, and
+distributional compatibility between smeared truth and reco-only data.
+
+**Estimator rationale.** A detector response matrix can be approximated
+locally by smearing truth with resolution parameters when the dominant
+effect is measurement resolution rather than selection migration. If
+the smeared-truth distribution matches reco, the reconstruction behaves
+like the independent resolution model for that observable. If it fails,
+the discrepancy isolates either an under-modelled detector response, a
+row-alignment/selection mismatch, or a biased reconstruction leaf. The
+K-S comparison is useful here because it detects shape differences
+without assuming the observable is Gaussian, while mean and RMS metrics
+retain interpretable bias and resolution checks.
+
+**Statistical character.** The smearing seed introduces Monte Carlo
+variance, and finite row counts broaden the K-S and moment estimates.
+The dominant risk is systematic leakage: constants tuned on the same
+reco distribution would make the closure circular. Therefore every
+smearing constant must come from plan 18, plan 04, external detector
+requirements, or a prior registry entry before the row is evaluated.
+
+### Logic gaps
+
+- **Default smearing constants.** Grounding: §6 assigns v0.2 constants
+  to leaf owners. `OPEN:` replace each placeholder by a plan-18
+  calibration result, external requirement, or plan-09 Class C registry
+  row before using it in a thesis equality claim; target resolution
+  date 2026-06-22.
+- **Bias tolerances and RMS-ratio bands.** Grounding: §7 records
+  current plan-level thresholds. `OPEN:` derive each threshold from the
+  corresponding thesis observable's sensitivity or plan-40 pull
+  tolerance; target resolution date 2026-06-22.
+- **K-S p-value >0.01.** Grounding: current distribution-shape guard.
+  `OPEN:` validate the false-fail rate with toys at the expected row
+  counts and with bootstrapped covariance; target resolution date
+  2026-06-29.
+- **Row-alignment tolerance 0.5%.** Grounding: §4 fail-closed join
+  guard. `OPEN:` replace with exact event-key equality once plan 09
+  manifests guarantee one event id per row across truth and reco
+  tables; target resolution date 2026-06-15.
+- **Energy-dependent smearing.** Grounding: §9 states that the current
+  scalar API cannot natively express all detector response functions.
+  `OPEN:` either precompute per-row sigmas or extend L3 with a tested
+  transform rule before applying photon-energy or calorimeter-energy
+  closure to defence-critical rows; target resolution date 2026-06-29.
+
+### Closure test for the derivation
+
+1. Choose one plan-47 row and one observable, materialise row-aligned
+   truth and reco tables, and verify exact event-key coverage.
+2. Bind the smearing constants and random seed from plan-04/plan-18
+   provenance before reading the reco distribution for that row.
+3. Run `smear_truth` and `compare_distributions`, persist
+   `smeared.parquet` and `report.json`, and copy mean bias, RMS ratio,
+   K-S statistic, and pass/fail into the ledger row.
+4. If closure fails, route to plan 40 and the owning leaf. A pass is
+   only an independence check; it does not override the plan-47 figure
+   equality protocol.
+
 ## 1. Verified implementation surface
 
 Current L3 files:
