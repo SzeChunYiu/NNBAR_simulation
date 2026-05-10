@@ -33,11 +33,11 @@ Leaf P.7: raw π⁰ candidates → fitted four-vectors and fit quality
   from plans 18 and 40.
 - **Current implementation evidence:** plan 08 shows the current
   baseline has only raw π⁰ kinematics in `find_pi0_candidates`
-  (`reconstruction.py:1316–1530`). The output schema declared at
-  `reconstruction.py:1322–1365` contains mass, opening angle,
-  energies, cut booleans, timing/provenance diagnostics, and failure
-  reasons, but no fitted four-vector, covariance, `fit_chi2`, or
-  `fit_ndf`. Raw mass is computed at `reconstruction.py:1414–1417`.
+  (`photon.py:204-260`). The split-code output schema contains raw
+  mass, opening angle, energies, and the strict selection boolean, but
+  no fitted four-vector, covariance, fit quality, or fit failure
+  fields. TODO(L3): add the P.7 fit module before any fit quality is
+  consumed downstream.
 - **Decision rule (target):** for every candidate selected for fit,
   solve a constrained least-squares problem using reconstructed
   quantities and their covariance; accept or rank candidates by
@@ -91,10 +91,10 @@ Used by plan 37 (event selection) as an additional cut variable.
 
 | Candidate | P.7 decision rule | Current/source citation | Class-A status | Comparison metric | Failure mode to inspect |
 |---|---|---|---|---|---|
-| **No fit / raw mass (current)** | Use raw `M_γγ` from photon four-vectors and six cuts. | Raw mass at `reconstruction.py:1414–1417`; no fit columns in schema `1322–1365`. | Production-eligible baseline. | Raw mass width, pull bias, π⁰ efficiency. | Worse resolution; limited accidental rejection. |
+| **No fit / raw mass (current)** | Use raw `M_γγ` from photon four-vectors and six cuts. | Raw mass is computed by `find_pi0_candidates` (`photon.py:204-260`); no fit columns exist yet. | Production-eligible baseline. | Raw mass width, pull bias, π⁰ efficiency. | Worse resolution; limited accidental rejection. |
 | **Mass-constrained π⁰ fit** | Adjust photon four-vectors within covariance subject to `M_γγ = m_π⁰`. | New P.7 module after plan-34 output. | Eligible after covariance closure. | Width improvement, pull mean/width, χ² K-S p-value. | Bad covariance can fake improvement and miscalibrate χ². |
 | **Vertex-constrained event fit** | Constrain photon and charged-object origins to the reconstructed vertex. | Consumes plan-30 vertex and plan-33/29 objects. | Eligible only when vertex covariance exists. | Event χ², visible-mass resolution, selection stability. | Sparse-vertex events need explicit no-fit path. |
-| **Combined mass+vertex fit** | Fit π⁰ mass and common vertex constraints simultaneously. | Extends §§2–3. | Eligible after separate constraints pass. | Global χ² and downstream S.3/S.4 separation. | Harder failure diagnosis; do after simpler fits. |
+| **Combined mass+vertex fit** | Fit π⁰ mass and common vertex constraints simultaneously. | Extends §§2-3. | Eligible after separate constraints pass. | Global χ² and downstream S.3/S.4 separation. | Harder failure diagnosis; do after simpler fits. |
 | **Truth-constrained diagnostic** | Seed or constrain to generated π⁰ direction/energy. | Truth labels are evaluator-only under plan 40. | Not production-eligible. | Upper-bound resolution only. | Would violate plan 01 if used in decision path. |
 
 Plan 38 records raw, mass-only, vertex-only, and combined-fit ladder
