@@ -194,9 +194,21 @@ signal-efficiency loss against the strange-contamination reduction.
 | `pointing_off_foil` | reject if V0 momentum points to beampipe/shielding instead of foil | `off_foil_pointing` | scattered-neutron strange states |
 | `timing_late_strange` | reject if associated neutral energy is late relative to prompt signal | `late_neutral` | neutron/gamma strange daughters |
 
-Threshold values are placeholders until closure scans fill them. Any
-numerical threshold that becomes production-facing must be recorded in a
-plan-05 DEC and copied to a machine-readable cut-config row.
+No §6 row carries a production numeric threshold in v0.1. Each row is a
+named rejection *axis* whose operating point is blocked until the §7
+closure scan writes a cut-config row with signal-loss and strange-survivor
+intervals. Any numerical threshold that becomes production-facing must be
+recorded in a plan-05 DEC and copied to a machine-readable cut-config row.
+
+| Cut-config field | Required value before production use |
+|---|---|
+| `cut_id` | one of the §6 stable cut ids |
+| `threshold_expression` | explicit numeric bound(s), units, and inclusive/exclusive convention |
+| `scan_result_id` | §7 closure or sideband scan row that selected the operating point |
+| `signal_loss_interval_id` | interval row on `sig_foil_v3`, not a point estimate |
+| `background_survivor_interval_id` | interval row on the enriched strange sample |
+| `decision_dec_id` | signed `DEC-59-V0-REJECTION` or successor |
+| `production_status` | `blocked`, `diagnostic`, `candidate`, or `approved` |
 
 ## 7. Closure on a Lambda-enriched beam-neutron slice
 
@@ -269,7 +281,7 @@ not specify any runnable nnbar reconstruction module command.
 
 | Claim | Verifier |
 |---|---|
-| plan 14 strange-capable beam-neutron subchannels exist | `grep -n "secondary hadronic\|Capture-gamma" docs/rebuild_plans/14_background_models.md` |
+| plan 14 strange-capable beam-neutron subchannels exist | `grep -nE "Secondary hadronic|Capture-gamma" docs/rebuild_plans/14_background_models.md` |
 | plan 44 beam-neutron nodes exist | `grep -n "beam_neutron" docs/rebuild_plans/44_background_taxonomy.md` |
 | plan 01 truth-use boundary exists | `grep -n "Class B" docs/rebuild_plans/01_realism_contract.md` |
 | PDG K_S^0 branches checked | PDG Live node S012, constrained fit information |
