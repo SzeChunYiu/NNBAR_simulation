@@ -22,6 +22,7 @@ CITATION_RE = re.compile(
 )
 BACKTICK_RE = re.compile(r"`([^`]+)`")
 IDENTIFIER_RE = re.compile(r"[A-Za-z_][A-Za-z0-9_]*")
+DECLARATION_RE = re.compile(r"^(?:async\s+)?(?:def|class)\s+([A-Za-z_][A-Za-z0-9_]*)\b")
 IGNORED_DIRS = {".git", "__pycache__", ".pytest_cache", ".mypy_cache", "externals"}
 
 
@@ -145,6 +146,9 @@ def extract_identifier(content: str) -> str | None:
     before_paren = content.split("(", 1)[0].strip()
     if "." in before_paren:
         before_paren = before_paren.rsplit(".", 1)[-1]
+    declaration = DECLARATION_RE.search(before_paren)
+    if declaration:
+        return declaration.group(1)
     matches = IDENTIFIER_RE.findall(before_paren or content)
     if not matches:
         return None
@@ -201,7 +205,8 @@ def signature_regex(identifier: str, suffix: str) -> re.Pattern[str]:
     """Build a Python or C++ signature regex for a cited identifier."""
     name = re.escape(identifier)
     if suffix == ".py":
-        return re.compile(rf"^\s*(?:async\s+)?(?:def|class)\s+{name}\b")
+        constant_assignment = rf"|^\s*{name}\s*(?::[^=]+)?=" if identifier.isupper() else ""
+        return re.compile(rf"^\s*(?:async\s+)?(?:def|class)\s+{name}\b{constant_assignment}")
     return re.compile(
         rf"^\s*(?:[A-Za-z_][\w:<>,~*&\s]+\s+)+{name}\s*\("
         rf"|^\s*{name}::[A-Za-z_~][\w~]*\s*\("
