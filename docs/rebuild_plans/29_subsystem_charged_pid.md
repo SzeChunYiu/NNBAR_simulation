@@ -215,6 +215,55 @@ used to compute the C.5 row.
    labels and the frozen rule meets or beats the cut-based baseline without
    changing any green ledger row silently.
 
+### 1.11 C.6 Physics derivation
+
+- **What is physically measured:** C.6 measures the observable rejection state
+  for a charged-PID candidate after C.5 scoring. It distinguishes usable
+  pion/proton candidates from invalid upstream rows, EM-like objects,
+  neutral-like artefacts, conversion-like pairs, and geometry-loss cases.
+- **Estimator rationale:** C.6 is a post-PID decision boundary whose inputs are
+  reconstructed topology, lead-glass/shower response, timing, quality states,
+  and geometry side-cars. This keeps species scoring (C.5) separate from
+  detector-quality and background-shape rejection, consistent with PDG
+  interaction categories and TPC/PID reconstruction practice
+  \cite{ParticleDataGroup:2024RPP,alice2014performance}.
+- **Statistical character:** false rejections reduce signal efficiency and
+  charged multiplicity; false acceptances contaminate event-shape and selection
+  leaves. Bias is controlled by observable-only reasons and by retaining
+  `pid_before_rejection` for audit and closure.
+- **Citation:** the cited keys above were checked against
+  `/Users/billy/Desktop/projects/overleaf-hibeam-thesis/ref.bib` on
+  2026-05-10.
+
+### 1.12 C.6 Logic gaps
+
+1. **Allowed rejection reasons:** OPEN: freeze `invalid_candidate_or_dedx`,
+   `em_like_observable`, `neutral_like_observable`,
+   `conversion_like_observable`, and `geometry_outside_acceptance` in the
+   manifest schema; target resolution date 2026-05-24.
+2. **EM-like thresholds:** OPEN: consume plan-32 shower-shape observables and
+   scan false-rejection versus signal-efficiency loss; target resolution date
+   2026-05-31.
+3. **Conversion topology windows:** OPEN: source material-region and pair-vertex
+   windows from plans 16 and 60; target resolution date 2026-06-07.
+4. **Geometry acceptance boundary:** OPEN: decide with plan 60 whether geometry
+   loss is a rejection, a fiducial flag, or both; target resolution date
+   2026-05-31.
+5. **PID audit invariant:** `pid_before_rejection` must persist for every row so
+   C.6 changes cannot erase the C.5 score used by plan 38/47 audits.
+
+### 1.13 C.6 Closure test for the derivation
+
+1. Run the C.6 rejection builder on frozen C.1-C.5 rows plus Class-A
+   lead-glass, timing, topology, quality, and geometry inputs.
+2. Persist `pid_before_rejection`, `pid_after_rejection`, `rejection_flags`, and
+   `primary_reason` before joining validation labels.
+3. In validation-only scoring, report rejection efficiency and fake-rejection
+   rate by truth particle category, conversion topology, and geometry state.
+4. The derivation passes when dropping `Name`, `Interaction`, `Track_ID`, and
+   truth PID labels leaves production C.6 rows unchanged and every rejection has
+   exactly one observable primary reason.
+
 ## 2. Cut-based baseline (current code)
 
 `/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/charged.py`
