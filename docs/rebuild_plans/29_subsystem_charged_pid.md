@@ -14,7 +14,7 @@ acceptance:
 risks:
   - {risk: removing the Name gate exposes EM and neutral tracks to PID classifier; misclassification rises, mitigation: §3 EM/neutral rejection via shower-shape and TPC topology}
 estimated_effort: L
-last_invented: 2026-05-09
+last_updated: 2026-05-10
 ---
 
 # Subsystem — charged PID
