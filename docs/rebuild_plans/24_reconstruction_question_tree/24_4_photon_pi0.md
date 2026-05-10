@@ -85,6 +85,23 @@ Leaf P.2: clusters + charged tracks → photon-like discriminant
   allowed truth use: validation_only
   downstream consumers: P.3, P.4, P.5, P.6; plans 32, 33, 34
 
+Leaf P.3: photon-like clusters + vertex → photon direction
+  inputs (Class A): P.1/P.2 photon-like cluster centroid and timing,
+                    V.4 event vertex estimate and covariance
+  forbidden (Class B): truth gamma momentum, source_track_ids,
+                       Track_ID, Parent_ID, Name, Interaction ancestry
+  decision rule: define the photon direction as the unit vector from
+                 the reconstructed event vertex to the cluster
+                 centroid; if no valid vertex exists, use the declared
+                 legacy origin fallback only as an auditable degraded
+                 mode, never by reading truth.
+  output schema: {event_id: int64, photon_id: int64,
+                  cluster_id: int64, direction_xyz: float64[3],
+                  direction_covariance: float64[3,3],
+                  vertex_source: string, direction_valid: bool}
+  allowed truth use: validation_only
+  downstream consumers: P.5, P.7, E.7; plans 33, 34, 35, 36
+
 ### Next measurement (photon / π⁰ branch)
 
 Truth-free clustering closure study on `cal_singlegamma_v1` (plan 23)
