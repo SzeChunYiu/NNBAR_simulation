@@ -4,7 +4,7 @@ title: CI regression suite — automated tests on every change
 version: 0.1
 status: draft
 owner: Software Quality
-depends_on: [00_README, 01_realism_contract, 03_dataset_registry, 19_simulation_validation_suite, 47_reproduction_ledger, 50_reviewer_defense_package, 51_reviewer_question_registry, 52_run_orchestration, 54_open_data_archival, 55_internal_note_template, 55_internal_note_template_l1_annex_fixture, 56_glossary]
+depends_on: [00_README, 01_realism_contract, 03_dataset_registry, 19_simulation_validation_suite, 47_reproduction_ledger, 50_reviewer_defense_package, 51_reviewer_question_registry, 52_run_orchestration, 52_run_orchestration_l1_command_templates, 54_open_data_archival, 55_internal_note_template, 55_internal_note_template_l1_annex_fixture, 56_glossary]
 outputs:
   - {path: docs/rebuild_plans/53_ci_regression_suite.md, schema: this file}
   - {path: .github/workflows/ or .gitlab-ci.yml, schema: pipeline definition}
@@ -222,6 +222,7 @@ l1_defence_ci_report:
         - docs/rebuild_plans/50_reviewer_defense_package.md
         - docs/rebuild_plans/51_reviewer_question_registry.md
         - docs/rebuild_plans/52_run_orchestration.md
+        - docs/rebuild_plans/52_run_orchestration_l1_command_templates.md
         - docs/rebuild_plans/53_ci_regression_suite.md
         - docs/rebuild_plans/54_open_data_archival.md
         - docs/rebuild_plans/55_internal_note_template.md
@@ -293,6 +294,7 @@ l1_defence_ci_report:
         - docs/rebuild_plans/50_reviewer_defense_package.md
         - docs/rebuild_plans/51_reviewer_question_registry.md
         - docs/rebuild_plans/52_run_orchestration.md
+        - docs/rebuild_plans/52_run_orchestration_l1_command_templates.md
         - docs/rebuild_plans/53_ci_regression_suite.md
         - docs/rebuild_plans/54_open_data_archival.md
         - docs/rebuild_plans/55_internal_note_template.md
@@ -327,6 +329,7 @@ l1_defence_ci_report:
       status: pass | fail | warn
       files_checked:
         - docs/rebuild_plans/52_run_orchestration.md
+        - docs/rebuild_plans/52_run_orchestration_l1_command_templates.md
       evidence:
         expected_bundle_members: [em_object_chain, ch10_cutflow, pileup_l11, strange_v0, tof_timing, bayesian_limits, unbounded_caveats, defence_routing]
         missing_bundle_members: [<member-or-empty>]
@@ -340,6 +343,7 @@ l1_defence_ci_report:
         - docs/rebuild_plans/50_reviewer_defense_package.md
         - docs/rebuild_plans/51_reviewer_question_registry.md
         - docs/rebuild_plans/52_run_orchestration.md
+        - docs/rebuild_plans/52_run_orchestration_l1_command_templates.md
         - docs/rebuild_plans/54_open_data_archival.md
         - docs/rebuild_plans/55_internal_note_template.md
         - docs/rebuild_plans/55_internal_note_template_l1_annex_fixture.md
