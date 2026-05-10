@@ -269,6 +269,36 @@ L3/software handoff requirements:
    blocked sections remain precise software requirements, not runnable
    instructions.
 
+### 6.1 Unfolding artifact manifest schema
+
+Every response, regularisation, closure, and signal-model systematic
+artifact must carry a manifest row so plan 47 can tell which parts of
+the unfolding chain are quotable:
+
+```yaml
+schema_version: plan42_unfolding@stage-e1
+stage: response_matrix | regularisation_scan | closure | signal_model_systematic
+dataset_id: sig_foil_v3
+observables: [visible_mass, pi0_mass, sphericity]
+truth_inputs_hash: <sha256 of truth parquet inputs>
+reco_inputs_hash: <sha256 of frozen reco tables>
+response_matrix_hashes: {<observable>: <sha256>}
+covariance_hashes: {<observable>: <sha256>}
+binning_contract_hash: <sha256 of truth/reco bin definitions>
+regularisation_choice_hash: <sha256|null>
+bootstrap_replicas: 200
+bootstrap_seed: <plan-04 deterministic seed>
+closure_status_by_observable: {<observable>: pass|warn|fail|not_attempted}
+nuisance_handoff: [N5]
+ledger_rows: [<plan-47 row id>]
+producer_help_verified: true
+```
+
+The manifest is invalid if response hashes are missing for any listed
+observable, if a post-response stage lacks the frozen regularisation
+choice, or if a failing closure is marked quotable. This makes the §6
+software boundary machine-checkable instead of relying on prose.
+
 ## 7. Acceptance criteria
 
 - §2 response matrices produced for ≥ 3 observables.
@@ -277,8 +307,8 @@ L3/software handoff requirements:
 - §5 systematic is propagated into plan 45.
 - §6 software handoff is complete: each blocked post-response producer
   has explicit inputs, outputs, failure assertions, provenance fields,
-  current response-command regression coverage is cited, and a
-  no-invented-CLI rule is in force.
+  a required manifest schema, current response-command regression
+  coverage is cited, and a no-invented-CLI rule is in force.
 
 ## 8. Dependencies
 
