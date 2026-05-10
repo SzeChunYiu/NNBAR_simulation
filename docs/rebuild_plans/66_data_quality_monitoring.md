@@ -74,10 +74,23 @@ python -m nnbar_reconstruction.cli validate-reco \
     --json output/dqm/<dataset_id>/validation.json
 ```
 
-No DQM-specific CLI is live yet. L3 must expose a help-verified offline
-DQM producer before this plan can be marked runnable. Until then, this
-plan defines the artifact contract, thresholds, and CI semantics that
-the producer must implement.
+The offline DQM producer is now help-verified as a live L3 CLI surface:
+
+```bash
+python -m nnbar_reconstruction.cli dqm \
+    --dataset-id <dataset_id> \
+    --run <run_or_combined_run_id> \
+    --out-dir output/dqm/<dataset_id>/ \
+    output/reco/<dataset_id>/
+```
+
+Current source hooks are `dqm` (`cli.py:271-288`),
+`evaluate_run_quality` (`dqm/quality.py:55-120`), and
+`quality_manifest` (`dqm/quality.py:123-147`). The live command reads
+the reconstructed CSV tables and writes §4 artifacts. Validation JSON
+and registry-manifest hash ingestion remain follow-up L3 implementation
+gates; until those flags exist, steps below keep them as separate
+assertions rather than inventing CLI arguments.
 
 Required input artifacts:
 
@@ -174,14 +187,18 @@ of truth and plan 03 references it by path.
 3. Run the verified `validate-reco` command when the dataset carries
    truth labels suitable for validation. If validation is not applicable,
    record `not_applicable` with the dataset-type reason.
-4. **Blocked L3 implementation gate:** run the future help-verified DQM
-   producer over the reco tables, validation JSON, and registry
-   manifest. It writes §4 artifacts under `output/dqm/<dataset_id>/`.
-5. Assert every run from the registry has exactly one row in
+4. Run the verified `dqm` command in §2 over the reconstructed CSV
+   tables. It writes `run_quality.parquet` and `quality_manifest.json`
+   under `output/dqm/<dataset_id>/`.
+5. **Blocked L3 implementation gate:** extend the DQM producer to ingest
+   validation JSON and the plan 03 registry manifest, or join those
+   artifacts in a wrapper, before frozen-sample promotion can rely on
+   validation residuals and hash checks.
+6. Assert every run from the registry has exactly one row in
    `run_quality.parquet` and every row has a nonempty `quality_status`.
-6. Assert dataset-level `quality_status` follows the lattice
+7. Assert dataset-level `quality_status` follows the lattice
    `fail > warn > pass`; `not_applicable` is variable-level only.
-7. Store DQM artifact hashes in `quality_manifest.json` and mirror the
+8. Store DQM artifact hashes in `quality_manifest.json` and mirror the
    summary status into registry metadata when the plan 03 field exists.
 
 ## 6. CI integration with plan 53
