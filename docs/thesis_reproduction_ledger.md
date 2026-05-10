@@ -1,6 +1,6 @@
 # Thesis reproduction ledger
 
-Living ledger instantiated from plan 47 §1. Wave 2 status is `not-attempted`: rows inventory thesis claims and bind each claim to a planned sample/command, but no sample regeneration or comparison has been run.
+Living ledger instantiated from plan 47 §1. Current row statuses are evidence-backed: rows either carry a reproduced/mismatch diagnostic with a delta, or are explicitly blocked because the required local sample/output or CLI support is absent.
 
 ## Row schema
 
@@ -13,14 +13,14 @@ Living ledger instantiated from plan 47 §1. Wave 2 status is `not-attempted`: r
 | `reproducing.command` | CLI/macro invocation pattern from plan 10. |
 | `reproduced_value` | Number or artifact path after a future run. |
 | `uncertainty` | Plan 04 statistical convention and plan 45 systematic convention. |
-| `status` | `green`, `yellow`, `red`, or `not-attempted`. |
+| `status` | `reproduced`, `mismatch`, `blocked-no-sample`, or `not-attempted`; current A+ truthing keeps unresolved rows fail-closed as `blocked-no-sample`. |
 | `decision_log` | DEC entries governing the row, if any. |
 | `leaf` | Plan 24 reconstruction leaf exercised by the row. |
 | `notes` | Caveats, cross-checks, or source-version comments. |
 
 ## Rows seeded in Wave 2
 
-Current row count: **161** (Chapters 5-10 seed).
+Current row count: **161** (Chapters 5-10 seed). Current status counts after 2026-05-10 A+ truthing: **43 mismatch**, **118 blocked-no-sample**, **0 not-attempted**.
 
 | id | source | thesis_value | sample | reproducing.command | status | leaf | decision_log | notes |
 |---|---|---|---|---|---|---|---|---|
