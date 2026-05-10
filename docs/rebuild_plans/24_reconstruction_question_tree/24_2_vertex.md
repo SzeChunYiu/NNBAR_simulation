@@ -64,8 +64,9 @@ Leaf V.2: track candidates → fitted track directions
                        particle_x, particle_y, particle_z
   decision rule: fit or estimate a direction from the ordered Class A
                  hit coordinates; the current baseline is the
-                 first-to-last-hit unit vector from plan 08 §3.2
-                 (`reconstruction.py:147-168`), with covariance and
+                 first-to-last-hit unit vector from
+                 `_track_anchor_and_direction` (`charged.py:61-80`),
+                 with covariance and
                  residuals supplied by plan 26 before sign-off.
   output schema: {event_id: int64, candidate_id: int64,
                   anchor_xyz: float64[3], direction_xyz: float64[3],
