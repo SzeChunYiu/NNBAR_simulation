@@ -28,6 +28,75 @@ Three layers: (1) sanity plots that flag obvious physics mistakes,
 (2) per-component closure tests, (3) performance regression bounds.
 Plan 53 (CI) runs the suite on every PR.
 
+## 0.1 Wave 6 derivation — validation as physics closure
+
+### Physics derivation
+
+**What is physically measured.** The validation suite measures whether
+the simulation and reconstruction preserve the load-bearing physical
+invariants of the rebuild: source configuration, detector hit schemas,
+energy deposits, particle multiplicities, vertex distributions,
+statistical intervals, and analysis cut-flow semantics. A passing test
+is not a physics result by itself; it is evidence that a specific
+observable remains inside the contract needed for plan-47 reproduction.
+
+**Estimator rationale.** Sanity plots are fast distributional
+estimators for gross detector mistakes: eDep and hit-multiplicity
+histograms expose material/SD failures, direction maps expose primary-
+generator geometry errors, pion multiplicity histograms expose signal-
+model drift, and vertex-z plots expose source-position mistakes.
+Closure tests such as fast-MC, response matrix, ladder, and pull tests
+validate estimator bias and uncertainty calibration before thesis rows
+are interpreted. CI matrix builds then make those checks invariant
+under source and build-option changes.
+
+**Statistical character.** The suite combines deterministic contract
+checks (schema, CLI, file-size, source-citation verifier) with
+statistical checks (closure, golden real-sample outputs, performance).
+Deterministic failures are hard gates. Statistical checks require
+fixed seeds, bootstrap or fixture tolerances, and explicit budgets so
+that random fluctuations do not mask regressions or create false
+failures.
+
+### Logic gaps
+
+- **Regression budgets (50 events/s, 1 MB/event, ±10% hits/event,
+  30% TPC CPU fraction).** Grounding: §3 records planning baselines.
+  `OPEN:` replace with measured baselines from the first frozen plan-20
+  signal sample and record machine/build metadata; target resolution
+  date 2026-06-15.
+- **Smoke sample size ≤100 events.** Grounding: §4 CI practicality.
+  `OPEN:` show that the smoke sample still exercises every SD and
+  schema row needed by the tests, or split a fast contract fixture from
+  a slower physics-closure job; target resolution date 2026-06-22.
+- **Sanity plot coverage.** Grounding: §2 enumerates plots but does
+  not yet bind each plot to a concrete plan-47 artifact for every
+  sample. `OPEN:` add ledger artifact ids and stale-plot invalidation
+  rules once sample manifests are frozen; target resolution date
+  2026-06-22.
+- **Build-knob matrix.** Grounding: §4 uses only source-observed
+  knobs; invented GPU/optical knobs are explicitly excluded. `OPEN:`
+  promote additional knobs only after source grep and a passing smoke
+  build exist; target resolution date 2026-06-29.
+- **Per-test physics rationale.** Grounding: §1 lists validation
+  surfaces. `OPEN:` tag each test in plan 53 with the plan id,
+  observable, and failure owner so a red CI result maps to a concrete
+  physics or contract risk; target resolution date 2026-06-22.
+
+### Closure test for the derivation
+
+1. Re-run the source/file verifiers in §4.1 and confirm the test
+   inventory, line counts, and build knobs match the L3 worktree.
+2. Run the deterministic contract tests (`realism`, `registry`,
+   `citation-verifier`, CLI smoke, and file-size cap) and require exact
+   pass/fail semantics.
+3. Run closure/statistical tests with fixed seeds and archive their
+   JSON/CSV artifacts under plan-47 ledger rows. Compare against the
+   current golden outputs and reject unreviewed drift.
+4. For each sanity plot in §2, assert both plot creation and source
+   table freshness. A green pytest run without fresh plan-47 artifacts
+   is not enough to claim thesis reproduction closure.
+
 ## 1. Existing tests
 
 Current `NNBAR_Detector/tests/` inventory, read from the L3 worktree on
@@ -35,19 +104,23 @@ Current `NNBAR_Detector/tests/` inventory, read from the L3 worktree on
 
 | Test file | Primary validation surface | Sanity plot / artifact | Regression budget | CI matrix dimension |
 |---|---|---|---|---|
+| `test_calorimeter_clusters_physics.py` | plan-31 calorimeter clustering physics derivation | cluster-merge and energy-sharing fixtures | physics parameters remain source/plan grounded | `reco-photon-physics` |
 | `test_charged_reco.py` | plan-25 charged-track candidates and plan-26 direction/PID helpers | charged track-candidate tables and direction rows | truth columns forbidden; real sample schema stable | `reco-charged` |
 | `test_ci_workflow.py` | plan-53 GitHub Actions contract | workflow YAML path/trigger audit | required fast checks listed for touched paths | `ci-contract` |
 | `test_cli_response_matrix.py` | plan 42 response-matrix CLI and artifact writers | response parquet, covariance NPZ, metadata JSON | flags and output schemas stable | `response-matrix-cli` |
 | `test_cli_summarize_flags.py` | plan 42 summarize `--all-runs` and output flags | offset-table manifest and summary table | event-offset concatenation stable | `summarize-cli` |
 | `test_closure.py` | plan 40 per-leaf closure runner | closure JSON and K-S bias report | unbiased fixture green; biased fixture red | `reco-closure` |
 | `test_dqm.py` | plan-66 offline DQM status lattice | run-quality table and manifest | fail/warn/pass semantics stable | `dqm-offline` |
+| `test_dqm_promotion.py` | plan-66 DQM promotion guardrails | DQM promotion/degrade fixture report | promotion requires explicit green provenance | `dqm-offline` |
 | `test_electron_reco.py` | electron-pair candidate reconstruction | electron-pair candidate rows | configured entry cut enforced; missing TPC columns produce empty schema | `reco-electron` |
 | `test_event_variables.py` | plan-36 event-shape variables | event-variable rows from charged/photon vectors | sparse inputs emit finite invalid sentinels | `event-variables` |
+| `test_event_variables_physics.py` | plan-36 event-variable physics derivation | event-shape fixture rows | physics definitions remain plan-grounded | `event-variables-physics` |
 | `test_fast_mc.py` | plan 39 fast-MC smearing and closure fixtures | fast-MC closure report | fixed-seed deterministic; bias detected | `fast-mc` |
 | `test_file_size_cap.py` | `CODING_STANDARDS.md` §1 file-size guard | scoped file-size report | modified source/test files stay <500 lines | `style-size-cap` |
 | `test_golden_contract_matrix.py` | plan-53 synthetic/real output schema contract | golden schema matrix | reconstruction outputs match contract | `golden-contract` |
 | `test_golden_regression.py` | plan-53 golden-output regression fixtures | golden reconstruction snapshot | snapshot stable unless fixture intentionally updated | `golden-regression` |
 | `test_integration_real_sample.py` | real Geant4-output reconstruction schema integration | plan-09 §14 table set from checked real fixture | real sample reconstructs to expected columns | `real-sample-integration` |
+| `test_kinematic_fit_physics.py` | plan-35 kinematic-fit physics derivation | kinematic-fit physics fixtures | mass/constraint assumptions remain plan-grounded | `pi0-kfit-physics` |
 | `test_kfit.py` | plan-35 π⁰ kinematic-fit rows | fit-status and covariance rows | missing covariance preserves raw row | `pi0-kfit` |
 | `test_ladder_cli.py` | plan 38 truth-ladder CLI report writers | ladder run/factorise JSON reports | `python -m` entrypoints exit 0 | `truth-ladder-cli` |
 | `test_ladder_factorise.py` | additive truth-gap factorisation | factorisation residual table | residual closes truth gap | `truth-ladder-core` |
@@ -55,20 +128,25 @@ Current `NNBAR_Detector/tests/` inventory, read from the L3 worktree on
 | `test_ladder_run.py` | truth-substitution ladder execution | ladder metric report JSON | fixed sample/seed deterministic | `truth-ladder-core` |
 | `test_ladder_substitute.py` | per-leaf truth substitution | substituted event table | explicit leaf outputs preferred | `truth-ladder-core` |
 | `test_ledger_reproduction.py` | plan-47 ledger reproduction command smoke | golden subset command manifest | command strings remain runnable/schema-stable | `ledger-reproduction` |
+| `test_photon_objects_physics.py` | plan-33 photon-object physics derivation | photon-object fixture rows | conversion/isolation assumptions remain plan-grounded | `reco-photon-physics` |
 | `test_photon_reco.py` | plan-31 photon/calorimeter reconstruction and plan-32 shower features | calorimeter cluster, photon, and shower-shape rows | truth columns forbidden; real sample schema stable | `reco-photon` |
 | `test_pid_calibration.py` | charged PID threshold scan | PID scan CSV and ROC/score outputs | truth-separating config ranks first | `reco-pid` |
+| `test_pi0_pairing_physics.py` | plan-34 π⁰-pairing physics derivation | pairing fixture rows | invariant-mass and pairing assumptions remain plan-grounded | `pi0-pairing-physics` |
 | `test_realism_audit.py` | plan 01/09 truth-read audit | audit JSON with violation list | undecorated Class B reads fail | `realism-audit` |
 | `test_reconstruction_run_summary.py` | reconstruction run tables and thesis cut variables | summary tables and cut-variable rows | thesis calorimeter-direction variables present | `reco-summary` |
 | `test_reconstruction_smoke.py` | end-to-end reconstruction smoke and thesis cutflow/object rules | `output/sanity/{edep,hits,vertex_z,timing}.png` plus reco tables | expected tables written; 395 lines on 2026-05-10, below the 500-line cap | `reco-smoke` |
 | `test_reconstruction_validation.py` | validation report and readiness gates | validation JSON plus class-support table | readiness thresholds and all-run aggregation stable | `reco-validation` |
 | `test_registry_integrity.py` | plan 03 dataset manifests and state machine | registry round-trip JSON / manifest hash report | illegal states/transitions rejected | `registry` |
 | `test_selection.py` | plan-37 event selection and cut-flow accounting | cut-flow table and independent cut flags | cumulative counts follow plan-37 order | `selection-cutflow` |
+| `test_selection_physics.py` | plan-37 event-selection physics derivation | selection-threshold fixture rows | cut ordering and threshold rationale remain plan-grounded | `selection-physics` |
+| `test_shower_shape_physics.py` | plan-32 shower-shape physics derivation | shower-shape fixture rows | lateral/longitudinal shape assumptions remain plan-grounded | `reco-photon-physics` |
 | `test_statistics.py` | plan 04 bootstrap, jackknife, Wilson, F-C | statistical interval JSON / pull table | seed binding deterministic | `statistics` |
+| `test_track_fit_physics.py` | plan-26 track-fit physics derivation | track-fit fixture rows | scattering/pull assumptions remain plan-grounded | `track-fit-physics` |
 | `test_verify_citations.py` | A+ source-citation verifier | verifier pass/fail fixtures and temporary source snippets | out-of-range or wrong identifiers fail | `citation-verifier` |
 | `test_vertex_reco.py` | plan-30 vertex projection, aggregation, and foil acceptance | vertex projection and aggregate rows | geometry-only acceptance uses plan-16 contract | `vertex-reco` |
 
 Plan 53 runs these via pytest on every PR. The current inventory was
-verified against 31 `test_*.py` files in the L3 `tests/` directory on
+verified against 40 `test_*.py` files in the L3 `tests/` directory on
 2026-05-10. The largest listed tests are below the 500-line cap in this
 worktree (`test_reconstruction_smoke.py` 395 lines,
 `test_photon_reco.py` 388 lines, `test_charged_reco.py` 351 lines), and
@@ -142,7 +220,7 @@ ls pytest.ini CMakeLists.txt tests
 
 Current 2026-05-10 verifier evidence:
 
-- `find tests -maxdepth 1 -type f -name 'test_*.py' | wc -l` returns 31 files,
+- `find tests -maxdepth 1 -type f -name 'test_*.py' | wc -l` returns 40 files,
   matching §1.
 - `wc -l tests/test_reconstruction_smoke.py` returns 395 lines, so the
   file is below the 500-line cap in this L3 worktree.
