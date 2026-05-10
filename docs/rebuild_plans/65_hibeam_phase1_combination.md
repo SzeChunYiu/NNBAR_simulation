@@ -281,18 +281,19 @@ Recommended implementation order:
 Re-run before changing path or existence claims:
 
 ```bash
-ls docs/rebuild_plans/43_signal_efficiency.md \
+rtk ls docs/rebuild_plans/43_signal_efficiency.md \
    docs/rebuild_plans/45_systematics_taxonomy.md \
    docs/rebuild_plans/46_significance_protocol.md \
    docs/rebuild_plans/47_reproduction_ledger.md \
    docs/rebuild_plans/63_calibration_drift_monitoring.md
-find data -maxdepth 3 -type f \\( -iname '*phase1*' -o -iname '*hibeam*' \\)
+rtk proxy find data -maxdepth 3 -type f \( -iname '*phase1*' -o -iname '*hibeam*' \)
 ```
 
-Current 2026-05-10 evidence: the referenced local plans exist. The
-repository does not provide a source-backed Phase-1 result packet in
-the checked `data/` tree, so Phase-1 inputs are schema targets until a
-real packet is supplied and hashed.
+Current 2026-05-10 evidence: `rtk ls` resolves every referenced local
+plan. The `rtk proxy find ... '*phase1*' ... '*hibeam*'` probe exits 0
+with empty output in the checked `data/` tree, so the repository does
+not provide a source-backed Phase-1 result packet and Phase-1 inputs
+remain schema targets until a real packet is supplied and hashed.
 
 ## 9. Acceptance criteria
 
