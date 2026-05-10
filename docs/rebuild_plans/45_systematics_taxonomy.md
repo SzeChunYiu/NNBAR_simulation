@@ -27,18 +27,22 @@ defence package refer to nuisance names verbatim.
 
 ## 1. Nuisance registry (initial set)
 
-| ID | Name | Source | ±1σ definition | Affects |
-|---|---|---|---|---|
-| N1 | TPC W-value | plan 17 §3 | reference 26.0 ± 1.5 eV vs current 23.6 eV | dE/dx, charged PID |
-| N2 | Scintillator yield | plan 18 §3 | 11136 ± Δ photons/MeV (Δ to be set in plan 18) | scint energy, EL/ET |
-| N3 | LG calibration | plan 18 §4 | per-energy slope ± fit uncertainty | LG energy, π⁰ mass |
-| N4 | Physics list | plan 12 §3 | nominal vs qgsp_bert vs qgsp_bic | hadronic processes |
-| N5 | Signal branching | plan 13 §4 | nominal vs amsler1991 vs friedman2007 | per-channel ε_signal |
-| N6 | Cosmic flux | plan 14 §1.4 | ±15% on CRY normalisation | cosmic rate |
-| N7 | Beam-neutron flux | plan 22 | ±10% (from ESS quoted) | beam-neutron rate |
-| N8 | Geometry alignment | plan 16 §3 | perfect vs nominal_survey vs worst_case_construction | vertex resolution, π⁰ mass |
-| N9 | Optical-photon yield | plan 18 §4 | optical-on vs optical-off paired | LG energy in optical builds |
-| N10 | Material budget | plan 15 §6 | ±5% on per-region X₀ | photon conversion rate |
+Correlation flags are group labels consumed by §2: nuisances sharing a
+flag are tested for non-zero correlation before the final covariance is
+frozen; otherwise they default to independent.
+
+| ID | Name | Source | ±1σ definition | Affected observables | Correlation flags |
+|---|---|---|---|---|---|
+| N1 | TPC W-value | plan 17 §3 | nominal 23.6 eV varied by the reference spread 26.0–27.4 eV; implement as ±15% gain on TPC ionisation charge | dE/dx, charged PID, foil-track acceptance | `detector_calibration`, `charged_pid` |
+| N2 | Scintillator yield | plan 18 §3 | nominal 11136 photons/MeV; ±1136 photons/MeV spans the optical-table value 10000 photons/MeV | scintillator energy, E.1/E.2, E.3/E.4, S.1, S.5 | `detector_calibration`, `calorimeter_energy` |
+| N3 | Lead-glass calibration | plan 18 §4 | per-energy linear-fit slope/intercept varied by the fitted 1σ covariance; pre-fit envelope capped by the 5% closure criterion | lead-glass energy, photon energy, π⁰ mass, visible mass | `detector_calibration`, `calorimeter_energy` |
+| N4 | Physics list | plan 12 §3 | discrete model envelope over `nominal_hp`, `qgsp_bert`, `qgsp_bic`, and `em_opt0`; quote half-spread as ±1σ-equivalent | hadronic multiplicity, secondary interactions, neutron transport | `hadronic_model`, `background_shape` |
+| N5 | Signal branching | plan 13 §4 | discrete model envelope over `nominal_geant4`, `branching_amsler1991`, `branching_friedman2007`, and η/ω ±1σ brackets | per-channel signal efficiency, π⁰/photon multiplicity, event shapes | `signal_model` |
+| N6 | Cosmic flux | plan 14 §1.4 | ±15% on CRY normalisation, covering solar-cycle/date/location uncertainty | cosmic background normalisation, cosmic cut-flow rates | `background_normalization`, `cosmic` |
+| N7 | Beam-neutron flux | plan 22 §§1,4 | ±10% on beam-neutron per-pulse yield until the ESS MCPL/parameterised source is frozen; preserve the plan-22 14 Hz conversion separately | beam-neutron normalisation, capture-γ and secondary rates | `background_normalization`, `beam_neutron` |
+| N8 | Geometry alignment | plan 16 §3 | scenario envelope over `perfect`, `nominal_survey`, and `worst_case_construction`; quote half-spread of affected observable | vertex resolution, track-cluster matching, π⁰ mass | `geometry`, `tracking`, `calorimeter_energy` |
+| N9 | Optical-photon yield | plan 18 §4 | optical-on/off paired residual after Cerenkov/eDep conversion; absolute residual is the ±1σ range | lead-glass response in optical builds, photon energy | `detector_calibration`, `optical`, `calorimeter_energy` |
+| N10 | Material budget | plan 15 §§2,6 | ±5% per-region radiation-length envelope until measured composition is cited; recompute conversion and scattering observables | photon conversion rate, multiple scattering, vertex and π⁰ resolutions | `geometry`, `material_budget`, `background_shape` |
 
 ## 2. Correlation matrix
 
