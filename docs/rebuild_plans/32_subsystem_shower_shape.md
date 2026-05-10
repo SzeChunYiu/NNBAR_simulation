@@ -222,6 +222,19 @@ can be compared in plan 38 or frozen by DEC:
 Rows labelled `diagnostic_only` may inform plan 38, but they cannot
 promote a discriminator or feed photon-object production rows.
 
+Required closure row-key inventory:
+
+| `dataset_id` | Label role | Required row purpose | Acceptance guard |
+|---|---|---|---|
+| `cal_singlegamma_v1` | positive neutral shower | neutral efficiency and score-shape reference | efficiency interval, AUC input, and Class-B drop hash present |
+| `cal_singleelectron_v1` | charged/electron negative | electron-like charged fake-rate check | fake-rate interval present and `charged_fake_rate <= 0.05` for pass rows |
+| `sig_foil_v3:charged_pion_clusters` | charged-pion-associated negative | pion/MIP fake-rate check in signal topology | fake-rate interval present and `charged_fake_rate <= 0.05` for pass rows |
+| `sig_foil_v3:neutral_candidate_clusters` | in-sample neutral diagnostic | topology-matched neutral stability check | diagnostic-only unless label provenance is separated from inference |
+
+The inventory names the minimum closure components. It does not promote
+a discriminator until measured §3.1 metrics and the Class-B drop hash are
+attached for every required positive and negative component.
+
 ### 3.2 Decision-log stubs for the P.2 discriminator
 
 Changing the charged/neutral discriminator changes photon-object
