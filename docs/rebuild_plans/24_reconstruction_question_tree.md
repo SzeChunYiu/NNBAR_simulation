@@ -220,6 +220,25 @@ grep -q 'plan60_fiducial_edges@stage-e1' docs/rebuild_plans/60_fiducial_volume_a
 grep -q '66_data_quality_monitoring@stage-e1' docs/rebuild_plans/66_data_quality_monitoring.md || exit 1
 ```
 
+The current L3 regression slice for the L0-owned reconstruction,
+study, fiducial, and DQM handoffs is:
+
+```bash
+cd /Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3
+pytest -q \
+  tests/test_charged_reco.py::test_track_candidates_ignore_forbidden_truth_columns \
+  tests/test_charged_reco.py::test_fit_track_candidates_emits_plan_26_direction_schema \
+  tests/test_charged_reco.py::test_reconstruct_dedx_table_uses_candidate_hit_membership \
+  tests/test_charged_reco.py::test_reconstruct_range_table_projects_scintillator_hits \
+  tests/test_charged_reco.py::test_classify_charged_candidates_uses_dedx_and_range_thresholds \
+  tests/test_vertex_reco.py::test_project_tracks_to_foil_emits_plan_30_v3_rows \
+  tests/test_vertex_reco.py::test_aggregate_and_accept_vertices_use_plan_16_geometry_only \
+  tests/test_selection.py::test_cutflow_cli_reads_events_csv \
+  tests/test_cli_response_matrix.py::test_response_matrix_help_lists_plan_42_flags \
+  tests/test_statistics.py::test_jackknife_efficiency_uses_plan_04_block_size \
+  tests/test_dqm.py::test_dqm_cli_writes_run_table_and_manifest
+```
+
 The file-existence and 500-line checks in items 4-5 are run with:
 
 ```bash
