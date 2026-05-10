@@ -327,6 +327,15 @@ Evidence bundles are reviewer-facing manifests, not new algorithms. They
 exist to make the promotion checklist auditable without re-reading every
 scan and closure table.
 
+Initial reviewer audit cases:
+
+| `audit_case_id` | Reviewer question | Required evidence before accept | Reject condition |
+|---|---|---|---|
+| `p31_membership_semantics_audit` | Does the cluster id identify geometry-only hit membership rather than provenance grouping? | method fixture, source-field list, and Class-B drop hash | any production row still depends on provenance labels |
+| `p31_closure_coverage_audit` | Are all required energy and topology bins represented? | measured closure rows for every bin named by the fixture | a missing or failed bin is averaged away |
+| `p31_threshold_audit` | Is every split/merge threshold traceable to a DEC and scan row? | threshold config id, scan id, and DEC id | threshold appears only in prose or code defaults |
+| `p31_handoff_audit` | Can plans 32/33 reproduce the exact cluster input? | evidence bundle id plus immutable cluster schema | handoff omits the selected method or schema version |
+
 ## 5. Acceptance criteria
 
 - §1 violation removed.
