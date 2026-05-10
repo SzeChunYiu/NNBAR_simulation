@@ -243,6 +243,26 @@ to edit L3 code. The matching L3 patch must update
 chains assert every required C.3 promotion column and invalid-row
 reason.
 
+### 5.3 Stage E.1 promotion invariants
+
+The current live hook is a truth-blind projected-range bridge. L3 may
+replace the association or geometry side-car only if these invariants
+remain stable for C.3 consumers:
+
+| Invariant | Current live behavior | Replacement requirement |
+|---|---|---|
+| truth blindness | `reconstruct_range_table` (`range_reco.py:78-107`) consumes C.1 candidates, V.2 fits, and Class A scintillator rows | production output must be unchanged when legacy `Track_ID`, truth path length, or species labels are absent |
+| range identity | current rows have no stable estimator id beyond the table columns | promoted rows must add `range_id` so plan 38/40/45 artifacts can key the configured association method |
+| association transparency | `_range_row` (`range_reco.py:41-75`) projects scintillator hits forward along the fitted direction | promoted rows must set `association_method=projected_path` and reserve any exact-id reproduction as `legacy_track_id_diagnostic` |
+| invalid-row semantics | `_invalid_row` (`range_reco.py:28-38`) emits `range_valid=false` with null physics fields | replacements must add `range_quality_state` and `range_failure_reason` before plan 29 can distinguish no-hit, bad-fit, and edge-loss cases |
+| edge-profile provenance | current rows do not know the scintillator edge distance or profile bin | the plan 60 side-car must populate `scintillator_edge_distance_mm` and `scintillator_profile_bin` before fiducial systematics consume C.3 |
+| sidecar reproducibility | associated hit ids and projected distances are not persisted | promoted rows must write an associated-hit sidecar keyed by `(event_id, charged_candidate_id, range_id)` for Bragg closure and nuisance propagation |
+
+These invariants make C.3 promotion explicit without asking L0 to edit
+L3 code. They also keep plan 29 charged PID from interpreting missing
+range rows as physics until the failure reason and edge-distance fields
+are present.
+
 ## 6. Acceptance criteria
 
 - §3 closure passes.
@@ -251,7 +271,7 @@ reason.
   plan 38 C.3/C.5 ladder delta.
 - §5 Stage E.1 handoff is actionable for L3: the target public
   function, current unit/integration tests, remaining test obligation,
-  and required C.3 fields (`range_id`, `association_method`, `range_cm`,
+  promotion invariants, and required C.3 fields (`range_id`, `association_method`, `range_cm`,
   `range_edep_mev`, `bragg_peak_position_cm`,
   `range_quality_state`, `range_failure_reason`,
   `scintillator_edge_distance_mm`, `scintillator_profile_bin`, and
