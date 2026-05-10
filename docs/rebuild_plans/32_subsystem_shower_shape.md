@@ -116,6 +116,22 @@ to be frozen before it can replace the hard-cone baseline.
    removed from the reconstruction input. Features, score, and
    production pass/fail must be bitwise identical.
 
+### 3.1 Decision-log stubs for the P.2 discriminator
+
+Changing the charged/neutral discriminator changes photon-object
+eligibility downstream. Freeze these choices through plan 05 before
+they affect production photon rows:
+
+| DEC stub | Decision to freeze | Required evidence before approval |
+|---|---|---|
+| `DEC-32-DISCRIMINANT-CHOICE` | Select hard cone, rectangular cuts, BDT, or NN as the production P.2 discriminator | plan-38 candidate comparison plus §3 ROC closure on every labelled component |
+| `DEC-32-FEATURE-CONTRACT` | Freeze the shower-shape and nearest-track feature list, including sentinel handling | plan-57 feature contract and Class-A audit proving no truth/provenance feature enters inference |
+| `DEC-32-NEUTRAL-THRESHOLD` | Freeze `neutral_score` / cut threshold and operating point | bootstrap AUC, neutral efficiency, charged fake rate, and N-1 stability evidence |
+
+Until approval, non-current discriminants may be trained and scored
+only as ladder alternatives; the current hard-cone baseline remains
+the reproduction path.
+
 ## 4. Acceptance criteria
 
 - §1 observables produced for every cluster.
