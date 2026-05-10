@@ -314,6 +314,19 @@ traceable to concrete fixture rows. This checklist is intentionally
 stricter than the prose acceptance criteria so plan 32/33 cannot consume
 a partially promoted clusterer.
 
+Initial evidence-bundle examples:
+
+| `evidence_bundle_id` | Included rows | Reviewer action |
+|---|---|---|
+| `p31_topo_prod_candidate_v0` | selected clusterer method, all energy-bin closure rows, Class-B drop hash, DEC stubs | eligible for plan-32 handoff review only if every row is measured/pass |
+| `p31_trackkey_repro_only_v0` | current Track_ID-keyed baseline and closure comparison rows | keep as reproduction/diagnostic context, not production membership evidence |
+| `p31_overmerge_blocked_v0` | high-energy closure row plus split/merge boundary scan | block downstream promotion and request threshold retune evidence |
+| `p31_missing_bin_blocked_v0` | partial closure table missing one required energy bin | reject until the missing bin is regenerated instead of interpolated |
+
+Evidence bundles are reviewer-facing manifests, not new algorithms. They
+exist to make the promotion checklist auditable without re-reading every
+scan and closure table.
+
 ## 5. Acceptance criteria
 
 - §1 violation removed.
