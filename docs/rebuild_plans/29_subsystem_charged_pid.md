@@ -271,6 +271,24 @@ These invariants keep C.5 as a reproducible analysis rule rather than a
 hidden truth filter. They also define what the future likelihood-ratio
 replacement must prove before it can supersede the cut-based baseline.
 
+### 6.3 Stage E.1 verification command
+
+L3's C.5/C.6 patch is promotable only when the charged-PID slice
+exercises both the synthetic threshold/rejection path and the real-output
+C.1/C.2/C.3→C.5 chain:
+
+```bash
+pytest tests/test_charged_reco.py::test_classify_charged_candidates_uses_dedx_and_range_thresholds \
+       tests/test_charged_reco.py::test_classify_charged_candidates_real_sample_has_plan_29_schema
+```
+
+The review note for that patch must quote the command output and the
+C.5/C.6 artifact manifest fields `rule_version`, `thresholds`,
+`pid_valid`, `decision_reason`, `rejection_flags`, and the consumed
+C.2/C.3 row hashes. A likelihood-ratio replacement also needs the plan
+57 train/validation/test artifact and a plan 05 decision before it can
+replace the cut-based baseline.
+
 ## 7. Acceptance criteria
 
 - §2 cut-based baseline reproduced.
@@ -280,7 +298,7 @@ replacement must prove before it can supersede the cut-based baseline.
   reproduced.
 - §6 Stage E.1 handoff is actionable for L3: current production and
   calibration hooks are cited, production C.1/C.5/C.6 inputs and
-  outputs are named, promotion invariants are explicit, current
+  outputs are named, promotion invariants and verification command are explicit, current
   charged-reco tests are cited, and the remaining tests must prove the
   production scorer is invariant to dropping Class B truth columns.
 
