@@ -229,6 +229,29 @@ Plan-side gates for the L3 implementation:
 6. Plan 66 consumes charged-PID validity, rejection-reason fractions,
    and rule-version drift once the C.5/C.6 fixtures are present.
 
+### 6.1 Stage E.1 code-gap checklist
+
+The live L3 hook already produces truth-free cut-based PID rows, but
+the promoted C.1/C.5/C.6 fixture set still needs explicit provenance
+and rejection coverage. L3 can promote charged PID only after these
+gaps close in `classify_charged_candidates` (`charged_pid.py:60-118`):
+
+| Gap | Current live behavior | Required promotion behavior |
+|---|---|---|
+| C.2/C.3 provenance | the scorer reads dE/dx and range rows but does not store consumed input hashes | add fixture hashes for the exact C.2 and C.3 rows used by each C.5 decision |
+| threshold identity | `rule_version=plan29_cut_pid_v0` and threshold values are emitted | keep the rule version stable, and require a plan 05 decision before any threshold or likelihood-ratio promotion changes it |
+| C.4 association | the cut rule uses dE/dx and range only | add the C.4 scintillator-association sidecar when plan 28 exposes associated-hit provenance |
+| rejection coverage | invalid candidates/dE/dx rows are rejected with `invalid_candidate_or_dedx` | add explicit EM/neutral/conversion rejection reasons from observable-only lead-glass, timing, and topology inputs before C.6 is complete |
+| truth-invariance test | current tests assert schema and thresholds, but not Class B-drop invariance | extend tests so dropping `Name`, `Track_ID`, and truth kinetic energy cannot change production C.5/C.6 rows |
+
+Acceptance of this checklist is a plan-side gate, not a request for L0
+to edit L3 code. The matching L3 patch must update
+`test_classify_charged_candidates_uses_dedx_and_range_thresholds`
+(`tests/test_charged_reco.py:282-329`) and
+`test_classify_charged_candidates_real_sample_has_plan_29_schema`
+(`tests/test_charged_reco.py:331-350`) so the synthetic and real-output
+chains assert the provenance, rejection, and truth-invariance fields.
+
 ## 7. Acceptance criteria
 
 - §2 cut-based baseline reproduced.
