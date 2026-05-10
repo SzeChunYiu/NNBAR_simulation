@@ -57,6 +57,25 @@ code-level usage; deltas are flagged.
 | **ROC curve** | signal acceptance vs background rejection (plan 41) |
 | **IBU** | Iterative Bayesian Unfolding (plan 42) |
 
+
+
+### 1.1 L1 EM/selection and defence-package terms
+
+| Term | Definition |
+|---|---|
+| **`pass_*` columns** | Canonical singular event-selection booleans used by plan 37 for the Ch 10 cut-flow; plural aliases may be derived but do not replace them. |
+| **pile-up / L11** | Limitation category for simultaneous or time-correlated signal, cosmic, and beam-induced activity not modelled by independent events; plan 58 owns the first overlay closure. |
+| **V0 topology** | Displaced neutral-particle decay topology reconstructed from charged or charged-plus-neutral daughters; plan 59 uses it for K_S, Lambda, and Sigma contamination checks. |
+| **K_S** | Short-lived neutral kaon used in plan 59 as a strange-background benchmark with charged- and neutral-pion decay modes. |
+| **Lambda** | Strange baryon used in plan 59's Lambda-enriched beam-neutron closure slice. |
+| **Sigma** | Strange-baryon family used in plan 59 to test gamma, neutron, and pion contamination paths. |
+| **TOF** | Time of flight; plan 61's timing discriminator formed from TPC time anchors, scintillator hit times, and reconstructed path lengths. |
+| **TOF sidecar** | Candidate table that stores TOF scores and validity reasons without changing the canonical plan-37 selection columns. |
+| **Jeffreys prior** | Bayesian prior proportional to the square root of Fisher information; plan 64 applies it to the total Poisson mean for low-count limit cross-checks. |
+| **flat prior** | Bayesian cross-check prior uniform in non-negative signal mean; plan 64 compares it against the Jeffreys-prior result and the plan-46 primary limit. |
+| **prior sensitivity** | Difference between Bayesian limits under approved priors, reported as a reviewer caveat when it exceeds plan-64 thresholds. |
+| **defence overlay** | Extra plan-50 package block that must be present when a result depends on L1 EM, selection, timing, pile-up, strange-background, or Bayesian-limit evidence. |
+
 ## 2. Geant4 / Hep terms
 
 | Term | Definition |
