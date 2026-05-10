@@ -4,12 +4,13 @@ title: Calibration drift monitoring — run-year stability and triggers
 version: 0.1
 status: draft
 owner: Reproducibility WG
-depends_on: [01_realism_contract, 04_statistical_uncertainty, 17_field_calibration, 18_intercalibration, 19_simulation_validation_suite, 47_reproduction_ledger, 53_ci_regression_suite]
+depends_on: [01_realism_contract, 04_statistical_uncertainty, 17_field_calibration, 18_intercalibration, 19_simulation_validation_suite, 47_reproduction_ledger, 53_ci_regression_suite, 66_data_quality_monitoring]
 inputs:
   - {path: docs/rebuild_plans/17_field_calibration.md, schema: TPC field and W-value contract}
   - {path: docs/rebuild_plans/18_intercalibration.md, schema: TPC/scintillator/lead-glass closure contract}
   - {path: docs/rebuild_plans/19_simulation_validation_suite.md, schema: sanity plots and regression budgets}
   - {path: docs/rebuild_plans/53_ci_regression_suite.md, schema: CI trigger and failure semantics}
+  - {path: docs/rebuild_plans/66_data_quality_monitoring.md, schema: offline DQM quality-status contract}
 outputs:
   - {path: docs/rebuild_plans/63_calibration_drift_monitoring.md, schema: this file}
   - {path: data/registry/calibration/drift_monitoring_<tag>.yml, schema: planned drift-monitoring registry}
@@ -17,7 +18,7 @@ acceptance:
   - {test: run-year schedule covers pre-run, daily, weekly, monthly, and post-run checks, method: §2 review, pass_when: every cadence has an owner and artifact}
   - {test: every Class C constant has warning/fail tolerance bands, method: §3 table, pass_when: no blank bands}
   - {test: failure trigger routes to a concrete action, method: §4 trigger map, pass_when: every fail state blocks or opens a ledger/CI action}
-  - {test: DQM dependency is not hallucinated, method: §7 verifier, pass_when: missing plan 66 is marked TODO rather than cited as existing}
+  - {test: DQM dependency is source-backed, method: §7 verifier, pass_when: plan 66 path resolves and old placeholder path is not cited}
 risks:
   - {risk: calibration drift is mistaken for physics-model drift, mitigation: drift monitors are Class C-only and feed plan 45 before any physics retune}
   - {risk: CI cannot run full calibration samples, mitigation: CI uses smoke monitors while plan 47 owns full-row refresh}
@@ -49,14 +50,15 @@ plans 17 and 18:
 | TPC↔scintillator MIP closure | plan 18 §2 | residual between TPC and scintillator dE/dx | Class C | `output/calibration/mip_closure/summary.json` |
 | Scintillator fast yield | plan 18 §3 | photons-per-MeV residual against 11136 fast-mode value | Class C | `output/calibration/scint_yield_reconciliation/summary.json` |
 | Lead-glass linearity | plan 18 §4 | per-energy residual from `E_reco = a + b E_true` | Class C | `output/calibration/leadglass_linearity/summary.json` |
-| Per-SD sanity plots | plan 19 §2 | eDep/hit-multiplicity/vertex/final-state plot drift | Class C monitor | plan 47 plot rows |
+| Per-SD sanity plots and DQM status | plans 19 §2 and 66 | eDep/hit-multiplicity/vertex/final-state plot drift plus `quality_status` | Class C monitor | plan 47 plot rows and plan 66 `quality_manifest.json` |
 
 Out of scope for v0.1:
 
 - Real-detector calibration promotion. Plan 01 §7 defines the criteria
   for upgrading a Class C constant after data calibration exists.
-- Online DQM implementation. This plan names the hand-off, but the
-  plan-66 DQM file is not present in the current plan set.
+- Online DQM implementation. Plan 66 now defines offline run-quality
+  gates; online shift displays and live alarm routing remain
+  post-commissioning operations work.
 - Automatic threshold retuning. Threshold changes require a DEC entry
   and downstream ledger updates.
 
@@ -129,15 +131,18 @@ Plan 53 consumes the drift monitors in two layers:
 2. **Nightly/weekly layer.** Refresh weekly drift summaries and update
    plan 47 rows that already have a reproduced/mismatch artifact.
 
-Future DQM integration:
+Plan 66 consumes the same monitor outputs through an offline DQM
+quality-status contract:
 
-- TODO(L0-plan66): create the online DQM plan file and define live
-  monitor streams. The current repository has no plan-66 file, so this
-  plan does not cite one as existing.
+- `quality_manifest.json` mirrors `quality_status` into the registry
+  until plan 03 grows a native field.
+- Drift-monitor artifacts provide the calibration side-channel for plan
+  66 warning/failure reasons; plan 66 remains responsible for the
+  dataset-level `pass|warn|fail` lattice.
 - DQM must publish the same `run_id`, `calibration_tag`, and monitor
-  names as the offline registry so comparisons are mechanical.
-- Online warning states may page humans, but only offline validated
-  artifacts can change plan 47 status.
+  names as the drift registry so comparisons are mechanical.
+- Online warning states may page humans in a future operations layer,
+  but only offline validated artifacts can change plan 47 status.
 
 ## 6. Registry schema
 
@@ -174,13 +179,16 @@ ls docs/rebuild_plans/17_field_calibration.md \
    docs/rebuild_plans/18_intercalibration.md \
    docs/rebuild_plans/19_simulation_validation_suite.md \
    docs/rebuild_plans/47_reproduction_ledger.md \
-   docs/rebuild_plans/53_ci_regression_suite.md
+   docs/rebuild_plans/53_ci_regression_suite.md \
+   docs/rebuild_plans/66_data_quality_monitoring.md
 test ! -e docs/rebuild_plans/66_dqm_and_online_monitoring.md
 ```
 
-Current 2026-05-10 evidence: plans 17, 18, 19, 47, and 53 exist in the
-local plan set; the plan-66 DQM file does not exist, so it remains an
-explicit L0 TODO rather than a cited dependency.
+Current 2026-05-10 evidence: plans 17, 18, 19, 47, 53, and
+`66_data_quality_monitoring.md` exist in the local plan set after the
+L0 DQM handoff landed. The old placeholder
+`66_dqm_and_online_monitoring.md` path does not exist and must not be
+cited.
 
 ## 8. Acceptance criteria
 
@@ -189,7 +197,8 @@ explicit L0 TODO rather than a cited dependency.
 - §3 tolerance bands are populated for every constant group in §1.
 - §4 trigger map routes every warning/failure to a CI, ledger,
   systematics, or DEC action.
-- §5 does not claim a DQM file exists before L0 creates it.
+- §5 links to the source-backed offline DQM plan and keeps future
+  online operations out of scope.
 
 ## 9. Dependencies
 
@@ -198,5 +207,6 @@ explicit L0 TODO rather than a cited dependency.
 - **17, 18, 19** — constants and monitor artifacts.
 - **47** — row status updates.
 - **53** — CI trigger semantics.
-- *Consumed by:* plan 45 (systematics), plan 47 (ledger), future plan 66
-  (DQM).
+- **66** — offline DQM run-quality status and registry handoff.
+- *Consumed by:* plan 45 (systematics), plan 47 (ledger), plan 66
+  (offline DQM).
