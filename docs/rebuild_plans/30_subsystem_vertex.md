@@ -209,6 +209,34 @@ Plan-side gates for the L3 implementation:
 6. Plan 60 consumes `foil_geometry_version`, vertex edge distances,
    and fiducial-profile states once the V.5 fixture is present.
 
+### 7.1 Stage E.1 code-gap checklist
+
+The live split hooks already produce V.3, V.4, and V.5 fixture rows,
+but promotion to the plan-47/43 surface still needs explicit
+provenance and truth-invariance coverage. L3 can promote the plan-30
+fixture chain only after these gaps close across `project_tracks_to_foil`
+(`vertex_reco.py:45-87`), `aggregate_event_vertices`
+(`vertex_reco.py:90-132`), and `apply_foil_acceptance`
+(`vertex_reco.py:157-194`):
+
+| Gap | Current live behavior | Required promotion behavior |
+|---|---|---|
+| consumed-input hashes | fixtures are computed from V.2 rows and geometry but do not store hashes | add V.2 table hash, projection table hash, and geometry side-car hash before plan 47 consumes V.5 |
+| covariance shape | projection and vertex covariance are stored as vectors | either expand to the component fields in §1.4 or document the deterministic vector order consumed by plans 40 and 43 |
+| fitter identity | `aggregation_method=mean_projection` is emitted | keep this reproduction mode stable and require a plan 38 row plus plan 05 decision before Billoir/adaptive promotion |
+| invalid-state provenance | projection and foil gates emit reasons, while invalid V.4 rows carry only `vertex_valid=false` | add or document the V.4 invalid reason so plan 47 caveats do not infer it from missing coordinates |
+| truth-invariance test | current tests prove geometry-only acceptance but not Class B-drop invariance | extend tests so dropping `Name`, `Track_ID`, truth vertices, and truth origin labels cannot change V.3/V.4/V.5 production rows |
+
+Acceptance of this checklist is a plan-side gate, not a request for L0
+to edit L3 code. The matching L3 patch must update
+`test_project_tracks_to_foil_emits_plan_30_v3_rows`
+(`tests/test_vertex_reco.py:39-74`),
+`test_aggregate_and_accept_vertices_use_plan_16_geometry_only`
+(`tests/test_vertex_reco.py:77-100`), and
+`test_vertex_reco_real_sample_consumes_particle_and_tpc_rows`
+(`tests/test_vertex_reco.py:103-118`) so synthetic and real-output
+chains assert the provenance and truth-invariance fields.
+
 ## 8. Acceptance criteria
 
 - §3 migration complete.
