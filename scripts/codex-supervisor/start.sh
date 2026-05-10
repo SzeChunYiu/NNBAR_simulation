@@ -21,6 +21,13 @@ fi
 # codex-supervisor session already running (e.g. "codex-supervisor").
 export CODEX_SUPERVISOR_SESSION="${CODEX_SUPERVISOR_SESSION:-nnbar-rebuild}"
 
+# After each /goal "Goal achieved", re-send the original prompt so the
+# lane reads the (possibly updated) per-lane spec and starts a fresh
+# pursuit. Equivalent to "start a new session after every goal" — codex
+# treats /goal as a context reset, and the lane spec re-read picks up
+# any wave changes that landed since the last iteration.
+export CODEX_SUPERVISOR_ON_COMPLETE="${CODEX_SUPERVISOR_ON_COMPLETE:-redo}"
+
 # Launch from the simulation repo root so codex panes' working directory
 # resolves docs/parallel-sessions.md and docs/parallel-sessions/L*.md as
 # relative paths. Pass the prompts file explicitly via env var.
