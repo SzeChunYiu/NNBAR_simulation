@@ -102,6 +102,25 @@ Leaf P.3: photon-like clusters + vertex → photon direction
   allowed truth use: validation_only
   downstream consumers: P.5, P.7, E.7; plans 33, 34, 35, 36
 
+Leaf P.4: photon-like clusters → photon energy estimate
+  inputs (Class A): P.1/P.2 cluster hit sums from LeadGlass and
+                    Scintillator eDep, photons, module_ID, timing,
+                    and calibration constants from plan 18
+  forbidden (Class B): truth gamma kinetic energy, source_track_ids,
+                       Track_ID, Parent_ID, Name, Interaction ancestry
+  decision rule: compute photon visible energy from calibrated
+                 deposited energy in the photon-like cluster, with
+                 optional scintillator+lead-glass combination recorded
+                 by method; truth ancestor energy is only a closure
+                 target.
+  output schema: {event_id: int64, photon_id: int64,
+                  cluster_id: int64, energy_mev: float64,
+                  leadglass_energy_mev: float64,
+                  scintillator_energy_mev: float64,
+                  calibration_version: string, energy_valid: bool}
+  allowed truth use: validation_only
+  downstream consumers: P.5, P.7, E.1, E.7; plans 33, 34, 35, 36
+
 ### Next measurement (photon / π⁰ branch)
 
 Truth-free clustering closure study on `cal_singlegamma_v1` (plan 23)
