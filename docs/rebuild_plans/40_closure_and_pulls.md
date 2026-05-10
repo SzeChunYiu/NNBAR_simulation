@@ -169,8 +169,8 @@ row-specific Python invocation from the L3 worktree. Replace the paths,
 leaf id, and column map with the plan 47 row under study.
 
 ```bash
-cd /Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3
-python3 - <<'PY'
+# Run from /Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3
+rtk proxy python3 - <<'PY'
 from pathlib import Path
 import json
 import pandas as pd
@@ -195,8 +195,8 @@ PY
 For an immediately runnable smoke without sample files:
 
 ```bash
-cd /Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3
-python3 - <<'PY'
+# Run from /Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3
+rtk proxy python3 - <<'PY'
 import pandas as pd
 from nnbar_reconstruction.closure.runner import run_closure
 
