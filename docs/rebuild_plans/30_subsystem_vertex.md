@@ -90,6 +90,24 @@ It projects valid tracks to `z=0`, averages projections,
 reports radial RMS / skipped counts, and currently excludes some seeds
 with truth `Name`.
 
+### 1.4 Machine-readable vertex fixtures
+
+The vertex path is split into three fixtures so projection, aggregation,
+and foil acceptance can be closure-tested without leaking truth
+vertices into production decisions:
+
+| Fixture | Required fields | Production invariant |
+|---|---|---|
+| V.3 projection | `event_id`, `candidate_id`, `projection_x`, `projection_y`, `projection_z`, covariance components, `projection_valid`, `skipped_reason`, `source_chi2_ndf` | depends only on V.2 state and plan 16 geometry |
+| V.4 vertex | `event_id`, `vertex_x`, `vertex_y`, `vertex_z`, covariance components, `n_tracks_used`, `n_tracks_skipped`, `radial_rms_mm`, `aggregation_method`, `vertex_valid` | truth vertices and truth names are absent from aggregation input |
+| V.5 foil acceptance | `event_id`, `foil_compatible`, `vertex_valid`, `vertex_r_mm`, `vertex_z_mm`, `foil_geometry_version`, `acceptance_reason` | uses plan 16 geometry and plan 60 fiducial profile, not truth origin |
+
+Projection residuals, vertex pulls, and truth foil-origin labels are
+written only to closure artifacts keyed by `(event_id,
+aggregation_method, foil_geometry_version)`. The production V.5 fixture
+is valid only when its consumed V.3/V.4 fixture hashes and geometry tag
+match the manifest used by plan 43 signal efficiency.
+
 ## 2. Current implementation
 
 `vertex.py` (plan 08 §3.3):
