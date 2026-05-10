@@ -127,6 +127,19 @@ sparse counts, then background-rate uncertainty, nuisance covariance,
 model collapse from binned to total-count form, and unbounded plan-45
 limitations.
 
+The Wave-6 prior derivation ledger is:
+
+| Prior/mode leaf | Truth-side quantity | Estimator rationale | Dominant uncertainty | Closure assertion |
+|---|---|---|---|---|
+| `bayes.jeffreys_total_mean` | 90% upper credible endpoint for nonnegative signal mean after conditioning on `n_obs` and `b` | Jeffreys prior on the Poisson total mean is invariant under reparameterisation of the count mean and stays finite for the zero-count validation row | sparse-count prior choice and background-rate uncertainty | independent quadrature/incomplete-gamma checks agree for zero and low-count fixtures |
+| `bayes.flat_signal_mean` | sensitivity-bracketing 90% endpoint under a flat signal prior | flat-on-signal prior is a transparent reviewer cross-check and exposes how strongly the result depends on the prior family | prior choice dominates when `n_obs` and `b` are small | flat and Jeffreys ratios populate §7 before any defence quote |
+| `bayes.nuisance_marginalised` | posterior endpoint after bounded calibration/rate nuisance integration | nuisance rows are part of the same plan-46 input bundle, so the Bayesian replay must integrate or sample them rather than dropping them | nuisance covariance and physical support truncation | output lists every nuisance id and replay seed/covariance id |
+| `bayes.binned_model` | Bayesian cross-check on the same bins as a high-count CLs model | binned likelihood preserves shape information; total-count collapse is only a coarse fallback | model-collapse error relative to CLs/pyhf | collapsed rows carry `model_mismatch` unless a binned Bayesian model is attached |
+
+These leaves are cross-check leaves: they may create caveats or
+consistency evidence, but they do not supersede the plan-46 primary
+F-C/CLs dispatch unless a future DEC changes the reporting convention.
+
 #### Logic gaps
 
 | Parameter | Status before production | Closure study / target date |
