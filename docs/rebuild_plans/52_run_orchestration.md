@@ -166,6 +166,28 @@ l1_defence_rerun_manifest:
         note_annex: <plan55-annex-id-or-null>
         glossary_audit: <plan56-audit-id>
       blocker: null
+    - bundle_member: Pile-up L11 overlay
+      status: blocked
+      owner_signoff_ref: RQ-L1-PILEUP-L11:<owner-hash-or-null>
+      required_inputs:
+        - dataset_id: sig_foil_v3
+          source_hash: <sha256-or-null>
+        - dataset_id: cosmic_cry_essLund_overburdenA_v1
+          source_hash: <sha256-or-null>
+      refreshes:
+        - artifact_id: plan58_pileup_overlay_closure
+          output_hash: null
+      defence_overlay_ids:
+        - pileup_l11_status
+      review_evidence_links:
+        package_rollup: <plan50-rollup-id>
+        staleness_summary: <plan50-staleness-id>
+        ci_report: <plan53-l1-report-id>
+        archive_inventory: <plan54-inventory-id-or-null>
+        archive_drill: <plan54-drill-id-or-null>
+        note_annex: <plan55-annex-id-or-null>
+        glossary_audit: <plan56-audit-id>
+      blocker: paired pile-up closure artifact is not attached to a concrete result yet
     - bundle_member: Unbounded caveat status
       status: blocked
       owner_signoff_ref: RQ-L1-UNBOUNDED-CAVEATS:<owner-hash-or-null>
