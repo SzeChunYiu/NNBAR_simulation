@@ -221,20 +221,56 @@ unless plan 45's correlation matrix supersedes it. Plan 47 rows that
 quote unfolded values must cite both the closure artifact (§4) and the
 N5 systematic artifact from this section.
 
-## 6. Acceptance criteria
+## 6. Software handoff and blocker contract
+
+The verified software boundary currently stops after §2 response-matrix
+production. The response command is real and help-verified; the
+regularisation, closure, and signal-model systematic producers in
+§§3-5 are deliberately specified as blocked implementation gates until
+their own `--help` surfaces exist. Do not replace those gates with
+hand-edited notebooks or invented command names.
+
+L3/software handoff requirements:
+
+1. The tuning producer reads frozen response matrices and metadata from
+   §2, scans only the method/parameter grids in §3.2, and writes one
+   grid table plus diagnostic plots per observable. It fails if any
+   selected row lacks a passing closure status or a DEC id.
+2. The closure producer reads the frozen response directory,
+   `chosen_regularisation.yml`, reconstruction tables, and truth
+   parquet inputs. It writes JSON, pulls parquet, covariance, and
+   rendered comparison plots for every §4.2 observable and fails if any
+   pass/fail field is missing.
+3. The signal-model systematic producer reads the same frozen binning,
+   chosen regularisation, and plan 13 variation definitions. It writes
+   per-bin deltas, covariance, and the plan 45 N5 nuisance handoff
+   without dropping a variation whose closure fails.
+4. All post-response producers record source hashes, response-matrix
+   hashes, bootstrap seed, observable list, ladder leaves, and plan 47
+   ledger hooks. A plot without matching machine artifacts is not a
+   quotable result.
+5. New command lines may be added to this plan only after their CLI
+   surfaces are verified under the A+ examiner gate. Until then, the
+   blocked sections remain precise software requirements, not runnable
+   instructions.
+
+## 7. Acceptance criteria
 
 - §2 response matrices produced for ≥ 3 observables.
 - §3 method choice signed.
 - §4 closure passes.
 - §5 systematic is propagated into plan 45.
+- §6 software handoff is complete: each blocked post-response producer
+  has explicit inputs, outputs, failure assertions, provenance fields,
+  and a no-invented-CLI rule.
 
-## 7. Dependencies
+## 8. Dependencies
 
 - **04, 36, 38** — inputs.
 - *Consumed by:* plan 47 (ledger), plan 50 (defence package), plan
   45 (systematics).
 
-## 8. References
+## 9. References
 
 - D'Agostini, *NIM A* 362 (1995) 487 (IBU).
 - Höcker & Kartvelishvili, *NIM A* 372 (1996) 469 (SVD).
