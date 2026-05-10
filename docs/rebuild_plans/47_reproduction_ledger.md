@@ -127,8 +127,8 @@ thesis pair:
   precision-recall curve.
 
 A+ truthing on 2026-05-10 has updated all rows out of the seed-only
-`not-attempted` state: **43 rows are `mismatch` with nonempty
-`reproduced_value` and `delta` fields**, **118 rows are
+`not-attempted` state: **1 row is `reproduced`**, **42 rows are
+`mismatch` with nonempty `reproduced_value` and `delta` fields**, **118 rows are
 `blocked-no-sample`**, and **0 rows remain `not-attempted`**. The current
 row count satisfies the Wave 2 ≥30-row seed requirement, the Wave 3
 ≥60-row ledger-count/span target across Chapters 5--10, and the Wave 4
