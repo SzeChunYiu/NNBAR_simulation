@@ -90,7 +90,7 @@ Per plan 24 C.1 / C.5 / C.6 schemas:
 - **downstream consumers:** plans 32, 38, 43, 45, and 47.
 
 Current implementation citation: `reconstruct_charged_objects`
-(`charged.py:151-228`, plan 08 §3.4) owns the current C.1/C.5
+(`nnbar_reconstruction/charged.py:151-228`, plan 08 §3.4) owns the current C.1/C.5
 path and emits `pid`, `dedx`, `scintillator_range`, `track_anchor`,
 and `track_direction`, with `truth_name` retained for validation only
 after the migration.
@@ -151,7 +151,7 @@ Per plan 57 MVA protocol:
 
 | Alternative | Source paper / codebase | NNBAR-specific adaptation | Expected ladder leaf delta |
 |---|---|---|---|
-| Cut-based baseline | Existing `reconstruct_charged_objects` (`charged.py:151-228`) | Keep thesis Ch 8/9 threshold form but remove the C.1 truth-name gate before production scoring. | Reproduces baseline; ladder delta comes primarily from removing truth substitution. |
+| Cut-based baseline | Existing `reconstruct_charged_objects` (`nnbar_reconstruction/charged.py:151-228`) | Keep thesis Ch 8/9 threshold form but remove the C.1 truth-name gate before production scoring. | Reproduces baseline; ladder delta comes primarily from removing truth substitution. |
 | Likelihood-ratio PID | Plan 57 MVA protocol / standard likelihood-ratio classifier | Train on plan 23 charged calibration samples using C.2/C.3/C.4 features and locked train/validation/test splits. | Expected to reduce C.5 π/p confusion, especially near stopping-proton boundaries; must beat cut-based on plan 38. |
 
 ## 4. EM and neutral rejection (C.6)
@@ -195,10 +195,10 @@ TPC topology only.
 
 For L3's charged-side redesign, the C.5 production fixture is now split
 from the legacy charged-object row. The production-like hook is
-`classify_charged_candidates` (`charged_pid.py:60-118`), which consumes
+`classify_charged_candidates` (`nnbar_reconstruction/charged_pid.py:60-118`), which consumes
 plan-25 C.1 candidates plus plan-27 C.2 and plan-28 C.3 rows. The
 current help-verified calibration scan surface is still `scan-pid`; it
-calls `scan_charged_pid_thresholds` (`calibration.py:27-134`), which
+calls `scan_charged_pid_thresholds` (`nnbar_reconstruction/calibration.py:27-134`), which
 scores labels from `truth_name` after `reconstruct_charged_objects`
 has emitted the legacy rows. That scan is valid for calibration only,
 not for production charged-PID fixture decisions.
@@ -234,7 +234,7 @@ Plan-side gates for the L3 implementation:
 The live L3 hook already produces truth-free cut-based PID rows, but
 the promoted C.1/C.5/C.6 fixture set still needs explicit provenance
 and rejection coverage. L3 can promote charged PID only after these
-gaps close in `classify_charged_candidates` (`charged_pid.py:60-118`):
+gaps close in `classify_charged_candidates` (`nnbar_reconstruction/charged_pid.py:60-118`):
 
 | Gap | Current live behavior | Required promotion behavior |
 |---|---|---|
@@ -260,8 +260,8 @@ may replace or extend the cut rule only if these invariants stay true:
 
 | Invariant | Current live behavior | Replacement requirement |
 |---|---|---|
-| truth blindness | `classify_charged_candidates` (`charged_pid.py:60-118`) consumes C.1 candidates plus C.2 dE/dx and C.3 range rows | production C.5/C.6 rows must be unchanged when `Name`, `Track_ID`, truth kinetic energy, and interaction labels are removed |
-| calibration separation | `scan-pid` and `scan_charged_pid_thresholds` (`calibration.py:27-134`) may score truth labels for calibration | the calibrated threshold or likelihood artifact must be frozen before production scoring and cited through plan 57/plan 05 |
+| truth blindness | `classify_charged_candidates` (`nnbar_reconstruction/charged_pid.py:60-118`) consumes C.1 candidates plus C.2 dE/dx and C.3 range rows | production C.5/C.6 rows must be unchanged when `Name`, `Track_ID`, truth kinetic energy, and interaction labels are removed |
+| calibration separation | `scan-pid` and `scan_charged_pid_thresholds` (`nnbar_reconstruction/calibration.py:27-134`) may score truth labels for calibration | the calibrated threshold or likelihood artifact must be frozen before production scoring and cited through plan 57/plan 05 |
 | rule identity | current rows emit `rule_version=plan29_cut_pid_v0` and threshold values | any threshold, likelihood-ratio, or rejection-taxonomy change must version the rule and keep old rows reproducible |
 | input provenance | current C.5 rows read dE/dx and range values but do not persist consumed-row hashes | promoted rows must hash the exact C.2, C.3, and later C.4 sidecar rows used for each PID decision |
 | observable-only rejection | current invalid rows use `invalid_candidate_or_dedx` | EM, neutral, conversion, and geometry rejections must come from observable lead-glass/timing/topology fields, never truth `Name` or `Interaction` |
