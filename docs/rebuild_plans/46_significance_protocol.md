@@ -333,6 +333,15 @@ method-dispatch context. A number that cannot name its signal,
 background, nuisance, caveat, and convention rows remains a validation
 fixture rather than a final result.
 
+Initial reviewer audit cases:
+
+| `audit_case_id` | Reviewer question | Required evidence before accept | Reject condition |
+|---|---|---|---|
+| `p46_validation_audit` | Were worked examples recomputed from linked inputs? | validation case, input bundle, dispatch row, result row, and recomputed value | formula output appears without reproducible inputs |
+| `p46_dispatch_audit` | Does every result use the method selected by the handover rule? | handover row, confidence level, and method id | low-count row uses an asymptotic convention silently |
+| `p46_provenance_audit` | Can every quote trace signal, background, nuisance, and caveat sources? | source bundle ids, nuisance ids, caveat list, and DEC ids | result number has incomplete or hidden provenance |
+| `p46_zero_survivor_audit` | Are F-C zero-survivor endpoints kept as intervals? | interval endpoint, confidence level, and plan-44 linkage | upper limit is rewritten as central background zero |
+
 ## 4. Acceptance criteria
 
 - §1 Z_0 target implementation lands in the L3-owned
