@@ -94,7 +94,7 @@ requirements, not claims that the final workflow file already exists.
 | `l1_cutflow_identity_guard` | changes to plans 37, 50, 51, or 55 | canonical singular `pass_*` selection columns remain named in defence overlays and note annexes | Tier 1 block |
 | `l1_defence_rerun_manifest` | Tier 3 weekly | plan-52 defence rerun bundle has rows for EM chain, selection, pile-up, strange, TOF, and Bayesian cross-checks | Tier 3 tracking issue if incomplete |
 | `l1_rerun_transcript_link` | changes to plans 50 or 52 | any ready plan-50 L1 roll-up links both the plan-52 rerun manifest and execution transcript | Tier 1 block |
-| `l1_command_template_registry` | changes to plan 52 | transcript command-template ids are registered, immutable, and limited to verified CLI help output or explicit blocked templates | Tier 1 block |
+| `l1_command_template_registry` | changes to plan 52 | transcript command-template ids are registered, immutable, limited to verified CLI help output or explicit blocked templates, and carry verifier transcripts | Tier 1 block |
 | `l1_package_staleness_guard` | changes to plans 50-56 | ready plan-50 L1 packages carry `l1_staleness.status: current` against the latest L1 hashes | Tier 1 block |
 | `l1_note_package_freshness` | changes to plans 50 or 55 | promoted L1 note annexes quote only current packages or include an explicit stale-package caveat | Tier 1 block |
 | `l1_archive_drill_manifest` | thesis-freeze package build | plan-54 L1 archive drill exists, starts from the top-level README, and records blocked rows | Tier 1 block for freeze packages |
@@ -139,7 +139,7 @@ Report review rules:
 | report git rev matches package git rev | archived defence artifacts and CI evidence diverge |
 | archive and glossary checks are present when freeze mode runs | freeze package omits L1 drill or term sign-off evidence |
 | rerun transcript check appears when roll-up uses refreshed artifacts | package claims rerun evidence without execution proof |
-| command-template registry check appears for plan-52 transcripts | transcript uses unsupported or mutable command surface |
+| command-template registry check includes verifier transcript | transcript uses unsupported, unverified, or mutable command surface |
 | answered-question transition evidence includes command-template ids | reviewer registry closes a refreshed-evidence question without replay contract |
 | staleness guard appears for ready L1 packages | stale defence package is promoted as current evidence |
 | review-evidence links appear in package schema | package has L1 evidence in prose but no machine-readable handoff |
@@ -158,7 +158,7 @@ checks are pass/fail and block the plan-set edit when they fail.
   including rerun transcript linkage for refreshed artifacts and
   answered-question transition evidence with command-template ids, package
   staleness guards, review-evidence link checks, note freshness checks,
-  and command-template registry checks.
+  and command-template registry/verifier checks.
 - Freeze-mode L1 CI includes archive-drill and glossary-signoff checks.
 
 ## 7. Risks
