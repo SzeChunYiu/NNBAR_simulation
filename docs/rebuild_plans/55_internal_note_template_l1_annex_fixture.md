@@ -60,6 +60,7 @@ l1_note_annex:
         archive_drill: <plan54-drill-id-or-null>
       artifact_hashes:
         note_annex: sha256:<hash>
+        note_annex_fixture: sha256:<hash>
         defence_package: sha256:<hash-or-null>
         defence_routing_crosswalk: sha256:<hash-or-null>
         staleness_summary: sha256:<hash-or-null>
@@ -96,6 +97,7 @@ l1_note_annex:
         archive_drill: <plan54-drill-id-or-null>
       artifact_hashes:
         note_annex: sha256:<hash>
+        note_annex_fixture: sha256:<hash>
         defence_package: sha256:<hash>
         defence_routing_crosswalk: sha256:<hash-or-null>
         staleness_summary: sha256:<hash>
@@ -134,6 +136,7 @@ l1_note_annex:
         archive_drill: <plan54-drill-id-or-null>
       artifact_hashes:
         note_annex: sha256:<hash>
+        note_annex_fixture: sha256:<hash>
         defence_package: sha256:<hash-or-null>
         defence_routing_crosswalk: sha256:<hash-or-null>
         staleness_summary: sha256:<hash-or-null>
@@ -172,6 +175,7 @@ l1_note_annex:
         archive_drill: <plan54-drill-id-or-null>
       artifact_hashes:
         note_annex: sha256:<hash>
+        note_annex_fixture: sha256:<hash>
         defence_package: sha256:<hash-or-null>
         defence_routing_crosswalk: sha256:<hash-or-null>
         staleness_summary: sha256:<hash-or-null>
@@ -210,6 +214,7 @@ l1_note_annex:
         archive_drill: <plan54-drill-id-or-null>
       artifact_hashes:
         note_annex: sha256:<hash>
+        note_annex_fixture: sha256:<hash>
         defence_package: sha256:<hash-or-null>
         defence_routing_crosswalk: sha256:<hash-or-null>
         staleness_summary: sha256:<hash-or-null>
@@ -249,6 +254,7 @@ l1_note_annex:
         archive_drill: <plan54-drill-id-or-null>
       artifact_hashes:
         note_annex: sha256:<hash>
+        note_annex_fixture: sha256:<hash>
         defence_package: sha256:<hash-or-null>
         defence_routing_crosswalk: sha256:<hash-or-null>
         staleness_summary: sha256:<hash-or-null>
@@ -287,6 +293,7 @@ l1_note_annex:
         archive_drill: <plan54-drill-id-or-null>
       artifact_hashes:
         note_annex: sha256:<hash>
+        note_annex_fixture: sha256:<hash>
         defence_package: sha256:<hash-or-null>
         defence_routing_crosswalk: sha256:<hash-or-null>
         staleness_summary: sha256:<hash-or-null>
@@ -307,7 +314,7 @@ l1_note_annex:
       required_contents: [plan-50 overlay ids match plan-51 questions, plan-52 bundle ids match plan-54 archive pack members, plan-53 report id and plan-56 glossary audit id are current]
       evidence_refs: [l1_defence_routing_crosswalk]
       review_evidence_links: {overlay_rollup: <plan50-rollup-id>, defence_routing_crosswalk: <plan50-crosswalk-id-or-null>, owner_signoff_refs: [L1-routing-owner:<owner-hash-or-null>], ci_report: <plan53-l1-report-id>, rerun_manifest: plan52:Defence routing, rerun_transcript: plan52:defence_routing:transcript-or-null, command_template_id: blocked_missing_input_v1, command_template_verifier: null, glossary_audit: <plan56-audit-id>, staleness_summary: <plan50-staleness-id>, archive_inventory: <plan54-inventory-id-or-null>, archive_drill: <plan54-drill-id-or-null>}
-      artifact_hashes: {note_annex: sha256:<hash>, defence_package: sha256:<hash-or-null>, defence_routing_crosswalk: sha256:<hash-or-null>, staleness_summary: sha256:<hash-or-null>, ci_report: sha256:<hash-or-null>, rerun_manifest: sha256:<hash-or-null>, rerun_transcript: sha256:<hash-or-null>, command_template_verifier: null, glossary_audit: sha256:<hash-or-null>, archive_inventory: sha256:<hash-or-null>, archive_drill: sha256:<hash-or-null>}
+      artifact_hashes: {note_annex: sha256:<hash>, note_annex_fixture: sha256:<hash>, defence_package: sha256:<hash-or-null>, defence_routing_crosswalk: sha256:<hash-or-null>, staleness_summary: sha256:<hash-or-null>, ci_report: sha256:<hash-or-null>, rerun_manifest: sha256:<hash-or-null>, rerun_transcript: sha256:<hash-or-null>, command_template_verifier: null, glossary_audit: sha256:<hash-or-null>, archive_inventory: sha256:<hash-or-null>, archive_drill: sha256:<hash-or-null>}
       caveat_text: <required when any routing fixture hash drifts>
 ```
 
@@ -317,7 +324,7 @@ Review rules:
 |---|---|
 | annex row names match the §1.1 blocks | note drifts from defence package taxonomy |
 | every `applies` row names a defence overlay id | note has no machine-readable package handoff |
-| every thesis-facing row exposes review-evidence links and artifact hashes | note cannot be reconciled with package, staleness, CI, archive, and glossary evidence |
+| every thesis-facing row exposes review-evidence links plus note-annex and split-fixture artifact hashes | note cannot be reconciled with package, split fixture, staleness, CI, archive, and glossary evidence |
 | every `blocked` row carries `caveat_text` | hidden missing evidence in reviewer-facing prose |
 | every low-count note includes the limit-convention row | Bayesian prior sensitivity omitted from sparse-count claims |
 | every L11 note includes the pile-up caveat row | independent-event limitation omitted from acceptance claims |
