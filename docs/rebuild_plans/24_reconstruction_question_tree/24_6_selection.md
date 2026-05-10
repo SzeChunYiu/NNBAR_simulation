@@ -38,6 +38,26 @@ multivariate replacement) is scored against this baseline.
 
 **Owning subsystem plan:** plan 37 (event selection).
 
+Leaf S.1: vertex + scintillator energy → pre-selection flags
+  inputs (Class A): V.5 foil-compatible vertex flag, E.1 total and
+                    scintillator energy, E.8 timing split, and plan 37
+                    thresholds for scintillator energy and foil-track
+                    presence
+  forbidden (Class B): truth annihilation vertex, truth primary name,
+                       Track_ID, Parent_ID, truth signal/background
+                       labels inside the event decision
+  decision rule: pass pre-selection only when at least one reconstructed
+                 TPC track projects to a foil-compatible vertex and the
+                 scintillator energy lies in the thesis Ch 9 window
+                 (20-2000 MeV in plan 37 §1).
+  output schema: {event_id: int64, pass_tpc_foil_track: bool,
+                  pass_scintillator_energy: bool,
+                  passes_preselection: bool,
+                  scintillator_energy_mev: float64,
+                  preselection_reason: string}
+  allowed truth use: validation_only
+  downstream consumers: S.6; plans 37, 41, 47
+
 ### Next measurement (selection branch)
 
 Reproduce the licentiate's cut-flow on the registered signal sample
