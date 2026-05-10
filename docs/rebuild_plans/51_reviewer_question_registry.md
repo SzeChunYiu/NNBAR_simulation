@@ -317,6 +317,9 @@ Review rules:
 | answered rows expose review artifact hashes | answer links can drift to different package/CI/note/glossary evidence |
 | refreshed-artifact rows name a command template id | reviewer answer cannot replay the verified command contract |
 | command-template verifier hash is recorded | reviewer answer trusts a command template without A+ verifier evidence |
+| every row carries a `rerun_manifest_id` matching a plan-52 bundle member | reviewer question cannot be scheduled into the rerun manifest |
+| `rerun_transcript_id` stays null only while the row is open or blocked | answered evidence closes without an execution transcript |
+| `blocked_missing_input_v1` rows keep verifier hash and source null until inputs exist | blocked templates masquerade as verified runnable commands |
 | rejected questions require a Methodology Council rationale | hard questions are not silently closed |
 
 When a result first cites one of these questions, `affects_results` and
