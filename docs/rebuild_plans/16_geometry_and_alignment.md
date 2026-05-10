@@ -253,4 +253,6 @@ returned unchanged), satisfying plan 02's identity-default discipline.
 ## 8. References
 
 - Verified L3 paths: `src/Detector_Module/*.cc` and `src/DetectorConstruction.cc`.
-- TODO: generate or restore a geometry reference artifact and geometry-audit verifier before freezing samples.
+- `OPEN(L2/L3, target 2026-06-15)`: generate or restore a geometry
+  reference artifact and geometry-audit verifier before freezing
+  samples.
