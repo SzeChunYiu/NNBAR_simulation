@@ -142,6 +142,19 @@ Plan 46 may sum `expected_rate` into `b` only from rows with
 `rate_included_in_b = true`; all other rows remain caveats or validation
 artifacts in plan 47 and plan 50.
 
+Draft rate-result examples:
+
+| `rate_result_id` | `node_id` | `sample_id` | `selection_config_id` | `events_generated` | `n_survivors_after_plan37` | `survival_fraction` | `interval_method` | `epsilon90` | `expected_rate` | `rate_included_in_b` |
+|---|---|---|---|---:|---:|---|---|---|---|---:|
+| `cosmic_muon_ch10_zero_survivor_v0` | `cosmic.muon` | `cosmic_cry_essLund_overburdenA_v1` | `ch10_baseline` | 244000 | 0 | `0/244000`, quoted only with interval | `feldman_cousins_90cl` | `FC90(0, 244000)` | null until `DEC-44-COSMIC-RATE-SOURCE` | false |
+| `cosmic_gamma_overburdenB_crosscheck_v0` | `cosmic.gamma` | `cosmic_cry_essLund_overburdenB_v1` | `ch10_baseline` | 244000 | 0 | `0/244000`, systematic cross-check | `feldman_cousins_90cl` | `FC90(0, 244000)` | null until overburden convention is signed | false |
+| `beam_direct_ch10_nonzero_validation_v0` | `beam_neutron.direct_beam_neutron` | `beam_neutron_hibeam_direct_v1` | `ch10_baseline` | 100000 | 2 | `2/100000` with interval | `feldman_cousins_90cl` | null | null until `DEC-44-BEAM-RATE-SOURCE` | false |
+
+These rows are examples of result-shape and review gates, not measured
+background claims. A row can become part of a plan-46 background sum only
+after the denominator, survivor count, interval, and rate-source DEC are
+attached to the corresponding plan-47 artifact.
+
 ### 1.4 Machine-readable background-sum handoff fixture
 
 Plan 46 receives a background sum, not a prose table. Each handoff row
