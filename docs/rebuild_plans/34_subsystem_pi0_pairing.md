@@ -22,17 +22,36 @@ last_updated: 2026-05-09
 *Charter.* Owns leaves P.5 (pairing) and P.6 (accidental
 rejection). Forms π⁰ candidates from photon objects.
 
-## 1. Pairing rule
+## 1. Leaf P.5/P.6 input/output schema and pairing rule
 
-For each event:
+Leaf P.5/P.6: photon objects → π⁰ candidates and accidental tags
 
-1. List photon objects from plan 33.
-2. Form all pairs `(γ_i, γ_j)` with `i < j`.
-3. For each pair compute: invariant mass `M`, total energy `E`,
-   opening angle `α`, scintillator energy `Σ_scint`, lead-glass
-   energy `Σ_LG`, lead-glass fraction `Σ_LG / (Σ_LG + Σ_scint)`.
-
-Each pair becomes a candidate row.
+- **Inputs (production, Class A only):** plan-33 photon objects with
+  `event_id`, `object_id`, `ux/uy/uz`, `energy_mev` (or
+  `total_energy` in the current table), `leadglass_edep`,
+  `scintillator_edep`, `leadglass_fraction`, and P.2 neutral-pass
+  status. Plan-35 fit quantities may be joined downstream, not used
+  to form raw pairs.
+- **Current implementation evidence:** plan 08 maps π⁰ pairing to
+  `find_pi0_candidates` (`reconstruction.py:1316–1530`). It declares
+  the current output schema at `reconstruction.py:1322–1365`, forms
+  unordered neutral photon pairs at `reconstruction.py:1406–1409`,
+  computes opening angle, mass, energy sums, and lead-glass fraction
+  at `reconstruction.py:1410–1421`, and applies the six configured
+  selection booleans at `reconstruction.py:1422–1427`.
+- **Decision rule:** for each event, list photon objects from plan 33,
+  form all pairs `(γ_i, γ_j)` with `i < j`, compute invariant mass
+  `M`, total energy `E`, opening angle `α`, `Σ_scint`, `Σ_LG`, and
+  `Σ_LG / (Σ_LG + Σ_scint)`, then evaluate the cut columns in §2.
+- **Outputs:** one row per pair with photon ids, `mass`,
+  `opening_angle_deg`, `total_energy`, `leadglass_edep`,
+  `scintillator_edep`, `leadglass_fraction`, each `passes_*` cut
+  column from §2, strict `passes_selection`, and
+  `selection_failure_reasons`. Diagnostic-only provenance columns
+  copied from plan 33 may be written for fake/root-cause studies.
+- **Truth-use boundary:** truth parentage defines validation labels
+  for accidental-rate measurement only; it must not remove or accept
+  a production candidate.
 
 ## 2. Selection per candidate (thesis Ch 8 defaults from
 `reconstruction.py` `ReconstructionConfig`):
