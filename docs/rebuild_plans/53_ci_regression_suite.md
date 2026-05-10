@@ -208,7 +208,7 @@ l1_defence_ci_report:
       evidence:
         ready_package_count: <n>
         ready_packages_with_current_staleness: <n>
-        checked_hash_inputs: [plan51_question_registry, plan52_rerun_bundle, plan53_ci_report, plan54_archive_inventory, plan54_archive_drill, plan55_note_annex, plan56_glossary_audit]
+        checked_hash_inputs: [plan50_overlay_schema, plan51_question_registry, plan52_rerun_manifest, plan52_rerun_transcript, plan52_command_templates, plan52_command_template_verifiers, plan53_ci_report, plan54_archive_inventory, plan54_archive_drill, review_artifact_hashes, plan55_note_annex, plan56_glossary_audit]
         archive_hashes_present: true
         stale_ready_packages: []
       remediation: null
