@@ -83,7 +83,10 @@ l1_defence_inventory:
       staleness_summary_hash: sha256:<hash-or-null>
       owner_signoff_refs: [RQ-L1-SELECTION-CUTFLOW:<owner-hash>]
       command_template_ids: [validate_reco_cutflow_v1]
-      command_template_verifier_hashes: [sha256:<hash>]
+      command_template_verifier_hashes:
+        - sha256:b3cee4613afed558d4704df3dc5b281271aed768965d79a09603f812496806f0
+      command_template_verifier_sources:
+        - plan52:validate_reco_cutflow_v1
       ci_report_hash: sha256:<hash-or-null>
       note_annex_hash: sha256:<hash-or-null>
       glossary_audit_hash: sha256:<hash-or-null>
