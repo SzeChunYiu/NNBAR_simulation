@@ -127,6 +127,23 @@ Leaf E.5: reconstructed object momenta → sphericity
   allowed truth use: validation_only
   downstream consumers: S.4, S.6; plans 36, 37, 41
 
+Leaf E.6: reconstructed object momenta → Fox-Wolfram moments
+  inputs (Class A): charged, photon, and π0 reconstructed momenta or
+                    energy-direction four-vectors after C/P selection
+  forbidden (Class B): truth particle momenta, truth decay topology,
+                       Track_ID, Parent_ID, Name
+  decision rule: compute normalized Fox-Wolfram moments from all
+                 reconstructed object pairs and record thrust as the
+                 plan 36 companion shape variable; these are alternate
+                 event-shape discriminants and do not replace E.5
+                 until ladder-scored.
+  output schema: {event_id: int64, fox_wolfram_h0: float64,
+                  fox_wolfram_h2: float64, fox_wolfram_h4: float64,
+                  thrust: float64, n_objects_used: int32,
+                  moment_order_max: int32}
+  allowed truth use: validation_only
+  downstream consumers: S.6; plans 36, 37, 41
+
 ### Next measurement (event-variable branch)
 
 Per-variable distribution comparison: signal sample (plan 20) vs
