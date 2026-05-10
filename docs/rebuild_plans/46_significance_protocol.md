@@ -190,6 +190,27 @@ Any record with missing `decision_dec_id`, hidden `unbounded_limitations`,
 or a method mismatch between dispatch and result is rejected before the
 number reaches the reproduction ledger.
 
+### 3.4 Machine-readable input-bundle fixture
+
+Every dispatch/result pair also records the input bundle that produced
+`s_expected`, `b_expected`, and `n_obs`. This prevents a later review
+from accepting counts that cannot be traced back to signal, background,
+and nuisance records:
+
+| Field | Required content | Review rule |
+|---|---|---|
+| `input_bundle_id` | stable key for this calculation input set | referenced by both dispatch and result rows |
+| `signal_result_id` | plan-43 signal-efficiency or validation row | null only for background-only upper limits |
+| `background_rate_result_ids` | plan-44 rate-result rows included in `b` | every row must have `rate_included_in_b = true` |
+| `nuisance_throw_ids` | plan-45 measured/frozen throws applied | draft throws require a missing-systematic flag |
+| `selection_config_id` | plan-37 Ch 10 baseline or retune id | must match the background and signal rows |
+| `s_expected_source`, `b_expected_source`, `n_obs_source` | formulas or ledger keys used to build counts | no hand-entered count without provenance |
+| `unbounded_limitations` | caveats inherited from plans 44-45 | non-empty list blocks unconditional defence claims |
+| `bundle_status` | `validation`, `complete`, or `incomplete` | only complete bundles may feed final quotes |
+
+The dispatch row copies only the final numeric counts; the bundle row is
+the provenance contract that makes those counts reviewable.
+
 ## 4. Acceptance criteria
 
 - §1 Z_0 target implementation lands in the L3-owned
