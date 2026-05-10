@@ -131,6 +131,17 @@ fixtures. Robustness comes from preserving independent and cumulative
 counts, keeping the Ch 10 baseline immutable, and writing retuned or MVA
 selections as shadow configurations until their DEC evidence is signed.
 
+The Wave-6 per-cut derivation ledger is:
+
+| Leaf | Truth-side quantity being separated | Estimator rationale | Dominant uncertainty | Closure assertion |
+|---|---|---|---|---|
+| S.1 | event has signal-scale scintillator energy and a foil-linked TPC track | energy-window and foil-track cuts reject empty/noisy and through-going non-signal events before topology cuts | scintillator calibration and track-to-foil efficiency | individual and cumulative counts are both saved for each S.1 subcut |
+| S.2 | event contains at least one reconstructed pion-like charged object | pion multiplicity is a direct topology guard for annihilation-like final states | charged PID and object-count efficiency | pion-count cut is recomputed from plan-36 E.9 counts |
+| S.3 | visible final-state mass is compatible with signal-scale energy release | visible invariant mass rejects low-energy accidental and sparse events | photon/charged energy scale and fit-mode choice | raw baseline and fit-aware diagnostic rows stay separate |
+| S.4 | event-shape topology is not a one-prong/sparse background | sphericity threshold summarises isotropy of reconstructed momentum flow | sparse sentinel policy and object efficiency | invalid event-shape rows fail by validity flags before threshold comparison |
+| S.5 | upper/lower scintillator energy balance is compatible with contained activity | hemispheric balance rejects through-going cosmic-like energy asymmetry | hemisphere convention and scintillator calibration | boundary and upper/lower energy rows are audited with plan-36 convention id |
+| S.6 | event passes the full preliminary selection or approved shadow replacement | strict AND preserves the reproducible Ch 10 baseline while MVA candidates remain sidecars | cut correlation, retuning, and zero-background statistics | baseline booleans are immutable; retuned/MVA rows use new config ids |
+
 #### Logic gaps
 
 | Parameter | Status before production | Closure study / target date |
