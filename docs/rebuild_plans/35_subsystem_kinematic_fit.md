@@ -80,6 +80,17 @@ Plan 36/37 consumers must prefer fitted quantities only when
 `fit_converged = true` and the relevant DEC is approved; otherwise
 they consume the raw plan-34 candidate fields.
 
+### 1.3 Current-to-target fit input key
+
+The current raw candidate table from `find_pi0_candidates`
+(`photon.py:204-263`) has `event_id`, `photon1_id`, and `photon2_id`
+but no explicit candidate id or fit-input key. Before P.7 runs, the
+bridge must construct a deterministic `fit_input_candidate_key` from
+`event_id`, the ordered photon ids, the plan-34 pairing method id, and
+the cut-config id. That key is the join surface for raw, fitted, and
+fit-failure rows; it must not include truth parentage, generated π⁰
+ids, or row order after filtering.
+
 ## 2. Mass-constrained π⁰ fit
 
 For each pair from plan 34 satisfying basic cuts:
