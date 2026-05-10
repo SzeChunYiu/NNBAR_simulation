@@ -156,6 +156,9 @@ truth-labeling bug, not an uncertainty.
 - §1 three numbers reported with uncertainties.
 - §2 per-channel table produced.
 - Reproducible from `sig_foil_v3` only.
+- §4 software handoff is complete: inclusive and by-channel producers
+  have explicit inputs, outputs, failure assertions, provenance fields,
+  and a no-invented-CLI rule.
 
 ### 3.1 Machine-checkable gate mapping
 
@@ -176,14 +179,42 @@ If any gate fails, plan 47 marks the affected row `red` or
 `not-attempted`; downstream significance in plan 46 must not consume the
 headline signal efficiency.
 
-## 4. Risks
+## 4. Software handoff and blocker contract
+
+The verified live CLI can build the reconstruction tables consumed by
+this plan, but it does not yet expose the inclusive or by-channel
+signal-efficiency producers. Until those producers have help-verified
+surfaces, this plan's runnable steps stop at table production and
+manifest assertions.
+
+L3/software handoff requirements:
+
+1. The inclusive efficiency producer reads frozen truth parquet,
+   `vertices.csv`, `events.csv`, `charged.csv`, `photons.csv`,
+   `pi0.csv`, plan 16 geometry, and the plan 60 fiducial profile. It
+   writes the §1.1 factorisation artifacts and fails if direct/product
+   closure differs by more than `1e-12`.
+2. The by-channel producer reads the same manifest and plan 13 topology
+   labels, writes the §2.1 channel artifacts, and fails if the five
+   named §2.2 channels plus `other` do not sum back to inclusive counts.
+3. Both producers record input hashes, geometry version, fiducial
+   profile, bootstrap seed, Wilson/jackknife settings, covariance
+   artifact path, ladder leaves, and plan 47 ledger hooks.
+4. Rendered Markdown tables are consumers of machine artifacts only;
+   they must not recompute efficiencies or silently omit DQM/fiducial
+   warnings.
+5. New command lines may be added only after their CLI surfaces are
+   verified under the A+ examiner gate. Until then, the blocked sections
+   remain precise software requirements, not runnable instructions.
+
+## 5. Risks
 
 - *Risk:* fiducial-volume definition is geometric and can drift if
   geometry changes.
   *Mitigation:* §1 acceptance is computed from the registered
   geometry (plan 16); sample re-registration on geometry change.
 
-## 5. Dependencies
+## 6. Dependencies
 
 - **04** — uncertainty.
 - **13, 20, 30, 37, 60** — inputs and fiducial-profile budget.
