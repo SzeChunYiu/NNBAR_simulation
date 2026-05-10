@@ -107,6 +107,11 @@ audit when a seed becomes attached to a concrete ledger result.
     summary: <filled when artifact exists>
     artifact: <cut-flow identity table or defence package path>
     owner_signoff: <owner-or-null>
+    review_evidence_links:
+      package: <plan-50 package key>
+      ci_report: <plan-53 report key>
+      note_annex: <plan-55 annex key-or-null>
+      glossary_audit: <plan-56 audit key>
   defense_package_updated: []
   resolved_on: null
   l1_overlay_id: selection_cutflow_identity
@@ -124,6 +129,7 @@ Review rules:
 | `affects_results` is empty only for unattached seed rows | concrete ledger result avoids package regeneration |
 | `required_artifact_status = present` requires `answer.artifact` | stale answered status without evidence |
 | `status = answered` requires `answer.owner_signoff` | question closes without accountable reviewer-facing owner |
+| answered rows expose review evidence links | registry answer cannot be traced into package, CI, note, and glossary artifacts |
 | refreshed-artifact rows name a command template id | reviewer answer cannot replay the verified command contract |
 | command-template verifier hash is recorded | reviewer answer trusts a command template without A+ verifier evidence |
 | rejected questions require a Methodology Council rationale | hard questions are not silently closed |
