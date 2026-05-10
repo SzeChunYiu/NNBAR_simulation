@@ -377,6 +377,11 @@ under one unqualified selection result.
 - §2 reproduction green.
 - §3 N-1 / ROC produced.
 - §4 MVA scored.
+- Promotion checks prove frozen baseline identity, complete cut-flow
+  counts, truth-blind stability, and shadowed alternatives before the
+  selection feeds plans 44/46.
+- Evidence bundles keep Ch 10 cut-flow, zero-survivor intervals,
+  retuned cuts, and MVA shadows distinct.
 
 ## 6. Dependencies
 
