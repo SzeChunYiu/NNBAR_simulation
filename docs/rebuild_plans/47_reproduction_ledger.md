@@ -98,6 +98,24 @@ overstate the rebuild's evidence.
    figure-only visual comparisons without the required numeric
    protocol.
 
+## 0.2 Current command-surface audit
+
+A+ command inventory for `data/ledger/rows.yml` on 2026-05-10:
+
+| Command surface | Rows | Verifier status | Counting rule |
+|---|---:|---|---|
+| `summarize` | 128 | `python3 -m nnbar_reconstruction.cli summarize --help` resolves in the L3 worktree. | Rows may be counted only after the exact sample directory also exists and the artifact is regenerated. |
+| `scan-pid` | 24 | `python3 -m nnbar_reconstruction.cli scan-pid --help` resolves in the L3 worktree. | Current rows are diagnostic mismatches unless they reproduce the thesis-specific charged-study figure/table. |
+| `validate-reco` | 23 | `python3 -m nnbar_reconstruction.cli validate-reco --help` resolves in the L3 worktree. | Rows may be counted only when the output JSON is row-specific and has a nonempty delta. |
+| `response-matrix` | 0 | `python3 -m nnbar_reconstruction.cli response-matrix --help` resolves, but no current ledger row invokes it. | Do not introduce response-matrix rows without re-running the help verifier and checking flags. |
+| `geometry-audit` TODO placeholders | 10 | Not a registered L3 CLI subcommand. | Keep rows `blocked-no-sample`; do not count as executable commands. |
+| `pi0-fake-study` TODO placeholders | 2 | Not a registered L3 CLI subcommand. | Keep rows `blocked-no-sample`; replace with a supported workflow only after L3 implements or documents one. |
+
+This table is a plan-level convenience summary, not a substitute for
+row-level proof. A row moves to `reproduced` or `mismatch` only after
+its exact command/API surface, exact sample path, output artifact,
+`reproduced_value`, and `delta` are verified in the row itself.
+
 ## 1. Row schema
 
 ```yaml
