@@ -101,9 +101,46 @@ code-level usage; deltas are flagged.
   is the user-facing version; this glossary is the code-facing
   version. Differences are flagged and reconciled at thesis-freeze.
 
+
+### 3.1 L1 glossary audit fixture
+
+The L1 defence package treats glossary coverage as evidence, not prose.
+Each EM/selection term added in §1.1 is represented in an audit fixture
+that can be regenerated during thesis-freeze checks.
+
+```yaml
+l1_glossary_audit:
+  audit_version: 1
+  scope: EM-selection-defence
+  terms:
+    - term: pass_* columns
+      defined_in_section: "1.1"
+      source_plans: [37, 50, 51, 55]
+      required_contexts:
+        - cutflow_identity_guard
+        - reviewer_question_registry
+      thesis_delta: none | flagged
+      owner: L1
+```
+
+Audit review rules:
+
+| Rule | Failure caught |
+|---|---|
+| every §1.1 term appears in the fixture | glossary entry cannot be traced into defence evidence |
+| every fixture term has at least one source plan | term is defined without an accountable plan owner |
+| every `thesis_delta: flagged` row names a reviewer note | thesis-facing language diverges without explanation |
+| `pass_* columns` always lists plan 37 | cut-flow terminology drifts away from the canonical selection plan |
+| L1 terms list owner L1 | another lane accidentally owns EM/selection terminology |
+
+The fixture is consumed by the plan-53 L1 CI checks and by the plan-55
+internal note annex. A glossary change that updates prose but not this
+fixture is treated as an incomplete defence-package edit.
+
 ## 4. Acceptance criteria
 
-- Every shorthand or acronym in plans 00–57 is defined.
+- Every shorthand or acronym in the active plan set is defined, including
+  L1 additions 58, 59, 61, and 64.
 - §3 reconciliation with thesis glossary done at thesis-freeze.
 
 ## 5. Dependencies
