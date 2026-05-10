@@ -48,15 +48,17 @@ existing artifact to consume or replace.
 
 ### 1.2 Signal macros (macro/signal/)
 
-| Macro | Purpose | Sample target |
-|---|---|---|
-| `macro/signal/run_signal.mac` | n̄ annihilation on foil, default statistics | reproduces licentiate Ch 6 figures |
-| `macro/signal/run_signal_100k.mac` | 10⁵-event run | extends statistics for thesis-grade plots |
-| `macro/signal/BeamOn.mac` | Driver for `/run/beamOn N` | shared by both `run_signal*.mac` |
+| Macro | Purpose | Key commands invoked | Output / sample target | Status |
+|---|---|---|---|---|
+| `macro/signal/run_signal.mac` | HIBEAM-filtered n̄ signal MCPL replay into the full detector | `/run/initialize`; `/physics_engine/neutron/timeLimit 10000 s`; `/particle_generator/set_folder_name signal`; `/particle_generator/set_mcpl_file ./mcpl_files/NNBAR_mfro_signal_GBL_jbar_50k_9001_HIBEAM_filtered.mcpl`; `/particle_generator/set_run_number 0`; `/particle_generator/set_event_number 1`; `/control/loop ./macro/signal/BeamOn.mac a 0 49 1` | `output/signal/*_output_<run>.parquet`; 50 looped `beamOn 1000` batches from the 50k-event signal MCPL | active |
+| `macro/signal/BeamOn.mac` | Shared signal batch primitive called by `run_signal.mac` | `/run/beamOn 1000` | Emits the caller-selected output folder/run; not a standalone sample definition | active |
 
 These macros are the source of the antineutron annihilation samples
 referenced by the licentiate Chapters 5–10. Plan 20 (signal sample)
-replaces them with a registered, hash-sealed regenerator.
+replaces them with a registered, hash-sealed regenerator. No
+`macro/signal/run_signal_100k.mac` exists in the current macro tree;
+if a 100k variant is required it must be restored as a new registered
+dataset rather than assumed present.
 
 ### 1.3 Cosmic macros (macro/cosmic_macro/)
 
