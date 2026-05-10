@@ -247,6 +247,18 @@ selection configuration:
 Rows whose truth labels affect the pair list, kinematics, or cut booleans
 are invalid even if their evaluator-only efficiency numbers improve.
 
+Required closure row-key inventory:
+
+| `dataset_id` | Sample role | Required row purpose | Acceptance guard |
+|---|---|---|---|
+| `sig_foil_v3` | signal truth π⁰ decays | mass peak, correct-pair efficiency, and per-cut pass fractions | measured §5.1 metrics present; Class-B drop hash matches |
+| `cal_singlepion_mip_v1` | no-π⁰ accidental control | selected accidental-pair rate and finite interval | accidental interval present even for zero selected pairs |
+| `sig_foil_v3:wrong_parent_pairs` | signal-topology accidental sideband | wrong-parent selected-rate diagnostic | validation-only labels cannot affect production pair/cut outputs |
+
+The inventory defines the minimum closure components. It does not freeze
+any pairing or cut decision until measured §5.1 rows and the relevant
+DEC evidence are attached.
+
 ### 5.2 Decision-log stubs for π⁰ pairing and cuts
 
 P.5/P.6 choices change candidate multiplicity and the Ch 8 π⁰
