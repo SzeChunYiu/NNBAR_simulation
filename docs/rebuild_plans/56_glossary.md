@@ -279,8 +279,8 @@ l1_glossary_audit:
     - term_group: defence-workflow shorthand
       defined_in_section: "1.1"
       terms: [defence overlay, overlay roll-up, rerun transcript, command-template id, command-template verifier source, CLI verifier transcript, blocked template, stale package, defence routing]
-      source_plans: [50, 52, 53, 54, 55]
-      required_contexts: [l1_overlay_rollup, rerun_transcript, command_template_registry, archive_inventory, note_annex]
+      source_plans: [50, 51, 52, 53, 54, 55]
+      required_contexts: [l1_overlay_rollup, reviewer_question_registry, rerun_transcript, command_template_registry, archive_inventory, note_annex]
       thesis_delta: none | flagged
       owner: L1
 ```
