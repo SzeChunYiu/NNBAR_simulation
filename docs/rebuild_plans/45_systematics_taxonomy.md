@@ -98,6 +98,19 @@ A covariance row may consume only `measured` or `frozen` throw pairs.
 Draft or incomplete throws are still listed in plan 47, but their
 result rows carry the relevant missing-systematic flag.
 
+Initial throw-row examples:
+
+| `throw_id` | `nuisance_id` | `direction` | `variation_payload` | `dataset_or_channel` | `affected_observables` | `paired_nominal_result_id` | `paired_opposite_throw_id` | `throw_status` |
+|---|---|---|---|---|---|---|---|---|
+| `N2.minus.sig_foil_v3.ch10` | `N2` | `minus` | scintillator yield `nominal - 1136 photons/MeV` | `sig_foil_v3` | E.1/E.2, E.3/E.4, S.1, S.5, signal acceptance | `sig_foil_v3.ch10.nominal` | `N2.plus.sig_foil_v3.ch10` | `draft` |
+| `N2.plus.sig_foil_v3.ch10` | `N2` | `plus` | scintillator yield `nominal + 1136 photons/MeV` | `sig_foil_v3` | same as the N2 minus row | `sig_foil_v3.ch10.nominal` | `N2.minus.sig_foil_v3.ch10` | `draft` |
+| `N4.qgsp_bert.beam_direct.ch10` | `N4` | `qgsp_bert` | physics-list endpoint `qgsp_bert` | `beam_neutron_hibeam_direct_v1` | secondary multiplicity and background survival | `beam_direct.ch10.nominal_hp` | null for discrete envelope | `draft` |
+| `N8.worst_geometry.cosmic_muon.ch10` | `N8` | `plus` | scenario endpoint `worst_case_construction` | `cosmic_cry_essLund_overburdenA_v1` | vertex, matching, π⁰ mass, selection survival | `cosmic_muon.ch10.nominal_survey` | `N8.perfect_geometry.cosmic_muon.ch10` | `draft` |
+
+These examples are audit-row shapes. They cannot enter the covariance
+until the paired nominal rows exist and the corresponding result hashes
+show that only the declared nuisance payload changed.
+
 ## 2. Correlation matrix
 
 A nuisance is fully correlated with itself. The up/down throws of a
