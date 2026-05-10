@@ -183,30 +183,12 @@ Detailed forensic entries for `reconstruct_charged_objects` and helpers live in
 
 Detailed forensic entries for photon objects, π⁰ pairing, and related helpers
 live in [`08_3_reconstruction_objects.md`](08_reconstruction_atomic_walkthrough/08_3_reconstruction_objects.md#35-photon--π⁰-reconstruction-lines--7001300).
-### 3.6 Event variables (lines ≈ 1300–1600)
 
-Per `reconstruction.md` §"event variables" (lines 35–80):
+### 3.6 Event variables (split)
 
-- *Calorimeter sums*: `calorimeter_edep`, scintillator and lead-glass
-  per-hemisphere splits, in-time / out-of-time splits.
-- *Multiplicities*: charged-object count, photon count, π⁰ count.
-- *Visible mass*: invariant mass from object directions and
-  deposited / visible energies. Documented as an *analysis surface,
-  not a calibrated final estimator*.
-- *PMT counts*: `pmt_photons` (per-module max) and `n_pmt_hits`.
-- *Sphericity*: standard sphericity tensor with eigenvalue
-  decomposition.
-- *EL / ET* (longitudinal / transverse calorimeter energy): per the
-  Ch 9 definitions
-  `EL = Σ E_i cos α_i`, `ET = Σ E_i sin α_i`.
-- *Upper / lower scintillator and lead-glass energy*: hemispheric
-  partitioning per Ch 9.
-- *Signed longitudinal calorimeter energy*: signed by direction along
-  beam.
-- *Out-of-time energy*: the Chapter 7 timing window applied per hit.
-
-Plan 31 owns the per-variable deep dive; plan 41 owns the N-1 and
-ROC studies on these variables.
+Detailed forensic entries for `annotate_timing_windows` and
+`summarize_events` live in
+[`08_3_event_variables.md`](08_reconstruction_atomic_walkthrough/08_3_event_variables.md).
 
 ### 3.7 Truth use audit (current state of the code, will change)
 
