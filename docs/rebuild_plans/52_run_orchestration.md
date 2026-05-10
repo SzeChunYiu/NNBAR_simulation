@@ -123,6 +123,7 @@ l1_defence_rerun_manifest:
     ci_report: <plan53-l1-report-id>
     archive_inventory: <plan54-inventory-id-or-null>
     archive_drill: <plan54-drill-id-or-null>
+    rerun_transcript: <plan52-transcript-row-or-null>
     note_annex: <plan55-annex-id-or-null>
     glossary_audit: <plan56-audit-id>
   rows:
