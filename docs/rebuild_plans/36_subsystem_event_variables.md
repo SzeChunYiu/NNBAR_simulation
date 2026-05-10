@@ -335,6 +335,19 @@ Plan 37 may consume only method bundles satisfying these checks. Missing
 checks keep event-shape additions, fit-aware mass, or altered hemisphere
 conventions in diagnostic/ladder status.
 
+Initial evidence-bundle examples:
+
+| `evidence_bundle_id` | Included rows | Reviewer action |
+|---|---|---|
+| `p36_ch10_event_var_bundle_v0` | baseline method row, E.1-E.5/E.7-E.9 closure rows, hemisphere convention, Class-B hashes | approve as plan-37 Ch 10 input only if every group is measured/pass |
+| `p36_shape_diag_bundle_v0` | E.6 Fox-Wolfram/thrust rows, event-shape validity flags, sparse-case audit | allow plan-38/41 diagnostics but block plan-37 use before DEC |
+| `p36_fit_mass_shadow_bundle_v0` | raw visible mass, fit-aware visible mass, fit source status, and closure comparison | keep raw E.7 as production until visible-mass-source DEC passes |
+| `p36_sparse_blocker_bundle_v0` | sparse sentinel rows, nonfinite audit, and cut-boolean impact table | reject if any invalid/sentinel value can pass selection accidentally |
+
+Evidence bundles make event-variable method provenance explicit before
+plan 37 cuts on the row, so optional features and fit-aware quantities
+cannot silently replace Ch 10 reproduction fields.
+
 ## 6. Acceptance criteria
 
 - §2 table complete; every variable produced.
