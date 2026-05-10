@@ -261,19 +261,20 @@ coefficient has a resolving source key and a units check.
 Re-run before changing source or bibliography claims:
 
 ```bash
-ls docs/rebuild_plans/15_material_budget.md \
+rtk ls docs/rebuild_plans/15_material_budget.md \
    docs/rebuild_plans/18_intercalibration.md \
    docs/rebuild_plans/22_sample_neutron_beam.md \
    docs/rebuild_plans/45_systematics_taxonomy.md \
    docs/rebuild_plans/63_calibration_drift_monitoring.md
-grep "^@.*{SaintGobainBC408DataSheet," /Users/billy/Desktop/projects/overleaf-hibeam-thesis/ref.bib
-grep "^@.*{SchottSF5DataSheet," /Users/billy/Desktop/projects/overleaf-hibeam-thesis/ref.bib
-grep "^@.*{Dunne2022CalorimeterPrototype," /Users/billy/Desktop/projects/overleaf-hibeam-thesis/ref.bib
+rtk grep -F "{SaintGobainBC408DataSheet," /Users/billy/Desktop/projects/overleaf-hibeam-thesis/ref.bib
+rtk grep -F "{SchottSF5DataSheet," /Users/billy/Desktop/projects/overleaf-hibeam-thesis/ref.bib
+rtk grep -F "{Dunne2022CalorimeterPrototype," /Users/billy/Desktop/projects/overleaf-hibeam-thesis/ref.bib
 ```
 
-Current 2026-05-10 evidence: all referenced local plans exist, and the
-three non-OPEN bibliography keys resolve in the local thesis `ref.bib`.
-The irradiation-damage coefficients remain OPEN because no resolving
+Current 2026-05-10 evidence: `rtk ls` resolves every referenced local
+plan, and fixed-string `rtk grep -F` resolves the three non-OPEN
+bibliography keys in the local thesis `ref.bib`. The
+irradiation-damage coefficients remain OPEN because no resolving
 keys were found in the local bibliography during this pass.
 
 ## 9. Acceptance criteria
