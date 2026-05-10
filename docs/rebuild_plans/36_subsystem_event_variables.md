@@ -216,6 +216,21 @@ sample and variable group:
 Rows for new E.6 variables or fit-aware E.7 remain diagnostic until the
 matching plan-38 ladder row and §5.2 DEC evidence are present.
 
+Required closure row-key inventory:
+
+| `dataset_id` | `variable_group` | Required row purpose | Acceptance guard |
+|---|---|---|---|
+| `sig_foil_v3` | E.7 | primary visible-mass bias and pull closure | bias/pull metrics and Class-B drop hash present |
+| `sig_foil_v3` | E.9 | object-count and multiplicity agreement | Wilson interval present and no truth-fed count changes |
+| `plan41_signal_background_panel` | E.1/E.2 | calorimeter and hemisphere-sum stability | finite sums and hemisphere convention id present |
+| `plan41_signal_background_panel` | E.3/E.4 | directional-energy finite-value audit | no nonfinite values outside sparse cases |
+| `plan41_signal_background_panel` | E.5/E.6 | event-shape distribution and added-feature diagnostics | shape test metrics present; E.6 remains diagnostic until DEC |
+| `plan41_signal_background_panel` | E.8 | timing-window in/out-of-time energy audit | timing annotation source and Class-B drop hash present |
+
+The inventory defines the minimum closure components. It does not
+authorize new E.6 or fit-aware E.7 variables for plan 37 until measured
+§5.1 rows and DEC evidence are attached.
+
 ### 5.2 Decision-log stubs for variable use
 
 Plan 36 may add variables, change the source of an existing variable,
