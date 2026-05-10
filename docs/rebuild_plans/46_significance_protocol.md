@@ -55,7 +55,7 @@ copy the table. The gate is:
 1. the Asimov calculation for `s = 50`, `b = 20` rounds to `8.68` at two decimals.
 2. the Asimov calculation for `s = 10`, `b = 6` rounds to `3.37` at two decimals.
 3. Any request with `b = 0` returns no asymptotic value and records a
-   §3 method-dispatch row selecting `feldman_cousins`.
+   §3 method-dispatch row selecting `Feldman-Cousins`.
 4. The zero-survivor background example in §2 computes
    `2.44 / 244000 = 1.0e-5` within displayed precision.
 
@@ -100,8 +100,8 @@ Handover rule for every significance/limit request:
 
 1. Build `s`, `b`, and `n_obs` after applying plan-44 rates and
    plan-45 nuisances.
-2. If `n_obs ≤ 5` **or** `b ≤ 5`, set
-   `method = "feldman_cousins"` and do not evaluate asymptotic `Z_0`.
+2. If `n_obs ≤ 5` **or** `b ≤ 5`, record
+   `method selected = Feldman-Cousins` and do not evaluate asymptotic `Z_0`.
 3. Otherwise use §1 for discovery significance and §2 CLs for
    high-count limits; still record the F-C spot-check when available.
 
@@ -124,14 +124,13 @@ before returning a number:
 | `dataset_or_channel` | plan-43 signal row or plan-44 background node |
 | `s_expected`, `b_expected`, `n_obs` | post-selection counts after nuisance weighting |
 | `handover_rule` | literal rule string, initially `n_obs <= 5 or b <= 5` |
-| `method_selected` | `feldman_cousins`, `asimov_z0`, or `cls_pyhf` |
+| `method_selected` | one of `Feldman-Cousins`, `Asimov Z0`, or `CLs/pyhf` |
 | `confidence_level` | 0.90 primary, 0.95 cross-check when requested |
 | `nuisance_ids` | plan-45 IDs included in the calculation |
 | `decision_dec_id` | one of the DEC stubs below once signed |
 
 The `method_selected` values are ledger labels, not claims that CLI
-subcommands or Python functions with those exact names currently
-exist.
+subcommands or Python functions with matching names currently exist.
 
 This row is what plan 47 and plan 50 cite. A result without the
 dispatch row is incomplete even if the numeric Z or limit can be
