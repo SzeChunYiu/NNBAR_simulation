@@ -41,7 +41,7 @@ l1_note_annex:
         - selected DEC stubs for clusterer, discriminator, and pi0 cuts
       evidence_refs:
         - p1_p7_closure_rows
-        - photon_pi0_response_summary
+        - photon_pi0_response_and_handoff_summary
         - DEC-31-CLUSTERER-CHOICE
         - DEC-32-DISCRIMINANT-CHOICE
         - DEC-34-PI0-CUT-BASELINE
