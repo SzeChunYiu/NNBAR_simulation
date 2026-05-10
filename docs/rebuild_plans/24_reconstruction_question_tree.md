@@ -133,7 +133,29 @@ Leaf V.3: fitted track directions → foil-plane projections
   allowed truth use: validation_only
   downstream consumers: V.4, V.5; plan 30
 
-Leaves V.4–V.5 follow the same pattern (populated by plan 30).
+Leaf V.4: foil-plane projections → event vertex estimate
+  inputs (Class A): V.3 projection table
+                    (event_id, candidate_id, projection_xyz,
+                     projection_covariance, projection_valid,
+                     skipped_reason, source_chi2_ndf)
+  forbidden (Class B): Track_ID, Parent_ID, Name, origin_vol_name,
+                       truth-primary vertices (Vx, Vy, Vz) and
+                       interaction-table vertices
+  decision rule: aggregate valid track projections into one event
+                 vertex using a documented estimator; the current
+                 baseline is the unweighted mean of valid projections
+                 with radial RMS and skipped-track counts from plan
+                 08 §3.3, while sign-off requires the plan 30
+                 covariance-weighted alternative to be benchmarked.
+  output schema: {event_id: int64, vertex_xyz: float64[3],
+                  vertex_covariance: float64[3,3],
+                  n_tracks_used: int32, n_tracks_skipped: int32,
+                  radial_rms_mm: float64,
+                  aggregation_method: string, vertex_valid: bool}
+  allowed truth use: validation_only
+  downstream consumers: V.5, P.3, P.7, E.7, S.1; plans 30, 33, 35, 36, 37
+
+Leaf V.5 follows the same pattern (populated by plan 30).
 
 ### Next measurement (vertex branch)
 
