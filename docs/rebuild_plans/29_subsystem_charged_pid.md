@@ -193,13 +193,15 @@ TPC topology only.
 
 ## 6. Stage E.1 implementation handoff
 
-For L3's charged-side redesign, C.1/C.5/C.6 remains coupled to the
-legacy charged-object row until the truth-name gate is removed. The
-current help-verified scan surface is `scan-pid`; it calls
-`scan_charged_pid_thresholds` (`calibration.py:27-134`), which still
+For L3's charged-side redesign, the C.5 production fixture is now split
+from the legacy charged-object row. The production-like hook is
+`classify_charged_candidates` (`charged_pid.py:60-118`), which consumes
+plan-25 C.1 candidates plus plan-27 C.2 and plan-28 C.3 rows. The
+current help-verified calibration scan surface is still `scan-pid`; it
+calls `scan_charged_pid_thresholds` (`calibration.py:27-134`), which
 scores labels from `truth_name` after `reconstruct_charged_objects`
-has emitted the production-like rows. That is valid for calibration
-scans only, not for the production charged-PID fixture.
+has emitted the legacy rows. That scan is valid for calibration only,
+not for production charged-PID fixture decisions.
 
 Plan-side gates for the L3 implementation:
 
@@ -215,9 +217,15 @@ Plan-side gates for the L3 implementation:
    shower-shape, conversion-pair topology, hit timing, and geometry
    side-cars. Truth `Name` and `Interaction` can appear only in
    validation or labeling artifacts.
-5. Add or extend tests in the existing L3 charged-reco test file so
-   dropping `Name`, `Track_ID`, and truth kinetic energy cannot change
-   production candidate creation or production scoring.
+5. Keep the current charged-PID tests in `tests/test_charged_reco.py`:
+   `test_classify_charged_candidates_uses_dedx_and_range_thresholds`
+   (`tests/test_charged_reco.py:282-329`) covers the cut rule and output
+   schema, and
+   `test_classify_charged_candidates_real_sample_has_plan_29_schema`
+   (`tests/test_charged_reco.py:331-350`) covers the real-output chain
+   from C.1/C.2/C.3 into C.5. Extend them so dropping `Name`,
+   `Track_ID`, and truth kinetic energy cannot change production
+   candidate creation or production scoring.
 6. Plan 66 consumes charged-PID validity, rejection-reason fractions,
    and rule-version drift once the C.5/C.6 fixtures are present.
 
@@ -228,10 +236,11 @@ Plan-side gates for the L3 implementation:
 - §3 likelihood-ratio scored on ladder; matrix entry in plan 38.
 - Plan 47 ledger row "licentiate Ch 8 charged PID accuracy"
   reproduced.
-- §6 Stage E.1 handoff is actionable for L3: current calibration-only
-  scan surface is cited, production C.1/C.5/C.6 inputs and outputs are
-  named, and the charged-reco tests must prove the production scorer is
-  invariant to dropping Class B truth columns.
+- §6 Stage E.1 handoff is actionable for L3: current production and
+  calibration hooks are cited, production C.1/C.5/C.6 inputs and
+  outputs are named, current charged-reco tests are cited, and the
+  remaining tests must prove the production scorer is invariant to
+  dropping Class B truth columns.
 
 ## 8. Risks
 
