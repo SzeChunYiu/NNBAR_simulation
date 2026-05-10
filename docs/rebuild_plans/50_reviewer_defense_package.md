@@ -4,7 +4,7 @@ title: Reviewer defence package — canonical answer set per result
 version: 0.1
 status: draft
 owner: Reproducibility WG
-depends_on: [00_README, 01_realism_contract, 03_dataset_registry, 38_truth_substitution_ladder, 45_systematics_taxonomy, 46_significance_protocol, 47_reproduction_ledger, 51_reviewer_question_registry, 52_run_orchestration, 53_ci_regression_suite, 54_open_data_archival, 55_internal_note_template, 55_internal_note_template_l1_annex_fixture, 56_glossary]
+depends_on: [00_README, 01_realism_contract, 03_dataset_registry, 38_truth_substitution_ladder, 45_systematics_taxonomy, 46_significance_protocol, 47_reproduction_ledger, 51_reviewer_question_registry, 52_run_orchestration, 52_run_orchestration_l1_command_templates, 53_ci_regression_suite, 54_open_data_archival, 55_internal_note_template, 55_internal_note_template_l1_annex_fixture, 56_glossary]
 outputs:
   - {path: docs/rebuild_plans/50_reviewer_defense_package.md, schema: this file}
   - {path: output/defense/<row_id>.yml, schema: per-result defence package}
@@ -75,6 +75,7 @@ defence:
     rerun_manifest: <path-or-null>
     rerun_transcript: <path-or-null>
     command_template_ids: [validate_reco_cutflow_v1]
+    command_template_companion: docs/rebuild_plans/52_run_orchestration_l1_command_templates.md
     command_template_verifier_hashes:
       - sha256:b3cee4613afed558d4704df3dc5b281271aed768965d79a09603f812496806f0
     command_template_verifier_sources:
@@ -211,6 +212,7 @@ l1_overlay_rollup:
     rerun_manifest: present | blocked | missing
     rerun_transcript: present | blocked | missing
     command_template_registry: present | missing
+    command_template_companion: present | missing
     command_template_verifiers: present | missing
     defence_routing_crosswalk: present | missing
     ci_report: present | missing
@@ -242,7 +244,7 @@ Promotion rules:
 | owner sign-off agrees with plan 51 answered rows | defence package closes a reviewer question without accountable approval |
 | rerun manifest status agrees with plan 52 | package says reproducible when the rerun bundle is blocked |
 | rerun transcript status agrees with plan 52 | package says refreshed artifacts exist without execution evidence |
-| command template registry agrees with plan 52 | package transcript uses unsupported or mutable command semantics |
+| command template registry and companion agree with plan 52 | package transcript uses unsupported, mutable, or untraceable command semantics |
 | command template verifier hashes and sources agree with plan 52 | package trusts refreshed artifacts without A+ command-surface proof |
 | defence routing crosswalk covers every required overlay | package has an overlay with no rerun, archive, or note route |
 | CI report status agrees with plan 53 | stale package skips the A+ citation gate |
@@ -270,6 +272,7 @@ l1_staleness:
     plan52_rerun_manifest: <hash>
     plan52_rerun_transcript: <hash>
     plan52_command_templates: <hash>
+    plan52_command_template_companion: <hash>
     plan52_command_template_verifiers:
       - sha256:b3cee4613afed558d4704df3dc5b281271aed768965d79a09603f812496806f0
     defence_routing_crosswalk: <hash>
@@ -289,7 +292,7 @@ Invalidation rules:
 | Changed input | Required package action |
 |---|---|
 | plan-51 question text, route, or status | regenerate affected overlay roll-up and reopen answered rows if artifact hashes changed |
-| plan-52 manifest, transcript, command-template, or verifier hash | mark refreshed-artifact overlays stale until output hashes and command semantics are rechecked |
+| plan-52 manifest, transcript, command-template companion, or verifier hash | mark refreshed-artifact overlays stale until output hashes and command semantics are rechecked |
 | defence-routing crosswalk hash | rerun overlay-to-rerun/archive/note parity before package promotion |
 | plan-53 L1 CI report hash | rerun package audit before thesis-freeze promotion |
 | plan-54 inventory or drill hash | mark archive-facing package status stale until DOI evidence is reconciled |
@@ -316,6 +319,7 @@ l1_defence_routing_crosswalk:
     plan50_overlay_schema: <hash>
     plan51_question_registry: <hash>
     plan52_rerun_manifest: <hash>
+    plan52_command_template_companion: <hash>
     plan53_ci_rule: <hash>
     plan54_archive_inventory: <hash>
     plan55_note_annex: <hash>
@@ -362,13 +366,13 @@ The generator joins ledger rows × dataset manifests × ladder matrices
 - L1 packages include the §2.3 overlay roll-up before any affected
   result is promoted to thesis-quote status.
 - Ready L1 packages include plan-52 rerun manifest, transcript,
-  command-template registry, and verifier links when refreshed artifacts
+  command-template registry, command-template companion, and verifier links when refreshed artifacts
   are claimed.
 - Ready L1 packages carry a current §2.4 staleness summary.
 - Ready L1 packages expose the defence-routing crosswalk used by plan 53
   to prove overlay, rerun, archive, and note parity.
 - The package schema exposes `l1_review_evidence` links for overlays, owner
-  sign-off, rerun artifacts, command templates, verifier hashes/sources, CI reports,
+  sign-off, rerun artifacts, command templates, command-template companion, verifier hashes/sources, CI reports,
   note annexes, glossary audits, staleness summaries, review-artifact hashes,
   and staleness status.
 - §3 generation automated.
