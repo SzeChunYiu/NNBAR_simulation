@@ -92,7 +92,7 @@ requirements, not claims that the final workflow file already exists.
 | `l1_wave4_plan_presence` | changes under `docs/rebuild_plans/` | plans 58, 59, 61, and 64 exist and remain between 200 and 300 lines unless a split plan is declared | Tier 1 block |
 | `l1_no_stale_cli_or_code_cites` | changes to L1-owned plans | grep for `*.py:<line>` and nnbar module commands, then require the A+ verifier transcript or remove the claim | Tier 1 block |
 | `l1_cutflow_identity_guard` | changes to plans 37, 50, 51, or 55 | canonical singular `pass_*` selection columns remain named in defence overlays and note annexes | Tier 1 block |
-| `l1_defence_rerun_manifest` | Tier 3 weekly | plan-52 defence rerun bundle has rows for EM chain, selection, pile-up, strange, TOF, and Bayesian cross-checks | Tier 3 tracking issue if incomplete |
+| `l1_defence_rerun_manifest` | Tier 3 weekly | plan-52 defence rerun bundle has rows for EM chain, selection, pile-up, strange, TOF, Bayesian cross-checks, and unbounded-caveat status | Tier 3 tracking issue if incomplete |
 | `l1_rerun_transcript_link` | changes to plans 50 or 52 | any ready plan-50 L1 roll-up links both the plan-52 rerun manifest and execution transcript, and plan-52 rows carry review-evidence links plus review-artifact hashes | Tier 1 block |
 | `l1_command_template_registry` | changes to plan 52 | transcript command-template ids are registered, immutable, limited to verified CLI help output or explicit blocked templates, and carry verifier transcripts | Tier 1 block |
 | `l1_package_staleness_guard` | changes to plans 50-56 | ready plan-50 L1 packages carry `l1_staleness.status: current` against the latest L1 hashes, including plan-54 archive inventory/drill hashes | Tier 1 block |
