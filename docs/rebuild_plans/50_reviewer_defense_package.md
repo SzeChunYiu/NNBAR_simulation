@@ -161,6 +161,7 @@ l1_overlay_rollup:
   required_links:
     reviewer_questions: present | missing
     rerun_manifest: present | blocked | missing
+    rerun_transcript: present | blocked | missing
     ci_report: present | missing
     note_annex: present | missing
     glossary_audit: present | missing
@@ -176,11 +177,14 @@ Promotion rules:
 | `overall_status: ready` requires no blocked overlays | thesis quote proceeds despite missing L1 evidence |
 | every blocking overlay appears in plan 51 | package blocker has no reviewer-question owner |
 | rerun manifest status agrees with plan 52 | package says reproducible when the rerun bundle is blocked |
+| rerun transcript status agrees with plan 52 | package says refreshed artifacts exist without execution evidence |
 | CI report status agrees with plan 53 | stale package skips the A+ citation gate |
 | note annex and glossary audit links are present for quoted notes | thesis prose diverges from package evidence |
 
 The roll-up lets the package stay fail-closed: a missing artifact becomes
-`blocked` or `missing`, never an omitted row.
+`blocked` or `missing`, never an omitted row. The rerun manifest records
+what should be refreshed; the rerun transcript records what actually ran,
+and both must agree before `overall_status: ready` is allowed.
 
 ## 3. Generation
 
@@ -201,6 +205,8 @@ The generator joins ledger rows × dataset manifests × ladder matrices
 - §2 mapping covered for every entry in plan 51 v0.1.
 - L1 packages include the §2.3 overlay roll-up before any affected
   result is promoted to thesis-quote status.
+- Ready L1 packages include both plan-52 rerun manifest and transcript
+  links when refreshed artifacts are claimed.
 - §3 generation automated.
 
 ## 5. Dependencies
