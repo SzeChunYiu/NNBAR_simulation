@@ -62,7 +62,24 @@ is defined by the sign of `y` (vertical) for the licentiate. Plan
 36 v0.1 retains this convention; plan 47 ledger explicitly cites it
 when quoting hemispheric numbers.
 
-## 4. Visible invariant mass closure
+## 4. Alternative comparison matrix
+
+| Leaf(s) | Candidate | Decision rule | Current/source citation | Class-A status | Comparison metric |
+|---|---|---|---|---|---|
+| E.1/E.2 | **Raw hit sums (current)** | Sum raw scintillator and lead-glass `eDep`, with `y` hemisphere split. | `summarize_events` energy sums (`reconstruction.py:1624–1638`, `1688–1709`). | Production-eligible baseline. | Stability vs calibration changes; N-1 selection impact. |
+| E.1/E.2 | **Calibrated object sums** | Sum calibrated charged/photon/π⁰ objects rather than raw hits. | Uses plan-33/35 outputs instead of raw hit sums. | Eligible after calibration closure. | Visible-mass bias and selection separation. |
+| E.3/E.4 | **Hit-directional energy (current)** | Use hit position ratios `z/r` and `sqrt(x²+y²)/r`. | `_directional_energy` (`reconstruction.py:244–264`). | Production-eligible. | Agreement with object-vector projection; sensitivity to hit noise. |
+| E.5/E.6 | **Sphericity-only (current thesis)** | Use normalized momentum-tensor eigenvalues. | `_sphericity` (`reconstruction.py:1533–1544`). | Production-eligible. | Cut-flow reproduction and ROC AUC. |
+| E.5/E.6 | **Expanded event-shape set** | Add Fox-Wolfram moments and thrust to sphericity. | New plan-36 variables. | Eligible; no truth inputs. | ROC/N-1 gain over sphericity-only. |
+| E.7 | **Raw visible mass (current)** | Charged fixed masses plus massless photons. | `_visible_invariant_mass` (`reconstruction.py:1547–1570`). | Production-eligible. | Bias/pull vs truth visible mass. |
+| E.7 | **Fit-aware visible mass** | Prefer plan-35 fitted π⁰/photon four-vectors when fit converged. | Consumes plan-35 outputs. | Eligible after fit closure. | Bias/resolution improvement and selection stability. |
+| E.8 | **Fixed timing windows (current)** | Use config timing resolutions and pion β bounds. | `annotate_timing_windows` (`reconstruction.py:283–358`). | Production-eligible with calibrated constants. | In/out-of-time separation and cosmic rejection. |
+| E.9 | **Raw object counts (current)** | Count charged, photon-like, and selected π⁰ rows. | Object filters at `reconstruction.py:1658–1677`, outputs `1716–1724`. | Production-eligible. | Multiplicity closure and sensitivity to upstream object duplicates. |
+
+Plan 38 should score added variables (especially E.6 and fit-aware E.7)
+against the thesis baseline without deleting the reproduced Ch 10 inputs.
+
+## 5. Visible invariant mass closure
 
 On `sig_foil_v3`:
 
@@ -72,14 +89,14 @@ On `sig_foil_v3`:
 
 Tolerance per plan 40 §2: bias < 50 MeV; pull width ∈ [0.8, 1.2].
 
-## 5. Acceptance criteria
+## 6. Acceptance criteria
 
 - §2 table complete; every variable produced.
 - E.6 Fox-Wolfram and thrust added.
-- §4 closure passes.
+- §5 closure passes.
 - Plan 38 ladder rows for E.1–E.9 populated.
 
-## 6. Dependencies
+## 7. Dependencies
 
 - **24, 29, 33, 34, 35, 38, 40** — inputs.
 - *Consumed by:* plan 37 (selection), plan 41 (N-1 / ROC), plan 38
