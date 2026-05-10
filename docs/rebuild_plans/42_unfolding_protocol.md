@@ -212,9 +212,9 @@ nuisance N5.
 
 | Observable | Model-dependence artifact | Acceptance / tolerance | Rationale citation | Registry hook |
 |---|---|---|---|---|
-| visible invariant mass | per-bin unfolded delta for each plan 13 §4 variation | save full covariance; if any bin shift exceeds `2 × stat σ`, ledger row must quote N5 separately. | plan 45 N5; plan 04 §6 | `data/systematics/registry.yml:N5` |
-| π0 mass | peak μ/σ delta and per-bin mass-spectrum delta | peak shift > 1 MeV is a named systematic, not a closure retune. | plan 40 P.5; plan 45 N5 | `data/systematics/registry.yml:N5` |
-| sphericity | per-bin unfolded delta and cumulative-shape delta | cumulative-shape shift > bootstrap 68% interval is quoted as N5. | plan 04 §2; plan 45 N5 | `data/systematics/registry.yml:N5` |
+| visible invariant mass | per-bin unfolded delta for each plan 13 §4 variation | save full covariance; if any bin shift exceeds `2 × stat σ`, ledger row must quote N5 separately. | plan 45 N5; plan 04 §6 | plan 45 N5 `signal_model` nuisance row |
+| π0 mass | peak μ/σ delta and per-bin mass-spectrum delta | peak shift > 1 MeV is a named systematic, not a closure retune. | plan 40 P.5; plan 45 N5 | plan 45 N5 `signal_model` nuisance row |
+| sphericity | per-bin unfolded delta and cumulative-shape delta | cumulative-shape shift > bootstrap 68% interval is quoted as N5. | plan 04 §2; plan 45 N5 | plan 45 N5 `signal_model` nuisance row |
 
 The systematic combination rule is the plan 13 §4 quadrature rule
 unless plan 45's correlation matrix supersedes it. Plan 47 rows that
