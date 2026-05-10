@@ -171,6 +171,27 @@ parents in truth. Two ways to bound the accidental rate:
 
 Plan 47 ledger quotes both.
 
+### 3.1 Machine-readable accidental-rate fixture
+
+Accidental-rate studies write an aggregate validation row that is kept
+separate from the production pair fixture:
+
+| Field | Required content | Review rule |
+|---|---|---|
+| `accidental_metric_id` | stable key for the study row | referenced by plan-47 ledger entries |
+| `pairing_method_id`, `cut_config_id` | plan-34 pairer and cut tuple | must match the production fixture under test |
+| `dataset_id` | signal truth-π⁰ or no-π⁰ control sample | sample role must be declared |
+| `truth_label_source` | evaluator-only parentage table or null for no-π⁰ controls | never copied into production pair rows |
+| `n_raw_pairs`, `n_selected_pairs` | denominators after production cuts | recomputed without truth labels |
+| `n_accidental_selected` | selected pairs failing the truth-parent match or selected in no-π⁰ sample | validation-only numerator |
+| `accidental_rate` | numerator divided by selected-pair or event denominator | denominator convention must be named |
+| `interval_method` | Wilson or plan-04 exact interval | finite interval required, including zero-count rows |
+| `production_hash_without_truth` | hash of pair list and cut columns after truth drop | must match the original production hash |
+| `metric_status` | `pass`, `fail`, or `diagnostic_only` | diagnostic rows cannot promote retuned cuts |
+
+The row is rejected if truth parentage changes any production kinematic,
+cut, or `passes_selection` output.
+
 ## 4. Alternative comparison matrix
 
 | Leaf | Candidate | Decision rule | Current/source citation | Class-A status | Comparison metric |
