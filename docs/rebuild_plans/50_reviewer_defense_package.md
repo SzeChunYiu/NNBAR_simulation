@@ -218,6 +218,8 @@ l1_overlay_rollup:
       blocker: no nonzero-resolution TOF closure yet
     - overlay_id: bayesian_prior_sensitivity
       blocker: no Bayesian prior-sensitivity table yet
+    - overlay_id: unbounded_caveat_status
+      blocker: no unbounded-limitation caveat closure yet
 ```
 
 Promotion rules:
