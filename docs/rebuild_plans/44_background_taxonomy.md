@@ -155,6 +155,15 @@ background claims. A row can become part of a plan-46 background sum only
 after the denominator, survivor count, interval, and rate-source DEC are
 attached to the corresponding plan-47 artifact.
 
+Initial rate-result rejection examples:
+
+| `rate_rejection_id` | Invalid result pattern | Required status | Review guard |
+|---|---|---|---|
+| `zero_denominator_rate` | `events_generated` is zero or null after quality gates | `blocked` | cannot infer a survival fraction or upper limit |
+| `zero_survivor_no_fc` | zero survivors are reported without `feldman_cousins_90cl` and `epsilon90` | `blocked` | plan-46 must not receive an exact-zero background claim |
+| `unsigned_expected_rate` | `expected_rate` is populated before the rate-source DEC is signed | `blocked` | central `b` can include only authorised folds |
+| `caveat_as_zero_rate` | an unmodelled source is entered as a numeric zero rate | `blocked` | source must remain a caveat until a registered sample exists |
+
 ### 1.4 Machine-readable background-sum handoff fixture
 
 Plan 46 receives a background sum, not a prose table. Each handoff row
