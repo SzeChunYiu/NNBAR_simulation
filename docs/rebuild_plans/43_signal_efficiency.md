@@ -14,7 +14,7 @@ acceptance:
 risks:
   - {risk: per-channel efficiency is correlated; sum is not factorisable simply, mitigation: §1 explicit covariance reporting}
 estimated_effort: M
-last_updated: 2026-05-09
+last_updated: 2026-05-10
 ---
 
 # Signal efficiency
@@ -135,6 +135,24 @@ truth-labeling bug, not an uncertainty.
 - §1 three numbers reported with uncertainties.
 - §2 per-channel table produced.
 - Reproducible from `sig_foil_v3` only.
+
+### 3.1 Machine-checkable gate mapping
+
+The efficiency job is complete only when the manifest can answer each
+ledger question below without a hand edit. These gates are assertions on
+the artifacts produced by §§1-2, not new reconstruction logic.
+
+| Gate | Required artifact field | Pass assertion | Ladder / subsystem cross-reference | Ledger row |
+|---|---|---|---|---|
+| factorisation closure | `factorisation.json:direct_total`, `product_total` | direct selected/generated ratio equals the conditional-factor product to the §1 `1e-12` tolerance. | S.6 with V.5, C.1-C.6, P.1-P.7 contributors | LIC-CH10-NUM-1 |
+| uncertainty completeness | `factorisation_covariance.npz`, per-stage Wilson/jackknife fields | every stage in §1.2 has a central value, Wilson interval, jackknife uncertainty, and covariance entry. | plan 04 §3-§4; plan 38 observable budget | LIC-CH10-CUTFLOW |
+| channel coverage | `channel_efficiency.parquet`, `channel_manifest.json` | the five named §2.2 channels plus `other` are present, and their summed counts reproduce the inclusive §1 counts exactly. | E.9/S.6, charged leaves C.1-C.6, π0 leaves P.5-P.7 | plan 47 §1 channel rows |
+| sample provenance | `factorisation_manifest.json`, `channel_manifest.json` | dataset id is `sig_foil_v3`; truth, reco, geometry, and command hashes match between inclusive and by-channel runs. | plan 03 signal registry; plan 16 geometry | plan 47 `sample` and `command` fields |
+| publication handoff | rendered Markdown table plus machine artifacts | the thesis-facing table quotes inclusive efficiency, staged factors, and channel rows from the machine artifacts without recomputation. | plans 43→46/47/50 | LIC-CH06/LIC-CH10 signal-efficiency rows |
+
+If any gate fails, plan 47 marks the affected row `red` or
+`not-attempted`; downstream significance in plan 46 must not consume the
+headline signal efficiency.
 
 ## 4. Risks
 
