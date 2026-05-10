@@ -50,6 +50,87 @@ Average pion multiplicity ⟨n_π⟩ ≈ 4.5 for n̄p annihilation at rest;
 total energy ≈ 2 m_n ≈ 1879 MeV; transverse momentum scales with
 phase space.
 
+## 1.1 Wave 6 derivation — bound-neutron oscillation signal
+
+### Physics derivation
+
+**What is physically measured.** The signal model predicts the
+truth-side final state after a neutron converts to an antineutron and
+the antineutron annihilates on a bound nucleon or nucleus in the foil
+or beampipe material. The measured ground-truth quantities are final
+particle multiplicities, charge/neutral balance, resonance tags, total
+available annihilation energy, and the target nucleus category before
+detector response is applied. Reconstruction later estimates vertices,
+tracks, photons, and event variables, but this plan owns the generated
+annihilation ensemble.
+
+**Estimator rationale.** The free n--nbar oscillation amplitude is a
+|ΔB|=2 transition whose detector signature is set by the annihilation
+of the produced antineutron; for bound neutrons the nuclear medium
+suppression and target dependence enter before detector acceptance
+`\cite{Friedman:2008es,friedman:2007}`. For the annihilation final
+state, low-energy antiproton/antineutron data constrain the at-rest
+multi-meson branching pattern `\cite{amsler:1991,Bressani:2003pv}`.
+Because direct n̄--carbon measurements are sparse, the nominal
+Geant4 FTFP/BERT + stopping model is treated as a generator estimator,
+and the Amsler/Myhrer, Friedman/Gal, Golubeva/Kondratyuk, and modern
+intranuclear alternatives are treated as bias brackets rather than as
+independent measurements `\cite{Golubeva:1997,Golubeva:2018mrz}`.
+
+**Statistical character.** The dominant uncertainty is model bias from
+extrapolating n̄p or p̄p data to n̄--A annihilation and from Geant4's
+implicit branching table. Finite-sample variance affects closure
+histograms, but it should shrink with sample size and can be estimated
+by bootstrap under plan 04. Medium-modification bias, resonance
+fraction bias, and final-state interaction bias do not vanish with
+sample size; they must be carried as signal-model nuisance variations
+in plan 45.
+
+### Logic gaps
+
+- **Average pion multiplicity ⟨n_π⟩ ≈ 4.5.** Grounding: at-rest
+  antiproton/antineutron annihilation reviews `\cite{amsler:1991,Bressani:2003pv}`.
+  `OPEN:` extract the channel table into
+  `data/registry/signal_models/branching_amsler1991.yml` and record
+  the exact grouped mean plus channel coverage; target resolution date
+  2026-06-15.
+- **Total available energy ≈ 2 m_n ≈ 1879 MeV.** Grounding: twice the
+  neutron rest mass from PDG particle properties `\cite{ParticleDataGroup:2024RPP}`;
+  bound-target binding/recoil corrections belong to the nuclear-medium
+  branch, not to this zero-order energy scale.
+- **Closure threshold χ²/dof < 2.** Grounding: current acceptance
+  criterion in this plan; `OPEN:` validate with toys that the threshold
+  has the intended false-fail rate for plan-04 bootstrap covariance
+  estimates before using it in a defence figure; target resolution date
+  2026-06-22.
+- **Grouped-channel weights.** Grounding: §4 defines
+  `w_event = BR_A(channel) / BR_nominal(channel)` and unit-sum
+  renormalisation. `OPEN:` set a maximum accepted event weight and an
+  unmapped-channel fallback after the first extracted branching table
+  is available; target resolution date 2026-06-15.
+- **Resonance bracket σ_res.** Grounding: η/ω enriched channels are
+  physically motivated by the at-rest annihilation literature, but the
+  magnitude is not yet fixed. `OPEN:` derive σ_res from the Amsler/Myhrer
+  grouped resonance fraction or mark it as a plan-45 nuisance with a
+  literature-width prior; target resolution date 2026-06-15.
+
+### Closure test for the derivation
+
+1. For `sig_foil_v3`, extract truth final-state particles before
+   detector response and classify each event by charged-pion count,
+   neutral-pion/photon count, η/ω/ρ tags, kaon count, and target
+   material.
+2. Build the `nominal_geant4` branching table from those classified
+   events after the same truth preselection used by the ledger row.
+3. Map the classified events onto the Amsler/Myhrer and
+   Friedman/Gal grouped alternatives; compute reweighted
+   multiplicity, visible-energy, and charge-balance histograms.
+4. Use plan-04 bootstrap covariance to compare nominal and weighted
+   histograms. A closure failure is not repaired by tuning detector
+   reconstruction: it becomes a plan-45 signal-model nuisance or a
+   request for regenerated samples under an explicit alternative
+   generator tag.
+
 ## 2. How Geant4 generates this
 
 The signal generator path:
