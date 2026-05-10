@@ -146,6 +146,24 @@ l1_defence_inventory:
       note_annex_hash: sha256:<hash-or-null>
       glossary_audit_hash: sha256:<hash-or-null>
       archive_drill_hash: sha256:<hash-or-null>
+    - pack_member: bayesian_limits
+      source_plans: [4, 46, 50, 51, 52, 55, 64]
+      artifact_paths:
+        - output/defense/<row_id>.yml
+        - output/bayesian_limits/<result_id>/prior_sensitivity.yml
+      artifact_hashes:
+        - sha256:<hash-or-null>
+      status: present | blocked | stale
+      caveat: <required until Jeffreys and flat-prior comparison rows exist>
+      staleness_summary_hash: sha256:<hash-or-null>
+      owner_signoff_refs: [RQ-L1-BAYES-LIMIT:<owner-hash-or-null>]
+      command_template_ids: [blocked_missing_input_v1]
+      command_template_verifier_hashes: []
+      command_template_verifier_sources: []
+      ci_report_hash: sha256:<hash-or-null>
+      note_annex_hash: sha256:<hash-or-null>
+      glossary_audit_hash: sha256:<hash-or-null>
+      archive_drill_hash: sha256:<hash-or-null>
     - pack_member: unbounded_caveats
       source_plans: [1, 45, 50, 51, 55, 56]
       artifact_paths:
