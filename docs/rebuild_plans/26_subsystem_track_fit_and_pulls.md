@@ -74,6 +74,29 @@ residuals_xyz
 pulls_theta_phi
 ```
 
+### 1.3 Machine-readable V.2 fit fixture
+
+The V.2 fixture freezes the fitted direction before vertexing, dE/dx,
+or truth-pull code can inspect validation labels. It stores one row per
+V.1 candidate and keeps variable-length residuals in a sidecar:
+
+| Fixture field | Meaning / invariant |
+|---|---|
+| `event_id`, `candidate_id` | join key inherited from the V.1 fixture |
+| `fit_id` | stable identifier for the configured V.2 fitter and version |
+| `direction_x`, `direction_y`, `direction_z` | finite unit vector, or null with a failure reason |
+| `cov_xx`, `cov_xy`, `cov_xz`, `cov_yy`, `cov_yz`, `cov_zz` | symmetric direction-covariance components in a fixed order |
+| `chi2_ndf`, `n_residual_degrees_of_freedom` | goodness-of-fit scalars used by plan 40 closure |
+| `n_direction_hits`, `direction_method` | hit count and method label consumed by ladder rows |
+| `fit_quality_state`, `fit_failure_reason` | §4 quality contract in machine-readable form |
+| `covariance_valid`, `fit_degraded` | explicit downstream guardrails for weighted vertexing |
+
+The residual sidecar is keyed by `(event_id, candidate_id, fit_id)` and
+stores one residual row per contributing hit. Production rows must be
+bitwise unchanged when validation-only truth direction fields are
+removed from the evaluator input; only `pulls_theta_phi` and closure
+artifact rows may change.
+
 ## 2. Current vs alternative
 
 - *Current.* `_track_anchor_and_direction` (plan 08 §3.2; `charged.py:61-82`): direction
