@@ -101,7 +101,22 @@ Rejection rules:
 Each rejection is implemented in Class A: lead-glass clusters and
 TPC topology only.
 
-## 5. Acceptance criteria
+## 5. Closure-test specification
+
+1. **Dataset ids:** `cal_singlepion_50to600MeV_v2`,
+   `cal_singleproton_50to500MeV_v2`, and `sig_foil_500MeV_v3` from
+   plan 03.
+2. **Observable:** C.5 π/p confusion matrix, balanced F1, proton
+   efficiency, charged-pion efficiency, and C.6 rejection fractions.
+3. **Fitter / classifier:** run `scan-pid` for the cut-based baseline
+   and the locked likelihood-ratio classifier for the improvement;
+   truth labels are consumed only in the validation/labeling split.
+4. **Pass criterion:** cut-based PID reproduces the licentiate
+   baseline within plan 47 tolerance, the `Name` gate is absent from
+   the production path, and the likelihood-ratio result has a plan 38
+   C.5 ladder matrix entry before any promotion.
+
+## 6. Acceptance criteria
 
 - §2 cut-based baseline reproduced.
 - §2 Name filter removed; replaced by §4 rejections.
@@ -109,13 +124,13 @@ TPC topology only.
 - Plan 47 ledger row "licentiate Ch 8 charged PID accuracy"
   reproduced.
 
-## 6. Risks
+## 7. Risks
 
 - *Risk:* likelihood-ratio overfits on calibration sample.
   *Mitigation:* plan 57 §3 overtraining check; final score on
   signal-sample-derived test set.
 
-## 7. Dependencies
+## 8. Dependencies
 
 - **23, 24, 27, 28, 57** — inputs.
 - *Consumed by:* plans 32 (event selection), 38 (ladder), 47.
