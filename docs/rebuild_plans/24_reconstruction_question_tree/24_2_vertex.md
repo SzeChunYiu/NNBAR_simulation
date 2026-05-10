@@ -46,8 +46,11 @@ Leaf V.1: TPC hits → track candidates
                      vol_name)
   forbidden (Class B): Track_ID, Parent_ID, Name, origin_vol_name
   decision rule: clustering algorithm produces track candidates
-  output: candidate-track table {anchor, direction, hit set, χ² seed}
-  allowed truth use (validation only): @validation_only labelled
+  output schema: {event_id: int64, candidate_id: int64,
+                  hit_indices: int64[], anchor_xyz: float64[3],
+                  direction_xyz: float64[3], n_hits: int32,
+                  chi2_seed: float64}
+  allowed truth use: validation_only
                     matching to truth Track_ID for efficiency scoring
   downstream consumers: V.2, V.3, V.4 (this plan); plan 25 (subsystem)
 ```
