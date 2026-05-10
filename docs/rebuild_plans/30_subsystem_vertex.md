@@ -86,9 +86,10 @@ Per plan 24 V.3 / V.4 / V.5 schemas:
 
 Current implementation citation: the vertex path is implemented by
 `reconstruct_event_vertices` (`nnbar_reconstruction/vertex.py:163-254`; plan 08 §3.3).
-It projects valid tracks to `z=0`, averages projections,
-reports radial RMS / skipped counts, and currently excludes some seeds
-with truth `Name`.
+It projects valid tracks to `z=0`, averages projections, and
+reports radial RMS / skipped counts. The verified live function groups
+raw TPC rows by `Track_ID`; the Class B issue is this truth-id grouping,
+not a `Name`-based seed exclusion in the function body.
 
 ### 1.4 Machine-readable vertex fixtures
 
@@ -121,13 +122,17 @@ match the manifest used by plan 43 signal efficiency.
   are excluded from seeding (Class B exclusion — see §2 migration).
 - Sparse legacy tables fall back to all geometrically-valid tracks.
 
-## 3. Migration: drop the truth-labelled exclusion
+## 3. Migration: replace truth-id grouping with fixture rows
 
-The current implementation reads `Name` to drop EM and neutral
-seeds. Migration:
+The verified live implementation does not contain a `Name`-based seed
+exclusion; its Class B dependency is the raw `Track_ID` grouping used to
+form legacy track projections. Migration:
 
-- Class A replacement: drop tracks whose lead-glass cluster (matched
-  geometrically) tags them as charged-EM (plan 29 §3 EM rejection).
+- Class A replacement: consume V.1/V.2 candidate and fit rows instead
+  of grouping raw TPC hits by `Track_ID`.
+- Keep EM, neutral, and conversion rejection downstream as observable
+  lead-glass / timing / topology rules (plan 29 §3 and plan 32), never
+  as a production `Name` filter.
 - Drop tracks with low χ²/ndf or short hit count.
 - Sparse-table fallback remains allowed (plan 24 §7).
 
