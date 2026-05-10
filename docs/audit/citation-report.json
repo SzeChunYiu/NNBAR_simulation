@@ -4,289 +4,1683 @@
       "candidate_files": [
         "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/charged.py"
       ],
-      "citation": "charged.py:61-80",
+      "citation": "charged.py:62-81",
       "doc": "docs/rebuild_plans/24_reconstruction_question_tree/24_2_vertex.md",
       "doc_line": 68,
-      "end": 80,
+      "end": 81,
       "identifier": "_track_anchor_and_direction",
       "message": "signature line falls inside cited range",
       "signature_lines": [
         62
       ],
       "source_path": "charged.py",
-      "start": 61,
+      "start": 62,
       "status": "ok"
     },
     {
       "candidate_files": [
         "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/charged.py"
       ],
-      "citation": "charged.py:61-80",
+      "citation": "nnbar_reconstruction/charged.py:62-81",
       "doc": "docs/rebuild_plans/25_subsystem_tpc_hits_to_tracks.md",
-      "doc_line": 51,
-      "end": 80,
+      "doc_line": 99,
+      "end": 81,
       "identifier": "_track_anchor_and_direction",
       "message": "signature line falls inside cited range",
       "signature_lines": [
         62
       ],
-      "source_path": "charged.py",
-      "start": 61,
+      "source_path": "nnbar_reconstruction/charged.py",
+      "start": 62,
       "status": "ok"
     },
     {
       "candidate_files": [
         "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/charged.py"
       ],
-      "citation": "charged.py:61-80",
+      "citation": "nnbar_reconstruction/charged.py:245-311",
+      "doc": "docs/rebuild_plans/25_subsystem_tpc_hits_to_tracks.md",
+      "doc_line": 107,
+      "end": 311,
+      "identifier": "reconstruct_track_candidates",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        245
+      ],
+      "source_path": "nnbar_reconstruction/charged.py",
+      "start": 245,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/charged.py"
+      ],
+      "citation": "nnbar_reconstruction/charged.py:231-233",
+      "doc": "docs/rebuild_plans/25_subsystem_tpc_hits_to_tracks.md",
+      "doc_line": 111,
+      "end": 233,
+      "identifier": "_hit_membership_key",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        231
+      ],
+      "source_path": "nnbar_reconstruction/charged.py",
+      "start": 231,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/charged.py"
+      ],
+      "citation": "nnbar_reconstruction/charged.py:236-242",
+      "doc": "docs/rebuild_plans/25_subsystem_tpc_hits_to_tracks.md",
+      "doc_line": 111,
+      "end": 242,
+      "identifier": "_track_seed_chi2",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        236
+      ],
+      "source_path": "nnbar_reconstruction/charged.py",
+      "start": 236,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/charged.py"
+      ],
+      "citation": "nnbar_reconstruction/charged.py:245-311",
+      "doc": "docs/rebuild_plans/25_subsystem_tpc_hits_to_tracks.md",
+      "doc_line": 210,
+      "end": 311,
+      "identifier": "reconstruct_track_candidates",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        245
+      ],
+      "source_path": "nnbar_reconstruction/charged.py",
+      "start": 245,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/tests/test_charged_reco.py"
+      ],
+      "citation": "tests/test_charged_reco.py:61-70",
+      "doc": "docs/rebuild_plans/25_subsystem_tpc_hits_to_tracks.md",
+      "doc_line": 214,
+      "end": 70,
+      "identifier": "test_track_candidates_ignore_forbidden_truth_columns",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        61
+      ],
+      "source_path": "tests/test_charged_reco.py",
+      "start": 61,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/tests/test_charged_reco.py"
+      ],
+      "citation": "tests/test_charged_reco.py:73-103",
+      "doc": "docs/rebuild_plans/25_subsystem_tpc_hits_to_tracks.md",
+      "doc_line": 216,
+      "end": 103,
+      "identifier": "test_track_candidates_emit_plan_25_schema_and_quality",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        73
+      ],
+      "source_path": "tests/test_charged_reco.py",
+      "start": 73,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/tests/test_charged_reco.py"
+      ],
+      "citation": "tests/test_charged_reco.py:106-117",
+      "doc": "docs/rebuild_plans/25_subsystem_tpc_hits_to_tracks.md",
+      "doc_line": 219,
+      "end": 117,
+      "identifier": "test_track_candidates_real_sample_reads_particle_and_tpc_schema",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        106
+      ],
+      "source_path": "tests/test_charged_reco.py",
+      "start": 106,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/charged.py"
+      ],
+      "citation": "nnbar_reconstruction/charged.py:245-311",
+      "doc": "docs/rebuild_plans/25_subsystem_tpc_hits_to_tracks.md",
+      "doc_line": 233,
+      "end": 311,
+      "identifier": "reconstruct_track_candidates",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        245
+      ],
+      "source_path": "nnbar_reconstruction/charged.py",
+      "start": 245,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/charged.py"
+      ],
+      "citation": "nnbar_reconstruction/charged.py:231-233",
+      "doc": "docs/rebuild_plans/25_subsystem_tpc_hits_to_tracks.md",
+      "doc_line": 238,
+      "end": 233,
+      "identifier": "_hit_membership_key",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        231
+      ],
+      "source_path": "nnbar_reconstruction/charged.py",
+      "start": 231,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/charged.py"
+      ],
+      "citation": "nnbar_reconstruction/charged.py:236-242",
+      "doc": "docs/rebuild_plans/25_subsystem_tpc_hits_to_tracks.md",
+      "doc_line": 240,
+      "end": 242,
+      "identifier": "_track_seed_chi2",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        236
+      ],
+      "source_path": "nnbar_reconstruction/charged.py",
+      "start": 236,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/charged.py"
+      ],
+      "citation": "nnbar_reconstruction/charged.py:245-311",
+      "doc": "docs/rebuild_plans/25_subsystem_tpc_hits_to_tracks.md",
+      "doc_line": 255,
+      "end": 311,
+      "identifier": "reconstruct_track_candidates",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        245
+      ],
+      "source_path": "nnbar_reconstruction/charged.py",
+      "start": 245,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/charged.py"
+      ],
+      "citation": "nnbar_reconstruction/charged.py:231-233",
+      "doc": "docs/rebuild_plans/25_subsystem_tpc_hits_to_tracks.md",
+      "doc_line": 256,
+      "end": 233,
+      "identifier": "_hit_membership_key",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        231
+      ],
+      "source_path": "nnbar_reconstruction/charged.py",
+      "start": 231,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/charged.py"
+      ],
+      "citation": "nnbar_reconstruction/charged.py:236-242",
+      "doc": "docs/rebuild_plans/25_subsystem_tpc_hits_to_tracks.md",
+      "doc_line": 257,
+      "end": 242,
+      "identifier": "_track_seed_chi2",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        236
+      ],
+      "source_path": "nnbar_reconstruction/charged.py",
+      "start": 236,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/tests/test_charged_reco.py"
+      ],
+      "citation": "tests/test_charged_reco.py:61-70",
+      "doc": "docs/rebuild_plans/25_subsystem_tpc_hits_to_tracks.md",
+      "doc_line": 264,
+      "end": 70,
+      "identifier": "test_track_candidates_ignore_forbidden_truth_columns",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        61
+      ],
+      "source_path": "tests/test_charged_reco.py",
+      "start": 61,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/tests/test_charged_reco.py"
+      ],
+      "citation": "tests/test_charged_reco.py:73-103",
+      "doc": "docs/rebuild_plans/25_subsystem_tpc_hits_to_tracks.md",
+      "doc_line": 266,
+      "end": 103,
+      "identifier": "test_track_candidates_emit_plan_25_schema_and_quality",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        73
+      ],
+      "source_path": "tests/test_charged_reco.py",
+      "start": 73,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/tests/test_charged_reco.py"
+      ],
+      "citation": "tests/test_charged_reco.py:106-117",
+      "doc": "docs/rebuild_plans/25_subsystem_tpc_hits_to_tracks.md",
+      "doc_line": 268,
+      "end": 117,
+      "identifier": "test_track_candidates_real_sample_reads_particle_and_tpc_schema",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        106
+      ],
+      "source_path": "tests/test_charged_reco.py",
+      "start": 106,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/charged.py"
+      ],
+      "citation": "nnbar_reconstruction/charged.py:62-81",
       "doc": "docs/rebuild_plans/26_subsystem_track_fit_and_pulls.md",
-      "doc_line": 55,
-      "end": 80,
+      "doc_line": 103,
+      "end": 81,
       "identifier": "_track_anchor_and_direction",
       "message": "signature line falls inside cited range",
       "signature_lines": [
         62
       ],
-      "source_path": "charged.py",
-      "start": 61,
+      "source_path": "nnbar_reconstruction/charged.py",
+      "start": 62,
       "status": "ok"
     },
     {
       "candidate_files": [
-        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/charged.py"
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/track_fit.py"
       ],
-      "citation": "charged.py:61-80",
+      "citation": "nnbar_reconstruction/track_fit.py:55-117",
       "doc": "docs/rebuild_plans/26_subsystem_track_fit_and_pulls.md",
-      "doc_line": 68,
-      "end": 80,
+      "doc_line": 105,
+      "end": 117,
+      "identifier": "fit_track_candidates",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        55
+      ],
+      "source_path": "nnbar_reconstruction/track_fit.py",
+      "start": 55,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/track_fit.py"
+      ],
+      "citation": "nnbar_reconstruction/track_fit.py:32-43",
+      "doc": "docs/rebuild_plans/26_subsystem_track_fit_and_pulls.md",
+      "doc_line": 107,
+      "end": 43,
+      "identifier": "_fit_line",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        32
+      ],
+      "source_path": "nnbar_reconstruction/track_fit.py",
+      "start": 32,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/track_fit.py"
+      ],
+      "citation": "nnbar_reconstruction/track_fit.py:46-52",
+      "doc": "docs/rebuild_plans/26_subsystem_track_fit_and_pulls.md",
+      "doc_line": 109,
+      "end": 52,
+      "identifier": "_covariance",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        46
+      ],
+      "source_path": "nnbar_reconstruction/track_fit.py",
+      "start": 46,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/charged.py"
+      ],
+      "citation": "nnbar_reconstruction/charged.py:62-81",
+      "doc": "docs/rebuild_plans/26_subsystem_track_fit_and_pulls.md",
+      "doc_line": 123,
+      "end": 81,
       "identifier": "_track_anchor_and_direction",
       "message": "signature line falls inside cited range",
       "signature_lines": [
         62
       ],
-      "source_path": "charged.py",
-      "start": 61,
+      "source_path": "nnbar_reconstruction/charged.py",
+      "start": 62,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/track_fit.py"
+      ],
+      "citation": "nnbar_reconstruction/track_fit.py:55-117",
+      "doc": "docs/rebuild_plans/26_subsystem_track_fit_and_pulls.md",
+      "doc_line": 204,
+      "end": 117,
+      "identifier": "fit_track_candidates",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        55
+      ],
+      "source_path": "nnbar_reconstruction/track_fit.py",
+      "start": 55,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/tests/test_charged_reco.py"
+      ],
+      "citation": "tests/test_charged_reco.py:120-151",
+      "doc": "docs/rebuild_plans/26_subsystem_track_fit_and_pulls.md",
+      "doc_line": 209,
+      "end": 151,
+      "identifier": "test_fit_track_candidates_emits_plan_26_direction_schema",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        120
+      ],
+      "source_path": "tests/test_charged_reco.py",
+      "start": 120,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/tests/test_charged_reco.py"
+      ],
+      "citation": "tests/test_charged_reco.py:153-165",
+      "doc": "docs/rebuild_plans/26_subsystem_track_fit_and_pulls.md",
+      "doc_line": 213,
+      "end": 165,
+      "identifier": "test_fit_track_candidates_real_sample_consumes_candidate_rows",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        153
+      ],
+      "source_path": "tests/test_charged_reco.py",
+      "start": 153,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/track_fit.py"
+      ],
+      "citation": "nnbar_reconstruction/track_fit.py:55-117",
+      "doc": "docs/rebuild_plans/26_subsystem_track_fit_and_pulls.md",
+      "doc_line": 223,
+      "end": 117,
+      "identifier": "fit_track_candidates",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        55
+      ],
+      "source_path": "nnbar_reconstruction/track_fit.py",
+      "start": 55,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/track_fit.py"
+      ],
+      "citation": "nnbar_reconstruction/track_fit.py:46-52",
+      "doc": "docs/rebuild_plans/26_subsystem_track_fit_and_pulls.md",
+      "doc_line": 228,
+      "end": 52,
+      "identifier": "_covariance",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        46
+      ],
+      "source_path": "nnbar_reconstruction/track_fit.py",
+      "start": 46,
       "status": "ok"
     },
     {
       "candidate_files": [
         "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/charged.py"
       ],
-      "citation": "charged.py:149-226",
+      "citation": "nnbar_reconstruction/charged.py:62-81",
+      "doc": "docs/rebuild_plans/26_subsystem_track_fit_and_pulls.md",
+      "doc_line": 231,
+      "end": 81,
+      "identifier": "_track_anchor_and_direction",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        62
+      ],
+      "source_path": "nnbar_reconstruction/charged.py",
+      "start": 62,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/tests/test_charged_reco.py"
+      ],
+      "citation": "tests/test_charged_reco.py:120-151",
+      "doc": "docs/rebuild_plans/26_subsystem_track_fit_and_pulls.md",
+      "doc_line": 237,
+      "end": 151,
+      "identifier": "test_fit_track_candidates_emits_plan_26_direction_schema",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        120
+      ],
+      "source_path": "tests/test_charged_reco.py",
+      "start": 120,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/tests/test_charged_reco.py"
+      ],
+      "citation": "tests/test_charged_reco.py:153-165",
+      "doc": "docs/rebuild_plans/26_subsystem_track_fit_and_pulls.md",
+      "doc_line": 239,
+      "end": 165,
+      "identifier": "test_fit_track_candidates_real_sample_consumes_candidate_rows",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        153
+      ],
+      "source_path": "tests/test_charged_reco.py",
+      "start": 153,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/track_fit.py"
+      ],
+      "citation": "nnbar_reconstruction/track_fit.py:55-117",
+      "doc": "docs/rebuild_plans/26_subsystem_track_fit_and_pulls.md",
+      "doc_line": 250,
+      "end": 117,
+      "identifier": "fit_track_candidates",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        55
+      ],
+      "source_path": "nnbar_reconstruction/track_fit.py",
+      "start": 55,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/track_fit.py"
+      ],
+      "citation": "nnbar_reconstruction/track_fit.py:46-52",
+      "doc": "docs/rebuild_plans/26_subsystem_track_fit_and_pulls.md",
+      "doc_line": 252,
+      "end": 52,
+      "identifier": "_covariance",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        46
+      ],
+      "source_path": "nnbar_reconstruction/track_fit.py",
+      "start": 46,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/charged.py"
+      ],
+      "citation": "nnbar_reconstruction/charged.py:62-81",
+      "doc": "docs/rebuild_plans/26_subsystem_track_fit_and_pulls.md",
+      "doc_line": 253,
+      "end": 81,
+      "identifier": "_track_anchor_and_direction",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        62
+      ],
+      "source_path": "nnbar_reconstruction/charged.py",
+      "start": 62,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/charged.py"
+      ],
+      "citation": "nnbar_reconstruction/charged.py:151-228",
       "doc": "docs/rebuild_plans/27_subsystem_dedx.md",
-      "doc_line": 44,
-      "end": 226,
+      "doc_line": 70,
+      "end": 228,
       "identifier": "reconstruct_charged_objects",
       "message": "signature line falls inside cited range",
       "signature_lines": [
         151
       ],
-      "source_path": "charged.py",
-      "start": 149,
+      "source_path": "nnbar_reconstruction/charged.py",
+      "start": 151,
       "status": "ok"
     },
     {
       "candidate_files": [
-        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/charged.py"
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/dedx.py"
       ],
-      "citation": "charged.py:149-226",
+      "citation": "nnbar_reconstruction/dedx.py:91-119",
       "doc": "docs/rebuild_plans/27_subsystem_dedx.md",
-      "doc_line": 65,
-      "end": 226,
-      "identifier": "reconstruct_charged_objects",
+      "doc_line": 73,
+      "end": 119,
+      "identifier": "reconstruct_dedx_table",
       "message": "signature line falls inside cited range",
       "signature_lines": [
-        151
+        91
       ],
-      "source_path": "charged.py",
-      "start": 149,
+      "source_path": "nnbar_reconstruction/dedx.py",
+      "start": 91,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/dedx.py"
+      ],
+      "citation": "nnbar_reconstruction/dedx.py:41-70",
+      "doc": "docs/rebuild_plans/27_subsystem_dedx.md",
+      "doc_line": 74,
+      "end": 70,
+      "identifier": "truncated_mean_dedx",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        41
+      ],
+      "source_path": "nnbar_reconstruction/dedx.py",
+      "start": 41,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/dedx.py"
+      ],
+      "citation": "nnbar_reconstruction/dedx.py:28-38",
+      "doc": "docs/rebuild_plans/27_subsystem_dedx.md",
+      "doc_line": 75,
+      "end": 38,
+      "identifier": "_step_lengths",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        28
+      ],
+      "source_path": "nnbar_reconstruction/dedx.py",
+      "start": 28,
       "status": "ok"
     },
     {
       "candidate_files": [
         "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/charged.py"
       ],
-      "citation": "charged.py:149-226",
+      "citation": "nnbar_reconstruction/charged.py:151-228",
+      "doc": "docs/rebuild_plans/27_subsystem_dedx.md",
+      "doc_line": 123,
+      "end": 228,
+      "identifier": "reconstruct_charged_objects",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        151
+      ],
+      "source_path": "nnbar_reconstruction/charged.py",
+      "start": 151,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/dedx.py"
+      ],
+      "citation": "nnbar_reconstruction/dedx.py:41-70",
+      "doc": "docs/rebuild_plans/27_subsystem_dedx.md",
+      "doc_line": 211,
+      "end": 70,
+      "identifier": "truncated_mean_dedx",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        41
+      ],
+      "source_path": "nnbar_reconstruction/dedx.py",
+      "start": 41,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/dedx.py"
+      ],
+      "citation": "nnbar_reconstruction/dedx.py:91-119",
+      "doc": "docs/rebuild_plans/27_subsystem_dedx.md",
+      "doc_line": 212,
+      "end": 119,
+      "identifier": "reconstruct_dedx_table",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        91
+      ],
+      "source_path": "nnbar_reconstruction/dedx.py",
+      "start": 91,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/tests/test_charged_reco.py"
+      ],
+      "citation": "tests/test_charged_reco.py:168-181",
+      "doc": "docs/rebuild_plans/27_subsystem_dedx.md",
+      "doc_line": 216,
+      "end": 181,
+      "identifier": "test_truncated_mean_dedx_drops_plan_27_tails",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        168
+      ],
+      "source_path": "tests/test_charged_reco.py",
+      "start": 168,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/tests/test_charged_reco.py"
+      ],
+      "citation": "tests/test_charged_reco.py:184-207",
+      "doc": "docs/rebuild_plans/27_subsystem_dedx.md",
+      "doc_line": 218,
+      "end": 207,
+      "identifier": "test_reconstruct_dedx_table_uses_candidate_hit_membership",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        184
+      ],
+      "source_path": "tests/test_charged_reco.py",
+      "start": 184,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/tests/test_charged_reco.py"
+      ],
+      "citation": "tests/test_charged_reco.py:209-221",
+      "doc": "docs/rebuild_plans/27_subsystem_dedx.md",
+      "doc_line": 221,
+      "end": 221,
+      "identifier": "test_reconstruct_dedx_table_real_sample_has_plan_27_schema",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        209
+      ],
+      "source_path": "tests/test_charged_reco.py",
+      "start": 209,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/dedx.py"
+      ],
+      "citation": "nnbar_reconstruction/dedx.py:91-119",
+      "doc": "docs/rebuild_plans/27_subsystem_dedx.md",
+      "doc_line": 233,
+      "end": 119,
+      "identifier": "reconstruct_dedx_table",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        91
+      ],
+      "source_path": "nnbar_reconstruction/dedx.py",
+      "start": 91,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/dedx.py"
+      ],
+      "citation": "nnbar_reconstruction/dedx.py:41-70",
+      "doc": "docs/rebuild_plans/27_subsystem_dedx.md",
+      "doc_line": 234,
+      "end": 70,
+      "identifier": "truncated_mean_dedx",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        41
+      ],
+      "source_path": "nnbar_reconstruction/dedx.py",
+      "start": 41,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/tests/test_charged_reco.py"
+      ],
+      "citation": "tests/test_charged_reco.py:168-181",
+      "doc": "docs/rebuild_plans/27_subsystem_dedx.md",
+      "doc_line": 247,
+      "end": 181,
+      "identifier": "test_truncated_mean_dedx_drops_plan_27_tails",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        168
+      ],
+      "source_path": "tests/test_charged_reco.py",
+      "start": 168,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/tests/test_charged_reco.py"
+      ],
+      "citation": "tests/test_charged_reco.py:184-207",
+      "doc": "docs/rebuild_plans/27_subsystem_dedx.md",
+      "doc_line": 249,
+      "end": 207,
+      "identifier": "test_reconstruct_dedx_table_uses_candidate_hit_membership",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        184
+      ],
+      "source_path": "tests/test_charged_reco.py",
+      "start": 184,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/tests/test_charged_reco.py"
+      ],
+      "citation": "tests/test_charged_reco.py:209-221",
+      "doc": "docs/rebuild_plans/27_subsystem_dedx.md",
+      "doc_line": 251,
+      "end": 221,
+      "identifier": "test_reconstruct_dedx_table_real_sample_has_plan_27_schema",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        209
+      ],
+      "source_path": "tests/test_charged_reco.py",
+      "start": 209,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/dedx.py"
+      ],
+      "citation": "nnbar_reconstruction/dedx.py:91-119",
+      "doc": "docs/rebuild_plans/27_subsystem_dedx.md",
+      "doc_line": 262,
+      "end": 119,
+      "identifier": "reconstruct_dedx_table",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        91
+      ],
+      "source_path": "nnbar_reconstruction/dedx.py",
+      "start": 91,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/dedx.py"
+      ],
+      "citation": "nnbar_reconstruction/dedx.py:41-70",
+      "doc": "docs/rebuild_plans/27_subsystem_dedx.md",
+      "doc_line": 263,
+      "end": 70,
+      "identifier": "truncated_mean_dedx",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        41
+      ],
+      "source_path": "nnbar_reconstruction/dedx.py",
+      "start": 41,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/charged.py"
+      ],
+      "citation": "nnbar_reconstruction/charged.py:151-228",
       "doc": "docs/rebuild_plans/28_subsystem_range_and_stopping.md",
-      "doc_line": 42,
-      "end": 226,
+      "doc_line": 67,
+      "end": 228,
       "identifier": "reconstruct_charged_objects",
       "message": "signature line falls inside cited range",
       "signature_lines": [
         151
       ],
-      "source_path": "charged.py",
-      "start": 149,
+      "source_path": "nnbar_reconstruction/charged.py",
+      "start": 151,
       "status": "ok"
     },
     {
       "candidate_files": [
-        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/charged.py"
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/range_reco.py"
       ],
-      "citation": "charged.py:149-226",
+      "citation": "nnbar_reconstruction/range_reco.py:78-107",
       "doc": "docs/rebuild_plans/28_subsystem_range_and_stopping.md",
-      "doc_line": 68,
-      "end": 226,
-      "identifier": "reconstruct_charged_objects",
+      "doc_line": 71,
+      "end": 107,
+      "identifier": "reconstruct_range_table",
       "message": "signature line falls inside cited range",
       "signature_lines": [
-        151
+        78
       ],
-      "source_path": "charged.py",
-      "start": 149,
+      "source_path": "nnbar_reconstruction/range_reco.py",
+      "start": 78,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/range_reco.py"
+      ],
+      "citation": "nnbar_reconstruction/range_reco.py:41-75",
+      "doc": "docs/rebuild_plans/28_subsystem_range_and_stopping.md",
+      "doc_line": 74,
+      "end": 75,
+      "identifier": "_range_row",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        41
+      ],
+      "source_path": "nnbar_reconstruction/range_reco.py",
+      "start": 41,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/range_reco.py"
+      ],
+      "citation": "nnbar_reconstruction/range_reco.py:28-38",
+      "doc": "docs/rebuild_plans/28_subsystem_range_and_stopping.md",
+      "doc_line": 74,
+      "end": 38,
+      "identifier": "_invalid_row",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        28
+      ],
+      "source_path": "nnbar_reconstruction/range_reco.py",
+      "start": 28,
       "status": "ok"
     },
     {
       "candidate_files": [
         "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/charged.py"
       ],
-      "citation": "charged.py:149-226",
-      "doc": "docs/rebuild_plans/29_subsystem_charged_pid.md",
-      "doc_line": 37,
-      "end": 226,
+      "citation": "nnbar_reconstruction/charged.py:151-228",
+      "doc": "docs/rebuild_plans/28_subsystem_range_and_stopping.md",
+      "doc_line": 125,
+      "end": 228,
       "identifier": "reconstruct_charged_objects",
       "message": "signature line falls inside cited range",
       "signature_lines": [
         151
       ],
-      "source_path": "charged.py",
-      "start": 149,
+      "source_path": "nnbar_reconstruction/charged.py",
+      "start": 151,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/range_reco.py"
+      ],
+      "citation": "nnbar_reconstruction/range_reco.py:78-107",
+      "doc": "docs/rebuild_plans/28_subsystem_range_and_stopping.md",
+      "doc_line": 206,
+      "end": 107,
+      "identifier": "reconstruct_range_table",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        78
+      ],
+      "source_path": "nnbar_reconstruction/range_reco.py",
+      "start": 78,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/tests/test_charged_reco.py"
+      ],
+      "citation": "tests/test_charged_reco.py:224-259",
+      "doc": "docs/rebuild_plans/28_subsystem_range_and_stopping.md",
+      "doc_line": 210,
+      "end": 259,
+      "identifier": "test_reconstruct_range_table_projects_scintillator_hits",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        224
+      ],
+      "source_path": "tests/test_charged_reco.py",
+      "start": 224,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/tests/test_charged_reco.py"
+      ],
+      "citation": "tests/test_charged_reco.py:262-279",
+      "doc": "docs/rebuild_plans/28_subsystem_range_and_stopping.md",
+      "doc_line": 215,
+      "end": 279,
+      "identifier": "test_reconstruct_range_table_real_sample_has_plan_28_schema",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        262
+      ],
+      "source_path": "tests/test_charged_reco.py",
+      "start": 262,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/range_reco.py"
+      ],
+      "citation": "nnbar_reconstruction/range_reco.py:78-107",
+      "doc": "docs/rebuild_plans/28_subsystem_range_and_stopping.md",
+      "doc_line": 227,
+      "end": 107,
+      "identifier": "reconstruct_range_table",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        78
+      ],
+      "source_path": "nnbar_reconstruction/range_reco.py",
+      "start": 78,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/range_reco.py"
+      ],
+      "citation": "nnbar_reconstruction/range_reco.py:41-75",
+      "doc": "docs/rebuild_plans/28_subsystem_range_and_stopping.md",
+      "doc_line": 232,
+      "end": 75,
+      "identifier": "_range_row",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        41
+      ],
+      "source_path": "nnbar_reconstruction/range_reco.py",
+      "start": 41,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/range_reco.py"
+      ],
+      "citation": "nnbar_reconstruction/range_reco.py:28-38",
+      "doc": "docs/rebuild_plans/28_subsystem_range_and_stopping.md",
+      "doc_line": 233,
+      "end": 38,
+      "identifier": "_invalid_row",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        28
+      ],
+      "source_path": "nnbar_reconstruction/range_reco.py",
+      "start": 28,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/tests/test_charged_reco.py"
+      ],
+      "citation": "tests/test_charged_reco.py:224-259",
+      "doc": "docs/rebuild_plans/28_subsystem_range_and_stopping.md",
+      "doc_line": 240,
+      "end": 259,
+      "identifier": "test_reconstruct_range_table_projects_scintillator_hits",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        224
+      ],
+      "source_path": "tests/test_charged_reco.py",
+      "start": 224,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/tests/test_charged_reco.py"
+      ],
+      "citation": "tests/test_charged_reco.py:262-279",
+      "doc": "docs/rebuild_plans/28_subsystem_range_and_stopping.md",
+      "doc_line": 242,
+      "end": 279,
+      "identifier": "test_reconstruct_range_table_real_sample_has_plan_28_schema",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        262
+      ],
+      "source_path": "tests/test_charged_reco.py",
+      "start": 262,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/range_reco.py"
+      ],
+      "citation": "nnbar_reconstruction/range_reco.py:78-107",
+      "doc": "docs/rebuild_plans/28_subsystem_range_and_stopping.md",
+      "doc_line": 254,
+      "end": 107,
+      "identifier": "reconstruct_range_table",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        78
+      ],
+      "source_path": "nnbar_reconstruction/range_reco.py",
+      "start": 78,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/range_reco.py"
+      ],
+      "citation": "nnbar_reconstruction/range_reco.py:41-75",
+      "doc": "docs/rebuild_plans/28_subsystem_range_and_stopping.md",
+      "doc_line": 256,
+      "end": 75,
+      "identifier": "_range_row",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        41
+      ],
+      "source_path": "nnbar_reconstruction/range_reco.py",
+      "start": 41,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/range_reco.py"
+      ],
+      "citation": "nnbar_reconstruction/range_reco.py:28-38",
+      "doc": "docs/rebuild_plans/28_subsystem_range_and_stopping.md",
+      "doc_line": 257,
+      "end": 38,
+      "identifier": "_invalid_row",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        28
+      ],
+      "source_path": "nnbar_reconstruction/range_reco.py",
+      "start": 28,
       "status": "ok"
     },
     {
       "candidate_files": [
         "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/charged.py"
       ],
-      "citation": "charged.py:149-226",
+      "citation": "nnbar_reconstruction/charged.py:151-228",
       "doc": "docs/rebuild_plans/29_subsystem_charged_pid.md",
-      "doc_line": 79,
-      "end": 226,
+      "doc_line": 93,
+      "end": 228,
       "identifier": "reconstruct_charged_objects",
       "message": "signature line falls inside cited range",
       "signature_lines": [
         151
       ],
-      "source_path": "charged.py",
-      "start": 149,
+      "source_path": "nnbar_reconstruction/charged.py",
+      "start": 151,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/charged.py"
+      ],
+      "citation": "nnbar_reconstruction/charged.py:151-228",
+      "doc": "docs/rebuild_plans/29_subsystem_charged_pid.md",
+      "doc_line": 154,
+      "end": 228,
+      "identifier": "reconstruct_charged_objects",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        151
+      ],
+      "source_path": "nnbar_reconstruction/charged.py",
+      "start": 151,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/charged_pid.py"
+      ],
+      "citation": "nnbar_reconstruction/charged_pid.py:60-118",
+      "doc": "docs/rebuild_plans/29_subsystem_charged_pid.md",
+      "doc_line": 198,
+      "end": 118,
+      "identifier": "classify_charged_candidates",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        60
+      ],
+      "source_path": "nnbar_reconstruction/charged_pid.py",
+      "start": 60,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/calibration.py"
+      ],
+      "citation": "nnbar_reconstruction/calibration.py:27-134",
+      "doc": "docs/rebuild_plans/29_subsystem_charged_pid.md",
+      "doc_line": 201,
+      "end": 134,
+      "identifier": "scan_charged_pid_thresholds",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        27
+      ],
+      "source_path": "nnbar_reconstruction/calibration.py",
+      "start": 27,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/tests/test_charged_reco.py"
+      ],
+      "citation": "tests/test_charged_reco.py:282-329",
+      "doc": "docs/rebuild_plans/29_subsystem_charged_pid.md",
+      "doc_line": 222,
+      "end": 329,
+      "identifier": "test_classify_charged_candidates_uses_dedx_and_range_thresholds",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        282
+      ],
+      "source_path": "tests/test_charged_reco.py",
+      "start": 282,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/tests/test_charged_reco.py"
+      ],
+      "citation": "tests/test_charged_reco.py:331-350",
+      "doc": "docs/rebuild_plans/29_subsystem_charged_pid.md",
+      "doc_line": 225,
+      "end": 350,
+      "identifier": "test_classify_charged_candidates_real_sample_has_plan_29_schema",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        331
+      ],
+      "source_path": "tests/test_charged_reco.py",
+      "start": 331,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/charged_pid.py"
+      ],
+      "citation": "nnbar_reconstruction/charged_pid.py:60-118",
+      "doc": "docs/rebuild_plans/29_subsystem_charged_pid.md",
+      "doc_line": 237,
+      "end": 118,
+      "identifier": "classify_charged_candidates",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        60
+      ],
+      "source_path": "nnbar_reconstruction/charged_pid.py",
+      "start": 60,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/tests/test_charged_reco.py"
+      ],
+      "citation": "tests/test_charged_reco.py:282-329",
+      "doc": "docs/rebuild_plans/29_subsystem_charged_pid.md",
+      "doc_line": 250,
+      "end": 329,
+      "identifier": "test_classify_charged_candidates_uses_dedx_and_range_thresholds",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        282
+      ],
+      "source_path": "tests/test_charged_reco.py",
+      "start": 282,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/tests/test_charged_reco.py"
+      ],
+      "citation": "tests/test_charged_reco.py:331-350",
+      "doc": "docs/rebuild_plans/29_subsystem_charged_pid.md",
+      "doc_line": 252,
+      "end": 350,
+      "identifier": "test_classify_charged_candidates_real_sample_has_plan_29_schema",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        331
+      ],
+      "source_path": "tests/test_charged_reco.py",
+      "start": 331,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/charged_pid.py"
+      ],
+      "citation": "nnbar_reconstruction/charged_pid.py:60-118",
+      "doc": "docs/rebuild_plans/29_subsystem_charged_pid.md",
+      "doc_line": 263,
+      "end": 118,
+      "identifier": "classify_charged_candidates",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        60
+      ],
+      "source_path": "nnbar_reconstruction/charged_pid.py",
+      "start": 60,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/calibration.py"
+      ],
+      "citation": "nnbar_reconstruction/calibration.py:27-134",
+      "doc": "docs/rebuild_plans/29_subsystem_charged_pid.md",
+      "doc_line": 264,
+      "end": 134,
+      "identifier": "scan_charged_pid_thresholds",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        27
+      ],
+      "source_path": "nnbar_reconstruction/calibration.py",
+      "start": 27,
       "status": "ok"
     },
     {
       "candidate_files": [
         "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/vertex.py"
       ],
-      "citation": "vertex.py:163-252",
+      "citation": "nnbar_reconstruction/vertex.py:163-254",
       "doc": "docs/rebuild_plans/30_subsystem_vertex.md",
-      "doc_line": 36,
-      "end": 252,
-      "identifier": "reconstruct_event_vertices",
-      "message": "signature line falls inside cited range",
-      "signature_lines": [
-        163
-      ],
-      "source_path": "vertex.py",
-      "start": 163,
-      "status": "ok"
-    },
-    {
-      "candidate_files": [
-        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/vertex.py"
-      ],
-      "citation": "vertex.py:163-252",
-      "doc": "docs/rebuild_plans/30_subsystem_vertex.md",
-      "doc_line": 77,
-      "end": 252,
-      "identifier": "reconstruct_event_vertices",
-      "message": "signature line falls inside cited range",
-      "signature_lines": [
-        163
-      ],
-      "source_path": "vertex.py",
-      "start": 163,
-      "status": "ok"
-    },
-    {
-      "candidate_files": [
-        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/photon.py"
-      ],
-      "citation": "photon.py:60-201",
-      "doc": "docs/rebuild_plans/31_subsystem_calorimeter_clustering.md",
-      "doc_line": 32,
-      "end": 201,
-      "identifier": "reconstruct_photon_objects",
-      "message": "signature line falls inside cited range",
-      "signature_lines": [
-        60
-      ],
-      "source_path": "photon.py",
-      "start": 60,
-      "status": "ok"
-    },
-    {
-      "candidate_files": [
-        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/photon.py"
-      ],
-      "citation": "photon.py:28-48",
-      "doc": "docs/rebuild_plans/31_subsystem_calorimeter_clustering.md",
-      "doc_line": 35,
-      "end": 48,
-      "identifier": "_weighted_centroid",
-      "message": "signature line falls inside cited range",
-      "signature_lines": [
-        28
-      ],
-      "source_path": "photon.py",
-      "start": 28,
-      "status": "ok"
-    },
-    {
-      "candidate_files": [
-        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/photon.py"
-      ],
-      "citation": "photon.py:60-201",
-      "doc": "docs/rebuild_plans/31_subsystem_calorimeter_clustering.md",
-      "doc_line": 59,
-      "end": 201,
-      "identifier": "reconstruct_photon_objects",
-      "message": "signature line falls inside cited range",
-      "signature_lines": [
-        60
-      ],
-      "source_path": "photon.py",
-      "start": 60,
-      "status": "ok"
-    },
-    {
-      "candidate_files": [
-        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/photon.py"
-      ],
-      "citation": "photon.py:28-48",
-      "doc": "docs/rebuild_plans/31_subsystem_calorimeter_clustering.md",
-      "doc_line": 62,
-      "end": 48,
-      "identifier": "_weighted_centroid",
-      "message": "signature line falls inside cited range",
-      "signature_lines": [
-        28
-      ],
-      "source_path": "photon.py",
-      "start": 28,
-      "status": "ok"
-    },
-    {
-      "candidate_files": [
-        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/photon.py"
-      ],
-      "citation": "photon.py:60-201",
-      "doc": "docs/rebuild_plans/31_subsystem_calorimeter_clustering.md",
       "doc_line": 88,
-      "end": 201,
-      "identifier": "reconstruct_photon_objects",
+      "end": 254,
+      "identifier": "reconstruct_event_vertices",
       "message": "signature line falls inside cited range",
       "signature_lines": [
-        60
+        163
       ],
-      "source_path": "photon.py",
-      "start": 60,
+      "source_path": "nnbar_reconstruction/vertex.py",
+      "start": 163,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/vertex.py"
+      ],
+      "citation": "nnbar_reconstruction/vertex.py:163-254",
+      "doc": "docs/rebuild_plans/30_subsystem_vertex.md",
+      "doc_line": 147,
+      "end": 254,
+      "identifier": "reconstruct_event_vertices",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        163
+      ],
+      "source_path": "nnbar_reconstruction/vertex.py",
+      "start": 163,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/vertex.py"
+      ],
+      "citation": "nnbar_reconstruction/vertex.py:163-254",
+      "doc": "docs/rebuild_plans/30_subsystem_vertex.md",
+      "doc_line": 175,
+      "end": 254,
+      "identifier": "reconstruct_event_vertices",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        163
+      ],
+      "source_path": "nnbar_reconstruction/vertex.py",
+      "start": 163,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/vertex_reco.py"
+      ],
+      "citation": "nnbar_reconstruction/vertex_reco.py:45-87",
+      "doc": "docs/rebuild_plans/30_subsystem_vertex.md",
+      "doc_line": 180,
+      "end": 87,
+      "identifier": "project_tracks_to_foil",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        45
+      ],
+      "source_path": "nnbar_reconstruction/vertex_reco.py",
+      "start": 45,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/vertex_reco.py"
+      ],
+      "citation": "nnbar_reconstruction/vertex_reco.py:90-132",
+      "doc": "docs/rebuild_plans/30_subsystem_vertex.md",
+      "doc_line": 181,
+      "end": 132,
+      "identifier": "aggregate_event_vertices",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        90
+      ],
+      "source_path": "nnbar_reconstruction/vertex_reco.py",
+      "start": 90,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/vertex_reco.py"
+      ],
+      "citation": "nnbar_reconstruction/vertex_reco.py:157-194",
+      "doc": "docs/rebuild_plans/30_subsystem_vertex.md",
+      "doc_line": 183,
+      "end": 194,
+      "identifier": "apply_foil_acceptance",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        157
+      ],
+      "source_path": "nnbar_reconstruction/vertex_reco.py",
+      "start": 157,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/vertex_reco.py"
+      ],
+      "citation": "nnbar_reconstruction/vertex_reco.py:13-18",
+      "doc": "docs/rebuild_plans/30_subsystem_vertex.md",
+      "doc_line": 184,
+      "end": 18,
+      "identifier": "FoilGeometry",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        13
+      ],
+      "source_path": "nnbar_reconstruction/vertex_reco.py",
+      "start": 13,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/tests/test_vertex_reco.py"
+      ],
+      "citation": "tests/test_vertex_reco.py:39-74",
+      "doc": "docs/rebuild_plans/30_subsystem_vertex.md",
+      "doc_line": 187,
+      "end": 74,
+      "identifier": "test_project_tracks_to_foil_emits_plan_30_v3_rows",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        39
+      ],
+      "source_path": "tests/test_vertex_reco.py",
+      "start": 39,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/tests/test_vertex_reco.py"
+      ],
+      "citation": "tests/test_vertex_reco.py:77-100",
+      "doc": "docs/rebuild_plans/30_subsystem_vertex.md",
+      "doc_line": 189,
+      "end": 100,
+      "identifier": "test_aggregate_and_accept_vertices_use_plan_16_geometry_only",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        77
+      ],
+      "source_path": "tests/test_vertex_reco.py",
+      "start": 77,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/tests/test_vertex_reco.py"
+      ],
+      "citation": "tests/test_vertex_reco.py:103-118",
+      "doc": "docs/rebuild_plans/30_subsystem_vertex.md",
+      "doc_line": 191,
+      "end": 118,
+      "identifier": "test_vertex_reco_real_sample_consumes_particle_and_tpc_rows",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        103
+      ],
+      "source_path": "tests/test_vertex_reco.py",
+      "start": 103,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/vertex_reco.py"
+      ],
+      "citation": "nnbar_reconstruction/vertex_reco.py:45-87",
+      "doc": "docs/rebuild_plans/30_subsystem_vertex.md",
+      "doc_line": 218,
+      "end": 87,
+      "identifier": "project_tracks_to_foil",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        45
+      ],
+      "source_path": "nnbar_reconstruction/vertex_reco.py",
+      "start": 45,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/vertex_reco.py"
+      ],
+      "citation": "nnbar_reconstruction/vertex_reco.py:90-132",
+      "doc": "docs/rebuild_plans/30_subsystem_vertex.md",
+      "doc_line": 219,
+      "end": 132,
+      "identifier": "aggregate_event_vertices",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        90
+      ],
+      "source_path": "nnbar_reconstruction/vertex_reco.py",
+      "start": 90,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/vertex_reco.py"
+      ],
+      "citation": "nnbar_reconstruction/vertex_reco.py:157-194",
+      "doc": "docs/rebuild_plans/30_subsystem_vertex.md",
+      "doc_line": 220,
+      "end": 194,
+      "identifier": "apply_foil_acceptance",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        157
+      ],
+      "source_path": "nnbar_reconstruction/vertex_reco.py",
+      "start": 157,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/tests/test_vertex_reco.py"
+      ],
+      "citation": "tests/test_vertex_reco.py:39-74",
+      "doc": "docs/rebuild_plans/30_subsystem_vertex.md",
+      "doc_line": 233,
+      "end": 74,
+      "identifier": "test_project_tracks_to_foil_emits_plan_30_v3_rows",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        39
+      ],
+      "source_path": "tests/test_vertex_reco.py",
+      "start": 39,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/tests/test_vertex_reco.py"
+      ],
+      "citation": "tests/test_vertex_reco.py:77-100",
+      "doc": "docs/rebuild_plans/30_subsystem_vertex.md",
+      "doc_line": 235,
+      "end": 100,
+      "identifier": "test_aggregate_and_accept_vertices_use_plan_16_geometry_only",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        77
+      ],
+      "source_path": "tests/test_vertex_reco.py",
+      "start": 77,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/tests/test_vertex_reco.py"
+      ],
+      "citation": "tests/test_vertex_reco.py:103-118",
+      "doc": "docs/rebuild_plans/30_subsystem_vertex.md",
+      "doc_line": 237,
+      "end": 118,
+      "identifier": "test_vertex_reco_real_sample_consumes_particle_and_tpc_rows",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        103
+      ],
+      "source_path": "tests/test_vertex_reco.py",
+      "start": 103,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/vertex_reco.py"
+      ],
+      "citation": "nnbar_reconstruction/vertex_reco.py:45-87",
+      "doc": "docs/rebuild_plans/30_subsystem_vertex.md",
+      "doc_line": 248,
+      "end": 87,
+      "identifier": "project_tracks_to_foil",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        45
+      ],
+      "source_path": "nnbar_reconstruction/vertex_reco.py",
+      "start": 45,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/vertex_reco.py"
+      ],
+      "citation": "nnbar_reconstruction/vertex_reco.py:157-194",
+      "doc": "docs/rebuild_plans/30_subsystem_vertex.md",
+      "doc_line": 248,
+      "end": 194,
+      "identifier": "apply_foil_acceptance",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        157
+      ],
+      "source_path": "nnbar_reconstruction/vertex_reco.py",
+      "start": 157,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/vertex_reco.py"
+      ],
+      "citation": "nnbar_reconstruction/vertex_reco.py:13-18",
+      "doc": "docs/rebuild_plans/30_subsystem_vertex.md",
+      "doc_line": 250,
+      "end": 18,
+      "identifier": "FoilGeometry",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        13
+      ],
+      "source_path": "nnbar_reconstruction/vertex_reco.py",
+      "start": 13,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/vertex_reco.py"
+      ],
+      "citation": "nnbar_reconstruction/vertex_reco.py:90-132",
+      "doc": "docs/rebuild_plans/30_subsystem_vertex.md",
+      "doc_line": 251,
+      "end": 132,
+      "identifier": "aggregate_event_vertices",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        90
+      ],
+      "source_path": "nnbar_reconstruction/vertex_reco.py",
+      "start": 90,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/vertex.py"
+      ],
+      "citation": "nnbar_reconstruction/vertex.py:163-254",
+      "doc": "docs/rebuild_plans/30_subsystem_vertex.md",
+      "doc_line": 257,
+      "end": 254,
+      "identifier": "reconstruct_event_vertices",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        163
+      ],
+      "source_path": "nnbar_reconstruction/vertex.py",
+      "start": 163,
       "status": "ok"
     },
     {
@@ -295,41 +1689,7 @@
       ],
       "citation": "photon.py:60-201",
       "doc": "docs/rebuild_plans/31_subsystem_calorimeter_clustering.md",
-      "doc_line": 89,
-      "end": 201,
-      "identifier": "reconstruct_photon_objects",
-      "message": "signature line falls inside cited range",
-      "signature_lines": [
-        60
-      ],
-      "source_path": "photon.py",
-      "start": 60,
-      "status": "ok"
-    },
-    {
-      "candidate_files": [
-        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/photon.py"
-      ],
-      "citation": "photon.py:60-201",
-      "doc": "docs/rebuild_plans/31_subsystem_calorimeter_clustering.md",
-      "doc_line": 90,
-      "end": 201,
-      "identifier": "reconstruct_photon_objects",
-      "message": "signature line falls inside cited range",
-      "signature_lines": [
-        60
-      ],
-      "source_path": "photon.py",
-      "start": 60,
-      "status": "ok"
-    },
-    {
-      "candidate_files": [
-        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/photon.py"
-      ],
-      "citation": "photon.py:60-201",
-      "doc": "docs/rebuild_plans/31_subsystem_calorimeter_clustering.md",
-      "doc_line": 91,
+      "doc_line": 31,
       "end": 201,
       "identifier": "reconstruct_photon_objects",
       "message": "signature line falls inside cited range",
@@ -346,7 +1706,211 @@
       ],
       "citation": "photon.py:28-48",
       "doc": "docs/rebuild_plans/31_subsystem_calorimeter_clustering.md",
-      "doc_line": 91,
+      "doc_line": 34,
+      "end": 48,
+      "identifier": "_weighted_centroid",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        28
+      ],
+      "source_path": "photon.py",
+      "start": 28,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/photon.py"
+      ],
+      "citation": "photon.py:60-201",
+      "doc": "docs/rebuild_plans/31_subsystem_calorimeter_clustering.md",
+      "doc_line": 58,
+      "end": 201,
+      "identifier": "reconstruct_photon_objects",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        60
+      ],
+      "source_path": "photon.py",
+      "start": 60,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/photon.py"
+      ],
+      "citation": "photon.py:28-48",
+      "doc": "docs/rebuild_plans/31_subsystem_calorimeter_clustering.md",
+      "doc_line": 60,
+      "end": 48,
+      "identifier": "_weighted_centroid",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        28
+      ],
+      "source_path": "photon.py",
+      "start": 28,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/photon.py"
+      ],
+      "citation": "photon.py:60-201",
+      "doc": "docs/rebuild_plans/31_subsystem_calorimeter_clustering.md",
+      "doc_line": 137,
+      "end": 201,
+      "identifier": "reconstruct_photon_objects",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        60
+      ],
+      "source_path": "photon.py",
+      "start": 60,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/photon.py"
+      ],
+      "citation": "photon.py:60",
+      "doc": "docs/rebuild_plans/31_subsystem_calorimeter_clustering.md",
+      "doc_line": 154,
+      "end": 60,
+      "identifier": "reconstruct_photon_objects",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        60
+      ],
+      "source_path": "photon.py",
+      "start": 60,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/photon.py"
+      ],
+      "citation": "photon.py:60-201",
+      "doc": "docs/rebuild_plans/31_subsystem_calorimeter_clustering.md",
+      "doc_line": 154,
+      "end": 201,
+      "identifier": "reconstruct_photon_objects",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        60
+      ],
+      "source_path": "photon.py",
+      "start": 60,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/photon.py"
+      ],
+      "citation": "photon.py:28",
+      "doc": "docs/rebuild_plans/31_subsystem_calorimeter_clustering.md",
+      "doc_line": 155,
+      "end": 28,
+      "identifier": "_weighted_centroid",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        28
+      ],
+      "source_path": "photon.py",
+      "start": 28,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/photon.py"
+      ],
+      "citation": "photon.py:28-48",
+      "doc": "docs/rebuild_plans/31_subsystem_calorimeter_clustering.md",
+      "doc_line": 155,
+      "end": 48,
+      "identifier": "_weighted_centroid",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        28
+      ],
+      "source_path": "photon.py",
+      "start": 28,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/photon.py"
+      ],
+      "citation": "photon.py:60-201",
+      "doc": "docs/rebuild_plans/31_subsystem_calorimeter_clustering.md",
+      "doc_line": 165,
+      "end": 201,
+      "identifier": "reconstruct_photon_objects",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        60
+      ],
+      "source_path": "photon.py",
+      "start": 60,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/photon.py"
+      ],
+      "citation": "photon.py:60-201",
+      "doc": "docs/rebuild_plans/31_subsystem_calorimeter_clustering.md",
+      "doc_line": 166,
+      "end": 201,
+      "identifier": "reconstruct_photon_objects",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        60
+      ],
+      "source_path": "photon.py",
+      "start": 60,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/photon.py"
+      ],
+      "citation": "photon.py:60-201",
+      "doc": "docs/rebuild_plans/31_subsystem_calorimeter_clustering.md",
+      "doc_line": 167,
+      "end": 201,
+      "identifier": "reconstruct_photon_objects",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        60
+      ],
+      "source_path": "photon.py",
+      "start": 60,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/photon.py"
+      ],
+      "citation": "photon.py:60-201",
+      "doc": "docs/rebuild_plans/31_subsystem_calorimeter_clustering.md",
+      "doc_line": 168,
+      "end": 201,
+      "identifier": "reconstruct_photon_objects",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        60
+      ],
+      "source_path": "photon.py",
+      "start": 60,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/photon.py"
+      ],
+      "citation": "photon.py:28-48",
+      "doc": "docs/rebuild_plans/31_subsystem_calorimeter_clustering.md",
+      "doc_line": 168,
       "end": 48,
       "identifier": "_weighted_centroid",
       "message": "signature line falls inside cited range",
@@ -378,10 +1942,10 @@
       "candidate_files": [
         "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/reconstruction.py"
       ],
-      "citation": "reconstruction.py:14-56",
+      "citation": "reconstruction.py:14-41",
       "doc": "docs/rebuild_plans/32_subsystem_shower_shape.md",
       "doc_line": 37,
-      "end": 56,
+      "end": 41,
       "identifier": "ReconstructionConfig",
       "message": "signature line falls inside cited range",
       "signature_lines": [
@@ -397,7 +1961,41 @@
       ],
       "citation": "photon.py:60-201",
       "doc": "docs/rebuild_plans/32_subsystem_shower_shape.md",
-      "doc_line": 90,
+      "doc_line": 141,
+      "end": 201,
+      "identifier": "reconstruct_photon_objects",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        60
+      ],
+      "source_path": "photon.py",
+      "start": 60,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/photon.py"
+      ],
+      "citation": "photon.py:60",
+      "doc": "docs/rebuild_plans/32_subsystem_shower_shape.md",
+      "doc_line": 155,
+      "end": 60,
+      "identifier": "reconstruct_photon_objects",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        60
+      ],
+      "source_path": "photon.py",
+      "start": 60,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/photon.py"
+      ],
+      "citation": "photon.py:60-201",
+      "doc": "docs/rebuild_plans/32_subsystem_shower_shape.md",
+      "doc_line": 155,
       "end": 201,
       "identifier": "reconstruct_photon_objects",
       "message": "signature line falls inside cited range",
@@ -412,10 +2010,27 @@
       "candidate_files": [
         "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/reconstruction.py"
       ],
-      "citation": "reconstruction.py:14-56",
+      "citation": "reconstruction.py:14",
       "doc": "docs/rebuild_plans/32_subsystem_shower_shape.md",
-      "doc_line": 90,
-      "end": 56,
+      "doc_line": 156,
+      "end": 14,
+      "identifier": "ReconstructionConfig",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        14
+      ],
+      "source_path": "reconstruction.py",
+      "start": 14,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/reconstruction.py"
+      ],
+      "citation": "reconstruction.py:14-41",
+      "doc": "docs/rebuild_plans/32_subsystem_shower_shape.md",
+      "doc_line": 156,
+      "end": 41,
       "identifier": "ReconstructionConfig",
       "message": "signature line falls inside cited range",
       "signature_lines": [
@@ -431,7 +2046,7 @@
       ],
       "citation": "photon.py:60-201",
       "doc": "docs/rebuild_plans/32_subsystem_shower_shape.md",
-      "doc_line": 91,
+      "doc_line": 167,
       "end": 201,
       "identifier": "reconstruct_photon_objects",
       "message": "signature line falls inside cited range",
@@ -448,7 +2063,24 @@
       ],
       "citation": "photon.py:60-201",
       "doc": "docs/rebuild_plans/32_subsystem_shower_shape.md",
-      "doc_line": 94,
+      "doc_line": 168,
+      "end": 201,
+      "identifier": "reconstruct_photon_objects",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        60
+      ],
+      "source_path": "photon.py",
+      "start": 60,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/photon.py"
+      ],
+      "citation": "photon.py:60-201",
+      "doc": "docs/rebuild_plans/32_subsystem_shower_shape.md",
+      "doc_line": 171,
       "end": 201,
       "identifier": "reconstruct_photon_objects",
       "message": "signature line falls inside cited range",
@@ -465,7 +2097,7 @@
       ],
       "citation": "photon.py:60-201",
       "doc": "docs/rebuild_plans/33_subsystem_photon_object.md",
-      "doc_line": 35,
+      "doc_line": 34,
       "end": 201,
       "identifier": "reconstruct_photon_objects",
       "message": "signature line falls inside cited range",
@@ -482,7 +2114,7 @@
       ],
       "citation": "photon.py:60-201",
       "doc": "docs/rebuild_plans/33_subsystem_photon_object.md",
-      "doc_line": 96,
+      "doc_line": 51,
       "end": 201,
       "identifier": "reconstruct_photon_objects",
       "message": "signature line falls inside cited range",
@@ -499,7 +2131,7 @@
       ],
       "citation": "photon.py:60-201",
       "doc": "docs/rebuild_plans/33_subsystem_photon_object.md",
-      "doc_line": 99,
+      "doc_line": 67,
       "end": 201,
       "identifier": "reconstruct_photon_objects",
       "message": "signature line falls inside cited range",
@@ -516,7 +2148,7 @@
       ],
       "citation": "photon.py:60-201",
       "doc": "docs/rebuild_plans/33_subsystem_photon_object.md",
-      "doc_line": 100,
+      "doc_line": 119,
       "end": 201,
       "identifier": "reconstruct_photon_objects",
       "message": "signature line falls inside cited range",
@@ -531,10 +2163,197 @@
       "candidate_files": [
         "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/photon.py"
       ],
-      "citation": "photon.py:204-260",
+      "citation": "photon.py:60-201",
+      "doc": "docs/rebuild_plans/33_subsystem_photon_object.md",
+      "doc_line": 138,
+      "end": 201,
+      "identifier": "reconstruct_photon_objects",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        60
+      ],
+      "source_path": "photon.py",
+      "start": 60,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/photon.py"
+      ],
+      "citation": "photon.py:60-201",
+      "doc": "docs/rebuild_plans/33_subsystem_photon_object.md",
+      "doc_line": 156,
+      "end": 201,
+      "identifier": "reconstruct_photon_objects",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        60
+      ],
+      "source_path": "photon.py",
+      "start": 60,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/photon.py"
+      ],
+      "citation": "photon.py:60",
+      "doc": "docs/rebuild_plans/33_subsystem_photon_object.md",
+      "doc_line": 177,
+      "end": 60,
+      "identifier": "reconstruct_photon_objects",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        60
+      ],
+      "source_path": "photon.py",
+      "start": 60,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/photon.py"
+      ],
+      "citation": "photon.py:60-201",
+      "doc": "docs/rebuild_plans/33_subsystem_photon_object.md",
+      "doc_line": 177,
+      "end": 201,
+      "identifier": "reconstruct_photon_objects",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        60
+      ],
+      "source_path": "photon.py",
+      "start": 60,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/photon.py"
+      ],
+      "citation": "photon.py:60-201",
+      "doc": "docs/rebuild_plans/33_subsystem_photon_object.md",
+      "doc_line": 221,
+      "end": 201,
+      "identifier": "reconstruct_photon_objects",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        60
+      ],
+      "source_path": "photon.py",
+      "start": 60,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/photon.py"
+      ],
+      "citation": "photon.py:60-201",
+      "doc": "docs/rebuild_plans/33_subsystem_photon_object.md",
+      "doc_line": 222,
+      "end": 201,
+      "identifier": "reconstruct_photon_objects",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        60
+      ],
+      "source_path": "photon.py",
+      "start": 60,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/photon.py"
+      ],
+      "citation": "photon.py:60-201",
+      "doc": "docs/rebuild_plans/33_subsystem_photon_object.md",
+      "doc_line": 223,
+      "end": 201,
+      "identifier": "reconstruct_photon_objects",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        60
+      ],
+      "source_path": "photon.py",
+      "start": 60,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/photon.py"
+      ],
+      "citation": "photon.py:60-201",
+      "doc": "docs/rebuild_plans/33_subsystem_photon_object.md",
+      "doc_line": 224,
+      "end": 201,
+      "identifier": "reconstruct_photon_objects",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        60
+      ],
+      "source_path": "photon.py",
+      "start": 60,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/photon.py"
+      ],
+      "citation": "photon.py:60-201",
+      "doc": "docs/rebuild_plans/33_subsystem_photon_object.md",
+      "doc_line": 225,
+      "end": 201,
+      "identifier": "reconstruct_photon_objects",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        60
+      ],
+      "source_path": "photon.py",
+      "start": 60,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/photon.py"
+      ],
+      "citation": "photon.py:60-201",
+      "doc": "docs/rebuild_plans/33_subsystem_photon_object.md",
+      "doc_line": 227,
+      "end": 201,
+      "identifier": "reconstruct_photon_objects",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        60
+      ],
+      "source_path": "photon.py",
+      "start": 60,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/photon.py"
+      ],
+      "citation": "photon.py:60-201",
+      "doc": "docs/rebuild_plans/33_subsystem_photon_object.md",
+      "doc_line": 228,
+      "end": 201,
+      "identifier": "reconstruct_photon_objects",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        60
+      ],
+      "source_path": "photon.py",
+      "start": 60,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/photon.py"
+      ],
+      "citation": "photon.py:204-263",
       "doc": "docs/rebuild_plans/34_subsystem_pi0_pairing.md",
-      "doc_line": 36,
-      "end": 260,
+      "doc_line": 37,
+      "end": 263,
       "identifier": "find_pi0_candidates",
       "message": "signature line falls inside cited range",
       "signature_lines": [
@@ -548,10 +2367,10 @@
       "candidate_files": [
         "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/reconstruction.py"
       ],
-      "citation": "reconstruction.py:14-56",
+      "citation": "reconstruction.py:14-41",
       "doc": "docs/rebuild_plans/34_subsystem_pi0_pairing.md",
-      "doc_line": 60,
-      "end": 56,
+      "doc_line": 38,
+      "end": 41,
       "identifier": "ReconstructionConfig",
       "message": "signature line falls inside cited range",
       "signature_lines": [
@@ -565,44 +2384,146 @@
       "candidate_files": [
         "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/photon.py"
       ],
-      "citation": "photon.py:204-260",
-      "doc": "docs/rebuild_plans/34_subsystem_pi0_pairing.md",
-      "doc_line": 60,
-      "end": 260,
-      "identifier": "find_pi0_candidates",
-      "message": "signature line falls inside cited range",
-      "signature_lines": [
-        204
-      ],
-      "source_path": "photon.py",
-      "start": 204,
-      "status": "ok"
-    },
-    {
-      "candidate_files": [
-        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/reconstruction.py"
-      ],
-      "citation": "reconstruction.py:14-56",
+      "citation": "photon.py:204-263",
       "doc": "docs/rebuild_plans/34_subsystem_pi0_pairing.md",
       "doc_line": 61,
-      "end": 56,
-      "identifier": "ReconstructionConfig",
+      "end": 263,
+      "identifier": "find_pi0_candidates",
       "message": "signature line falls inside cited range",
       "signature_lines": [
-        14
+        204
       ],
-      "source_path": "reconstruction.py",
-      "start": 14,
+      "source_path": "photon.py",
+      "start": 204,
       "status": "ok"
     },
     {
       "candidate_files": [
         "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/photon.py"
       ],
-      "citation": "photon.py:204-260",
+      "citation": "photon.py:204-263",
       "doc": "docs/rebuild_plans/34_subsystem_pi0_pairing.md",
-      "doc_line": 61,
-      "end": 260,
+      "doc_line": 92,
+      "end": 263,
+      "identifier": "find_pi0_candidates",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        204
+      ],
+      "source_path": "photon.py",
+      "start": 204,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/photon.py"
+      ],
+      "citation": "photon.py:204-263",
+      "doc": "docs/rebuild_plans/34_subsystem_pi0_pairing.md",
+      "doc_line": 104,
+      "end": 263,
+      "identifier": "find_pi0_candidates",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        204
+      ],
+      "source_path": "photon.py",
+      "start": 204,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/photon.py"
+      ],
+      "citation": "photon.py:204-263",
+      "doc": "docs/rebuild_plans/34_subsystem_pi0_pairing.md",
+      "doc_line": 108,
+      "end": 263,
+      "identifier": "find_pi0_candidates",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        204
+      ],
+      "source_path": "photon.py",
+      "start": 204,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/photon.py"
+      ],
+      "citation": "photon.py:204-263",
+      "doc": "docs/rebuild_plans/34_subsystem_pi0_pairing.md",
+      "doc_line": 109,
+      "end": 263,
+      "identifier": "find_pi0_candidates",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        204
+      ],
+      "source_path": "photon.py",
+      "start": 204,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/photon.py"
+      ],
+      "citation": "photon.py:204-263",
+      "doc": "docs/rebuild_plans/34_subsystem_pi0_pairing.md",
+      "doc_line": 110,
+      "end": 263,
+      "identifier": "find_pi0_candidates",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        204
+      ],
+      "source_path": "photon.py",
+      "start": 204,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/photon.py"
+      ],
+      "citation": "photon.py:204-263",
+      "doc": "docs/rebuild_plans/34_subsystem_pi0_pairing.md",
+      "doc_line": 111,
+      "end": 263,
+      "identifier": "find_pi0_candidates",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        204
+      ],
+      "source_path": "photon.py",
+      "start": 204,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/photon.py"
+      ],
+      "citation": "photon.py:204-263",
+      "doc": "docs/rebuild_plans/34_subsystem_pi0_pairing.md",
+      "doc_line": 112,
+      "end": 263,
+      "identifier": "find_pi0_candidates",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        204
+      ],
+      "source_path": "photon.py",
+      "start": 204,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/photon.py"
+      ],
+      "citation": "photon.py:204-263",
+      "doc": "docs/rebuild_plans/34_subsystem_pi0_pairing.md",
+      "doc_line": 113,
+      "end": 263,
       "identifier": "find_pi0_candidates",
       "message": "signature line falls inside cited range",
       "signature_lines": [
@@ -616,10 +2537,10 @@
       "candidate_files": [
         "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/reconstruction.py"
       ],
-      "citation": "reconstruction.py:14-56",
+      "citation": "reconstruction.py:14",
       "doc": "docs/rebuild_plans/34_subsystem_pi0_pairing.md",
-      "doc_line": 62,
-      "end": 56,
+      "doc_line": 182,
+      "end": 14,
       "identifier": "ReconstructionConfig",
       "message": "signature line falls inside cited range",
       "signature_lines": [
@@ -627,33 +2548,16 @@
       ],
       "source_path": "reconstruction.py",
       "start": 14,
-      "status": "ok"
-    },
-    {
-      "candidate_files": [
-        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/photon.py"
-      ],
-      "citation": "photon.py:204-260",
-      "doc": "docs/rebuild_plans/34_subsystem_pi0_pairing.md",
-      "doc_line": 62,
-      "end": 260,
-      "identifier": "find_pi0_candidates",
-      "message": "signature line falls inside cited range",
-      "signature_lines": [
-        204
-      ],
-      "source_path": "photon.py",
-      "start": 204,
       "status": "ok"
     },
     {
       "candidate_files": [
         "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/reconstruction.py"
       ],
-      "citation": "reconstruction.py:14-56",
+      "citation": "reconstruction.py:14-41",
       "doc": "docs/rebuild_plans/34_subsystem_pi0_pairing.md",
-      "doc_line": 63,
-      "end": 56,
+      "doc_line": 182,
+      "end": 41,
       "identifier": "ReconstructionConfig",
       "message": "signature line falls inside cited range",
       "signature_lines": [
@@ -667,78 +2571,10 @@
       "candidate_files": [
         "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/photon.py"
       ],
-      "citation": "photon.py:204-260",
+      "citation": "photon.py:204",
       "doc": "docs/rebuild_plans/34_subsystem_pi0_pairing.md",
-      "doc_line": 63,
-      "end": 260,
-      "identifier": "find_pi0_candidates",
-      "message": "signature line falls inside cited range",
-      "signature_lines": [
-        204
-      ],
-      "source_path": "photon.py",
-      "start": 204,
-      "status": "ok"
-    },
-    {
-      "candidate_files": [
-        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/reconstruction.py"
-      ],
-      "citation": "reconstruction.py:14-56",
-      "doc": "docs/rebuild_plans/34_subsystem_pi0_pairing.md",
-      "doc_line": 64,
-      "end": 56,
-      "identifier": "ReconstructionConfig",
-      "message": "signature line falls inside cited range",
-      "signature_lines": [
-        14
-      ],
-      "source_path": "reconstruction.py",
-      "start": 14,
-      "status": "ok"
-    },
-    {
-      "candidate_files": [
-        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/photon.py"
-      ],
-      "citation": "photon.py:204-260",
-      "doc": "docs/rebuild_plans/34_subsystem_pi0_pairing.md",
-      "doc_line": 64,
-      "end": 260,
-      "identifier": "find_pi0_candidates",
-      "message": "signature line falls inside cited range",
-      "signature_lines": [
-        204
-      ],
-      "source_path": "photon.py",
-      "start": 204,
-      "status": "ok"
-    },
-    {
-      "candidate_files": [
-        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/reconstruction.py"
-      ],
-      "citation": "reconstruction.py:14-56",
-      "doc": "docs/rebuild_plans/34_subsystem_pi0_pairing.md",
-      "doc_line": 65,
-      "end": 56,
-      "identifier": "ReconstructionConfig",
-      "message": "signature line falls inside cited range",
-      "signature_lines": [
-        14
-      ],
-      "source_path": "reconstruction.py",
-      "start": 14,
-      "status": "ok"
-    },
-    {
-      "candidate_files": [
-        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/photon.py"
-      ],
-      "citation": "photon.py:204-260",
-      "doc": "docs/rebuild_plans/34_subsystem_pi0_pairing.md",
-      "doc_line": 65,
-      "end": 260,
+      "doc_line": 183,
+      "end": 204,
       "identifier": "find_pi0_candidates",
       "message": "signature line falls inside cited range",
       "signature_lines": [
@@ -752,78 +2588,10 @@
       "candidate_files": [
         "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/photon.py"
       ],
-      "citation": "photon.py:204-260",
+      "citation": "photon.py:204-263",
       "doc": "docs/rebuild_plans/34_subsystem_pi0_pairing.md",
-      "doc_line": 96,
-      "end": 260,
-      "identifier": "find_pi0_candidates",
-      "message": "signature line falls inside cited range",
-      "signature_lines": [
-        204
-      ],
-      "source_path": "photon.py",
-      "start": 204,
-      "status": "ok"
-    },
-    {
-      "candidate_files": [
-        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/reconstruction.py"
-      ],
-      "citation": "reconstruction.py:14-56",
-      "doc": "docs/rebuild_plans/34_subsystem_pi0_pairing.md",
-      "doc_line": 99,
-      "end": 56,
-      "identifier": "ReconstructionConfig",
-      "message": "signature line falls inside cited range",
-      "signature_lines": [
-        14
-      ],
-      "source_path": "reconstruction.py",
-      "start": 14,
-      "status": "ok"
-    },
-    {
-      "candidate_files": [
-        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/photon.py"
-      ],
-      "citation": "photon.py:204-260",
-      "doc": "docs/rebuild_plans/34_subsystem_pi0_pairing.md",
-      "doc_line": 99,
-      "end": 260,
-      "identifier": "find_pi0_candidates",
-      "message": "signature line falls inside cited range",
-      "signature_lines": [
-        204
-      ],
-      "source_path": "photon.py",
-      "start": 204,
-      "status": "ok"
-    },
-    {
-      "candidate_files": [
-        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/photon.py"
-      ],
-      "citation": "photon.py:204-260",
-      "doc": "docs/rebuild_plans/35_subsystem_kinematic_fit.md",
-      "doc_line": 36,
-      "end": 260,
-      "identifier": "find_pi0_candidates",
-      "message": "signature line falls inside cited range",
-      "signature_lines": [
-        204
-      ],
-      "source_path": "photon.py",
-      "start": 204,
-      "status": "ok"
-    },
-    {
-      "candidate_files": [
-        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/photon.py"
-      ],
-      "citation": "photon.py:204-260",
-      "doc": "docs/rebuild_plans/35_subsystem_kinematic_fit.md",
-      "doc_line": 94,
-      "end": 260,
+      "doc_line": 183,
+      "end": 263,
       "identifier": "find_pi0_candidates",
       "message": "signature line falls inside cited range",
       "signature_lines": [
@@ -837,10 +2605,180 @@
       "candidate_files": [
         "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/vertex.py"
       ],
-      "citation": "vertex.py:322-444",
+      "citation": "vertex.py:86",
+      "doc": "docs/rebuild_plans/34_subsystem_pi0_pairing.md",
+      "doc_line": 184,
+      "end": 86,
+      "identifier": "annotate_timing_windows",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        86
+      ],
+      "source_path": "vertex.py",
+      "start": 86,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/vertex.py"
+      ],
+      "citation": "vertex.py:86-160",
+      "doc": "docs/rebuild_plans/34_subsystem_pi0_pairing.md",
+      "doc_line": 184,
+      "end": 160,
+      "identifier": "annotate_timing_windows",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        86
+      ],
+      "source_path": "vertex.py",
+      "start": 86,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/photon.py"
+      ],
+      "citation": "photon.py:204-263",
+      "doc": "docs/rebuild_plans/34_subsystem_pi0_pairing.md",
+      "doc_line": 243,
+      "end": 263,
+      "identifier": "find_pi0_candidates",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        204
+      ],
+      "source_path": "photon.py",
+      "start": 204,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/photon.py"
+      ],
+      "citation": "photon.py:204-263",
+      "doc": "docs/rebuild_plans/34_subsystem_pi0_pairing.md",
+      "doc_line": 246,
+      "end": 263,
+      "identifier": "find_pi0_candidates",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        204
+      ],
+      "source_path": "photon.py",
+      "start": 204,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/vertex.py"
+      ],
+      "citation": "vertex.py:86-160",
+      "doc": "docs/rebuild_plans/34_subsystem_pi0_pairing.md",
+      "doc_line": 247,
+      "end": 160,
+      "identifier": "annotate_timing_windows",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        86
+      ],
+      "source_path": "vertex.py",
+      "start": 86,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/photon.py"
+      ],
+      "citation": "photon.py:204-263",
+      "doc": "docs/rebuild_plans/35_subsystem_kinematic_fit.md",
+      "doc_line": 35,
+      "end": 263,
+      "identifier": "find_pi0_candidates",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        204
+      ],
+      "source_path": "photon.py",
+      "start": 204,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/photon.py"
+      ],
+      "citation": "photon.py:204-263",
+      "doc": "docs/rebuild_plans/35_subsystem_kinematic_fit.md",
+      "doc_line": 165,
+      "end": 263,
+      "identifier": "find_pi0_candidates",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        204
+      ],
+      "source_path": "photon.py",
+      "start": 204,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/photon.py"
+      ],
+      "citation": "photon.py:204",
+      "doc": "docs/rebuild_plans/35_subsystem_kinematic_fit.md",
+      "doc_line": 180,
+      "end": 204,
+      "identifier": "find_pi0_candidates",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        204
+      ],
+      "source_path": "photon.py",
+      "start": 204,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/photon.py"
+      ],
+      "citation": "photon.py:204-263",
+      "doc": "docs/rebuild_plans/35_subsystem_kinematic_fit.md",
+      "doc_line": 180,
+      "end": 263,
+      "identifier": "find_pi0_candidates",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        204
+      ],
+      "source_path": "photon.py",
+      "start": 204,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/photon.py"
+      ],
+      "citation": "photon.py:204-263",
+      "doc": "docs/rebuild_plans/35_subsystem_kinematic_fit.md",
+      "doc_line": 212,
+      "end": 263,
+      "identifier": "find_pi0_candidates",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        204
+      ],
+      "source_path": "photon.py",
+      "start": 204,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/vertex.py"
+      ],
+      "citation": "vertex.py:322-447",
       "doc": "docs/rebuild_plans/36_subsystem_event_variables.md",
       "doc_line": 44,
-      "end": 444,
+      "end": 447,
       "identifier": "summarize_events",
       "message": "signature line falls inside cited range",
       "signature_lines": [
@@ -854,10 +2792,10 @@
       "candidate_files": [
         "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/vertex.py"
       ],
-      "citation": "vertex.py:322-444",
+      "citation": "vertex.py:322-447",
       "doc": "docs/rebuild_plans/36_subsystem_event_variables.md",
       "doc_line": 45,
-      "end": 444,
+      "end": 447,
       "identifier": "summarize_events",
       "message": "signature line falls inside cited range",
       "signature_lines": [
@@ -888,17 +2826,17 @@
       "candidate_files": [
         "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/vertex.py"
       ],
-      "citation": "vertex.py:322-444",
+      "citation": "vertex.py:48-67",
       "doc": "docs/rebuild_plans/36_subsystem_event_variables.md",
-      "doc_line": 46,
-      "end": 444,
-      "identifier": "summarize_events",
+      "doc_line": 47,
+      "end": 67,
+      "identifier": "_directional_energy",
       "message": "signature line falls inside cited range",
       "signature_lines": [
-        322
+        48
       ],
       "source_path": "vertex.py",
-      "start": 322,
+      "start": 48,
       "status": "ok"
     },
     {
@@ -922,23 +2860,6 @@
       "candidate_files": [
         "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/vertex.py"
       ],
-      "citation": "vertex.py:322-444",
-      "doc": "docs/rebuild_plans/36_subsystem_event_variables.md",
-      "doc_line": 48,
-      "end": 444,
-      "identifier": "summarize_events",
-      "message": "signature line falls inside cited range",
-      "signature_lines": [
-        322
-      ],
-      "source_path": "vertex.py",
-      "start": 322,
-      "status": "ok"
-    },
-    {
-      "candidate_files": [
-        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/vertex.py"
-      ],
       "citation": "vertex.py:269-290",
       "doc": "docs/rebuild_plans/36_subsystem_event_variables.md",
       "doc_line": 50,
@@ -950,23 +2871,6 @@
       ],
       "source_path": "vertex.py",
       "start": 269,
-      "status": "ok"
-    },
-    {
-      "candidate_files": [
-        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/vertex.py"
-      ],
-      "citation": "vertex.py:322-444",
-      "doc": "docs/rebuild_plans/36_subsystem_event_variables.md",
-      "doc_line": 50,
-      "end": 444,
-      "identifier": "summarize_events",
-      "message": "signature line falls inside cited range",
-      "signature_lines": [
-        322
-      ],
-      "source_path": "vertex.py",
-      "start": 322,
       "status": "ok"
     },
     {
@@ -990,27 +2894,10 @@
       "candidate_files": [
         "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/vertex.py"
       ],
-      "citation": "vertex.py:322-444",
-      "doc": "docs/rebuild_plans/36_subsystem_event_variables.md",
-      "doc_line": 51,
-      "end": 444,
-      "identifier": "summarize_events",
-      "message": "signature line falls inside cited range",
-      "signature_lines": [
-        322
-      ],
-      "source_path": "vertex.py",
-      "start": 322,
-      "status": "ok"
-    },
-    {
-      "candidate_files": [
-        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/vertex.py"
-      ],
-      "citation": "vertex.py:322-444",
+      "citation": "vertex.py:322-447",
       "doc": "docs/rebuild_plans/36_subsystem_event_variables.md",
       "doc_line": 52,
-      "end": 444,
+      "end": 447,
       "identifier": "summarize_events",
       "message": "signature line falls inside cited range",
       "signature_lines": [
@@ -1024,10 +2911,180 @@
       "candidate_files": [
         "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/vertex.py"
       ],
-      "citation": "vertex.py:322-444",
+      "citation": "vertex.py:322",
       "doc": "docs/rebuild_plans/36_subsystem_event_variables.md",
-      "doc_line": 91,
-      "end": 444,
+      "doc_line": 103,
+      "end": 322,
+      "identifier": "summarize_events",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        322
+      ],
+      "source_path": "vertex.py",
+      "start": 322,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/vertex.py"
+      ],
+      "citation": "vertex.py:322-447",
+      "doc": "docs/rebuild_plans/36_subsystem_event_variables.md",
+      "doc_line": 103,
+      "end": 447,
+      "identifier": "summarize_events",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        322
+      ],
+      "source_path": "vertex.py",
+      "start": 322,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/vertex.py"
+      ],
+      "citation": "vertex.py:48",
+      "doc": "docs/rebuild_plans/36_subsystem_event_variables.md",
+      "doc_line": 104,
+      "end": 48,
+      "identifier": "_directional_energy",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        48
+      ],
+      "source_path": "vertex.py",
+      "start": 48,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/vertex.py"
+      ],
+      "citation": "vertex.py:48-67",
+      "doc": "docs/rebuild_plans/36_subsystem_event_variables.md",
+      "doc_line": 104,
+      "end": 67,
+      "identifier": "_directional_energy",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        48
+      ],
+      "source_path": "vertex.py",
+      "start": 48,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/vertex.py"
+      ],
+      "citation": "vertex.py:255",
+      "doc": "docs/rebuild_plans/36_subsystem_event_variables.md",
+      "doc_line": 105,
+      "end": 255,
+      "identifier": "_sphericity",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        255
+      ],
+      "source_path": "vertex.py",
+      "start": 255,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/vertex.py"
+      ],
+      "citation": "vertex.py:255-266",
+      "doc": "docs/rebuild_plans/36_subsystem_event_variables.md",
+      "doc_line": 105,
+      "end": 266,
+      "identifier": "_sphericity",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        255
+      ],
+      "source_path": "vertex.py",
+      "start": 255,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/vertex.py"
+      ],
+      "citation": "vertex.py:269",
+      "doc": "docs/rebuild_plans/36_subsystem_event_variables.md",
+      "doc_line": 106,
+      "end": 269,
+      "identifier": "_visible_invariant_mass",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        269
+      ],
+      "source_path": "vertex.py",
+      "start": 269,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/vertex.py"
+      ],
+      "citation": "vertex.py:269-290",
+      "doc": "docs/rebuild_plans/36_subsystem_event_variables.md",
+      "doc_line": 106,
+      "end": 290,
+      "identifier": "_visible_invariant_mass",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        269
+      ],
+      "source_path": "vertex.py",
+      "start": 269,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/vertex.py"
+      ],
+      "citation": "vertex.py:86",
+      "doc": "docs/rebuild_plans/36_subsystem_event_variables.md",
+      "doc_line": 107,
+      "end": 86,
+      "identifier": "annotate_timing_windows",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        86
+      ],
+      "source_path": "vertex.py",
+      "start": 86,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/vertex.py"
+      ],
+      "citation": "vertex.py:86-160",
+      "doc": "docs/rebuild_plans/36_subsystem_event_variables.md",
+      "doc_line": 107,
+      "end": 160,
+      "identifier": "annotate_timing_windows",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        86
+      ],
+      "source_path": "vertex.py",
+      "start": 86,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/vertex.py"
+      ],
+      "citation": "vertex.py:322-447",
+      "doc": "docs/rebuild_plans/36_subsystem_event_variables.md",
+      "doc_line": 148,
+      "end": 447,
       "identifier": "summarize_events",
       "message": "signature line falls inside cited range",
       "signature_lines": [
@@ -1043,7 +3100,7 @@
       ],
       "citation": "vertex.py:48-67",
       "doc": "docs/rebuild_plans/36_subsystem_event_variables.md",
-      "doc_line": 93,
+      "doc_line": 149,
       "end": 67,
       "identifier": "_directional_energy",
       "message": "signature line falls inside cited range",
@@ -1058,9 +3115,26 @@
       "candidate_files": [
         "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/vertex.py"
       ],
+      "citation": "vertex.py:322-447",
+      "doc": "docs/rebuild_plans/36_subsystem_event_variables.md",
+      "doc_line": 149,
+      "end": 447,
+      "identifier": "summarize_events",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        322
+      ],
+      "source_path": "vertex.py",
+      "start": 322,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/vertex.py"
+      ],
       "citation": "vertex.py:255-266",
       "doc": "docs/rebuild_plans/36_subsystem_event_variables.md",
-      "doc_line": 94,
+      "doc_line": 150,
       "end": 266,
       "identifier": "_sphericity",
       "message": "signature line falls inside cited range",
@@ -1077,7 +3151,7 @@
       ],
       "citation": "vertex.py:269-290",
       "doc": "docs/rebuild_plans/36_subsystem_event_variables.md",
-      "doc_line": 96,
+      "doc_line": 152,
       "end": 290,
       "identifier": "_visible_invariant_mass",
       "message": "signature line falls inside cited range",
@@ -1094,7 +3168,7 @@
       ],
       "citation": "vertex.py:86-160",
       "doc": "docs/rebuild_plans/36_subsystem_event_variables.md",
-      "doc_line": 98,
+      "doc_line": 153,
       "end": 160,
       "identifier": "annotate_timing_windows",
       "message": "signature line falls inside cited range",
@@ -1109,10 +3183,10 @@
       "candidate_files": [
         "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/vertex.py"
       ],
-      "citation": "vertex.py:322-444",
+      "citation": "vertex.py:322-447",
       "doc": "docs/rebuild_plans/36_subsystem_event_variables.md",
-      "doc_line": 99,
-      "end": 444,
+      "doc_line": 153,
+      "end": 447,
       "identifier": "summarize_events",
       "message": "signature line falls inside cited range",
       "signature_lines": [
@@ -1120,6 +3194,142 @@
       ],
       "source_path": "vertex.py",
       "start": 322,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/vertex.py"
+      ],
+      "citation": "vertex.py:322-447",
+      "doc": "docs/rebuild_plans/36_subsystem_event_variables.md",
+      "doc_line": 154,
+      "end": 447,
+      "identifier": "summarize_events",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        322
+      ],
+      "source_path": "vertex.py",
+      "start": 322,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/vertex.py"
+      ],
+      "citation": "vertex.py:322-447",
+      "doc": "docs/rebuild_plans/36_subsystem_event_variables.md",
+      "doc_line": 203,
+      "end": 447,
+      "identifier": "summarize_events",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        322
+      ],
+      "source_path": "vertex.py",
+      "start": 322,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/vertex.py"
+      ],
+      "citation": "vertex.py:48-67",
+      "doc": "docs/rebuild_plans/36_subsystem_event_variables.md",
+      "doc_line": 205,
+      "end": 67,
+      "identifier": "_directional_energy",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        48
+      ],
+      "source_path": "vertex.py",
+      "start": 48,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/vertex.py"
+      ],
+      "citation": "vertex.py:255-266",
+      "doc": "docs/rebuild_plans/36_subsystem_event_variables.md",
+      "doc_line": 206,
+      "end": 266,
+      "identifier": "_sphericity",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        255
+      ],
+      "source_path": "vertex.py",
+      "start": 255,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/vertex.py"
+      ],
+      "citation": "vertex.py:269-290",
+      "doc": "docs/rebuild_plans/36_subsystem_event_variables.md",
+      "doc_line": 208,
+      "end": 290,
+      "identifier": "_visible_invariant_mass",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        269
+      ],
+      "source_path": "vertex.py",
+      "start": 269,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/vertex.py"
+      ],
+      "citation": "vertex.py:86-160",
+      "doc": "docs/rebuild_plans/36_subsystem_event_variables.md",
+      "doc_line": 210,
+      "end": 160,
+      "identifier": "annotate_timing_windows",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        86
+      ],
+      "source_path": "vertex.py",
+      "start": 86,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/vertex.py"
+      ],
+      "citation": "vertex.py:322-447",
+      "doc": "docs/rebuild_plans/36_subsystem_event_variables.md",
+      "doc_line": 211,
+      "end": 447,
+      "identifier": "summarize_events",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        322
+      ],
+      "source_path": "vertex.py",
+      "start": 322,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/reconstruction.py"
+      ],
+      "citation": "reconstruction.py:14-41",
+      "doc": "docs/rebuild_plans/37_subsystem_event_selection.md",
+      "doc_line": 30,
+      "end": 41,
+      "identifier": "ReconstructionConfig",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        14
+      ],
+      "source_path": "reconstruction.py",
+      "start": 14,
       "status": "ok"
     },
     {
@@ -1128,7 +3338,7 @@
       ],
       "citation": "vertex.py:293-319",
       "doc": "docs/rebuild_plans/37_subsystem_event_selection.md",
-      "doc_line": 30,
+      "doc_line": 32,
       "end": 319,
       "identifier": "_selection_flags",
       "message": "signature line falls inside cited range",
@@ -1143,10 +3353,10 @@
       "candidate_files": [
         "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/vertex.py"
       ],
-      "citation": "vertex.py:322-444",
+      "citation": "vertex.py:322-447",
       "doc": "docs/rebuild_plans/37_subsystem_event_selection.md",
-      "doc_line": 31,
-      "end": 444,
+      "doc_line": 33,
+      "end": 447,
       "identifier": "summarize_events",
       "message": "signature line falls inside cited range",
       "signature_lines": [
@@ -1154,6 +3364,23 @@
       ],
       "source_path": "vertex.py",
       "start": 322,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/selection.py"
+      ],
+      "citation": "selection.py:95-111",
+      "doc": "docs/rebuild_plans/37_subsystem_event_selection.md",
+      "doc_line": 34,
+      "end": 111,
+      "identifier": "cutflow_counts",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        95
+      ],
+      "source_path": "selection.py",
+      "start": 95,
       "status": "ok"
     },
     {
@@ -1161,129 +3388,27 @@
         "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/cli.py",
         "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/ladder/cli.py"
       ],
-      "citation": "cli.py:29-47",
+      "citation": "cli.py:31-32",
       "doc": "docs/rebuild_plans/37_subsystem_event_selection.md",
-      "doc_line": 32,
-      "end": 47,
+      "doc_line": 35,
+      "end": 32,
       "identifier": "_cutflow",
       "message": "signature line falls inside cited range",
       "signature_lines": [
         31
       ],
       "source_path": "cli.py",
-      "start": 29,
+      "start": 31,
       "status": "ok"
     },
     {
       "candidate_files": [
         "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/reconstruction.py"
       ],
-      "citation": "reconstruction.py:14-56",
-      "doc": "docs/rebuild_plans/37_subsystem_event_selection.md",
-      "doc_line": 38,
-      "end": 56,
-      "identifier": "ReconstructionConfig",
-      "message": "signature line falls inside cited range",
-      "signature_lines": [
-        14
-      ],
-      "source_path": "reconstruction.py",
-      "start": 14,
-      "status": "ok"
-    },
-    {
-      "candidate_files": [
-        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/vertex.py"
-      ],
-      "citation": "vertex.py:293-319",
-      "doc": "docs/rebuild_plans/37_subsystem_event_selection.md",
-      "doc_line": 38,
-      "end": 319,
-      "identifier": "_selection_flags",
-      "message": "signature line falls inside cited range",
-      "signature_lines": [
-        293
-      ],
-      "source_path": "vertex.py",
-      "start": 293,
-      "status": "ok"
-    },
-    {
-      "candidate_files": [
-        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/vertex.py"
-      ],
-      "citation": "vertex.py:293-319",
-      "doc": "docs/rebuild_plans/37_subsystem_event_selection.md",
-      "doc_line": 39,
-      "end": 319,
-      "identifier": "_selection_flags",
-      "message": "signature line falls inside cited range",
-      "signature_lines": [
-        293
-      ],
-      "source_path": "vertex.py",
-      "start": 293,
-      "status": "ok"
-    },
-    {
-      "candidate_files": [
-        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/vertex.py"
-      ],
-      "citation": "vertex.py:322-444",
-      "doc": "docs/rebuild_plans/37_subsystem_event_selection.md",
-      "doc_line": 39,
-      "end": 444,
-      "identifier": "summarize_events",
-      "message": "signature line falls inside cited range",
-      "signature_lines": [
-        322
-      ],
-      "source_path": "vertex.py",
-      "start": 322,
-      "status": "ok"
-    },
-    {
-      "candidate_files": [
-        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/vertex.py"
-      ],
-      "citation": "vertex.py:293-319",
-      "doc": "docs/rebuild_plans/37_subsystem_event_selection.md",
-      "doc_line": 40,
-      "end": 319,
-      "identifier": "_selection_flags",
-      "message": "signature line falls inside cited range",
-      "signature_lines": [
-        293
-      ],
-      "source_path": "vertex.py",
-      "start": 293,
-      "status": "ok"
-    },
-    {
-      "candidate_files": [
-        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/vertex.py"
-      ],
-      "citation": "vertex.py:322-444",
-      "doc": "docs/rebuild_plans/37_subsystem_event_selection.md",
-      "doc_line": 40,
-      "end": 444,
-      "identifier": "summarize_events",
-      "message": "signature line falls inside cited range",
-      "signature_lines": [
-        322
-      ],
-      "source_path": "vertex.py",
-      "start": 322,
-      "status": "ok"
-    },
-    {
-      "candidate_files": [
-        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/reconstruction.py"
-      ],
-      "citation": "reconstruction.py:14-56",
+      "citation": "reconstruction.py:14-41",
       "doc": "docs/rebuild_plans/37_subsystem_event_selection.md",
       "doc_line": 41,
-      "end": 56,
+      "end": 41,
       "identifier": "ReconstructionConfig",
       "message": "signature line falls inside cited range",
       "signature_lines": [
@@ -1291,6 +3416,23 @@
       ],
       "source_path": "reconstruction.py",
       "start": 14,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/vertex.py"
+      ],
+      "citation": "vertex.py:322-447",
+      "doc": "docs/rebuild_plans/37_subsystem_event_selection.md",
+      "doc_line": 41,
+      "end": 447,
+      "identifier": "summarize_events",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        322
+      ],
+      "source_path": "vertex.py",
+      "start": 322,
       "status": "ok"
     },
     {
@@ -1312,19 +3454,19 @@
     },
     {
       "candidate_files": [
-        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/reconstruction.py"
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/vertex.py"
       ],
-      "citation": "reconstruction.py:14-56",
+      "citation": "vertex.py:322-447",
       "doc": "docs/rebuild_plans/37_subsystem_event_selection.md",
       "doc_line": 42,
-      "end": 56,
-      "identifier": "ReconstructionConfig",
+      "end": 447,
+      "identifier": "summarize_events",
       "message": "signature line falls inside cited range",
       "signature_lines": [
-        14
+        322
       ],
-      "source_path": "reconstruction.py",
-      "start": 14,
+      "source_path": "vertex.py",
+      "start": 322,
       "status": "ok"
     },
     {
@@ -1346,19 +3488,19 @@
     },
     {
       "candidate_files": [
-        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/reconstruction.py"
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/vertex.py"
       ],
-      "citation": "reconstruction.py:14-56",
+      "citation": "vertex.py:322-447",
       "doc": "docs/rebuild_plans/37_subsystem_event_selection.md",
       "doc_line": 43,
-      "end": 56,
-      "identifier": "ReconstructionConfig",
+      "end": 447,
+      "identifier": "summarize_events",
       "message": "signature line falls inside cited range",
       "signature_lines": [
-        14
+        322
       ],
-      "source_path": "reconstruction.py",
-      "start": 14,
+      "source_path": "vertex.py",
+      "start": 322,
       "status": "ok"
     },
     {
@@ -1376,6 +3518,40 @@
       ],
       "source_path": "vertex.py",
       "start": 293,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/reconstruction.py"
+      ],
+      "citation": "reconstruction.py:14-41",
+      "doc": "docs/rebuild_plans/37_subsystem_event_selection.md",
+      "doc_line": 44,
+      "end": 41,
+      "identifier": "ReconstructionConfig",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        14
+      ],
+      "source_path": "reconstruction.py",
+      "start": 14,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/vertex.py"
+      ],
+      "citation": "vertex.py:322-447",
+      "doc": "docs/rebuild_plans/37_subsystem_event_selection.md",
+      "doc_line": 44,
+      "end": 447,
+      "identifier": "summarize_events",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        322
+      ],
+      "source_path": "vertex.py",
+      "start": 322,
       "status": "ok"
     },
     {
@@ -1397,11 +3573,45 @@
     },
     {
       "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/reconstruction.py"
+      ],
+      "citation": "reconstruction.py:14-41",
+      "doc": "docs/rebuild_plans/37_subsystem_event_selection.md",
+      "doc_line": 45,
+      "end": 41,
+      "identifier": "ReconstructionConfig",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        14
+      ],
+      "source_path": "reconstruction.py",
+      "start": 14,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/vertex.py"
+      ],
+      "citation": "vertex.py:322-447",
+      "doc": "docs/rebuild_plans/37_subsystem_event_selection.md",
+      "doc_line": 45,
+      "end": 447,
+      "identifier": "summarize_events",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        322
+      ],
+      "source_path": "vertex.py",
+      "start": 322,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
         "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/vertex.py"
       ],
       "citation": "vertex.py:293-319",
       "doc": "docs/rebuild_plans/37_subsystem_event_selection.md",
-      "doc_line": 97,
+      "doc_line": 45,
       "end": 319,
       "identifier": "_selection_flags",
       "message": "signature line falls inside cited range",
@@ -1414,20 +3624,379 @@
     },
     {
       "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/reconstruction.py"
+      ],
+      "citation": "reconstruction.py:14-41",
+      "doc": "docs/rebuild_plans/37_subsystem_event_selection.md",
+      "doc_line": 46,
+      "end": 41,
+      "identifier": "ReconstructionConfig",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        14
+      ],
+      "source_path": "reconstruction.py",
+      "start": 14,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/vertex.py"
+      ],
+      "citation": "vertex.py:322-447",
+      "doc": "docs/rebuild_plans/37_subsystem_event_selection.md",
+      "doc_line": 46,
+      "end": 447,
+      "identifier": "summarize_events",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        322
+      ],
+      "source_path": "vertex.py",
+      "start": 322,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/vertex.py"
+      ],
+      "citation": "vertex.py:293-319",
+      "doc": "docs/rebuild_plans/37_subsystem_event_selection.md",
+      "doc_line": 46,
+      "end": 319,
+      "identifier": "_selection_flags",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        293
+      ],
+      "source_path": "vertex.py",
+      "start": 293,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/vertex.py"
+      ],
+      "citation": "vertex.py:293-319",
+      "doc": "docs/rebuild_plans/37_subsystem_event_selection.md",
+      "doc_line": 47,
+      "end": 319,
+      "identifier": "_selection_flags",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        293
+      ],
+      "source_path": "vertex.py",
+      "start": 293,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/selection.py"
+      ],
+      "citation": "selection.py:95-111",
+      "doc": "docs/rebuild_plans/37_subsystem_event_selection.md",
+      "doc_line": 47,
+      "end": 111,
+      "identifier": "cutflow_counts",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        95
+      ],
+      "source_path": "selection.py",
+      "start": 95,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
         "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/cli.py",
         "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/ladder/cli.py"
       ],
-      "citation": "cli.py:29-47",
+      "citation": "cli.py:31-32",
       "doc": "docs/rebuild_plans/37_subsystem_event_selection.md",
-      "doc_line": 97,
-      "end": 47,
+      "doc_line": 47,
+      "end": 32,
       "identifier": "_cutflow",
       "message": "signature line falls inside cited range",
       "signature_lines": [
         31
       ],
       "source_path": "cli.py",
-      "start": 29,
+      "start": 31,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/reconstruction.py"
+      ],
+      "citation": "reconstruction.py:14",
+      "doc": "docs/rebuild_plans/37_subsystem_event_selection.md",
+      "doc_line": 85,
+      "end": 14,
+      "identifier": "ReconstructionConfig",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        14
+      ],
+      "source_path": "reconstruction.py",
+      "start": 14,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/reconstruction.py"
+      ],
+      "citation": "reconstruction.py:14-41",
+      "doc": "docs/rebuild_plans/37_subsystem_event_selection.md",
+      "doc_line": 85,
+      "end": 41,
+      "identifier": "ReconstructionConfig",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        14
+      ],
+      "source_path": "reconstruction.py",
+      "start": 14,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/vertex.py"
+      ],
+      "citation": "vertex.py:293",
+      "doc": "docs/rebuild_plans/37_subsystem_event_selection.md",
+      "doc_line": 86,
+      "end": 293,
+      "identifier": "_selection_flags",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        293
+      ],
+      "source_path": "vertex.py",
+      "start": 293,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/vertex.py"
+      ],
+      "citation": "vertex.py:293-319",
+      "doc": "docs/rebuild_plans/37_subsystem_event_selection.md",
+      "doc_line": 86,
+      "end": 319,
+      "identifier": "_selection_flags",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        293
+      ],
+      "source_path": "vertex.py",
+      "start": 293,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/vertex.py"
+      ],
+      "citation": "vertex.py:322",
+      "doc": "docs/rebuild_plans/37_subsystem_event_selection.md",
+      "doc_line": 87,
+      "end": 322,
+      "identifier": "summarize_events",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        322
+      ],
+      "source_path": "vertex.py",
+      "start": 322,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/vertex.py"
+      ],
+      "citation": "vertex.py:322-447",
+      "doc": "docs/rebuild_plans/37_subsystem_event_selection.md",
+      "doc_line": 87,
+      "end": 447,
+      "identifier": "summarize_events",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        322
+      ],
+      "source_path": "vertex.py",
+      "start": 322,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/selection.py"
+      ],
+      "citation": "selection.py:95",
+      "doc": "docs/rebuild_plans/37_subsystem_event_selection.md",
+      "doc_line": 88,
+      "end": 95,
+      "identifier": "cutflow_counts",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        95
+      ],
+      "source_path": "selection.py",
+      "start": 95,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/selection.py"
+      ],
+      "citation": "selection.py:95-111",
+      "doc": "docs/rebuild_plans/37_subsystem_event_selection.md",
+      "doc_line": 88,
+      "end": 111,
+      "identifier": "cutflow_counts",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        95
+      ],
+      "source_path": "selection.py",
+      "start": 95,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/selection.py"
+      ],
+      "citation": "selection.py:37",
+      "doc": "docs/rebuild_plans/37_subsystem_event_selection.md",
+      "doc_line": 89,
+      "end": 37,
+      "identifier": "evaluate_event_selection",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        37
+      ],
+      "source_path": "selection.py",
+      "start": 37,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/selection.py"
+      ],
+      "citation": "selection.py:37-72",
+      "doc": "docs/rebuild_plans/37_subsystem_event_selection.md",
+      "doc_line": 89,
+      "end": 72,
+      "identifier": "evaluate_event_selection",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        37
+      ],
+      "source_path": "selection.py",
+      "start": 37,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/selection.py"
+      ],
+      "citation": "selection.py:95",
+      "doc": "docs/rebuild_plans/37_subsystem_event_selection.md",
+      "doc_line": 90,
+      "end": 95,
+      "identifier": "cutflow_counts",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        95
+      ],
+      "source_path": "selection.py",
+      "start": 95,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/selection.py"
+      ],
+      "citation": "selection.py:95-111",
+      "doc": "docs/rebuild_plans/37_subsystem_event_selection.md",
+      "doc_line": 90,
+      "end": 111,
+      "identifier": "cutflow_counts",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        95
+      ],
+      "source_path": "selection.py",
+      "start": 95,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/cli.py",
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/ladder/cli.py"
+      ],
+      "citation": "cli.py:31",
+      "doc": "docs/rebuild_plans/37_subsystem_event_selection.md",
+      "doc_line": 91,
+      "end": 31,
+      "identifier": "_cutflow",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        31
+      ],
+      "source_path": "cli.py",
+      "start": 31,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/cli.py",
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/ladder/cli.py"
+      ],
+      "citation": "cli.py:31-32",
+      "doc": "docs/rebuild_plans/37_subsystem_event_selection.md",
+      "doc_line": 91,
+      "end": 32,
+      "identifier": "_cutflow",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        31
+      ],
+      "source_path": "cli.py",
+      "start": 31,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/vertex.py"
+      ],
+      "citation": "vertex.py:293-319",
+      "doc": "docs/rebuild_plans/37_subsystem_event_selection.md",
+      "doc_line": 293,
+      "end": 319,
+      "identifier": "_selection_flags",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        293
+      ],
+      "source_path": "vertex.py",
+      "start": 293,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/selection.py"
+      ],
+      "citation": "selection.py:95-111",
+      "doc": "docs/rebuild_plans/37_subsystem_event_selection.md",
+      "doc_line": 293,
+      "end": 111,
+      "identifier": "cutflow_counts",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        95
+      ],
+      "source_path": "selection.py",
+      "start": 95,
       "status": "ok"
     }
   ],
@@ -1436,9 +4005,9 @@
     "file_not_found": 0,
     "mismatch": 0,
     "missing_identifier": 0,
-    "ok": 84,
+    "ok": 235,
     "skipped": 0,
     "symbol_not_found": 0,
-    "total": 84
+    "total": 235
   }
 }

@@ -36,17 +36,75 @@ on calibration sample). Recorded as DEC entry.
 
 Per plan 24 C.2 schema:
 
+### 1.1 Leaf schema block
+
+Leaf C.2 — dE/dx estimator
+
+- **inputs (Class A):** C.1 charged-candidate rows plus TPC step
+  `Event_ID`, `eDep`, `TrackLength`, `x`, `y`, `z`, `t`,
+  `photons`, `step_info`, and any V.2 path-length/covariance fields
+  used to normalise the step length.
+- **forbidden (Class B):** `Name`, `Track_ID`, `Parent_ID`,
+  `origin_vol_name`, `particle_x`, `particle_y`, `particle_z`.
+- **decision rule:** compute dE/dx from Class A energy deposits and
+  path length only, using the signed estimator and truncation
+  fractions; truth species and truth momentum are excluded until the
+  validation fitter consumes frozen output.
+- **output schema:** `event_id: int`, `charged_candidate_id: int`,
+  `dedx_mev_per_cm: float`, `estimator: str`,
+  `n_steps_used: int`, `path_length_cm: float`,
+  `low_truncation_fraction: float`,
+  `high_truncation_fraction: float`, `calibration_source: str`.
+- **allowed truth use:** `validation_only` for Bethe-Bloch closure,
+  ladder scoring, and calibration residual plots.
+- **downstream consumers:** plans 29, 38, 40, and charged-PID
+  systematics in plan 45.
+
+### 1.2 Column contract
+
 | Class A inputs | Forbidden Class B |
 |---|---|
 | C.1 charged-candidate table; TPC step columns `Event_ID`, `eDep`, `TrackLength`, `x`, `y`, `z`, `t`, `photons`, `step_info` | `Name`, `Track_ID`, `Parent_ID`, `origin_vol_name`, `particle_x`, `particle_y`, `particle_z` |
 
-Current implementation citation: `reconstruct_charged_objects`
-(`charged.py:149-226`, plan 08 §3.4) already emits `dedx`,
+Legacy implementation citation: `reconstruct_charged_objects`
+(`nnbar_reconstruction/charged.py:151-228`, plan 08 §3.4) already emits `dedx`,
 but the value is downstream of the current truth-name candidate gate.
+The live Stage E.1 hook is `reconstruct_dedx_table`
+(`nnbar_reconstruction/dedx.py:91-119`), which consumes V.1 candidate `hit_indices`, calls
+`truncated_mean_dedx` (`nnbar_reconstruction/dedx.py:41-70`), and obtains path increments
+from `_step_lengths` (`nnbar_reconstruction/dedx.py:28-38`) without reading truth labels.
 
 Output schema: `{event_id, charged_candidate_id, dedx_mev_per_cm,
 estimator, n_steps_used, path_length_cm, low_truncation_fraction,
-high_truncation_fraction, calibration_source}`.
+high_truncation_fraction, calibration_source}`. The current live hook
+emits this physics schema; §5 quality columns remain an explicit L3
+follow-up before closure sign-off.
+
+### 1.3 Machine-readable C.2 dE/dx fixture
+
+The C.2 fixture freezes the per-candidate ionisation estimator before
+PID scoring or Bethe-Bloch closure consumes truth labels. It stores one
+row per charged candidate plus a contribution sidecar for the TPC
+samples used by the estimator:
+
+| Fixture field | Meaning / invariant |
+|---|---|
+| `event_id`, `charged_candidate_id` | join key inherited from C.1/V.1 |
+| `estimator_id` | stable method/version label, such as `truncated_mean_v1` |
+| `dedx_mev_per_cm` | finite estimator value, or null with a failure reason |
+| `path_length_cm`, `path_length_source` | positive normalisation length and its source label |
+| `n_steps_used` | number of Class A TPC samples after quality cuts |
+| `low_truncation_fraction`, `high_truncation_fraction` | signed fractions used by the estimator |
+| `truncation_applied` | whether the configured estimator actually removed samples |
+| `dedx_quality_state`, `dedx_failure_reason` | §5 quality contract in machine-readable form |
+| `calibration_source` | provenance label for the calibration constants used |
+
+The contribution sidecar is keyed by `(event_id, charged_candidate_id,
+estimator_id)` and records the ordered TPC sample ids, raw `eDep`, path
+increment, and whether each sample survived truncation. Dropping
+`Name`, `Track_ID`, `Parent_ID`, and validation-only momentum/species
+fields from production input must not change the C.2 fixture; only
+closure residual artifacts may read those validation labels.
 
 ## 2. Calibration anchor
 
@@ -62,7 +120,7 @@ Closure: simulator output should match within 5%.
 
 | Alternative | Source paper / codebase | NNBAR-specific adaptation | Expected ladder leaf delta |
 |---|---|---|---|
-| Arithmetic mean baseline | Existing `reconstruct_charged_objects` (`charged.py:149-226`) | Preserve current `dedx` computation as a reproducibility reference after removing any C.1 truth-name candidate gate. | No intended C.2 gain; establishes the current tail-sensitive baseline for plan 38. |
+| Arithmetic mean baseline | Existing `reconstruct_charged_objects` (`nnbar_reconstruction/charged.py:151-228`) | Preserve current `dedx` computation as a reproducibility reference after removing any C.1 truth-name candidate gate. | No intended C.2 gain; establishes the current tail-sensitive baseline for plan 38. |
 | Truncated mean | Standard TPC PID / ALICE-style charged-particle dE/dx | Sort per-step `eDep / step_length`, drop bottom 10% and top 30%, and record the chosen cut fractions in the C.2 schema. | Expected to improve C.2 stability against Landau tails and reduce C.5 PID confusion. |
 | Landau/MPV fit | TPC cluster-charge Landau-Gaussian fit literature | Use only when a track has enough Class A TPC samples; report fit status and fall back to truncated mean for sparse tracks. | Better high-tail control for long tracks, but limited gain for short NNBAR TPC segments. |
 | Bethe-Bloch residual template | Plan 23 calibration samples plus Bethe-Bloch closure in §3 | Convert dE/dx to species-agnostic residuals versus βγ bins only in calibration/validation; production C.2 remains truth-free. | Improves calibration diagnostics for C.2 but does not by itself replace plan 29 PID scoring. |
@@ -92,14 +150,142 @@ calibration becomes available.
 For now, the simulation produces *unsaturated* dE/dx; this is
 limitation L3 (plan 01 §6) and propagates to plan 45 systematics.
 
-## 5. Acceptance criteria
+## 5. Calibration-quality and DQM handoff
+
+C.2 must expose estimator health separately from the PID decision. The
+quality fields below are written with the dE/dx row and aggregated by
+plan 66 per run:
+
+| Field | Meaning | Consumer |
+|---|---|---|
+| `dedx_quality_state` | `pass`, `warn`, `fail`, or `not_applicable` for the estimator | plans 29, 66 |
+| `dedx_failure_reason` | first blocking reason, if any | plan 47 caveats |
+| `path_length_source` | `v2_covariance`, `class_a_track_length`, or `legacy_span` | plans 26, 38 |
+| `truncation_applied` | whether the signed low/high fractions were used | plan 05 DEC audit |
+| `calibration_residual_fraction` | validation-only Bethe-Bloch residual once closure runs | plan 45 systematics |
+
+Quality semantics:
+
+- `pass` means the dE/dx value is finite, uses a finite positive path
+  length, and records the estimator and truncation fractions.
+- `warn` means the value is finite but uses a degraded path-length source,
+  too few samples for the preferred truncation, or a calibration residual
+  outside the advisory band.
+- `fail` means the estimator is non-finite, has non-positive path length,
+  or depends on a production-forbidden truth species/name gate.
+- `not_applicable` is reserved for candidates rejected before C.2 is
+  attempted.
+
+Plan 29 may consume `dedx_mev_per_cm` only when `dedx_quality_state` is
+`pass` or an explicitly accepted `warn`. A hard PID veto based on these
+quality fields requires a plan 05 decision and a plan 38 C.2/C.5 ladder
+comparison.
+
+## 6. Stage E.1 implementation handoff
+
+For L3's charged-side redesign, C.2 is now a typed estimator seam with
+explicit remaining gates:
+
+1. Input rows come from C.1 candidates, V.2 path-length/covariance
+   outputs when available, and Class A TPC energy-deposit samples. The
+   live hook currently uses V.1 hit indices and Class A step lengths; it
+   must prefer V.2 path-length/covariance once plan 26 exposes the full
+   table.
+2. The arithmetic-mean baseline is preserved as a named reproduction
+   mode; the default production mode is the signed truncated mean once
+   the DEC records its low/high fractions.
+3. The module writes §1 physics fields in one row per charged candidate;
+   L3 still must add `dedx_quality_state`, `dedx_failure_reason`,
+   `path_length_source`, `truncation_applied`, and contribution-sidecar
+   rows before plan 40/45 closure can treat C.2 as complete.
+4. Bethe-Bloch residuals and truth momentum live only in the closure
+   artifact namespace after the production C.2 table is frozen.
+5. Plan 45 receives a calibration nuisance input from the closure
+   residual, not from hand-edited PID thresholds.
+6. Plan 66 consumes dE/dx quality and path-length-source fractions once
+   the §5 fields are present.
+
+### 6.1 L3 target module, functions, and tests
+
+- **Target module:** extend `nnbar_reconstruction/dedx.py`.
+- **Public functions:** `truncated_mean_dedx(steps)` (`nnbar_reconstruction/dedx.py:41-70`)
+  and `reconstruct_dedx_table(candidates, tpc)` (`nnbar_reconstruction/dedx.py:91-119`).
+- **Current unit coverage:** `tests/test_charged_reco.py` already
+  checks the signed truncation behavior in
+  `test_truncated_mean_dedx_drops_plan_27_tails`
+  (`tests/test_charged_reco.py:168-181`) and candidate-hit membership in
+  `test_reconstruct_dedx_table_uses_candidate_hit_membership`
+  (`tests/test_charged_reco.py:184-207`).
+- **Current integration coverage:** the real-output schema path is
+  `test_reconstruct_dedx_table_real_sample_has_plan_27_schema`
+  (`tests/test_charged_reco.py:209-221`), which chains plan-25
+  candidates into `reconstruct_dedx_table`.
+- **Remaining test obligation:** extend those tests for missing or
+  non-positive step lengths, explicit `path_length_source`, and the
+  future `dedx_quality_state` / `dedx_failure_reason` fields once L3
+  exposes them.
+
+### 6.2 Stage E.1 code-gap checklist
+
+The live L3 hook already proves that C.2 can be reconstructed without
+truth labels, but the promoted fixture still needs the explicit quality
+and provenance fields from §1.3/§5. L3 can promote C.2 only after these
+gaps close in `reconstruct_dedx_table` (`nnbar_reconstruction/dedx.py:91-119`) and
+`truncated_mean_dedx` (`nnbar_reconstruction/dedx.py:41-70`):
+
+| Gap | Current live behavior | Required promotion behavior |
+|---|---|---|
+| estimator identity | `estimator=truncated_mean` and `calibration_source=plan27_truncated_mean_v0` are emitted | add a stable `estimator_id` that keys the DEC-approved low/high fractions and calibration source |
+| path provenance | `path_length_cm` is emitted from `TrackLength`, `trackl`, `step_length`, or coordinate deltas | add `path_length_source` so plan 26 and plan 38 can separate covariance-derived, Class-A track-length, and degraded span normalisations |
+| truncation provenance | low/high fractions are emitted, but selected/removed samples are not persisted | add `truncation_applied` plus the contribution sidecar keyed by `(event_id, charged_candidate_id, estimator_id)` |
+| quality state | missing/empty/non-positive paths produce NaN physics values without a machine-readable C.2 state | add `dedx_quality_state` and `dedx_failure_reason` with `pass`, `warn`, `fail`, or `not_applicable` semantics from §5 |
+| validation separation | Bethe-Bloch closure is specified but not linked to the production row id | write closure residuals only after the production row is frozen and key them to `estimator_id` |
+
+Acceptance of this checklist is a plan-side gate, not a request for L0
+to edit L3 code. The matching L3 patch must update
+`test_truncated_mean_dedx_drops_plan_27_tails`
+(`tests/test_charged_reco.py:168-181`),
+`test_reconstruct_dedx_table_uses_candidate_hit_membership`
+(`tests/test_charged_reco.py:184-207`), and
+`test_reconstruct_dedx_table_real_sample_has_plan_27_schema`
+(`tests/test_charged_reco.py:209-221`) so the synthetic and real-output
+chains assert every required C.2 promotion column.
+
+### 6.3 Stage E.1 promotion invariants
+
+The current live hook is a truth-blind C.2 bridge. L3 may replace the
+estimator or path-length source only if these invariants remain explicit
+in the production table and in the plan-27 tests:
+
+| Invariant | Current live behavior | Replacement requirement |
+|---|---|---|
+| truth blindness | `reconstruct_dedx_table` (`nnbar_reconstruction/dedx.py:91-119`) joins V.1 hit membership to Class A TPC energy-deposit rows | output must be unchanged when particle species, truth momentum, parentage, and legacy track ids are absent |
+| estimator identity | `truncated_mean_dedx` (`nnbar_reconstruction/dedx.py:41-70`) emits `estimator=truncated_mean` and `calibration_source=plan27_truncated_mean_v0` | promoted rows must add a stable `estimator_id` that keys truncation fractions, calibration constants, and DEC history |
+| path provenance | `path_length_cm` is derived from Class A length-like fields or coordinate deltas | promoted rows must add `path_length_source` and must not substitute validation-only truth path length into production C.2 |
+| truncation audit | current rows preserve low/high fractions but not selected sample ids | replacement must emit `truncation_applied` and a contribution sidecar keyed by `(event_id, charged_candidate_id, estimator_id)` |
+| quality-state semantics | missing or non-positive path support currently yields null physics values without a machine-readable reason | promoted rows must set `dedx_quality_state` and `dedx_failure_reason` with the §5 `pass`/`warn`/`fail`/`not_applicable` meanings |
+| validation separation | Bethe-Bloch residuals are a closure artifact, not a production input | closure residual rows must join to frozen `estimator_id` rows and never change `dedx_mev_per_cm` after the production table is written |
+
+These invariants are the C.2 promotion gate for L3's implementation
+patch. They keep plan 29 PID and plan 45 calibration nuisances from
+learning hidden truth labels or silently changing the dE/dx estimator
+between calibration and signal samples.
+
+## 7. Acceptance criteria
 
 - §3 closure within 5% across the charged calibration set.
 - §1 truncated-mean cut fractions documented in DEC.
 - §4 saturation limitation noted in plan 47 ledger for any
   high-dE/dx-quoted result.
+- §6 Stage E.1 handoff is actionable for L3: the target public
+  functions, current unit/integration tests, remaining test obligation,
+  promotion invariants, and required C.2 fields (`estimator_id`, `dedx_mev_per_cm`,
+  `path_length_cm`, `path_length_source`, `n_steps_used`, truncation
+  fractions, `truncation_applied`, `dedx_quality_state`,
+  `dedx_failure_reason`, `calibration_source`, and contribution sidecar
+  rows) are all named before replacement promotion.
 
-## 6. Dependencies
+## 8. Dependencies
 
 - **17, 23, 25, 26** — inputs.
 - *Consumed by:* plan 29 (charged PID), plan 38 (ladder leaf C.2).

@@ -32,15 +32,85 @@ Per plan 24 V.3 / V.4 / V.5 schemas:
 | V.4 vertex aggregation | V.3 projection table and covariance / quality fields | truth primary or interaction vertices; `Track_ID`, `Parent_ID`, `Name` | `{event_id, vertex_xyz, vertex_covariance, n_tracks_used, n_tracks_skipped, radial_rms_mm, aggregation_method, vertex_valid}` |
 | V.5 foil acceptance | V.4 vertex table and plan 16 foil radius / half-thickness | truth primary or interaction vertices; `Track_ID`, `Parent_ID`, `Name` | `{event_id, foil_compatible, vertex_valid, vertex_r_mm, vertex_z_mm, foil_geometry_version, acceptance_reason}` |
 
+### 1.1 Leaf schema block — V.3 foil projection
+
+- **inputs (Class A):** V.2 direction rows, anchor coordinates,
+  direction covariance, track quality, and plan 16 foil-plane geometry.
+- **forbidden (Class B):** `Track_ID`, `Parent_ID`, `Name`,
+  `origin_vol_name`, `particle_x`, `particle_y`, `particle_z`, truth
+  `Vx`, truth `Vy`, truth `Vz`.
+- **decision rule:** project each reconstructed track to the signed
+  foil plane using Class A track state and geometry only; mark tracks
+  invalid when the projection is parallel, ill-conditioned, or outside
+  the configured geometry envelope.
+- **output schema:** `event_id: int`, `candidate_id: int`,
+  `projection_xyz: float[3]`, `projection_covariance: float[3,3]`,
+  `projection_valid: bool`, `skipped_reason: str | null`,
+  `source_chi2_ndf: float`.
+- **allowed truth use:** `validation_only` for projection residual
+  plots and ladder scoring after projection output is frozen.
+- **downstream consumers:** V.4, V.5, plans 33, 36, 38, 40, and 47.
+
+### 1.2 Leaf schema block — V.4 vertex aggregation
+
+- **inputs (Class A):** V.3 projection rows, projection covariance,
+  track quality fields, and reconstructed candidate multiplicity.
+- **forbidden (Class B):** truth primary vertices, truth interaction
+  vertices, `Track_ID`, `Parent_ID`, `Name`, and truth origin labels.
+- **decision rule:** aggregate valid Class A projections with the
+  signed mean, covariance-weighted, or adaptive fitter; truth-labelled
+  seed exclusions are forbidden in production.
+- **output schema:** `event_id: int`, `vertex_xyz: float[3]`,
+  `vertex_covariance: float[3,3]`, `n_tracks_used: int`,
+  `n_tracks_skipped: int`, `radial_rms_mm: float`,
+  `aggregation_method: str`, `vertex_valid: bool`.
+- **allowed truth use:** `validation_only` for vertex residuals, pull
+  widths, and plan 38 ladder rows.
+- **downstream consumers:** V.5, plans 33, 36, 38, 40, 43, and 47.
+
+### 1.3 Leaf schema block — V.5 foil acceptance
+
+- **inputs (Class A):** V.4 vertex rows, vertex covariance, plan 16
+  foil radius, foil half-thickness, and geometry/alignment version.
+- **forbidden (Class B):** truth primary vertices, truth interaction
+  vertices, `Track_ID`, `Parent_ID`, `Name`, and truth origin labels.
+- **decision rule:** accept an event as foil-compatible only from the
+  reconstructed vertex and plan 16 geometry constants; no truth-origin
+  label may enter the acceptance gate.
+- **output schema:** `event_id: int`, `foil_compatible: bool`,
+  `vertex_valid: bool`, `vertex_r_mm: float`, `vertex_z_mm: float`,
+  `foil_geometry_version: str`, `acceptance_reason: str`.
+- **allowed truth use:** `validation_only` for acceptance efficiency
+  and closure plots after the V.5 gate output is frozen.
+- **downstream consumers:** plans 36, 38, 41, 43, 45, and 47.
+
 Current implementation citation: the vertex path is implemented by
-`reconstruct_event_vertices` (`vertex.py:163-252`; plan 08 §3.3).
+`reconstruct_event_vertices` (`nnbar_reconstruction/vertex.py:163-254`; plan 08 §3.3).
 It projects valid tracks to `z=0`, averages projections,
 reports radial RMS / skipped counts, and currently excludes some seeds
 with truth `Name`.
 
+### 1.4 Machine-readable vertex fixtures
+
+The vertex path is split into three fixtures so projection, aggregation,
+and foil acceptance can be closure-tested without leaking truth
+vertices into production decisions:
+
+| Fixture | Required fields | Production invariant |
+|---|---|---|
+| V.3 projection | `event_id`, `candidate_id`, `projection_x`, `projection_y`, `projection_z`, covariance components, `projection_valid`, `skipped_reason`, `source_chi2_ndf` | depends only on V.2 state and plan 16 geometry |
+| V.4 vertex | `event_id`, `vertex_x`, `vertex_y`, `vertex_z`, covariance components, `n_tracks_used`, `n_tracks_skipped`, `radial_rms_mm`, `aggregation_method`, `vertex_valid` | truth vertices and truth names are absent from aggregation input |
+| V.5 foil acceptance | `event_id`, `foil_compatible`, `vertex_valid`, `vertex_r_mm`, `vertex_z_mm`, `foil_geometry_version`, `acceptance_reason` | uses plan 16 geometry and plan 60 fiducial profile, not truth origin |
+
+Projection residuals, vertex pulls, and truth foil-origin labels are
+written only to closure artifacts keyed by `(event_id,
+aggregation_method, foil_geometry_version)`. The production V.5 fixture
+is valid only when its consumed V.3/V.4 fixture hashes and geometry tag
+match the manifest used by plan 43 signal efficiency.
+
 ## 2. Current implementation
 
-`reconstruction.py` (plan 08 §3.3):
+`vertex.py` (plan 08 §3.3):
 
 - For each charged candidate (TPC track from plan 25 V.1) with
   valid TPC entry/exit: project to `z=0` plane.
@@ -74,7 +144,7 @@ seeds. Migration:
 
 | Alternative | Source paper / codebase | NNBAR-specific adaptation | Expected ladder leaf delta |
 |---|---|---|---|
-| Mean of projections | Existing `reconstruct_event_vertices` (`vertex.py:163-252`) | Preserve as reproduction baseline; use V.3 projection validity and no truth-name seed exclusion after migration. | Baseline V.4 result; simple but no covariance weighting. |
+| Mean of projections | Existing `reconstruct_event_vertices` (`nnbar_reconstruction/vertex.py:163-254`) | Preserve as reproduction baseline; use V.3 projection validity and no truth-name seed exclusion after migration. | Baseline V.4 result; simple but no covariance weighting. |
 | Billoir χ² fit | Billoir-style covariance-weighted vertex fit | Use V.2/V.3 covariance matrices and plan 16 foil geometry; downweight high-χ² tracks. | Expected to reduce vertex r/z pull width and improve V.5 foil compatibility stability. |
 | Adaptive vertex fit | Kalman/adaptive robust vertex literature | Iterate weights to suppress outlier tracks from secondary interactions or EM conversions. | Potentially best V.4 robustness in shower-rich signal events; higher tuning burden before plan 38 scoring. |
 
@@ -99,13 +169,105 @@ with the geometry constants from plan 16.
    the foil-acceptance gate must use plan 16 geometry constants, not
    truth origin labels.
 
-## 7. Acceptance criteria
+## 7. Stage E.1 implementation handoff
+
+The legacy reproduction hook is `reconstruct_event_vertices`
+(`nnbar_reconstruction/vertex.py:163-254`). It remains useful for comparing against older
+event-level V.4 coordinates, but it groups by `Track_ID` and is no
+longer the preferred plan-30 fixture surface.
+
+The live Stage E.1 fixture hooks are now split in `vertex_reco.py`:
+`project_tracks_to_foil` (`nnbar_reconstruction/vertex_reco.py:45-87`) writes V.3
+projection rows, `aggregate_event_vertices` (`nnbar_reconstruction/vertex_reco.py:90-132`)
+writes V.4 event vertices and covariance, and `apply_foil_acceptance`
+(`nnbar_reconstruction/vertex_reco.py:157-194`) writes the V.5 foil gate from
+`FoilGeometry` (`nnbar_reconstruction/vertex_reco.py:13-18`). The corresponding regression
+coverage lives in `tests/test_vertex_reco.py`: V.3 schema/projection
+rows at `test_project_tracks_to_foil_emits_plan_30_v3_rows`
+(`tests/test_vertex_reco.py:39-74`), geometry-only V.4/V.5 acceptance
+at `test_aggregate_and_accept_vertices_use_plan_16_geometry_only`
+(`tests/test_vertex_reco.py:77-100`), and a real-sample smoke path at
+`test_vertex_reco_real_sample_consumes_particle_and_tpc_rows`
+(`tests/test_vertex_reco.py:103-118`).
+
+Plan-side gates for the L3 implementation:
+
+1. Consume V.2 fit rows and plan 16 geometry through the split
+   Stage E.1 hooks instead of reopening raw `Track_ID` groupings.
+2. Keep the separate V.3, V.4, and V.5 fixtures aligned with the §1.4
+   fields and add hashes of the consumed V.2 fit table and geometry
+   side-car before plan 47 consumes them.
+3. Preserve the mean-of-projections result as a named reproduction
+   mode; any Billoir or adaptive fitter promotion needs a plan 38 V.4
+   ladder row and a plan 05 decision entry.
+4. Keep truth vertices and truth origin labels out of production V.3,
+   V.4, and V.5 rows. They may appear only in closure artifacts after
+   the production fixtures are frozen.
+5. Extend `tests/test_vertex_reco.py` so dropping `Name`, `Track_ID`,
+   and truth vertex columns cannot change the production V.5
+   foil-acceptance decision.
+6. Plan 60 consumes `foil_geometry_version`, vertex edge distances,
+   and fiducial-profile states once the V.5 fixture is present.
+
+### 7.1 Stage E.1 code-gap checklist
+
+The live split hooks already produce V.3, V.4, and V.5 fixture rows,
+but promotion to the plan-47/43 surface still needs explicit
+provenance and truth-invariance coverage. L3 can promote the plan-30
+fixture chain only after these gaps close across `project_tracks_to_foil`
+(`nnbar_reconstruction/vertex_reco.py:45-87`), `aggregate_event_vertices`
+(`nnbar_reconstruction/vertex_reco.py:90-132`), and `apply_foil_acceptance`
+(`nnbar_reconstruction/vertex_reco.py:157-194`):
+
+| Gap | Current live behavior | Required promotion behavior |
+|---|---|---|
+| consumed-input hashes | fixtures are computed from V.2 rows and geometry but do not store hashes | add V.2 table hash, projection table hash, and geometry side-car hash before plan 47 consumes V.5 |
+| covariance shape | projection and vertex covariance are stored as vectors | either expand to the component fields in §1.4 or document the deterministic vector order consumed by plans 40 and 43 |
+| fitter identity | `aggregation_method=mean_projection` is emitted | keep this reproduction mode stable and require a plan 38 row plus plan 05 decision before Billoir/adaptive promotion |
+| invalid-state provenance | projection and foil gates emit reasons, while invalid V.4 rows carry only `vertex_valid=false` | add or document the V.4 invalid reason so plan 47 caveats do not infer it from missing coordinates |
+| truth-invariance test | current tests prove geometry-only acceptance but not Class B-drop invariance | extend tests so dropping `Name`, `Track_ID`, truth vertices, and truth origin labels cannot change V.3/V.4/V.5 production rows |
+
+Acceptance of this checklist is a plan-side gate, not a request for L0
+to edit L3 code. The matching L3 patch must update
+`test_project_tracks_to_foil_emits_plan_30_v3_rows`
+(`tests/test_vertex_reco.py:39-74`),
+`test_aggregate_and_accept_vertices_use_plan_16_geometry_only`
+(`tests/test_vertex_reco.py:77-100`), and
+`test_vertex_reco_real_sample_consumes_particle_and_tpc_rows`
+(`tests/test_vertex_reco.py:103-118`) so synthetic and real-output
+chains assert the provenance and truth-invariance fields.
+
+### 7.2 Stage E.1 promotion invariants
+
+The split V.3/V.4/V.5 hooks are the production fixture boundary for
+vertexing. L3 may replace the projection or aggregation algorithms only
+if these invariants survive in the fixture rows and regression tests:
+
+| Invariant | Current live behavior | Replacement requirement |
+|---|---|---|
+| truth blindness | `project_tracks_to_foil` (`nnbar_reconstruction/vertex_reco.py:45-87`) consumes V.2 fit rows, and `apply_foil_acceptance` (`nnbar_reconstruction/vertex_reco.py:157-194`) consumes geometry | V.3/V.4/V.5 rows must be unchanged when `Track_ID`, truth vertices, truth origin labels, and particle names are dropped |
+| fixture separation | projection, event-vertex, and foil-acceptance rows are emitted by separate hooks | replacements must keep V.3, V.4, and V.5 fixtures separately materialized and hash the consumed upstream table for each stage |
+| geometry provenance | `FoilGeometry` (`nnbar_reconstruction/vertex_reco.py:13-18`) supplies radius, half-thickness, and version | promoted V.5 rows must carry `foil_geometry_version` plus the plan 60 geometry side-car hash and edge-distance fields |
+| aggregation identity | `aggregate_event_vertices` (`nnbar_reconstruction/vertex_reco.py:90-132`) emits `aggregation_method=mean_projection` | Billoir or adaptive fits must version the aggregation method and land only after a plan 38 V.4 row plus plan 05 decision |
+| covariance semantics | current projection and vertex covariance fields are flattened vectors | promoted rows must either expand component fields or publish a deterministic vector order consumed by plans 40 and 43 |
+| invalid-state visibility | projection and acceptance reasons are explicit, while invalid V.4 rows rely on `vertex_valid=false` | replacements must expose a V.4 invalid reason so plan 47 caveats and plan 66 DQM do not infer failure modes from null coordinates |
+
+These invariants keep the vertex fixture chain independent from closure
+truth and from the legacy `reconstruct_event_vertices`
+(`nnbar_reconstruction/vertex.py:163-254`) reproduction hook.
+
+## 8. Acceptance criteria
 
 - §3 migration complete.
 - §4 ladder benchmark recorded.
 - §6 closure passes.
+- §7 Stage E.1 handoff is actionable for L3: the legacy reproduction
+  hook, split V.3/V.4/V.5 fixture hooks, promotion invariants, and
+  vertex-reco regression tests are cited; the fixtures remain split
+  from closure artifacts; and vertex-reco tests must prove the foil
+  gate is invariant to dropping Class B truth columns.
 
-## 8. Dependencies
+## 9. Dependencies
 
 - **16, 17, 24, 25, 26, 38, 40** — inputs.
 - *Consumed by:* plans 33 (photon direction needs vertex), 36
