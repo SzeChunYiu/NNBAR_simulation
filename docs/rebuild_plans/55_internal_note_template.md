@@ -133,7 +133,7 @@ is a small matrix, not a prose judgement, so omissions are visible in CI.
 | reviewer question coverage | any annex row has `applicability: applies` | at least one plan-51 question id is listed |
 | defence package handoff | any note quotes a final EM/selection number | plan-50 overlay id and package revision are recorded |
 | package freshness | any note quotes a final EM/selection number | plan-50 staleness status is `current` or the note carries the stale-package caveat |
-| rerun reproducibility | any note says an artifact was refreshed | plan-52 rerun manifest row id, execution transcript row id, and output hash are recorded |
+| rerun reproducibility | any note says an artifact was refreshed | plan-52 rerun manifest row id, execution transcript row id, command-template id, and output hash are recorded |
 | CI transcript | any note is promoted after Stage E.3 starts | plan-53 L1 report id is recorded |
 | glossary consistency | any annex introduces shorthand | plan-56 glossary audit row is recorded |
 
@@ -141,8 +141,9 @@ The note may still be circulated internally with incomplete rows, but it
 cannot be used as thesis evidence until every applicable checklist item
 is either satisfied or explicitly blocked with the same blocker text used
 in the plan-50 defence package. When a note says an artifact was refreshed,
-the annex must point to both the intended rerun manifest and the execution
-transcript so readers can distinguish planned coverage from completed work.
+the annex must point to the intended rerun manifest, the execution
+transcript, and the command-template id so readers can distinguish planned
+coverage, completed work, and the verified command contract used for replay.
 A note may cite a stale package only as historical provenance; thesis-facing
 numeric claims require a current package or an explicit stale-package caveat
 in §8 Reviewer notes.
@@ -165,8 +166,8 @@ cite plans by ID.
   reproduction, Ch 10 selection reproduction.
 - Stage E.3 notes that quote L1 EM, selection, timing, pile-up,
   strange-background, or Bayesian-limit evidence satisfy the §1.3
-  checklist, including rerun transcript links for refreshed artifacts
-  and package freshness evidence for quoted numbers.
+  checklist, including rerun transcript and command-template links for
+  refreshed artifacts and package freshness evidence for quoted numbers.
 
 ## 4. Dependencies
 
