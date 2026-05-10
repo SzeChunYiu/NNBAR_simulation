@@ -10,7 +10,7 @@ outputs:
 acceptance:
   - {test: efficiency factorisation produced (acceptance, reconstruction, selection) per stage, method: §1 deliverable, pass_when: each stage quantified}
   - {test: per-final-state-channel breakdown reported, method: §2 deliverable, pass_when: ≥ 5 channels}
-  - {test: licentiate "≈ 70% signal acceptance" reproduced after reconstruction × selection, method: ledger row, pass_when: reproduces within stat unc}
+  - {test: licentiate "≈ 70% signal acceptance" reproduced after reconstruction × selection, method: ledger row plus §3.1 gates, pass_when: LIC-CH10-NUM-1 is green or yellow under plan 47 §2}
 risks:
   - {risk: per-channel efficiency is correlated; sum is not factorisable simply, mitigation: §1 explicit covariance reporting}
 estimated_effort: M
