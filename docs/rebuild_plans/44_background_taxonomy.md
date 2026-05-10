@@ -118,6 +118,30 @@ Example records:
 DECs in §1 are still unsigned. The flag flips only when the relevant DEC
 and plan-47 reproduction row both exist.
 
+### 1.3 Machine-readable rate-result fixture
+
+Each reconstruction campaign emits one result row per registered §1
+node. This row is separate from the static node fixture so repeated
+samples, systematic throws, and plan-37 retunes cannot overwrite the
+background definition:
+
+| Field | Required content | Review rule |
+|---|---|---|
+| `node_id` | dotted key from §1.2 | must resolve to exactly one background node |
+| `sample_id` | sample used for this campaign | must match the node or an approved systematic cross-check |
+| `selection_config_id` | plan-37 cut-flow or retune id | distinguishes Ch 10 baseline from retuned studies |
+| `events_generated` | denominator after sample-quality gates | zero or null denominators are invalid for rate rows |
+| `n_survivors_after_plan37` | post-selection survivor count | counted after the same plan-37 boundary for all nodes |
+| `survival_fraction` | survivor count divided by denominator | quote with plan-04 interval, never as an exact zero |
+| `interval_method` | `feldman_cousins_90cl` or plan-04 approved alternative | zero-survivor rows must use F-C |
+| `epsilon90` | upper limit when survivors are zero | required before a zero-survivor claim reaches plan 46 |
+| `expected_rate` | folded exposure or per-pulse rate, if authorised | null until the relevant rate-source DEC is signed |
+| `rate_included_in_b` | boolean copied to plan 46 | true only for authorised, caveat-reviewed rows |
+
+Plan 46 may sum `expected_rate` into `b` only from rows with
+`rate_included_in_b = true`; all other rows remain caveats or validation
+artifacts in plan 47 and plan 50.
+
 ## 2. Zero-survivor handling
 
 Per plan 04 §5: never quote `0 / N = 0`. Every zero-survivor channel
