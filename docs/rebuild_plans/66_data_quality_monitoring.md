@@ -310,8 +310,9 @@ L3/software handoff requirements:
   and rationale for each required DQM variable.
 - §4 artifacts include one run row per registry run and a dataset-level
   `quality_status` summary.
-- §5 procedure uses only help-verified existing CLI surface plus the
-  future help-verified DQM producer gate.
+- §5 procedure uses only help-verified existing CLI surface, including
+  the current `dqm` producer; validation/registry joins remain separate
+  software requirements until their surfaces are help-verified.
 - §6 CI hooks define trigger and failure behavior.
 - §7 registry handoff field is specified without editing plan 03 in L0.
 - §8 consumers distinguish DQM status from analysis closure.
