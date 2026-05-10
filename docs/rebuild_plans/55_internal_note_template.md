@@ -185,6 +185,7 @@ l1_note_annex:
         rerun_manifest: plan52:Pile-up L11 overlay
         rerun_transcript: plan52:pileup_l11:transcript-or-null
         command_template_id: blocked_missing_input_v1
+        command_template_verifier: null
         glossary_audit: <plan56-audit-id>
         staleness_summary: <plan50-staleness-id>
         archive_inventory: <plan54-inventory-id-or-null>
@@ -196,6 +197,7 @@ l1_note_annex:
         ci_report: sha256:<hash-or-null>
         rerun_manifest: sha256:<hash-or-null>
         rerun_transcript: sha256:<hash-or-null>
+        command_template_verifier: null
         glossary_audit: sha256:<hash-or-null>
         archive_inventory: sha256:<hash-or-null>
         archive_drill: sha256:<hash-or-null>
@@ -218,6 +220,7 @@ l1_note_annex:
         rerun_manifest: plan52:Strange V0 contamination
         rerun_transcript: plan52:strange_v0:transcript-or-null
         command_template_id: blocked_missing_input_v1
+        command_template_verifier: null
         glossary_audit: <plan56-audit-id>
         staleness_summary: <plan50-staleness-id>
         archive_inventory: <plan54-inventory-id-or-null>
@@ -229,6 +232,7 @@ l1_note_annex:
         ci_report: sha256:<hash-or-null>
         rerun_manifest: sha256:<hash-or-null>
         rerun_transcript: sha256:<hash-or-null>
+        command_template_verifier: null
         glossary_audit: sha256:<hash-or-null>
         archive_inventory: sha256:<hash-or-null>
         archive_drill: sha256:<hash-or-null>
@@ -251,6 +255,7 @@ l1_note_annex:
         rerun_manifest: plan52:TOF timing closure
         rerun_transcript: plan52:tof_timing:transcript-or-null
         command_template_id: blocked_missing_input_v1
+        command_template_verifier: null
         glossary_audit: <plan56-audit-id>
         staleness_summary: <plan50-staleness-id>
         archive_inventory: <plan54-inventory-id-or-null>
@@ -262,6 +267,7 @@ l1_note_annex:
         ci_report: sha256:<hash-or-null>
         rerun_manifest: sha256:<hash-or-null>
         rerun_transcript: sha256:<hash-or-null>
+        command_template_verifier: null
         glossary_audit: sha256:<hash-or-null>
         archive_inventory: sha256:<hash-or-null>
         archive_drill: sha256:<hash-or-null>
@@ -285,6 +291,7 @@ l1_note_annex:
         rerun_manifest: plan52:Bayesian limit cross-check
         rerun_transcript: plan52:bayesian_limits:transcript-or-null
         command_template_id: blocked_missing_input_v1
+        command_template_verifier: null
         glossary_audit: <plan56-audit-id>
         staleness_summary: <plan50-staleness-id>
         archive_inventory: <plan54-inventory-id-or-null>
@@ -296,6 +303,7 @@ l1_note_annex:
         ci_report: sha256:<hash-or-null>
         rerun_manifest: sha256:<hash-or-null>
         rerun_transcript: sha256:<hash-or-null>
+        command_template_verifier: null
         glossary_audit: sha256:<hash-or-null>
         archive_inventory: sha256:<hash-or-null>
         archive_drill: sha256:<hash-or-null>
@@ -318,6 +326,7 @@ l1_note_annex:
         rerun_manifest: plan52:Unbounded caveat status
         rerun_transcript: plan52:unbounded_caveats:transcript-or-null
         command_template_id: blocked_missing_input_v1
+        command_template_verifier: null
         glossary_audit: <plan56-audit-id>
         staleness_summary: <plan50-staleness-id>
         archive_inventory: <plan54-inventory-id-or-null>
@@ -329,6 +338,7 @@ l1_note_annex:
         ci_report: sha256:<hash-or-null>
         rerun_manifest: sha256:<hash-or-null>
         rerun_transcript: sha256:<hash-or-null>
+        command_template_verifier: null
         glossary_audit: sha256:<hash-or-null>
         archive_inventory: sha256:<hash-or-null>
         archive_drill: sha256:<hash-or-null>
