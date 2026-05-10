@@ -233,6 +233,21 @@ charged/neutral daughter efficiency, mass-window calibration, and
 signal-efficiency loss from any veto. Truth labels may enrich closure
 samples but cannot drive production V0 decisions.
 
+The Wave-6 strange-channel derivation ledger is:
+
+| Strange leaf | Truth-side quantity | Estimator rationale | Dominant uncertainty | Closure assertion |
+|---|---|---|---|---|
+| `strange.ks0_charged` | K_S^0 production times `K_S^0 -> pi+ pi-` decay survival after selection | displaced two-prong V0 mass, DCA, and pointing observables directly test the charged K_S^0 topology without truth labels | production yield and V0 mass/window calibration | K_S sideband closure records signal loss and residual survivors before any rate enters plan 44 |
+| `strange.ks0_neutral` | K_S^0 production times `K_S^0 -> pi0 pi0` EM leakage | four-photon/pi0-like final states are audited through plan-34/37 EM and visible-mass leaves | photon pairing and neutral-energy response | neutral K_S rows cite P.5/P.6 closure and remain separate from charged V0 rows |
+| `strange.lambda_charged` | Lambda production times `Lambda -> p pi-` survival | p/pi mass hypothesis plus displaced vertex is the canonical Lambda V0 signature | proton/pion PID leakage and vertex resolution | Lambda-enriched slice must pass sidecar-drop and signal-loss checks |
+| `strange.lambda_neutral` | Lambda production times `Lambda -> n pi0` leakage | neutral leg plus pi0-like EM energy tests strange decays that do not form a charged V0 pair | neutron/gamma response and pi0 reconstruction | neutral-Lambda rows stay blocked until neutral-object closure and production yield exist |
+| `strange.sigma_chain` | Sigma production feeding pions, neutrons, gammas, or Lambda daughters | Sigma modes are treated as parent-chain hypotheses whose visible daughters map to V0, neutral-leg, and timing observables | branching chain composition and production under-sampling | Sigma rows report chain id and cannot reuse Lambda/K_S yields as production rates |
+
+These leaves keep decay branching, production yield, reconstruction
+survival, and plan-37 survivor intervals as separate factors. A
+strange-contamination row becomes a background-rate input only when all
+four factors are present with intervals and signed source conventions.
+
 #### Logic gaps
 
 | Parameter | Status before production | Closure study / target date |
