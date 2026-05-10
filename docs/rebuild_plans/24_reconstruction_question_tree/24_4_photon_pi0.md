@@ -65,6 +65,26 @@ Leaf P.1: calorimeter hits → neutral/EM cluster candidates
   allowed truth use: validation_only
   downstream consumers: P.2, P.3, P.4, P.5; plans 31, 32, 33, 34
 
+Leaf P.2: clusters + charged tracks → photon-like discriminant
+  inputs (Class A): P.1 cluster table, C.1/C.4 charged-candidate
+                    and scintillator-association tables, cluster
+                    timing, shower-shape observables, and geometry
+                    side-cars
+  forbidden (Class B): Track_ID, Parent_ID, Name, origin_vol_name,
+                       truth charge-match labels, Interaction ancestry
+  decision rule: tag a cluster as charged when a reconstructed charged
+                 track points to it within the plan 08 §3.5 angular and
+                 timing windows; a photon-like cluster is a neutral
+                 cluster passing shower-shape and charged-veto cuts.
+  output schema: {event_id: int64, cluster_id: int64,
+                  photon_like: bool, charged_veto: bool,
+                  neutral_score: float64, charged_match_candidate_id:
+                  int64, match_angle_deg: float64,
+                  match_time_residual_ns: float64,
+                  discriminant_version: string}
+  allowed truth use: validation_only
+  downstream consumers: P.3, P.4, P.5, P.6; plans 32, 33, 34
+
 ### Next measurement (photon / π⁰ branch)
 
 Truth-free clustering closure study on `cal_singlegamma_v1` (plan 23)
