@@ -75,8 +75,8 @@ ledger result cites the affected plan.
 |---|---|---|---|---|---|
 | `RQ-L1-EM-P1-CLUSTERING` | How do we know the neutral-shower clusterer is not using truth Track_ID grouping? | realism | plans 31, 38, 57 | Class-B drop hash plus P.1 closure rows | open until measured |
 | `RQ-L1-EM-P2-DISCRIMINANT` | Is the charged/neutral discriminator calibrated, or just a hard-cone reproduction rule? | method | plans 32, 38, 57 | ROC/AUC bundle, threshold DEC, and calibration artifact | open until closure |
-| `RQ-L1-PI0-CUTS` | Are the six pi0 selection cuts decomposed into individual pass columns? | reproducibility | plans 34, 37, 47 | per-cut fixture and Ch 8/Ch 10 ledger row | answered by plan schema, pending data |
-| `RQ-L1-SELECTION-CUTFLOW` | Does the Ch 10 cut-flow use the current canonical singular `pass_*` columns? | reproducibility | plans 37, 47 | cut-flow identity table and cumulative-count artifact | answered by plan 37, pending ledger |
+| `RQ-L1-PI0-CUTS` | Are the six pi0 selection cuts decomposed into individual pass columns? | reproducibility | plans 34, 37, 47 | per-cut fixture and Ch 8/Ch 10 ledger row | open until ledger/package artifact |
+| `RQ-L1-SELECTION-CUTFLOW` | Does the Ch 10 cut-flow use the current canonical singular `pass_*` columns? | reproducibility | plans 37, 47 | cut-flow identity table and cumulative-count artifact | open until ledger/package artifact |
 | `RQ-L1-PILEUP-L11` | Can signal plus cosmic or beam pile-up change the quoted acceptance? | systematics | plans 01, 58, 44, 45 | paired overlay closure and L11 caveat status | open until plan 58 closure |
 | `RQ-L1-STRANGE-BARYON` | Could K_S, Lambda, or Sigma production in beam-neutron material fake the signal? | physics | plans 14, 22, 44, 59 | Lambda-enriched V0 rejection closure and residual interval | open until enriched slice exists |
 | `RQ-L1-TOF` | Does timing add real cosmic rejection once detector resolution is included? | method | plans 36, 41, 45, 61 | TOF ROC, nonzero resolution budget, and signal-loss interval | open until closure |
