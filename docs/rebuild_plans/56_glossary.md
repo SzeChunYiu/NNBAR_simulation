@@ -160,6 +160,11 @@ l1_glossary_audit:
         - note_annex
       required_link_keys:
         - overlay_rollup
+        - owner_signoff_refs
+        - rerun_manifest
+        - rerun_transcript
+        - command_template_ids
+        - command_template_verifier_hashes
         - staleness_summary
         - ci_report
         - archive_inventory
