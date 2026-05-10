@@ -49,22 +49,25 @@ Non-goals:
 
 ## 2. Current state and verified source hooks
 
-The live reconstruction has no standalone fiducial-volume helper yet.
-The current orchestration path is `reconstruct_run`
-(`reconstruction.py:59-83`), which loads one run, builds charged,
+The live reconstruction has no detector-wide fiducial-volume helper
+yet. The current orchestration path is `reconstruct_run`
+(`reconstruction.py:60-87`), which loads one run, builds charged,
 vertex, photon, pi0, and event tables, and returns those named tables.
 The numeric reconstruction defaults live in `ReconstructionConfig`
-(`reconstruction.py:14-46`). Those defaults include selection and
+(`reconstruction.py:14-48`). Those defaults include selection and
 matching thresholds but do not define a detector-wide fiducial-volume
 contract.
 
-The current vertex path is `reconstruct_event_vertices`
+The legacy vertex path is `reconstruct_event_vertices`
 (`vertex.py:163-254`). It groups TPC rows by event and track id,
 projects each valid line to `z=0`, averages valid projections per
-event, and reports radial spread plus skipped-track counts. This is a
-useful V.4 baseline, but it is not yet a complete V.5 fiducial gate:
-it does not attach a foil radius, z half-thickness, covariance-aware
-edge buffer, or geometry-version field.
+event, and reports radial spread plus skipped-track counts. The split
+plan-30 foil gate is `apply_foil_acceptance` (`vertex_reco.py:157-194`),
+fed by `FoilGeometry` (`vertex_reco.py:13-18`). It provides the
+observable-only V.5 foil compatibility row, but plan 60 still owns the
+detector-wide fiducial contract: TPC containment, scintillator and
+lead-glass coverage, covariance-aware edge buffers, and common
+geometry-version provenance.
 
 Event-level fields are written by `summarize_events`
 (`vertex.py:322-447`). It records vertex coordinates, calorimeter
