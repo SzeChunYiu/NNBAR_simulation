@@ -223,6 +223,25 @@ weights, transport-model systematics, and explicitly unmodelled caveats.
 Zero survivors constrain the survival fraction; they do not prove zero
 background \cite{ParticleDataGroup:2024RPP}.
 
+The Wave-6 per-node derivation ledger is:
+
+| Node | Truth-side quantity being estimated | Estimator rationale | Dominant uncertainty / robustness check | Closure assertion |
+|---|---|---|---|---|
+| `cosmic.muon` | rate of CRY muon primaries that enter the detector exposure and survive plan-37 cuts | flux component × exposure × post-selection survival is the minimal unbiased rate estimator once the generated sample is species-labelled | finite survivor count dominates after the muon-veto cuts; overburden A/B spread is the leading normalisation robustness term | overburden A and B survivor intervals must overlap after applying the same selection config |
+| `cosmic.electron` | rate of CRY e± primaries reconstructed as signal-like EM objects | species-labelled survival fraction isolates charged-EM leakage before folding with the e± component flux | charged-track matching and shower-shape mis-ID dominate; robustness is the P.2 neutral-efficiency/fake-rate envelope | charged-EM leakage must remain intervalled separately from photon and γ rows |
+| `cosmic.gamma` | rate of CRY γ primaries producing photon-pair or visible-mass signatures | photon-like backgrounds are estimated with the same node-wise survival ledger, but their observable signature maps to P.1/P.2/P.5/P.6 rather than charged leaves | low statistics and photon-cluster merging dominate; robustness comes from plan-33/34 photon and π⁰ closure rows | zero survivors are reported as `epsilon90`, not as absence of γ background |
+| `cosmic.neutron` | rate of cosmic neutron primaries with delayed hadronic or capture-γ activity surviving selection | hadronic transport plus plan-37 survival is the correct factorisation because timing and secondary topology enter only after detector simulation | transport-model and capture-γ modelling dominate once survivor counts are small | neutron rows must remain distinct from beam-neutron rows because exposure and timing factors differ |
+| `cosmic.proton` | rate of CRY proton primaries faking stopped or asymmetric charged topologies | species-labelled survival fraction folds directly with the proton flux component; C-leaf PID signatures keep the estimator channel-specific | dE/dx/range PID thresholds and scintillator asymmetry cuts dominate | C.2/C.3/C.5 closure rows must be present before authorising central proton rates |
+| `beam_neutron.direct_beam_neutron` | per-pulse false-positive rate from direct beam neutrons reaching the detector volume | neutron-yield-per-pulse × direct-transport weight × plan-37 survival matches the ESS beam exposure unit | beam-yield normalisation and direct-line transport weight dominate | folded rate is blocked until `DEC-44-BEAM-RATE-SOURCE` signs the per-pulse conversion |
+| `beam_neutron.scattered_neutron` | per-pulse rate of off-axis scattered neutrons with displaced/topological signatures | sub-channel transport weight separates scattered paths from direct beam neutrons before the common survival estimator | geometry/material scattering model dominates; topology closure guards V.4/V.5 leakage | displaced-vertex observables must be present in the rate-result evidence bundle |
+| `beam_neutron.capture_gamma` | per-pulse rate of neutron-capture γ cascades faking photon or π⁰ objects | capture production weight × EM-object survival is the physically relevant estimator because the final state is electromagnetic | capture cascade spectrum and photon-cluster response dominate | P.1/P.2/P.5/P.6 closure must be quoted beside any nonzero capture-γ contribution |
+| `beam_neutron.secondary_hadronic` | per-pulse rate of inelastic neutron secondaries faking charged-hadron and event-shape signatures | secondary-fragment transport weight × post-selection survival keeps charged and calorimetric leakage in one registered node | hadronic final-state modelling and PID leakage dominate | C-leaf PID and S.2 pion-count checks must pass before including the row in `b_expected` |
+
+The ledger intentionally uses the same interval and handoff machinery for
+all nodes. The node-specific derivation changes the production factor and
+dominant uncertainty, not the rule that every survivor fraction is
+denominator-backed, intervalled, and selection-config-specific.
+
 #### Logic gaps
 
 | Parameter | Status before production | Closure study / target date |
