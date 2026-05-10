@@ -63,14 +63,18 @@ Per plan 41:
   upper/lower scint).
 - Significance scan to identify a possibly better operating point.
 
-## 4. MVA replacement (target improvement)
+## 4. Selection alternative comparison matrix
 
-Per plan 57: train a BDT or NN on event variables (plan 36 §2) to
-classify signal vs cosmic + beam-neutron backgrounds.
+| Candidate | S.6 decision rule | Current/source citation | Class-A status | Comparison metric | Reporting rule |
+|---|---|---|---|---|---|
+| **Thesis cut-flow baseline** | Apply §1 cuts in `cli._cutflow` order and require `passes_preliminary_selection`. | `_selection_flags` (`reconstruction.py:1573–1600`) and `cli._cutflow` (`cli.py:37–44`). | Production-eligible once upstream truth leaks are removed. | Reproduce Ch 10 signal acceptance and cosmic survivors. | Primary thesis reproduction number. |
+| **Retuned rectangular cuts** | Re-derive thresholds from plan-41 N-1 / ROC scans while keeping the same variables. | Reuses §1 produced columns. | Eligible only with DEC entries for threshold changes. | Expected limit sensitivity vs baseline. | Report alongside baseline; do not overwrite Ch 10. |
+| **BDT selection** | Train a bounded tree model on plan-36 variables and threshold the score. | Plan 57-governed replacement for S.6. | Eligible after frozen features, training provenance, and audit. | ROC AUC, background rejection at fixed signal efficiency, calibration. | Ladder comparison row; baseline remains quoted. |
+| **Neural selection** | Train a small NN on the same feature contract. | Plan 57 alternative. | Eligible only if deterministic export and interpretability artifacts land. | Same as BDT plus seed/export reproducibility. | Use only if it materially beats BDT. |
+| **Truth-informed oracle** | Use true signal/background labels or truth ancestry directly. | Validation labels from sample registry / truth tables. | Not production-eligible. | Upper-bound only. | Never part of cut-flow or final acceptance. |
 
-Scored against the cut-based baseline on the ladder. The MVA
-replacement is reported alongside, never overriding, the cut-based
-result for thesis-quoted numbers (per plan 06 §6 conservatism).
+The MVA replacement is reported alongside, never overriding, the
+cut-based result for thesis-quoted numbers (plan 06 §6 conservatism).
 
 ## 5. Acceptance criteria
 
