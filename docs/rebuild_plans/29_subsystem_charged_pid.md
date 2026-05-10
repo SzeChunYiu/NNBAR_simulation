@@ -164,6 +164,57 @@ used to compute the C.5 row.
    without Class-B columns, and all non-promoted rows cite a detector-quality or
    geometry reason rather than a species-name rule.
 
+### 1.8 C.5 Physics derivation
+
+- **What is physically measured:** C.5 measures a charged candidate's pion/proton
+  decision score from C.2 dE/dx, C.3 range/stopping, C.4 association, and
+  scintillator energy. Truth PID labels are calibration or validation labels,
+  never production inputs.
+- **Estimator rationale:** dE/dx separates charged particles through
+  Bethe-Bloch response, while stopping range separates short proton tracks from
+  longer pion-like tracks. A cut rule is the reproducible baseline; a
+  likelihood-ratio or discriminant score is the statistically motivated
+  extension for correlated observables and locked training splits
+  \cite{ParticleDataGroup:2024RPP,alice2014performance,Fisher1936Discriminant,Pedregosa:2011Scikit}.
+- **Statistical character:** bias comes from fixed thresholds and calibration
+  sample mismatch; variance comes from C.2/C.3 measurement errors and limited
+  calibration statistics. Robustness requires persisted thresholds, rule
+  versions, source hashes, and no production call to `scan-pid`.
+- **Citation:** the cited keys above were checked against
+  `/Users/billy/Desktop/projects/overleaf-hibeam-thesis/ref.bib` on
+  2026-05-10.
+
+### 1.9 C.5 Logic gaps
+
+1. **`proton_dedx_min`, `short_range_cm`, `short_range_proton_dedx_min`:** OPEN:
+   scan on locked pion/proton calibration samples and freeze the best threshold
+   tuple by balanced F1 plus plan-38 ladder delta; target resolution date
+   2026-05-24.
+2. **Score calibration and likelihood-ratio threshold:** OPEN: require plan-57
+   split hashes, calibration artifact hash, and ROC operating point before any
+   likelihood scorer supersedes the cut baseline; target resolution date
+   2026-05-31.
+3. **C.2/C.3 uncertainty propagation:** OPEN: include dE/dx/range covariance in
+   score uncertainty or publish a no-covariance limitation; target resolution
+   date 2026-05-31.
+4. **Invalid upstream rows:** OPEN: define the policy for missing/failed C.2 or
+   C.3 rows as rejected, unclassified, or low-confidence scored; target
+   resolution date 2026-05-24.
+5. **Class boundary non-regression:** any threshold or classifier change must be
+   recorded in plan 05 and shown not to regress green plan-47 rows.
+
+### 1.10 C.5 Closure test for the derivation
+
+1. Run `classify_charged_candidates` on frozen C.1, C.2, C.3, and C.4 inputs
+   with truth labels absent from the production scoring table.
+2. Tune cut thresholds or likelihood artifacts only on labeling-approved plan-23
+   calibration splits, then freeze `rule_version` and threshold/artifact hashes.
+3. In validation-only scoring, report confusion matrix, balanced F1, ROC AUC,
+   and plan-38 ladder delta for the frozen rule.
+4. The derivation passes when the C.5 rows are unchanged by dropping truth PID
+   labels and the frozen rule meets or beats the cut-based baseline without
+   changing any green ledger row silently.
+
 ## 2. Cut-based baseline (current code)
 
 `/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/charged.py`
