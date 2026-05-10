@@ -51,29 +51,29 @@ Non-goals:
 
 The live reconstruction has no detector-wide fiducial-volume helper
 yet. The current orchestration path is `reconstruct_run`
-(`reconstruction.py:60-87`), which loads one run, builds charged,
+(`nnbar_reconstruction/reconstruction.py:60-87`), which loads one run, builds charged,
 vertex, photon, pi0, and event tables, and returns those named tables.
 The numeric reconstruction defaults live in `ReconstructionConfig`
-(`reconstruction.py:14-48`). Those defaults include selection and
+(`nnbar_reconstruction/reconstruction.py:14-48`). Those defaults include selection and
 matching thresholds but do not define a detector-wide fiducial-volume
 contract.
 
 The legacy vertex path is `reconstruct_event_vertices`
-(`vertex.py:163-254`). It groups TPC rows by event and track id,
+(`nnbar_reconstruction/vertex.py:163-254`). It groups TPC rows by event and track id,
 projects each valid line to `z=0`, averages valid projections per
 event, and reports radial spread plus skipped-track counts. The split
-plan-30 foil gate is `apply_foil_acceptance` (`vertex_reco.py:157-194`),
-fed by `FoilGeometry` (`vertex_reco.py:13-18`). It provides the
+plan-30 foil gate is `apply_foil_acceptance` (`nnbar_reconstruction/vertex_reco.py:157-194`),
+fed by `FoilGeometry` (`nnbar_reconstruction/vertex_reco.py:13-18`). It provides the
 observable-only V.5 foil compatibility row, but plan 60 still owns the
 detector-wide fiducial contract: TPC containment, scintillator and
 lead-glass coverage, covariance-aware edge buffers, and common
 geometry-version provenance.
 
 Event-level fields are written by `summarize_events`
-(`vertex.py:322-447`). It records vertex coordinates, calorimeter
+(`nnbar_reconstruction/vertex.py:322-447`). It records vertex coordinates, calorimeter
 energies, object counts, `has_foil_tpc_track`, visible mass,
 sphericity, and the selection booleans. The selection booleans are made
-by `_selection_flags` (`vertex.py:293-319`). A fiducial plan must
+by `_selection_flags` (`nnbar_reconstruction/vertex.py:293-319`). A fiducial plan must
 therefore add an explicit geometry/edge artifact rather than silently
 reinterpreting existing selection columns.
 
@@ -265,8 +265,8 @@ table production, validation, DQM support, and schema/manifest
 assertions.
 
 The current support surface covers only the plan-30 foil subset:
-`apply_foil_acceptance` (`vertex_reco.py:157-194`) and
-`FoilGeometry` (`vertex_reco.py:13-18`) are tested by
+`apply_foil_acceptance` (`nnbar_reconstruction/vertex_reco.py:157-194`) and
+`FoilGeometry` (`nnbar_reconstruction/vertex_reco.py:13-18`) are tested by
 `test_aggregate_and_accept_vertices_use_plan_16_geometry_only`
 (`tests/test_vertex_reco.py:77-100`). That coverage is necessary for
 the V.5 foil row, but it is not sufficient for detector-wide fiducial
