@@ -178,6 +178,17 @@ write P.1 cluster fixtures:
 The config row is rejected if a membership decision can read a column
 outside the allowlist or if the geometry sidecar cannot be resolved.
 
+Initial clusterer-config examples:
+
+| `clusterer_config_id` | `clusterer_method` | `seed_threshold_mev` | `adjacency_rule_id` | `time_window_ns` | `split_rule_id` | `merge_rule_id` | `geometry_snapshot_id` | `class_a_input_columns` | `decision_dec_id` | `config_status` |
+|---|---|---:|---|---:|---|---|---|---|---|---|
+| `legacy_track_key_repro` | `legacy_track_key` | null | null | null | null | null | null | [`Event_ID`, `Track_ID`, `eDep`, `x`, `y`, `z`] | `DEC-31-TRUTH-LABEL-QUARANTINE` | `diagnostic` |
+| `topological_seed_v0` | `topological` | 5.0 | `plan09_cell_adjacency_v0` | 10.0 | `local_maxima_split_v0` | `touching_cells_merge_v0` | `plan09_geometry_v0` | [`Event_ID`, `eDep`, `x`, `y`, `z`, `t`] | `DEC-31-CLUSTERER-CHOICE` | `candidate` |
+| `sliding_window_v0` | `sliding-window` | 5.0 | `plan09_fixed_window_v0` | null | `window_overlap_split_v0` | `overlap_fraction_merge_v0` | `plan09_geometry_v0` | [`Event_ID`, `eDep`, `x`, `y`, `z`] | `DEC-31-CLUSTERER-CHOICE` | `candidate` |
+
+The legacy row is diagnostic because `Track_ID` is not a production
+membership input; it is retained only to reproduce current L3 behavior.
+
 ## 4. Closure-test specification
 
 1. **Dataset id:** run `cal_singlegamma_v1` from plan 23 at 50,
