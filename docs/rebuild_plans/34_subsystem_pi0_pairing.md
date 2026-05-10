@@ -33,12 +33,11 @@ Leaf P.5/P.6: photon objects → π⁰ candidates and accidental tags
   status. Plan-35 fit quantities may be joined downstream, not used
   to form raw pairs.
 - **Current implementation evidence:** plan 08 maps π⁰ pairing to
-  `find_pi0_candidates` (`reconstruction.py:1316–1530`). It declares
-  the current output schema at `reconstruction.py:1322–1365`, forms
-  unordered neutral photon pairs at `reconstruction.py:1406–1409`,
-  computes opening angle, mass, energy sums, and lead-glass fraction
-  at `reconstruction.py:1410–1421`, and applies the six configured
-  selection booleans at `reconstruction.py:1422–1427`.
+  `find_pi0_candidates` (`photon.py:204-260`). It declares
+  the current output schema, forms unordered neutral photon pairs,
+  computes opening angle, mass, energy sums, lead-glass fraction, and
+  applies the six configured selection booleans inside the same
+  function.
 - **Decision rule:** for each event, list photon objects from plan 33,
   form all pairs `(γ_i, γ_j)` with `i < j`, compute invariant mass
   `M`, total energy `E`, opening angle `α`, `Σ_scint`, `Σ_LG`, and
@@ -58,19 +57,21 @@ Leaf P.5/P.6: photon objects → π⁰ candidates and accidental tags
 
 | Cut column | Default | Thesis source | Code citation |
 |---|---|---|---|
-| `passes_mass_window` | 100 ≤ M ≤ 180 MeV | thesis Ch 8 | config `pi0_mass_min/max` (`reconstruction.py:29–35`); flag block `1422–1427` |
-| `passes_total_energy` | E ≤ 720 MeV | thesis Ch 8 | config `pi0_total_energy_max` (`reconstruction.py:29–35`); flag block `1422–1427` |
-| `passes_scintillator_energy` | Σ_scint ≤ 250 MeV | thesis Ch 8 | config `pi0_scint_energy_max` (`reconstruction.py:29–35`); flag block `1422–1427` |
-| `passes_leadglass_energy` | Σ_LG ≤ 980 MeV | thesis Ch 8 | config `pi0_leadglass_energy_max` (`reconstruction.py:29–35`); flag block `1422–1427` |
-| `passes_leadglass_fraction` | LG_fraction ≥ 0.55 | thesis Ch 8 | config `pi0_leadglass_fraction_min` (`reconstruction.py:29–35`); flag block `1422–1427` |
-| `passes_opening_angle` | α ≥ 30° | thesis Ch 8 | config `pi0_opening_angle_min_deg` (`reconstruction.py:29–35`); flag block `1422–1427` |
+| `passes_mass_window` | 100 ≤ M ≤ 180 MeV | thesis Ch 8 | config fields in `ReconstructionConfig` (`reconstruction.py:14-56`); cut implemented by `find_pi0_candidates` (`photon.py:204-260`) |
+| `passes_total_energy` | E ≤ 720 MeV | thesis Ch 8 | config fields in `ReconstructionConfig` (`reconstruction.py:14-56`); cut implemented by `find_pi0_candidates` (`photon.py:204-260`) |
+| `passes_scintillator_energy` | Σ_scint ≤ 250 MeV | thesis Ch 8 | config fields in `ReconstructionConfig` (`reconstruction.py:14-56`); cut implemented by `find_pi0_candidates` (`photon.py:204-260`) |
+| `passes_leadglass_energy` | Σ_LG ≤ 980 MeV | thesis Ch 8 | config fields in `ReconstructionConfig` (`reconstruction.py:14-56`); cut implemented by `find_pi0_candidates` (`photon.py:204-260`) |
+| `passes_leadglass_fraction` | LG_fraction ≥ 0.55 | thesis Ch 8 | config fields in `ReconstructionConfig` (`reconstruction.py:14-56`); cut implemented by `find_pi0_candidates` (`photon.py:204-260`) |
+| `passes_opening_angle` | α ≥ 30° | thesis Ch 8 | config fields in `ReconstructionConfig` (`reconstruction.py:14-56`); cut implemented by `find_pi0_candidates` (`photon.py:204-260`) |
 
 Strict `passes_selection` = AND of all six.
 
-Per `reconstruction.md` §"pi0 candidates", each candidate also carries
-diagnostic columns (`selection_failure_reasons`, source-track
-aliases, charged-match class, prompt timing) for validation; these
-are `@diagnostic_only` per plan 01.
+Target candidates also carry diagnostic columns
+(`selection_failure_reasons`, source-track aliases, charged-match
+class, prompt timing) for validation; these are `@diagnostic_only` per
+plan 01. The current split code only emits the strict
+`passes_selection` boolean; TODO(L3): add the diagnostic-only columns
+without changing production acceptance.
 
 Closure on truth π⁰s is specified in §5; plan 35 separately
 measures the post-fit mass resolution.
@@ -92,11 +93,11 @@ Plan 47 ledger quotes both.
 
 | Leaf | Candidate | Decision rule | Current/source citation | Class-A status | Comparison metric |
 |---|---|---|---|---|---|
-| P.5 | **All unordered pairs (current)** | Pair every neutral photon pair once by object-id ordering. | Current implementation at `reconstruction.py:1406–1409` (plan 08 §3.5.3). | Production-eligible; O(N²). | π⁰ efficiency, candidate multiplicity, runtime. |
+| P.5 | **All unordered pairs (current)** | Pair every neutral photon pair once by object-id ordering. | Current `find_pi0_candidates` implementation (`photon.py:204-260`; plan 08 §3.5.3). | Production-eligible; O(N²). | π⁰ efficiency, candidate multiplicity, runtime. |
 | P.5 | **Best mass match per photon** | Build all pairs, then greedily keep pairs closest to `m_π⁰` without reusing photons. | Replacement after raw pair enumeration. | Eligible; mass threshold DEC required. | Correct-pair efficiency and high-multiplicity fake rate. |
 | P.5 | **Kinematic-fit ranked pairing** | Rank raw pairs by plan-35 χ² and mass pull. | Consumes plan-35 fit outputs after raw pair construction. | Eligible once fit covariance is validated. | Mass resolution and accidental rejection at fixed efficiency. |
-| P.6 | **Six-cut selection (current)** | Apply mass, total-energy, scintillator-energy, lead-glass-energy, LG-fraction, and opening-angle cuts. | Config defaults at `reconstruction.py:29–35`; booleans at `1422–1427`; failure reasons at `1428–1437`, `1519–1526`. | Production-eligible; thresholds must be thesis-cited or DEC-logged. | Signal efficiency, fake rate, N-1 sensitivity. |
-| P.6 | **Prompt-timing veto** | Require photon time residuals near zero before accepting prompt π⁰s. | Current diagnostic prompt timing at `reconstruction.py:1390–1402`, `1451–1469`, `1508–1512`. | Eligible after timing calibration and DEC. | Accidental-rate reduction vs efficiency loss. |
+| P.6 | **Six-cut selection (current)** | Apply mass, total-energy, scintillator-energy, lead-glass-energy, LG-fraction, and opening-angle cuts. | Config defaults in `ReconstructionConfig` (`reconstruction.py:14-56`); booleans in `find_pi0_candidates` (`photon.py:204-260`). | Production-eligible; thresholds must be thesis-cited or DEC-logged. | Signal efficiency, fake rate, N-1 sensitivity. |
+| P.6 | **Prompt-timing veto** | Require photon time residuals near zero before accepting prompt π⁰s. | No prompt-timing field exists in the current split code; TODO(L3): add after timing calibration and DEC. | Eligible after timing calibration and DEC. | Accidental-rate reduction vs efficiency loss. |
 | P.6 | **Truth-parent label** | Reject pairs whose photons do not share a truth π⁰ parent. | Validation-only diagnostic inherited from source aliases. | Not production-eligible. | Upper-bound accidental rejection only. |
 
 Plan 38 records P.5 pairing and P.6 accidental-rejection choices
