@@ -272,6 +272,20 @@ record so plan 46, plan 47, and plan 50 can reject unconditional quotes:
 A result row with a touched non-bounded limitation is incomplete unless
 it carries the matching `ledger_flag` and caveat text.
 
+Initial unbounded-limitation examples:
+
+| `limitation_id` | `coverage_status` | `nuisance_ids` | `affected_observables` | Required ledger behavior |
+|---|---|---|---|---|
+| `L2` | `unbounded` | [] | timing windows, E.8, S.1/S.6 timing-dependent rates | carry `unbounded_limitations: [L2]` until a timing-jitter nuisance exists |
+| `L3` | `partially_bounded` | [`N2`, `N3`, `N9`] | energy response, photon/π⁰ mass, thresholds | include calibration nuisances and separately flag threshold/noise absence |
+| `L5` | `unbounded` | [] | live-rate, exposure, DAQ-efficiency, total-background claims | mark quotes conditional on current rebuild model |
+| `L9` | `out_of_scope` | [] | charge-sign or magnetic-momentum claims | reject such claims from the current defence package |
+| `L11` | `unbounded` | [] | pile-up, overlay, total-background robustness | require caveat beside plan-44/46 background sums |
+
+These rows prevent missing limitations from being converted into
+zero-width Gaussian nuisances. A bounded replacement must add a new §1
+nuisance or cite a DEC proof that the limitation is irrelevant.
+
 ## 4. Acceptance criteria
 
 - §1 registry complete; ≥ 10 nuisances.
