@@ -104,6 +104,52 @@ reviewer-facing sensitivity bracket. If the flat and Jeffreys limits
 differ by more than the threshold in §7, plan 50 must quote a prior
 sensitivity caveat.
 
+### 3.1 Physics derivation for Bayesian cross-checks
+
+#### Physics derivation
+
+Plan 64 physically estimates how much the low-count signal upper limit
+depends on the statistical prior. The truth-side quantity is the
+ensemble constraint on the nonnegative signal mean; the production
+cross-check observes `n_obs`, expected background, nuisance constraints,
+and the primary plan-46 dispatch. For a Poisson counting model, the
+posterior is likelihood times prior, and the upper credible limit is the
+posterior quantile over `s >= 0`. Jeffreys-on-total-mean and flat-on-
+signal priors bracket common objective/sensitivity choices, while plan
+46 keeps the frequentist interval as primary \cite{ParticleDataGroup:2024RPP}.
+
+The estimator is therefore a replayable posterior integration plus a
+comparison row, not a replacement convention: compute Jeffreys and flat
+limits from the same input bundle, marginalise bounded nuisances, carry
+unbounded caveats outside the numeric prior, and compare both priors to
+the F-C or CLs primary result. Dominant uncertainty is prior choice in
+sparse counts, then background-rate uncertainty, nuisance covariance,
+model collapse from binned to total-count form, and unbounded plan-45
+limitations.
+
+#### Logic gaps
+
+| Parameter | Status before production | Closure study / target date |
+|---|---|---|
+| Jeffreys prior on total mean versus flat prior on signal mean | Draft cross-check convention, not primary method | Recompute validation examples and freeze `DEC-64-PRIORS`; target 2026-06-30 |
+| integration method: quadrature versus incomplete-gamma expression | `OPEN:` numerical implementation not frozen | Cross-check analytic/numerical results on zero and low-count examples; target 2026-06-30 |
+| nuisance marginalisation kernels | `OPEN:` treatment depends on plan-45 nuisance type | Validate Gaussian/lognormal/beta or toy marginalisation with replay seeds; target 2026-07-05 |
+| prior-sensitivity thresholds 20%/50% | `OPEN:` review defaults that affect caveat severity | Run validation panel and Methodology Council review before DEC; target 2026-07-10 |
+| binned versus total-count model collapse | `OPEN:` high-count CLs comparison can be coarse | Require `model_mismatch` status unless a binned Bayesian model is used; target 2026-07-05 |
+
+#### Closure test for the derivation
+
+1. Build Bayesian input bundles that exactly match plan-46 dispatch rows
+   for zero-survivor, low-background, nuisance, and high-count examples.
+2. Compute Jeffreys and flat posterior upper limits with independent
+   integration implementations or cross-checks.
+3. Marginalise bounded nuisance rows and copy unbounded limitations into
+   the result without converting them to numeric priors.
+4. Compare Bayesian limits to the primary F-C or CLs result and assign
+   pass/warn/fail/blocked prior-sensitivity status.
+5. Verify plan-47/50 handoffs label Bayesian rows as cross-checks unless
+   a future DEC explicitly changes the primary convention.
+
 ## 4. Nuisance marginalisation
 
 Plan 45 nuisance rows are carried into the Bayesian calculation using
