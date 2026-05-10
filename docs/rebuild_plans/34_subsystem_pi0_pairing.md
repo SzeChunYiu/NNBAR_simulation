@@ -66,6 +66,27 @@ and `energy_method` must be recorded; mixed production
 `cluster_sum` and legacy-alias inputs fail schema validation instead
 of being silently combined.
 
+### 1.2 Machine-readable P.5/P.6 π⁰ fixture
+
+The π⁰ fixture stores one row per photon pair and makes the raw pairing
+and cut decision reproducible:
+
+| Field | Required content | Review rule |
+|---|---|---|
+| `event_id`, `candidate_id` | stable candidate key | deterministic from ordered photon ids and method id |
+| `photon1_id`, `photon2_id` | ordered plan-33 photon ids | no photon may pair with itself |
+| `pairing_method_id` | `all_unordered_pairs` or approved replacement | replacement requires `DEC-34-PAIRING-RULE` |
+| `mass`, `opening_angle_deg`, `total_energy` | raw pair kinematics | finite and recomputable from photon four-vectors |
+| `leadglass_edep`, `scintillator_edep`, `leadglass_fraction` | energy components | additive with the selected photon-energy source |
+| `energy_source_field` | `energy_mev` or legacy `total_energy` | mixed sources fail schema validation |
+| `passes_*` cut columns | six booleans from §2 | must decompose the final strict AND |
+| `passes_selection` | strict AND of the six booleans | no truth-parent override is allowed |
+| `selection_failure_reasons` | ordered reason tokens from §2.1 | empty only when all cut columns pass |
+
+Fixture review recomputes every cut boolean, final AND, and failure
+reason list from the stored kinematics. Truth parent labels may be added
+only to validation sidecars for accidental-rate studies.
+
 ## 2. Selection per candidate
 
 Thesis Ch 8 defaults are held in the current `ReconstructionConfig`
