@@ -175,7 +175,8 @@ Drift velocity is set indirectly through Geant4's stepper handling;
 the rebuild does not currently override it. A+ verifier status on
 2026-05-10: no `TPCDriftManager` source file and no `WITH_GARFIELD_GPU`
 code path are present in the L3 worktree, so Garfield/TPC drift-manager
-claims are future TODOs rather than current source facts.
+claims are future `OPEN(L2/L3, target 2026-06-29)` gaps rather than
+current source facts.
 
 ## 4. Gain and saturation
 
