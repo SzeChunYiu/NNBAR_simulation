@@ -306,7 +306,7 @@ Drill review rules:
 | inventory and package hashes are compared | DOI package and local freeze diverge |
 | rerun transcript is inspected after the manifest | archive proves planned reruns but not executed reruns |
 | command-template verifier is inspected after the transcript | archive preserves execution output but not the verified command contract |
-| refreshed-artifact rows carry verifier hashes | archive trusts a rerun command without A+ command-surface proof |
+| refreshed-artifact rows carry verifier hashes and sources | archive trusts a rerun command without A+ command-surface proof |
 | review-artifact hashes are checked before the note annex | archive links package prose to stale CI, note, or glossary artifacts |
 | CI report and glossary audit are opened explicitly | archive hash comparison passes but reviewer-facing evidence is unreadable |
 | note annex is checked against package overlay | thesis prose cannot be traced to evidence |
@@ -315,9 +315,10 @@ The drill transcript is archived beside the inventory manifest and is
 referenced by the plan-50 overlay roll-up when a quoted result depends on
 L1 EM or selection evidence. If the selected member claims refreshed
 artifacts, the drill fails unless the plan-52 execution transcript is
-archived with matching output hashes, command-template verifier hashes,
-and review-artifact hashes for the package, CI report, note annex, and
-glossary audit.
+archived with matching output hashes, rerun-manifest hash, rerun-transcript
+hash, command-template verifier hashes/sources, and review-artifact hashes
+for the package, staleness summary, CI report, note annex, archive drill,
+and glossary audit.
 
 ## 2. Reproducibility container
 
