@@ -197,6 +197,15 @@ The inventory defines required audit keys only. It does not authorize a
 selection row for final quotes until measured §2.1 hashes and status
 fields are attached.
 
+Initial selection-audit failure examples:
+
+| `audit_case_id` | Failing pattern | Required status | Review guard |
+|---|---|---|---|
+| `truth_blind_hash_mismatch` | cut booleans differ after Class-B/provenance columns are removed | `fail` | blocks `DEC-37-TRUTH-BLIND-GATE` and final quotes |
+| `changed_event_ids_nonempty` | before/after hashes differ and selected event ids are listed | `fail` | every changed row must be traced to an upstream leak before rerun |
+| `cosmic_zero_no_interval` | cosmic sample has zero survivors but no interval handoff | `fail` | zero-survivor background cannot be quoted as exact zero |
+| `beam_sample_unsigned` | beam-neutron audit row exists before sample/rate source is signed | `diagnostic_only` | cannot feed plan-44 rates or plan-46 background sums |
+
 ## 3. N-1 and ROC
 
 Per plan 41:
