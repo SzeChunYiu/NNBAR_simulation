@@ -1,99 +1,313 @@
 ---
 id: 39_fast_mc_sanity_check
 title: Fast-MC inverse closure check
-version: 0.1
+version: 0.2
 status: draft
 owner: Combined Performance
-depends_on: [00_README, 04_statistical_uncertainty, 24_reconstruction_question_tree, 38_truth_substitution_ladder]
-inputs: []
+depends_on: [00_README, 04_statistical_uncertainty, 24_reconstruction_question_tree, 38_truth_substitution_ladder, 40_closure_and_pulls]
+inputs:
+  - {path: nnbar_reconstruction/fast_mc/closure_test.py, schema: L3 fast-MC smearing/comparison API}
+  - {path: tests/test_fast_mc.py, schema: L3 regression fixtures}
 outputs:
   - {path: docs/rebuild_plans/39_fast_mc_sanity_check.md, schema: this file}
-  - {path: nnbar_reconstruction/fast_mc/, schema: smearing/closure code}
+  - {path: output/fast_mc/<dataset_id>/<observable>/report.json, schema: FastMCClosureReport.as_dict()}
+  - {path: output/fast_mc/<dataset_id>/<observable>/smeared.parquet, schema: truth columns plus smeared columns}
 acceptance:
-  - {test: smear-truth distributions match reco-only distributions within stated tolerance, method: per-observable closure plot, pass_when: tolerance met for at least visible_invariant_mass and π⁰-mass peak}
+  - {test: smear-truth distributions match reco-only distributions within stated tolerance, method: per-observable closure report, pass_when: tolerance met for visible_invariant_mass, pi0_mass_peak, sphericity, and total_calorimeter_energy}
+  - {test: deliberate reco bias fails, method: test_fast_mc_closure_flags_deliberate_bias_fixture, pass_when: report.passed is false}
 risks:
-  - {risk: closure passes but reco code has a bias the smearing model also has, mitigation: §3 independent smearing parameters from external references}
+  - {risk: closure passes but reco code has a bias the smearing model also has, mitigation: §5 independent constants and plan 40 pull cross-check}
+  - {risk: users invent a non-existent fast-MC CLI, mitigation: §3 records the current no-CLI verifier and uses the verified Python API}
 estimated_effort: M
-last_updated: 2026-05-09
+last_updated: 2026-05-10
 ---
 
 # Fast-MC inverse closure check
 
-*Charter.* Independent of the truth-substitution ladder. The ladder
-runs reco-only and truth-at-L through the *same reco code*, so a bias
-in that code is invisible to the ladder. Fast-MC takes the truth and
-*smears* it with parameterised resolutions (independent of reco code),
-then asks whether the smeared distribution matches reco-only's
-distribution. Disagreement reveals reco-code biases the ladder
-cannot.
+*Charter.* Plan 38 validates reconstruction by substituting truth into
+selected ladder leaves and running the downstream chain. That is powerful
+but not independent: the truth-at-L and reco-only rungs can still share a
+bias in the same reconstruction code. Plan 39 is the independent
+cross-check. It smears truth observables with parameterised detector
+resolutions and compares the resulting fast-MC distribution to the
+reco-only distribution. Any large disagreement becomes a plan 40 closure
+failure and a plan 47 ledger blocker until the responsible leaf explains
+it.
 
-## 1. Method
+This plan is intentionally conservative about executable surface. The current L3 implementation exposes a Python API under
+`nnbar_reconstruction/fast_mc/closure_test.py`. No current fast-MC
+package CLI is cited in this plan; the runnable commands below therefore
+use the verified API directly and write the same artifacts a future CLI
+should produce.
 
-For each observable in plan 38 §2:
+## 1. Verified implementation surface
 
-1. Take truth values from `Particle_output` and `Interaction` tables.
-2. Apply parameterised smearing per leaf (Gaussian / non-Gaussian as
-   appropriate). Parameters drawn from external references — *not*
-   fitted to the reco distribution.
-3. Compare smeared distribution to reco-only distribution via:
-   - mean offset (bias)
-   - RMS ratio (resolution)
-   - K–S statistic (shape)
+Current L3 files:
 
-Tolerance: per-observable, recorded in §4. Bias < 5% of nominal
-resolution; RMS ratio in [0.8, 1.2]; K–S p > 0.01.
+| Path | Lines | Role |
+|---|---:|---|
+| `nnbar_reconstruction/fast_mc/__init__.py` | 5 | package export surface |
+| `nnbar_reconstruction/fast_mc/closure_test.py` | 275 | smearing, tolerance, K-S comparison, report objects |
+| `tests/test_fast_mc.py` | 71 | deterministic smearing, biased-fail, unbiased-pass fixtures |
 
-## 2. Smearing parameters
+Current public objects in `closure_test.py`:
 
-Independent reference sources (not fitted):
-
-| Leaf | Resolution | Source |
+| Object | Type | Plan role |
 |---|---|---|
-| V.4 vertex z | σ_z ≈ 5 mm | TPC drift resolution from MIP closure (plan 18) |
-| V.4 vertex r | σ_r ≈ 5 mm | TPC pad pitch + MS estimate (plan 15) |
-| P.3 photon direction | σ_θ ≈ 30 mrad | shower transverse spread / depth (plan 32) |
-| P.4 photon energy | σ_E / E ≈ 5%/√E | lead-glass calibration (plan 18) |
-| C.2 dE/dx | σ_dE/dx ≈ 10% | Bethe-Bloch + saturation (plan 27) |
-| C.3 range | σ_range ≈ 1 cm | scintillator pitch (plan 28) |
+| `ClosureTolerance` | dataclass | stores maximum absolute bias, RMS-ratio band, and minimum K-S p-value |
+| `FastMCClosureReport` | dataclass | JSON-serialisable report for one observable |
+| `smear_truth` | function | copies a truth table and appends smeared output columns |
+| `compare_distributions` | function | computes mean offset, RMS ratio, K-S statistic, and pass/fail |
+| `tolerance_for_observable` | function | supplies the plan-39 default tolerances |
 
-These parameters become Class C constants registered in plan 09.
+Current regression fixtures in `tests/test_fast_mc.py` check that fixed
+seeds are deterministic, that a deliberately shifted reco distribution
+fails, and that identical distributions pass. Those tests are necessary
+but not sufficient for thesis reproduction; the production procedure in
+§3 binds them to real reco outputs and plan 47 rows.
 
-## 3. Independence guarantee
+## 2. Inputs and table contract
 
-The smearing parameters are *not* fitted to reco-only distributions.
-They are external references. If reco-only is biased, the smeared
-distribution differs from it; the closure flags the discrepancy.
+The fast-MC job consumes two table families:
 
-If reco-only and smeared agree but disagree with truth (the impossible
-case in this design), it would mean both the reco code and the
-smearing share the same bias source — flagged as L-class limitation
-in plan 01 §6.
+1. **Truth table.** A row-aligned table with one truth column per
+   observable. The source is the same run manifest used by plan 38, but
+   only Class B / validation-only values are read. Example columns:
+   `visible_invariant_mass_truth`, `pi0_mass_truth`, `sphericity_truth`,
+   and `total_calorimeter_energy_truth`.
+2. **Reco table.** A row-aligned reco-only table with the matching
+   reconstructed observable. Example columns:
+   `visible_invariant_mass`, `pi0_mass_peak`, `sphericity`, and
+   `total_calorimeter_energy`.
 
-## 4. Acceptance criteria per observable
+The row key is the event identifier from plan 09. If row alignment is
+ambiguous, the fast-MC job must stop and mark the plan 47 row
+`mismatch`, not silently compare differently selected event sets.
 
-| Observable | Bias tolerance | RMS-ratio range | K–S p |
-|---|---|---|---|
-| visible invariant mass | ≤ 50 MeV | [0.7, 1.3] | > 0.01 |
-| π⁰-mass peak | ≤ 5 MeV | [0.7, 1.3] | > 0.01 |
-| sphericity | ≤ 0.05 | [0.7, 1.3] | > 0.01 |
-| total calorimeter energy | ≤ 50 MeV | [0.7, 1.3] | > 0.01 |
+## 3. Runnable procedure using the verified API
 
-Tighter tolerances applied as the rebuild matures.
+Until L3 adds a dedicated CLI, run a row-specific Python API invocation
+from the L3 worktree. Replace the dataset paths and column names with the
+plan 47 row under study.
 
-## 5. Risks
+```bash
+cd /Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3
+python3 - <<'PY'
+from pathlib import Path
+import json
+import pandas as pd
 
-- *Risk:* shared bias (see §3) silently passes both reco and smear.
-  *Mitigation:* third independent path — analytical truth Monte
-  Carlo (plan 13's signal model) computes truth distribution
-  directly from the branching table; comparing reco / smear / truth-MC
-  catches shared biases.
+from nnbar_reconstruction.fast_mc.closure_test import (
+    compare_distributions,
+    smear_truth,
+)
 
-## 6. Dependencies
+truth_path = Path("/path/to/truth_observables.parquet")
+reco_path = Path("/path/to/reco_observables.parquet")
+out_dir = Path("/Volumes/MyDrive/nnbar/nnbar/simulation-L2/output/fast_mc/<dataset_id>/visible_invariant_mass")
+out_dir.mkdir(parents=True, exist_ok=True)
 
-- **04, 24, 38** — same as plan 38.
-- *Consumed by:* plans 25–37 (each consults the closure for its
-  leaf), plan 47, plan 50.
+truth = pd.read_parquet(truth_path)
+reco = pd.read_parquet(reco_path)
 
-## 7. References
+smeared = smear_truth(
+    truth,
+    {
+        "seed": 0,
+        "rules": {
+            "visible_invariant_mass_truth": {
+                "distribution": "gaussian",
+                "sigma": 50.0,
+                "output": "visible_invariant_mass_smeared",
+            }
+        },
+    },
+)
+report = compare_distributions(
+    reco["visible_invariant_mass"],
+    smeared["visible_invariant_mass_smeared"],
+    observable="visible_invariant_mass",
+)
 
-- Standard fast-MC literature (e.g. ATLAS Atlfast II, Delphes).
+smeared.to_parquet(out_dir / "smeared.parquet", index=False)
+(out_dir / "report.json").write_text(json.dumps(report.as_dict(), indent=2))
+print(json.dumps(report.as_dict(), indent=2))
+PY
+```
+
+For an immediately runnable smoke without sample files:
+
+```bash
+cd /Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3
+python3 - <<'PY'
+import pandas as pd
+from nnbar_reconstruction.fast_mc.closure_test import compare_distributions, smear_truth
+
+truth = pd.DataFrame({"visible_invariant_mass_truth": [100.0, 101.0, 102.0, 103.0]})
+reco = pd.Series([100.5, 101.5, 102.5, 103.5])
+smeared = smear_truth(truth, {
+    "seed": 3901,
+    "rules": {
+        "visible_invariant_mass_truth": {
+            "distribution": "gaussian",
+            "sigma": 1.0,
+            "output": "visible_invariant_mass_smeared",
+        }
+    },
+})
+report = compare_distributions(
+    reco,
+    smeared["visible_invariant_mass_smeared"],
+    observable="visible_invariant_mass",
+)
+print(report.as_dict())
+PY
+```
+
+The command is intentionally explicit: it records the truth input, reco
+input, smearing rule, output directory, and report JSON in the shell log.
+A future `fast-mc` CLI may wrap this API, but plans must not cite that
+CLI until L3 exposes it and a help check resolves.
+
+## 4. Numbered closure workflow
+
+For each plan 47 row that invokes plan 39:
+
+1. **Select one observable.** Use exactly one row id and one observable
+   per run. Do not combine visible mass and π⁰ mass in one ledger row.
+2. **Materialise truth and reco inputs.** Record the two input paths in
+   the row notes. If either table is absent, mark the row
+   `blocked-no-sample`.
+3. **Check row alignment.** Join on event id and fail closed if the
+   joined count differs from either input count by more than 0.5%.
+4. **Choose the smearing rule.** Use the table in §6. Constants must be
+   fixed before looking at the reco distribution for this row.
+5. **Run `smear_truth`.** Persist the smeared table under
+   `output/fast_mc/<dataset_id>/<observable>/smeared.parquet`.
+6. **Run `compare_distributions`.** Persist `report.json` and copy the
+   key fields into `data/ledger/rows.yml`: `reproduced_value` contains
+   `n_reco`, `n_smeared`, `mean_offset`, `rms_ratio`, and `ks_pvalue`;
+   `delta` explains any failure against §7.
+7. **Route failures.** If `passed` is false, open a plan 40 pull/closure
+   row for the responsible leaf and keep the plan 47 status `mismatch`.
+8. **Record provenance.** The ledger note must state whether the row was
+   run through the API above or through a future verified CLI.
+
+## 5. Independence guardrails
+
+The smearing constants are independent only if they are fixed before the
+reco-only distribution is inspected. The following guardrails are
+mandatory:
+
+- Tune constants from plan 18 calibration runs, external detector
+  requirements, or plan 04 statistical conventions — never from the row
+  being checked.
+- Do not reuse plan 38 truth-substitution outputs as smearing targets;
+  plan 38 and plan 39 must fail independently.
+- Keep the random seed in the command or row metadata. Default seed `0`
+  is acceptable for one-off diagnostics, but thesis rows should use the
+  plan 04 binding `sha256(dataset_id || observable || "fast_mc")[:8]`.
+- Treat a passing fast-MC row as an independence cross-check, not as a
+  replacement for the plan 40 pull test.
+
+## 6. Smearing parameters and ownership
+
+| Leaf | Observable | Default smearing rule | Constant owner | Notes |
+|---|---|---|---|---|
+| V.4 | vertex z | Gaussian σ = 5 mm | plan 18 MIP closure | Use event vertex truth, not reconstructed TPC seed. |
+| V.4 | vertex radius | Gaussian σ = 5 mm | plans 15 and 18 | Pad pitch and material multiple-scattering prior. |
+| P.3 | photon direction | Gaussian σθ = 30 mrad | plan 32 | Convert to angular residual before comparing. |
+| P.4 | photon energy | Gaussian relative σ = 5%/√E | plan 18 | The current API supports `relative_sigma`; energy-dependent √E scaling needs precomputed per-row σ or a future rule. |
+| C.2 | charged dE/dx | Gaussian relative σ = 10% | plan 27 | W-value mismatch routes to DEC-2026-05-10-5. |
+| C.3 | scintillator range | Gaussian σ = 10 mm | plan 28 | Saturate at non-negative range after smearing in a future transform hook. |
+| E.2 | total calorimeter energy | Gaussian absolute σ = 50 MeV for current row-level checks | plans 18 and 36 | Split lead-glass and scintillator components before defense. |
+
+Every new constant added here must also be registered in plan 09 as a
+Class C parameter and cited by the plan 47 row that uses it.
+
+## 7. Acceptance criteria per observable
+
+`compare_distributions` applies the default tolerances below when called
+with the canonical observable name. A noncanonical observable falls back
+to zero bias tolerance, RMS-ratio range `[0.8, 1.2]`, and K-S p-value
+`> 0.01`; do not use that fallback for thesis rows.
+
+| Observable | Bias tolerance | RMS-ratio range | K-S p-value | Ledger pass/fail action |
+|---|---:|---:|---:|---|
+| `visible_invariant_mass` | ≤ 50 MeV | [0.7, 1.3] | > 0.01 | `reproduced` only if all three pass; otherwise `mismatch` with report fields |
+| `pi0_mass_peak` | ≤ 5 MeV | [0.7, 1.3] | > 0.01 | route to P.4/P.5 closure before changing π⁰ cuts |
+| `sphericity` | ≤ 0.05 | [0.7, 1.3] | > 0.01 | route to E.4 event-shape closure |
+| `total_calorimeter_energy` | ≤ 50 MeV | [0.7, 1.3] | > 0.01 | route to plan 18 lead-glass/scint intercalibration |
+
+The `reproduced` status is allowed only when the row directly checks a
+numerical thesis value. Figure-level rows generally remain `mismatch`
+until the visual/bin-by-bin equality protocol from plan 47 is satisfied,
+even if the fast-MC report itself passes.
+
+## 8. Relationship to plans 38 and 40
+
+- **Plan 38** answers: how much does each truth leaf move the final
+  observable when inserted into the real reconstruction chain?
+- **Plan 39** answers: can an independently smeared truth distribution
+  reproduce the reco-only distribution within fixed detector-resolution
+  tolerances?
+- **Plan 40** answers: for fitted quantities, are the pulls centred at
+  zero with unit width, and do closure failures have an escalation path?
+
+A robust defence row should have all three artifacts when applicable:
+`output/ladder/...` from plan 38, `output/fast_mc/.../report.json` from
+this plan, and `output/closure/...` from plan 40. If plan 38 and plan 39
+agree but plan 40 fails, prioritise uncertainty modelling. If plan 38
+fails but plan 39 passes, prioritise reconstruction leaf coupling. If
+plan 39 fails alone, prioritise detector-response constants or row
+alignment.
+
+## 9. Risks and mitigations
+
+- *Risk:* no dedicated CLI exists, so operators copy an API snippet
+  incorrectly. *Mitigation:* keep this plan's snippet executable, and add
+  a CLI only after an L3 test covers `--help` and a minimal report run.
+- *Risk:* energy-dependent smearing is more complex than the current
+  scalar `relative_sigma` API. *Mitigation:* precompute row-specific
+  smeared columns for defence-critical rows or extend L3 with a tested
+  transform rule.
+- *Risk:* a fast-MC pass is over-interpreted as full reproduction.
+  *Mitigation:* plan 47 still owns thesis figure equality, and plan 40
+  still owns pull closure.
+
+## 10. Dependencies
+
+- **04** — seed binding, bootstrap, K-S reporting conventions.
+- **09** — Class B truth columns and Class C smearing constants.
+- **18** — calibration constants used by the smearing table.
+- **24** — leaf ids used to route failures.
+- **38** — truth-substitution ladder companion artifact.
+- **40** — pull and closure escalation companion artifact.
+- *Consumed by:* plans 25–37, plan 47, plan 50.
+
+## 11. A+ verifier transcript
+
+Run these before editing any file/function/CLI claim in this plan:
+
+```bash
+cd /Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3
+ls nnbar_reconstruction/fast_mc/__init__.py \
+   nnbar_reconstruction/fast_mc/closure_test.py \
+   tests/test_fast_mc.py
+wc -l nnbar_reconstruction/fast_mc/__init__.py \
+      nnbar_reconstruction/fast_mc/closure_test.py \
+      tests/test_fast_mc.py
+grep -n -E "^(def|class) ClosureTolerance" nnbar_reconstruction/fast_mc/closure_test.py
+grep -n -E "^(def|class) FastMCClosureReport" nnbar_reconstruction/fast_mc/closure_test.py
+grep -n -E "^    def as_dict" nnbar_reconstruction/fast_mc/closure_test.py
+grep -n -E "^def smear_truth" nnbar_reconstruction/fast_mc/closure_test.py
+grep -n -E "^def compare_distributions" nnbar_reconstruction/fast_mc/closure_test.py
+grep -n -E "^def tolerance_for_observable" nnbar_reconstruction/fast_mc/closure_test.py
+python3 -m nnbar_reconstruction.cli --help
+pytest tests/test_fast_mc.py -q
+```
+
+On 2026-05-10 the file/function checks resolved, and `cli --help` listed
+`summarize`, `scan-pid`, `response-matrix`, `cutflow`, `dqm`, and
+`validate-reco`. Because no fast-MC CLI is listed, this plan uses the
+Python API rather than citing an invented CLI.
