@@ -31,6 +31,30 @@ per-hit residuals for closure.
 
 Per plan 24 V.2 schema:
 
+### 1.1 Leaf schema block
+
+Leaf V.2 — track fit, residuals, and pulls
+
+- **inputs (Class A):** V.1 candidate hit indices plus TPC
+  `Event_ID`, `x`, `y`, `z`, `t`, `eDep`, `photons`, `px`, `py`,
+  `pz`, `xHitID`, `module_ID`, `step_info`, `vol_name`.
+- **forbidden (Class B):** `Track_ID`, `Parent_ID`, `Name`,
+  `origin_vol_name`, `particle_x`, `particle_y`, `particle_z`.
+- **decision rule:** estimate the track direction and covariance from
+  Class A hit coordinates only; truth direction may be used only after
+  reconstruction output is frozen for pull scoring.
+- **output schema:** `event_id: int`, `candidate_id: int`,
+  `anchor_xyz: float[3]`, `direction_xyz: float[3]`,
+  `direction_covariance: float[3,3]`, `chi2_ndf: float`,
+  `n_direction_hits: int`, `direction_method: str`,
+  `residuals_xyz: list[float[3]]`, `pulls_theta_phi: float[2]`.
+- **allowed truth use:** `validation_only` for closure pulls and plan
+  38 ladder rows; forbidden in the V.2 production fitter.
+- **downstream consumers:** plans 27, 30, 38, 40, and any V.4 vertex
+  aggregation that weights tracks by direction covariance.
+
+### 1.2 Column contract
+
 | Class A inputs | Forbidden Class B |
 |---|---|
 | V.1 candidate table; referenced TPC columns `Event_ID`, `x`, `y`, `z`, `t`, `eDep`, `photons`, `px`, `py`, `pz`, `xHitID`, `module_ID`, `step_info`, `vol_name` | `Track_ID`, `Parent_ID`, `Name`, `origin_vol_name`, `particle_x`, `particle_y`, `particle_z` |
