@@ -97,62 +97,6 @@ bitwise unchanged when validation-only truth direction fields are
 removed from the evaluator input; only `pulls_theta_phi` and closure
 artifact rows may change.
 
-### 1.4 Physics derivation
-
-- **What is physically measured:** V.2 measures the reconstructed unit
-  direction and covariance of a charged-particle track segment. The truth-side
-  quantity is the generated momentum direction, used only after the production
-  fit row is frozen.
-- **Estimator rationale:** in the no-curvature baseline, the straight-line
-  total-least-squares/PCA axis is the near-optimal estimator for independent
-  coordinate errors; a Kalman filter becomes the natural extension when
-  process noise, material scattering, or magnetic curvature is introduced.
-  PDG passage-of-particles material establishes multiple-scattering and
-  tracking-error terms, ALICE documents TPC track-fitting practice, and Kalman
-  gives the covariance-recursive formulation
-  \cite{ParticleDataGroup:2024RPP,alice2014performance,Kalman:1960new}.
-- **Statistical character:** the central-value bias comes from sparse
-  first/last-hit fallbacks, unmodelled multiple scattering, and V.1 merge/split
-  errors. The variance budget is hit-count and lever-arm dominated until plan
-  17 supplies per-hit drift uncertainties. Robustness requires explicit
-  `fit_degraded` and `covariance_valid` fields so V.4 can down-weight rather
-  than silently trust under-constrained fits.
-- **Citation:** the three keys above were checked against
-  `/Users/billy/Desktop/projects/overleaf-hibeam-thesis/ref.bib` on
-  2026-05-10.
-
-### 1.5 Logic gaps
-
-1. **Minimum finite coordinates = 2:** two points define a direction but leave
-   zero residual degrees of freedom; production rows with exactly two hits are
-   allowed only as `fit_degraded=true`.
-2. **Covariance minimum hit count = 3:** `_covariance` currently returns zeros
-   below three hits. OPEN: replace zero-vector covariance with
-   `covariance_valid=false` plus a failure reason; target resolution date
-   2026-05-24.
-3. **Per-hit coordinate uncertainty:** OPEN: derive σx, σy, σz from plan-17
-   drift/gain calibration and `cal_singlepion_50to600MeV_v2` residuals; figure
-   of merit is pull width closure by hit-count bin; target resolution date
-   2026-05-24.
-4. **Multiple-scattering/process-noise term:** OPEN: use plan-16 material maps
-   and PDG scattering formulae to set the Kalman process covariance before any
-   Kalman replacement is promoted; target resolution date 2026-05-31.
-5. **Pull tolerance `|mu| < 0.05`, width `[0.9, 1.1]`:** keep the current plan
-   40 gate until a signed plan-05 decision changes the closure tolerance.
-
-### 1.6 Closure test for the derivation
-
-1. Run `fit_track_candidates` on V.1 candidates from
-   `cal_singlepion_50to600MeV_v2`, using only Class-A TPC hit coordinates.
-2. Persist the fit row and residual sidecar, then drop all Class-B truth
-   direction/species columns and assert the production fit row is unchanged.
-3. Join truth momentum only inside a `validation_only` pull scorer; compute
-   `pull_theta` and `pull_phi` in bins of `n_direction_hits`, lever arm, and
-   `fit_degraded` state.
-4. The derivation passes when non-degraded rows close to mean zero and width
-   one under the plan-40 tolerance, while two-hit/degraded rows are excluded or
-   down-weighted explicitly rather than contaminating the nominal pull width.
-
 ## 2. Current implementation and alternatives
 
 - *Legacy current.* `_track_anchor_and_direction` (plan 08 §3.2;
@@ -378,26 +322,6 @@ V.1 input key set or if covariance order is omitted. Plans 27, 28, 30,
 40, and 66 consume this manifest before trusting direction covariance or
 fit-quality fractions.
 
-### 5.7 Stage E.1 fixture matrix
-
-The V.2 replacement patch must prove that the fitter boundary is stable
-before dE/dx, range, vertex, or pull studies consume the fit manifest:
-
-| Fixture case | Required input condition | Required assertion |
-|---|---|---|
-| truth-column drop | V.1 candidate rows and TPC hits are run with and without Class B labels or truth momentum columns | `direction_method`, direction vector, covariance payload, and quality state are unchanged |
-| one-hit candidate | a V.1 row references only one finite TPC hit | a V.2 row is still emitted with `fit_quality_state=fail`, `fit_failure_reason=insufficient_class_a_hits`, and no silent key drop |
-| nonfinite coordinate | one candidate references a hit with nonfinite `x`, `y`, or `z` | the row is rejected or degraded with a machine-readable failure reason and the residual sidecar excludes invalid hits |
-| V.1 multiplicity | two candidates in the same event share no hit indices | V.2 output preserves `(event_id, candidate_id, hit_membership_key)` multiplicity and emits a unique `fit_id` per candidate |
-| covariance convention | the same candidate is written through six-component and vector covariance representations during migration review | manifest records the chosen order, `covariance_valid`, and downstream consumers do not infer order from column names alone |
-| real C.1 to V.2 chain | real paired output fixture is reconstructed through plan 25 candidate rows first | V.2 consumes the frozen V.1 keys and does not re-cluster or reopen raw TPC rows to repair fit inputs |
-
-The review artifact for any fitter replacement must quote which rows in
-this matrix are covered by synthetic tests and which are covered by the
-real-output selector from §5.5. A matrix row may remain unpromoted only
-if the manifest marks the corresponding quality state as unavailable to
-plans 27, 28, 30, 40, and 66.
-
 ## 6. Acceptance criteria
 
 - §3 closure passes on calibration sample.
@@ -405,7 +329,7 @@ plans 27, 28, 30, 40, and 66.
 - §5 Stage E.1 handoff is actionable for L3: the target public
   function, current unit/integration tests, remaining failure-state test
   obligation, promotion invariants, producer/consumer contract,
-  verification command, artifact manifest schema, fixture matrix, and required V.2
+  verification command, artifact manifest schema, and required V.2
   fields (`fit_id`, direction components,
   covariance components, `chi2_ndf`, `n_residual_degrees_of_freedom`,
   `direction_method`, residual sidecar rows, `fit_quality_state`,

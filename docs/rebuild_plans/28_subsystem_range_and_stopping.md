@@ -64,7 +64,7 @@ Leaf C.3 — range and stopping observables
 | C.1 charged-candidate table; V.2 direction table; C.4 matched scintillator hit columns `Event_ID`, `x`, `y`, `z`, `t`, `eDep`, `photons`, `module_ID`, `vol_name`, `step_info`; scintillator geometry side-car | `Name`, `Track_ID`, `Parent_ID`, `origin_vol_name`, `particle_x`, `particle_y`, `particle_z` |
 
 Legacy implementation citation: `reconstruct_charged_objects`
-(`nnbar_reconstruction/charged.py:151-238`, plan 08 §3.4) reports
+(`nnbar_reconstruction/charged.py:151-228`, plan 08 §3.4) reports
 `scintillator_range` after matching hits by angular/distance cuts or,
 for sparse legacy tables, exact `Track_ID` fallback. The fallback is
 not a production C.3 rule. The live Stage E.1 hook is
@@ -105,103 +105,6 @@ whether each hit contributes to the Bragg-profile fit. Dropping
 species from the production input must not change rows whose
 `association_method` is not explicitly diagnostic.
 
-### 1.4 Physics derivation
-
-- **What is physically measured:** C.3 measures the projected range of a charged
-  candidate in the scintillator system and, when sampled well enough, the
-  Bragg-peak endpoint position. Truth path length and kinetic energy are
-  validation targets only.
-- **Estimator rationale:** for a reconstructed charged ray, the Class-A range
-  estimator is the farthest associated scintillator hit projected along the V.2
-  direction; stopping-proton validation is anchored by CSDA/PSTAR ranges and
-  the PDG stopping-power picture \cite{NISTSTAR,ParticleDataGroup:2024RPP}.
-- **Statistical character:** the estimator is biased low by missed terminal
-  hits and edge leakage, biased high by fake forward associations, and has a
-  granularity floor from scintillator pitch. Bragg-position variance is high
-  unless several ordered hits sample the energy profile.
-- **Citation:** the cited keys above were checked against
-  `/Users/billy/Desktop/projects/overleaf-hibeam-thesis/ref.bib` on
-  2026-05-10.
-
-### 1.5 Logic gaps
-
-1. **Forward projection threshold = 0 cm:** derived from the definition of
-   downstream range along the fitted direction; negative projections are not
-   part of the stopping path.
-2. **Association angle = 10 deg and distance = 15 cm:** OPEN: retune jointly
-   with C.4 on `cal_singleproton_50to500MeV_v2` and `sig_foil_v3`; optimise
-   range residual and fake-association rate; target resolution date
-   2026-05-24.
-3. **Bragg-profile minimum hits = 3:** OPEN: scan minimum 2-5 associated hits;
-   choose the smallest count with stable endpoint bias versus PSTAR; target
-   resolution date 2026-05-24.
-4. **Closure tolerance = max(1 cm, one scintillator bar pitch):** OPEN: resolve
-   the bar pitch from plan 16/60 geometry tags and update the tolerance if the
-   active geometry changes; target resolution date 2026-05-31.
-5. **Edge-distance warning buffer:** OPEN: derive from plan 60 efficiency-vs-edge
-   slices before promoting `range_quality_state=warn` to any PID policy; target
-   resolution date 2026-06-07.
-
-### 1.6 Closure test for the derivation
-
-1. Run `reconstruct_range_table` on frozen C.1 candidates, V.2 fits, and
-   Class-A scintillator hits for `cal_singleproton_50to500MeV_v2`.
-2. Persist C.3 range rows and associated-hit sidecars before any truth kinetic
-   energy, species, or path-length join.
-3. In a `validation_only` scorer, compare `range_cm` and
-   `bragg_peak_position_cm` with PSTAR/CSDA expectations in kinetic-energy and
-   edge-distance bins.
-4. The derivation passes when nominal rows close within the plan-28 range
-   tolerance and failures are classified as no-hit, invalid-fit, or edge-loss
-   rather than hidden inside PID thresholds.
-
-### 1.7 C.4 scintillator-association Physics derivation
-
-- **What is physically measured:** C.4 measures the observable association
-  between a C.1/V.2 charged TPC candidate and scintillator deposits. The truth
-  particle identity is a validation label only; production association is a
-  geometric and timing compatibility decision.
-- **Estimator rationale:** a charged track extrapolated to an outer scintillator
-  is best matched by positive ray projection, small perpendicular residual,
-  bounded opening angle, and calibrated time residual. The current legacy
-  implementation is `_select_scintillator_hits_for_track`
-  (`nnbar_reconstruction/charged.py:96-138`) with thresholds stored in
-  `ReconstructionConfig`.
-  TPC-to-outer-detector matching practice and PDG passage-of-particles timing
-  context motivate this observable-only association
-  \cite{ParticleDataGroup:2024RPP,alice2014performance}.
-- **Statistical character:** missed scintillator deposits bias range low and can
-  turn stopping protons pion-like; fake deposits bias range high and proton-like.
-  The error budget is dominated by V.2 angular uncertainty, scintillator pitch,
-  timing calibration, and plan-60 edge leakage.
-
-### 1.8 C.4 scintillator-association Logic gaps
-
-1. **Projection sign:** `projection >= 0` is derived from downstream propagation
-   from the fitted TPC anchor to scintillator acceptance.
-2. **Angle/distance gates = 10 deg / 15 cm:** OPEN: jointly scan the two gates
-   on locked proton and signal slices, using association fake rate plus C.3
-   range residual as the figure of merit; target resolution date 2026-05-24.
-3. **Timing gate:** OPEN: derive from plan-18 scintillator calibration and
-   plan-60 path length; target resolution date 2026-05-31.
-4. **Exact `Track_ID` fallback:** derived to be validation/legacy diagnostic
-   only; production C.4 rows must be unchanged when `Track_ID` is dropped.
-5. **Scintillator edge buffer:** OPEN: import the plan-60 edge-distance bins and
-   decide `warn` versus `fail` semantics before PID promotion; target
-   resolution date 2026-05-31.
-
-### 1.9 C.4 scintillator-association Closure test for the derivation
-
-1. Run the C.4 association builder on frozen C.1/V.2 candidates and Class-A
-   scintillator hits for `cal_singleproton_50to500MeV_v2` and
-   `sig_foil_500MeV_v3`.
-2. Persist associated-hit sidecars and C.3 range rows before any truth ancestry
-   or `Track_ID` diagnostic join.
-3. In validation-only scoring, measure association efficiency, fake association,
-   range residual, and Bragg-endpoint residual by gate, timing, and edge bins.
-4. The derivation passes when the selected observable-only gates keep C.3 range
-   closure inside tolerance and rows are invariant to dropping Class-B columns.
-
 ## 2. Bragg-peak
 
 For stopping protons, the energy-vs-position profile peaks near the
@@ -219,7 +122,7 @@ without consuming truth labels in the production decision path.
 
 | Alternative | Source paper / codebase | NNBAR-specific adaptation | Expected ladder leaf delta |
 |---|---|---|---|
-| Farthest matched scintillator hit | Existing `reconstruct_charged_objects` (`nnbar_reconstruction/charged.py:151-238`) | Preserve the angular/distance match as the reproduction baseline; disable the exact `Track_ID` fallback for production C.3. | Baseline C.3 range with known granularity floor from scintillator pitch. |
+| Farthest matched scintillator hit | Existing `reconstruct_charged_objects` (`nnbar_reconstruction/charged.py:151-228`) | Preserve the angular/distance match as the reproduction baseline; disable the exact `Track_ID` fallback for production C.3. | Baseline C.3 range with known granularity floor from scintillator pitch. |
 | Projected path-length integration | Range-stack / sampling-calorimeter reconstruction practice | Project V.2 track direction through ordered scintillator modules and accumulate Class A hit distances until the last in-time module. | Expected to reduce range bias when hits skip modules or the farthest-hit point is noisy. |
 | Bragg-profile endpoint fit | Stopping-proton Bragg-curve reconstruction | Fit cumulative eDep versus projected distance and report `bragg_peak_position_cm` plus fit quality. | Improves stopping-proton discrimination for C.5 when enough scintillator hits exist. |
 | PSTAR-constrained range check | NIST PSTAR proton ranges used only in validation | Compare reconstructed range to kinetic-energy bins inside closure; do not use truth KE or species in production. | Adds calibration/systematics leverage for C.3 without loosening Class A production rules. |
@@ -425,27 +328,6 @@ hits cannot be joined back to `(event_id, charged_candidate_id,
 range_id)`. Plans 29, 45, 60, and 66 consume this manifest before
 trusting range or Bragg-profile observables.
 
-### 5.7 Stage E.1 fixture matrix
-
-The C.3 replacement patch must prove that range association is
-observable-only and edge-aware before PID, fiducial, or DQM consumers
-read the range manifest:
-
-| Fixture case | Required input condition | Required assertion |
-|---|---|---|
-| truth-column drop | C.1/V.1, V.2, and scintillator rows are run with and without legacy track or truth path labels | `range_cm`, `association_method`, associated-hit sidecar keys, and quality state are unchanged |
-| no forward scintillator hit | candidate has a valid V.2 direction but no scintillator hit in the projected forward cone | a C.3 row is emitted with `range_quality_state=fail` and `range_failure_reason=no_scintillator_hits` |
-| bad fit state | the V.2 row is marked failed, degraded, or covariance-invalid | range production records `range_failure_reason=bad_fit_state` instead of recomputing direction from raw hits |
-| backward-only hits | scintillator hits exist only behind the fitted direction anchor | row records `backward_only_hits` or equivalent failure and no PID feature is inferred from null range |
-| edge-profile case | projected hit lies near the plan-60 scintillator edge/profile boundary | `scintillator_edge_distance_mm`, `scintillator_profile_bin`, and `geometry_profile_hash` are present before fiducial consumers read C.3 |
-| real C.1/V.2 to C.3 chain | real paired output flows through plan 25 candidates and plan 26 fits first | C.3 consumes frozen upstream hashes and does not use exact `Track_ID` association outside validation artifacts |
-
-The review artifact for any range replacement must state which fixture
-rows are covered by synthetic tests, which require the real-output
-selector from §5.5, and which remain gated on the plan-60 geometry
-sidecar. Gated edge rows must still keep a manifest-level failure reason
-so plans 29 and 66 do not infer detector acceptance from missing rows.
-
 ## 6. Acceptance criteria
 
 - §3 closure passes.
@@ -455,7 +337,7 @@ so plans 29 and 66 do not infer detector acceptance from missing rows.
 - §5 Stage E.1 handoff is actionable for L3: the target public
   function, current unit/integration tests, remaining test obligation,
   promotion invariants, producer/consumer contract, verification
-  command, artifact manifest schema, fixture matrix, and required C.3 fields (`range_id`, `association_method`, `range_cm`,
+  command, artifact manifest schema, and required C.3 fields (`range_id`, `association_method`, `range_cm`,
   `range_edep_mev`, `bragg_peak_position_cm`,
   `range_quality_state`, `range_failure_reason`,
   `scintillator_edge_distance_mm`, `scintillator_profile_bin`, and

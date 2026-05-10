@@ -67,7 +67,7 @@ Leaf C.2 — dE/dx estimator
 | C.1 charged-candidate table; TPC step columns `Event_ID`, `eDep`, `TrackLength`, `x`, `y`, `z`, `t`, `photons`, `step_info` | `Name`, `Track_ID`, `Parent_ID`, `origin_vol_name`, `particle_x`, `particle_y`, `particle_z` |
 
 Legacy implementation citation: `reconstruct_charged_objects`
-(`nnbar_reconstruction/charged.py:151-238`, plan 08 §3.4) already emits `dedx`,
+(`nnbar_reconstruction/charged.py:151-228`, plan 08 §3.4) already emits `dedx`,
 but the value is downstream of the current truth-name candidate gate.
 The live Stage E.1 hook is `reconstruct_dedx_table`
 (`nnbar_reconstruction/dedx.py:91-119`), which consumes V.1 candidate `hit_indices`, calls
@@ -106,61 +106,6 @@ increment, and whether each sample survived truncation. Dropping
 fields from production input must not change the C.2 fixture; only
 closure residual artifacts may read those validation labels.
 
-### 1.4 Physics derivation
-
-- **What is physically measured:** C.2 measures the TPC specific ionisation
-  estimator, `dE/dx`, for each charged candidate. The truth-side reference is
-  the Bethe-Bloch expectation as a function of βγ and species, used only for
-  validation after production rows are frozen.
-- **Estimator rationale:** per-step ionisation samples have a long high tail,
-  so the arithmetic mean is inefficient for PID. A truncated mean removes the
-  largest Landau-tail deposits while retaining enough central samples to follow
-  the Bethe-Bloch curve; PDG passage-of-particles material and ALICE TPC PID
-  practice justify this estimator family
-  \cite{ParticleDataGroup:2024RPP,alice2014performance}.
-- **Statistical character:** the estimator variance is dominated by straggling
-  and short track length. Bias enters through truncation fractions,
-  path-length normalisation, threshold losses, and gas/W-value calibration.
-  Robustness requires persisting the selected/rejected sample sidecar and the
-  calibration source instead of changing PID thresholds in response to closure
-  residuals.
-- **Citation:** the cited keys above were checked against
-  `/Users/billy/Desktop/projects/overleaf-hibeam-thesis/ref.bib` on
-  2026-05-10.
-
-### 1.5 Logic gaps
-
-1. **Low truncation fraction = 0.10 and high fraction = 0.30:** OPEN: scan low
-   fractions 0-20% and high fractions 10-50% on pion/proton calibration
-   samples; optimise Bethe-Bloch residual and downstream C.5 separation;
-   target resolution date 2026-05-17.
-2. **Minimum sample count after truncation:** OPEN: determine the smallest
-   `n_steps_used` whose residual bias remains within 5%; target resolution date
-   2026-05-17.
-3. **Path-length estimator:** OPEN: compare `TrackLength`, per-hit coordinate
-   differences, and V.2 geometry-derived path length; figure of merit is dE/dx
-   residual by angle and candidate length; target resolution date 2026-05-24.
-4. **Calibration scale / W-value:** OPEN: propagate plan-17 gas W-value and
-   electron-yield calibration into a versioned `calibration_source`; target
-   resolution date 2026-05-24.
-5. **Closure βγ window `[0.5, 5]` and residual band 5%:** keep as the current
-   plan-27 validation gate until the calibration scan records a plan-05
-   decision to tighten or widen it.
-
-### 1.6 Closure test for the derivation
-
-1. Run `reconstruct_dedx_table` on frozen C.1/V.1 candidates for
-   `cal_singlepion_50to600MeV_v2` and `cal_singleproton_50to500MeV_v2` using
-   only Class-A TPC energy deposits and path-length fields.
-2. Persist the C.2 row plus contribution sidecar before joining truth species
-   or momentum.
-3. In a `validation_only` closure fitter, compute Bethe-Bloch residuals versus
-   βγ for pions and protons, binned by `n_steps_used`, path-length source, and
-   truncation fractions.
-4. The derivation passes when residuals stay within the 5% band or the
-   calibration limitation is signed in plan 17/45 without silently changing the
-   C.5 production PID threshold.
-
 ## 2. Calibration anchor
 
 Plan 17 W-value (23.6 eV in TPCSD; reference 26-27.4 eV). dE/dx
@@ -175,7 +120,7 @@ Closure: simulator output should match within 5%.
 
 | Alternative | Source paper / codebase | NNBAR-specific adaptation | Expected ladder leaf delta |
 |---|---|---|---|
-| Arithmetic mean baseline | Existing `reconstruct_charged_objects` (`nnbar_reconstruction/charged.py:151-238`) | Preserve current `dedx` computation as a reproducibility reference after removing any C.1 truth-name candidate gate. | No intended C.2 gain; establishes the current tail-sensitive baseline for plan 38. |
+| Arithmetic mean baseline | Existing `reconstruct_charged_objects` (`nnbar_reconstruction/charged.py:151-228`) | Preserve current `dedx` computation as a reproducibility reference after removing any C.1 truth-name candidate gate. | No intended C.2 gain; establishes the current tail-sensitive baseline for plan 38. |
 | Truncated mean | Standard TPC PID / ALICE-style charged-particle dE/dx | Sort per-step `eDep / step_length`, drop bottom 10% and top 30%, and record the chosen cut fractions in the C.2 schema. | Expected to improve C.2 stability against Landau tails and reduce C.5 PID confusion. |
 | Landau/MPV fit | TPC cluster-charge Landau-Gaussian fit literature | Use only when a track has enough Class A TPC samples; report fit status and fall back to truncated mean for sparse tracks. | Better high-tail control for long tracks, but limited gain for short NNBAR TPC segments. |
 | Bethe-Bloch residual template | Plan 23 calibration samples plus Bethe-Bloch closure in §3 | Convert dE/dx to species-agnostic residuals versus βγ bins only in calibration/validation; production C.2 remains truth-free. | Improves calibration diagnostics for C.2 but does not by itself replace plan 29 PID scoring. |
@@ -392,27 +337,6 @@ joined back to `(event_id, charged_candidate_id, estimator_id)`. Plans
 29, 40, 45, and 66 consume this manifest before trusting dE/dx values
 or calibration residuals.
 
-### 6.7 Stage E.1 fixture matrix
-
-The C.2 replacement patch must prove the estimator is keyed, calibrated,
-and truth-blind before plan 29 PID or plan 45 nuisance artifacts consume
-the dE/dx table:
-
-| Fixture case | Required input condition | Required assertion |
-|---|---|---|
-| truth-column drop | candidate membership and TPC steps are run with and without species, parentage, and legacy track labels | `dedx_mev_per_cm`, `estimator_id`, quality state, and contribution sidecar keys are unchanged |
-| truncation tails | one candidate has low and high ionization outliers around a stable core | selected/rejected contribution rows reproduce the signed low/high fractions and set `truncation_applied=true` |
-| missing path length | candidate steps have finite energy but no positive Class A path-length support | a C.2 row is emitted with a documented failure reason and no downstream PID feature is inferred from NaN |
-| nonfinite energy deposit | one or more selected steps have nonfinite `eDep` or equivalent energy-deposit value | nonfinite samples are excluded or the row fails with `dedx_failure_reason=nonfinite_energy_deposit` |
-| V.2 path handoff | the same candidate has both Class A coordinate span and a future V.2 path/covariance payload | `path_length_source` records which source was used and the manifest hash identifies the upstream V.2 table |
-| real candidate chain | real paired output is reconstructed through plan 25 candidates before dE/dx production | C.2 consumes frozen candidate keys and does not read validation labels to repair estimator inputs |
-
-The review artifact for the L3 patch must map each fixture row to a
-test selector or to an explicit not-promoted quality state in the C.2
-manifest. Rows that need plan 26 covariance support may remain gated
-until the V.2 manifest is present, but they must still define the
-expected `path_length_source` value.
-
 ## 7. Acceptance criteria
 
 - §3 closure within 5% across the charged calibration set.
@@ -422,7 +346,7 @@ expected `path_length_source` value.
 - §6 Stage E.1 handoff is actionable for L3: the target public
   functions, current unit/integration tests, remaining test obligation,
   promotion invariants, producer/consumer contract, verification
-  command, artifact manifest schema, fixture matrix, and required C.2 fields (`estimator_id`, `dedx_mev_per_cm`,
+  command, artifact manifest schema, and required C.2 fields (`estimator_id`, `dedx_mev_per_cm`,
   `path_length_cm`, `path_length_source`, `n_steps_used`, truncation
   fractions, `truncation_applied`, `dedx_quality_state`,
   `dedx_failure_reason`, `calibration_source`, and contribution sidecar

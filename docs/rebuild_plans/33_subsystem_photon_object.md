@@ -207,48 +207,6 @@ current same-key scintillator lookup. This prevents plan 34/37 from
 reading the target column name as evidence that production-calibrated
 energy already exists.
 
-### 3.2 Physics derivation for P.4
-
-#### Physics derivation
-
-P.4 physically estimates the calibrated photon energy carried by an
-accepted neutral EM shower. The truth-side quantity is the generated
-photon energy at production; the production estimator may use only the
-calibrated P.1 lead-glass/scintillator energy components and detector
-calibration constants. Calorimeter response theory predicts an energy
-resolution of stochastic, noise, and constant terms, so the near-minimal
-Class-A estimator is the calibrated cluster-energy sum with explicit
-lead-glass fraction and method tags \cite{ParticleDataGroup:2024RPP,fabjan2020particle}.
-Detector-specific scale and component response are fixed by plan 18 and
-prototype calibration evidence \cite{Dunne2022CalorimeterPrototype}.
-
-Wave-6 photon-object leaf coupling:
-
-| Leaf | Coupling guard | Closure assertion |
-|---|---|---|
-| P.3 direction | consumes P.1 centroid plus plan-30 vertex/fallback status | angular pulls are split by vertex source and path length |
-| P.4 energy | consumes calibrated P.1 component sums plus plan-18 constants | energy linearity is split by lead-glass fraction and method id |
-
-#### Logic gaps
-
-| Parameter | Status before production | Closure study / target date |
-|---|---|---|
-| `energy_method = cluster_sum` calibration constants | `OPEN:` plan-18 constants not frozen in the photon fixture | Run linearity and residual scans on `cal_singlegamma_v1`; target 2026-06-30 |
-| `leadglass_fraction = 0` for scintillator-only photons | Reproduction-safe convention; downstream acceptance impact is `OPEN:` | Propagate no-LG rows through plans 34/37 before DEC-33-ENERGY-METHOD; target 2026-06-20 |
-| Ch 8 guard `leadglass_fraction >= 0.55` | thesis reproduction threshold, not a general P.4 calibration threshold | Run lead-glass-fraction N-1 and pi0-mass stability study; target 2026-06-25 |
-| energy bias `< 1%` and efficiency `>= 0.95` | `OPEN:` acceptance-level thresholds need downstream mass/selection impact | Tie limits to plan-34 pi0 mass width and plan-37 selection stability; target 2026-07-05 |
-
-#### Closure test for the derivation
-
-1. Build P.4 rows from fixed P.1/P.2 fixtures using plan-18 calibration
-   constants and no truth/provenance columns in the estimator table.
-2. On `cal_singlegamma_v1` energy points, compare reconstructed
-   `energy_mev` to hidden generated energy in the evaluator and fit bias,
-   resolution, and linearity residuals.
-3. Split the report by lead-glass fraction and scintillator-only rows.
-4. Repeat after dropping `Track_ID`, `Parent_ID`, `Name`, process, and
-   ancestry aliases; energy, method, and pass/fail hashes must match.
-
 ## 4. Photon merging
 
 The current compact source emits one photon-like row per accepted
@@ -264,7 +222,7 @@ before this plan was committed:
 
 | Cited contract | Verifier evidence | Status |
 |---|---|---|
-| current photon-like row builder, direction fallback, energy alias, and no-fragment-merge baseline | `def reconstruct_photon_objects` resolves at `photon.py:60`, inside the cited `photon.py:60-201` range. | keep citation |
+| current photon-like row builder, direction fallback, energy alias, and no-fragment-merge baseline | `reconstruct_photon_objects` resolves at `photon.py:60`, inside the cited `photon.py:60-201` range. | keep citation |
 
 Plan 33 does not specify a runtime CLI command, and it does not cite the
 removed legacy split-study files. Any future photon-object study CLI row
@@ -272,11 +230,37 @@ must pass the L3 `--help` verifier before this plan cites it.
 
 ### 4.2 Machine-readable fragment-merge fixture
 
-The full fragment-merge fixture is split into
-`docs/rebuild_plans/33_subsystem_photon_object_fragment_merge_fixture.md`
-to keep this plan below the line cap. The companion file owns the merge
-candidate row schema, truth-blind hash guard, and diagnostic examples used
-before any geometry/time merge can feed P.3/P.4 photon rows.
+If a geometry/time merge is evaluated, it writes one decision row for
+each merge candidate before any photon four-vector is replaced:
+
+| Field | Required content | Review rule |
+|---|---|---|
+| `merge_candidate_id` | stable key for the proposed merge | unique within event and method bundle |
+| `event_id` | event containing the candidate fragments | joins to P.1/P.2 fixtures |
+| `input_cluster_ids` | one or more neutral P.1 cluster ids | every id must pass the P.2 neutral gate |
+| `angular_separation_deg`, `centroid_distance_cm`, `time_difference_ns` | truth-blind compatibility metrics | finite for every candidate pair/group |
+| `merge_threshold_id` | threshold tuple used for the decision | changes require `DEC-33-FRAGMENT-MERGE` |
+| `merge_decision` | `merge`, `keep_separate`, or `diagnostic_only` | production rows cannot be diagnostic-only |
+| `output_source_cluster_ids` | clusters copied to the photon fixture | equals input ids only when `merge_decision = merge` |
+| `fragment_merge_flag` | boolean copied to §2.2 photon rows | must match the merge decision |
+| `truth_blind_input_hash` | hash after dropping truth/provenance fields | must preserve all merge decisions |
+| `merge_status` | `pass`, `fail`, or `blocked` | blocked rows cannot feed plan-34 pairing |
+
+The merge fixture is rejected if truth labels or generated photon ids
+affect the candidate grouping, threshold comparison, or output source
+cluster list.
+
+Initial fragment-merge decision examples:
+
+| `merge_candidate_id` | Input pattern | `merge_threshold_id` | Expected decision | Review guard |
+|---|---|---|---|---|
+| `single_cluster_passthrough` | one accepted neutral P.1 cluster | `no_merge_baseline_v0` | `keep_separate` | preserves the current one-cluster photon baseline |
+| `nearby_same_shower_fragments` | two neutral clusters with small angular, centroid, and timing separation | `geom_time_merge_diag_v0` | `merge` only in diagnostic rows until DEC approval | truth-blind hash must match after provenance drop |
+| `pi0_two_daughter_guard` | two energetic neutral clusters with π⁰-like opening angle | `geom_time_merge_diag_v0` | `keep_separate` | over-merge rate is counted in §6.1 before promotion |
+| `truth_parent_merge_oracle` | merge proposed from generated photon ancestry | `truth_oracle_blocked` | `blocked` | validation upper bound only; never writes photon rows |
+
+The examples define review cases for the merge fixture. They do not
+create executable merge algorithms or alter the current photon baseline.
 
 ## 5. Alternative comparison matrix
 
@@ -362,13 +346,77 @@ Initial photon-closure failure examples:
 
 ### 6.2 Decision-log stubs for photon-object choices
 
-The detailed DEC stubs, scintillator-only impact examples, downstream
-handoff examples, promotion checks, evidence bundles, and reviewer-audit
-rows are split into
-`docs/rebuild_plans/33_subsystem_photon_object_promotion_examples.md` to keep
-this parent plan below the line cap. The companion file is part of the
-P.3/P.4 contract and must be updated with any direction, energy, merge,
-or scintillator-only policy change.
+Each P.3/P.4 candidate configuration writes one closure-result row per
+single-γ energy bin and direction-source category:
+
+| Field | Required content | Review rule |
+|---|---|---|
+| `photon_method_id` | direction, energy, and merge method bundle | must match §5 candidate choices |
+| `dataset_id`, `energy_bin_mev` | `cal_singlegamma_v1` setting | every §6 energy point gets a row |
+| `direction_source` | reconstructed vertex or origin fallback | fallback rows are reported separately |
+| `n_truth_photons`, `n_reco_photons` | efficiency denominator and numerator | zero denominators fail closure |
+| `angular_pull_mean`, `angular_pull_width` | P.3 closure metrics | compared to §6 pass criterion |
+| `energy_bias`, `energy_response_interval_68` | P.4 response and bootstrap interval | bias must stay below the §6 bound |
+| `fallback_origin_fraction` | fraction using origin fallback | required before direction DEC approval |
+| `fragment_duplicate_rate`, `fragment_overmerge_rate` | Wilson-interval rates | over-merge must stay within §6 budget |
+| `class_b_drop_hash` | rerun artifact without truth/provenance columns | photon four-vector and merge hashes must match |
+| `closure_status` | `pass`, `fail`, or `diagnostic_only` | only `pass` rows may support production choices |
+
+Initial scintillator-only downstream-impact examples:
+
+| `impact_case_id` | Photon row pattern | Required downstream handling | Review guard |
+|---|---|---|---|
+| `scint_only_no_lg` | `leadglass_edep = 0`, `scintillator_edep > 0`, `leadglass_fraction = 0` | row may contribute to photon-efficiency diagnostics but cannot seed the Ch 8 π⁰ selection | plan-34/37 impact table shows zero accepted Ch 8 candidates from this case |
+| `low_lg_fraction_edge` | both components positive but `leadglass_fraction < 0.55` | row remains a valid photon-object row while failing the Ch 8 lead-glass fraction guard | cut-flow audit separates object creation from selection rejection |
+| `merged_with_lg_cluster` | scintillator-heavy fragment merges with a lead-glass fragment under an approved threshold | recompute `leadglass_fraction` from merged calibrated components rather than forcing zero | `DEC-33-FRAGMENT-MERGE` and `DEC-33-SCINT-ONLY-PHOTONS` evidence agree on the merged row |
+| `legacy_truth_descendant_scint` | current reproduction alias supplies same-key scintillator energy without a target P.1 cluster sum | diagnostic only; cannot approve production P.4 energy or Ch 8 selection behavior | plan-38 ladder labels it non-production until plan-31/32 inputs exist |
+
+Until approval, alternative direction/energy/merge outputs remain
+plan-38 ladder rows; the Ch 10 reproduction keeps the current
+baseline semantics.
+
+Initial downstream-handoff examples:
+
+| `handoff_case_id` | Photon output pattern | Consumer expectation | Review guard |
+|---|---|---|---|
+| `photon_fourvector_pass_to_p34` | frozen P.3/P.4 four-vector with stable `source_cluster_ids` | plan 34 may build π⁰ pairs | requires §6 closure pass and Class-B drop hash equality |
+| `origin_fallback_diag_to_p36` | rows using origin fallback are explicitly flagged | plan 36 may report separate event-variable diagnostics | cannot be mixed into primary direction closure without category split |
+| `fragment_merge_shadow` | merged-photon rows written beside no-merge baseline | plan 34/38 may compare pair multiplicity and over-merge rates | baseline photon ids and source clusters remain reviewable |
+| `scint_only_selection_guard` | scintillator-only photons carry `leadglass_fraction = 0` | plan 34/37 must reject them from Ch 8 π⁰ selection | impact table must show zero accidental accepted candidates |
+
+Initial production-promotion checklist:
+
+| `promotion_check_id` | Evidence required | Blocks promotion when missing |
+|---|---|---|
+| `p33_fourvector_contract_present` | stable photon id, source clusters, direction method, and energy method | plan 34 cannot recompute pair kinematics reproducibly |
+| `p33_all_energy_bins_pass` | closure rows for every required energy bin and direction-source category | photon response is not bounded across the calibration range |
+| `p33_fragment_policy_stable` | duplicate/over-merge metrics and Class-B drop hash for fragment handling | π⁰ daughter separation can change under hidden provenance |
+| `p33_scint_only_guard_audited` | impact rows for scintillator-only and low lead-glass-fraction photons | Ch 8 selection may accept unsupported photon rows |
+
+Production P.3/P.4 promotion requires all four checks plus signed DEC
+ids for direction, energy, and merge policy. Missing checks keep the
+method as a plan-38 diagnostic rather than a plan-34 input.
+
+Initial evidence-bundle examples:
+
+| `evidence_bundle_id` | Included rows | Reviewer action |
+|---|---|---|
+| `p33_vertex_centroid_candidate_v0` | method bundle, all energy-bin closure rows, fallback audit, Class-B hash | candidate for plan-34 handoff if closure and DEC checks pass |
+| `p33_origin_fallback_diag_v0` | origin-fallback category rows and angular-pull summary | keep separate from primary direction closure; diagnose sparse vertices |
+| `p33_fragment_merge_shadow_v0` | duplicate/over-merge scans plus no-merge baseline ids | allow plan-38 comparison but block production without merge DEC |
+| `p33_scint_only_blocker_v0` | scint-only impact table and Ch 8 guard audit | block plan-34 acceptance if any unsupported row seeds π⁰ selection |
+
+Evidence bundles preserve the source-cluster, direction, and energy
+method context that plan 34 needs to reproduce pair kinematics.
+
+Initial reviewer audit cases:
+
+| `audit_case_id` | Reviewer question | Required evidence before accept | Reject condition |
+|---|---|---|---|
+| `p33_fourvector_audit` | Can every photon four-vector be traced to source clusters and methods? | photon fixture row, direction method, energy method, and source-cluster ids | row has energy/direction but no stable photon id or source list |
+| `p33_fallback_audit` | Are origin-fallback photons separated from vertex-based rows? | fallback flag, category closure row, and angular-pull summary | fallback rows are mixed into primary closure without a category |
+| `p33_fragment_audit` | Does merging improve duplicates without hiding daughter loss? | no-merge baseline, merge scan, duplicate rate, and over-merge metric | only post-merge efficiency is shown |
+| `p33_scint_guard_audit` | Are scintillator-only rows blocked from unsupported π⁰ use? | lead-glass-fraction guard and Ch 8 impact table | any unsupported row can seed a production π⁰ candidate |
 
 ## 7. Acceptance criteria
 

@@ -27,26 +27,25 @@ plus its multivariate replacement.
 
 Inputs are the plan-36 `events.csv` variables. Outputs are the
 `pass_*` booleans below plus `passes_preliminary_selection`. The
-current L3 source defines numeric cut defaults in the current
-`ReconstructionConfig` selection fields (verified in §1.3), computes the
+current L3 source defines numeric cut defaults in
+`ReconstructionConfig` (`reconstruction.py:14-41`), computes the
 production event-row booleans in `_selection_flags`
 (`vertex.py:293-319`), writes the event row in `summarize_events`
-(`vertex.py:322-447`), fixes the cumulative order in `CUT_ORDER`
-(`selection.py:13-20`), computes cumulative counts in `cutflow_counts`
-(`selection.py:95-111`), and exposes them through the CLI `_cutflow`
-wrapper verified in §1.3:
+(`vertex.py:322-447`), fixes the cumulative order inside `cutflow_counts`
+(`selection.py:95-111`) and exposes the counts through the CLI `_cutflow`
+wrapper (`cli.py:31-32`):
 `pass_scintillator_energy → pass_tpc_foil_track → pass_pion_count →
 pass_invariant_mass → pass_sphericity → pass_scintillator_balance`.
 
 | Leaf | CLI order | Input variable(s) | Produced column | Threshold / rule | Thesis source | Code citation |
 |---|---:|---|---|---|---|---|
-| S.1 | 1 | `scintillator_edep` | `pass_scintillator_energy` | `20 ≤ Σ scintillator eDep ≤ 2000 MeV` | licentiate Ch 10 cut-flow; defaults documented as Ch 9 in plan v0.1 | thresholds in current `ReconstructionConfig` fields (verified in §1.3); input row in `summarize_events` (`vertex.py:322-447`); flag in `_selection_flags` (`vertex.py:293-319`) |
+| S.1 | 1 | `scintillator_edep` | `pass_scintillator_energy` | `20 ≤ Σ scintillator eDep ≤ 2000 MeV` | licentiate Ch 10 cut-flow; defaults documented as Ch 9 in plan v0.1 | thresholds in `ReconstructionConfig` (`reconstruction.py:14-41`); input row in `summarize_events` (`vertex.py:322-447`); flag in `_selection_flags` (`vertex.py:293-319`) |
 | S.1 | 2 | `has_foil_tpc_track` | `pass_tpc_foil_track` | at least one reconstructed TPC track projected to the foil | licentiate Ch 10 cut-flow | input row in `summarize_events` (`vertex.py:322-447`); flag in `_selection_flags` (`vertex.py:293-319`) |
 | S.2 | 3 | `pion_multiplicity` | `pass_pion_count` | `pion_multiplicity ≥ 1` | licentiate Ch 10 cut-flow | input row in `summarize_events` (`vertex.py:322-447`); flag in `_selection_flags` (`vertex.py:293-319`) |
-| S.3 | 4 | `visible_invariant_mass` | `pass_invariant_mass` | finite visible mass `≥ 500 MeV` | licentiate Ch 10 cut-flow | threshold in current `ReconstructionConfig` fields (verified in §1.3); input row in `summarize_events` (`vertex.py:322-447`); flag in `_selection_flags` (`vertex.py:293-319`) |
-| S.4 | 5 | `sphericity` | `pass_sphericity` | finite sphericity `≥ 0.2` | licentiate Ch 10 cut-flow | threshold in current `ReconstructionConfig` fields (verified in §1.3); input row in `summarize_events` (`vertex.py:322-447`); flag in `_selection_flags` (`vertex.py:293-319`) |
-| S.5 | 6 | `upper_scintillator_edep`, `lower_scintillator_edep` | `pass_scintillator_balance` | upper `≤ 320 MeV` and lower `≤ 930 MeV` | licentiate Ch 10 cut-flow | thresholds in current `ReconstructionConfig` fields (verified in §1.3); input row in `summarize_events` (`vertex.py:322-447`); flag in `_selection_flags` (`vertex.py:293-319`) |
-| S.6 | — | all S.1–S.5 booleans | `passes_preliminary_selection` | logical AND of the six cut booleans | licentiate Ch 10 final preselection | AND in `_selection_flags` (`vertex.py:293-319`); order/counts in `CUT_ORDER` and `cutflow_counts` (`selection.py:13-20`, `selection.py:95-111`); CLI wrapper `_cutflow` verified in §1.3 |
+| S.3 | 4 | `visible_invariant_mass` | `pass_invariant_mass` | finite visible mass `≥ 500 MeV` | licentiate Ch 10 cut-flow | threshold in `ReconstructionConfig` (`reconstruction.py:14-41`); input row in `summarize_events` (`vertex.py:322-447`); flag in `_selection_flags` (`vertex.py:293-319`) |
+| S.4 | 5 | `sphericity` | `pass_sphericity` | finite sphericity `≥ 0.2` | licentiate Ch 10 cut-flow | threshold in `ReconstructionConfig` (`reconstruction.py:14-41`); input row in `summarize_events` (`vertex.py:322-447`); flag in `_selection_flags` (`vertex.py:293-319`) |
+| S.5 | 6 | `upper_scintillator_edep`, `lower_scintillator_edep` | `pass_scintillator_balance` | upper `≤ 320 MeV` and lower `≤ 930 MeV` | licentiate Ch 10 cut-flow | thresholds in `ReconstructionConfig` (`reconstruction.py:14-41`); input row in `summarize_events` (`vertex.py:322-447`); flag in `_selection_flags` (`vertex.py:293-319`) |
+| S.6 | — | all S.1–S.5 booleans | `passes_preliminary_selection` | logical AND of the six cut booleans | licentiate Ch 10 final preselection | AND in `_selection_flags` (`vertex.py:293-319`); order/counts in `cutflow_counts` (`selection.py:95-111`); CLI wrapper in `_cutflow` (`cli.py:31-32`) |
 
 ### 1.1 Per-cut and cumulative accounting
 
@@ -84,13 +83,13 @@ source on 2026-05-10 before the cut-flow table above was frozen:
 
 | Cited contract | Verifier evidence | Status |
 |---|---|---|
-| Numeric cut defaults | `grep -nE '^(def|class) ReconstructionConfig' nnbar_reconstruction/reconstruction.py` resolves the class in the current L3 source, and `grep -n 'selection_'` resolves the six Ch 10 selection threshold fields in that class body. | keep verified symbol, no stale line citation |
-| Individual cut booleans and final AND | `def _selection_flags` resolves at `vertex.py:293`, inside the cited `vertex.py:293-319` range. | keep citation |
-| Event-row columns consumed by the cuts | `def summarize_events` resolves at `vertex.py:322`, inside the cited `vertex.py:322-447` range. | keep citation |
-| Cumulative order tuple | `CUT_ORDER` resolves at `selection.py:13`, inside the cited `selection.py:13-20` range. | keep citation |
-| Independent table evaluator | `def evaluate_event_selection` resolves at `selection.py:37`, inside the cited `selection.py:37-72` range. | keep citation |
-| Cumulative count implementation | `def cutflow_counts` resolves at `selection.py:95`, inside the cited `selection.py:95-111` range. | keep citation |
-| CLI wrapper | `grep -nE '^(def|class) _cutflow' nnbar_reconstruction/cli.py` resolves the wrapper in the current L3 source. | keep verified symbol, no stale line citation |
+| Numeric cut defaults | `ReconstructionConfig` resolves at `reconstruction.py:14`, inside the cited `reconstruction.py:14-41` range. | keep citation |
+| Individual cut booleans and final AND | `_selection_flags` resolves at `vertex.py:293`, inside the cited `vertex.py:293-319` range. | keep citation |
+| Event-row columns consumed by the cuts | `summarize_events` resolves at `vertex.py:322`, inside the cited `vertex.py:322-447` range. | keep citation |
+| Cumulative order/count evaluator | `cutflow_counts` resolves at `selection.py:95`, inside the cited `selection.py:95-111` range. | keep citation |
+| Independent table evaluator | `evaluate_event_selection` resolves at `selection.py:37`, inside the cited `selection.py:37-72` range. | keep citation |
+| Cumulative count implementation | `cutflow_counts` resolves at `selection.py:95`, inside the cited `selection.py:95-111` range. | keep citation |
+| CLI wrapper | `_cutflow` resolves at `cli.py:31`, inside the cited `cli.py:31-32` range. | keep citation |
 
 Plan 37 does not specify a runtime CLI command; it cites `CUT_ORDER`
 and `cutflow_counts` for ordering/counts plus the internal `_cutflow`
@@ -100,72 +99,52 @@ here. No legacy split-study files are cited by this plan.
 
 ### 1.4 Machine-readable cut-flow fixture
 
-The full Ch 10 cut-flow fixture is split into
-`docs/rebuild_plans/37_subsystem_event_selection_cutflow_fixture.md` to keep
-this plan below the line cap. The companion file owns the canonical `pass_*`
-row schema, Ch 10 baseline identity rows, and result-row examples consumed by
-plans 47 and 53.
+The Ch 10 reproduction output serialises each cut into one row so plan
+47 can compare independent and cumulative counts without parsing prose:
 
-
-### 1.5 Physics derivation for S.1-S.6
-
-#### Physics derivation
-
-S.1-S.6 physically estimate whether an event is compatible with the
-neutron-antineutron signal topology after reconstruction. The truth-side
-quantity is the event class; the production estimator observes only
-Class-A event variables from plan 36. Rectangular cuts are not a
-first-principles optimum, but they are the transparent thesis baseline:
-each threshold encodes a physically motivated signal-region condition on
-calorimeter energy, foil-track presence, pion multiplicity, visible
-mass, event shape, and top/bottom scintillator balance. Optimisation and
-uncertainty reporting must therefore be framed as a cut-flow/ROC problem
-with explicit intervals rather than as exact acceptance/background
-counts \cite{ParticleDataGroup:2024RPP,Cowan:2011Likelihood}.
-
-The estimator is the ordered Ch 10 cut-flow plus the final strict AND.
-Its dominant uncertainties are upstream event-variable bias, finite
-signal/background sample size, threshold overtraining, zero-survivor
-background intervals, and truth/provenance leakage through upstream
-fixtures. Robustness comes from preserving independent and cumulative
-counts, keeping the Ch 10 baseline immutable, and writing retuned or MVA
-selections as shadow configurations until their DEC evidence is signed.
-
-The Wave-6 per-cut derivation ledger is:
-
-| Leaf | Truth-side quantity being separated | Estimator rationale | Dominant uncertainty | Closure assertion |
-|---|---|---|---|---|
-| S.1 | event has signal-scale scintillator energy and a foil-linked TPC track | energy-window and foil-track cuts reject empty/noisy and through-going non-signal events before topology cuts | scintillator calibration and track-to-foil efficiency | individual and cumulative counts are both saved for each S.1 subcut |
-| S.2 | event contains at least one reconstructed pion-like charged object | pion multiplicity is a direct topology guard for annihilation-like final states | charged PID and object-count efficiency | pion-count cut is recomputed from plan-36 E.9 counts |
-| S.3 | visible final-state mass is compatible with signal-scale energy release | visible invariant mass rejects low-energy accidental and sparse events | photon/charged energy scale and fit-mode choice | raw baseline and fit-aware diagnostic rows stay separate |
-| S.4 | event-shape topology is not a one-prong/sparse background | sphericity threshold summarises isotropy of reconstructed momentum flow | sparse sentinel policy and object efficiency | invalid event-shape rows fail by validity flags before threshold comparison |
-| S.5 | upper/lower scintillator energy balance is compatible with contained activity | hemispheric balance rejects through-going cosmic-like energy asymmetry | hemisphere convention and scintillator calibration | boundary and upper/lower energy rows are audited with plan-36 convention id |
-| S.6 | event passes the full preliminary selection or approved shadow replacement | strict AND preserves the reproducible Ch 10 baseline while MVA candidates remain sidecars | cut correlation, retuning, and zero-background statistics | baseline booleans are immutable; retuned/MVA rows use new config ids |
-
-#### Logic gaps
-
-| Parameter | Status before production | Closure study / target date |
+| Field | Required content | Review rule |
 |---|---|---|
-| Ch 10 thresholds: `20-2000 MeV` scintillator, `>=1` pion, visible mass `>=500 MeV`, sphericity `>=0.2`, upper/lower scintillator `<=320/930 MeV` | Reproduction baseline; production retune remains `OPEN:` | Reproduce signal and cosmic cut-flow, then run plan-41 N-1/ROC scans; target 2026-06-30 |
-| `CUT_ORDER` cumulative ordering | Thesis reproduction convention; order is not asserted as statistically optimal | Compare independent/N-1 effects and document any retuned order as a separate config; target 2026-07-05 |
-| zero-survivor background handling | Must be interval/upper-limit based, never exact zero | Attach plan-04 interval rows for cosmic and beam survivor counts; target 2026-06-20 |
-| S.6 BDT/NN replacement threshold | `OPEN:` shadow-only until feature freeze and calibration pass | Require plan-57 feature freeze, calibration curve, held-out ROC, and overwrite audit; target 2026-07-10 |
-| truth-blind gate for final quotes | `OPEN:` depends on upstream Class-B drop hashes | Run before/after event-table hashes for every quoted selection bundle; target 2026-06-25 |
+| `cut_id` | `S1_scintillator_energy` through `S6_preliminary_selection` | stable key matching §1 order |
+| `cli_order` | integer 1-6 or null for the final AND row | must match `CUT_ORDER` for the six individual cuts |
+| `input_columns` | list of event-table variables from §1 | every name must exist in plan-36 output schema |
+| `produced_column` | canonical singular `pass_*` column or `passes_preliminary_selection` | no plural alias may replace the canonical name |
+| `threshold_expression` | literal threshold/rule from §1 | preserves Ch 10 baseline before retuning |
+| `n_pass_individual` | count passing this cut alone | computed before cumulative masking |
+| `n_after_cut` | count after applying all cuts through `cli_order` | null only for the final AND row if it duplicates S.6 |
+| `decision_dec_id` | `DEC-37-CH10-CUTFLOW-BASELINE` until retuned | retuned cuts need a separate DEC and new columns |
 
-#### Closure test for the derivation
+Review fixtures must include one signal row set and one cosmic row set.
+The signal fixture checks the approximately 70% final acceptance target;
+the cosmic fixture checks that zero survivors are reported with the
+plan-04 interval convention rather than as exact zero background.
 
-1. Build the baseline selection fixture from a frozen plan-36 event table
-   and evaluate every individual `pass_*` column plus the final AND.
-2. Produce independent and cumulative counts on `sig_foil_v3` and
-   `cosmic_cry_essLund_overburdenA_v1`, including denominators and
-   interval/upper-limit handoffs for zero-survivor rows.
-3. Verify that thresholds, canonical column names, and cumulative order
-   match the Ch 10 identity rows before any retuned or MVA candidate is
-   compared.
-4. Run N-1/ROC scans and shadow S.6 candidates only as separate config
-   ids; never overwrite the baseline booleans.
-5. Drop truth/provenance columns from upstream inputs; cut booleans,
-   cumulative counts, and selected event ids must remain unchanged.
+Baseline cut identity rows, before plan-47 counts are attached:
+
+| `cut_id` | `cli_order` | `input_columns` | `produced_column` | `threshold_expression` | `n_pass_individual` | `n_after_cut` | `decision_dec_id` |
+|---|---:|---|---|---|---:|---:|---|
+| `S1_scintillator_energy` | 1 | [`scintillator_edep`] | `pass_scintillator_energy` | `20 <= scintillator_edep <= 2000 MeV` | null | null | `DEC-37-CH10-CUTFLOW-BASELINE` |
+| `S1_tpc_foil_track` | 2 | [`has_foil_tpc_track`] | `pass_tpc_foil_track` | `has_foil_tpc_track == true` | null | null | `DEC-37-CH10-CUTFLOW-BASELINE` |
+| `S2_pion_count` | 3 | [`pion_multiplicity`] | `pass_pion_count` | `pion_multiplicity >= 1` | null | null | `DEC-37-CH10-CUTFLOW-BASELINE` |
+| `S3_invariant_mass` | 4 | [`visible_invariant_mass`] | `pass_invariant_mass` | `finite visible_invariant_mass >= 500 MeV` | null | null | `DEC-37-CH10-CUTFLOW-BASELINE` |
+| `S4_sphericity` | 5 | [`sphericity`] | `pass_sphericity` | `finite sphericity >= 0.2` | null | null | `DEC-37-CH10-CUTFLOW-BASELINE` |
+| `S5_scintillator_balance` | 6 | [`upper_scintillator_edep`, `lower_scintillator_edep`] | `pass_scintillator_balance` | `upper <= 320 MeV and lower <= 930 MeV` | null | null | `DEC-37-CH10-CUTFLOW-BASELINE` |
+| `S6_preliminary_selection` | null | all six `pass_*` columns above | `passes_preliminary_selection` | logical AND of all six cut booleans | null | null | `DEC-37-CH10-CUTFLOW-BASELINE` |
+
+The count columns are null in the contract row and are populated only by
+dataset-specific plan-47 reproduction rows.
+
+Initial cut-flow result-row examples:
+
+| `cutflow_result_id` | `dataset_id` | `cut_id` | Count fields | Required interval/caveat |
+|---|---|---|---|---|
+| `sig_foil_v3.S1_scintillator_energy.ch10` | `sig_foil_v3` | `S1_scintillator_energy` | fill `n_pass_individual` and `n_after_cut` from the saved event table | Wilson interval on cumulative signal efficiency |
+| `sig_foil_v3.S6_preliminary_selection.ch10` | `sig_foil_v3` | `S6_preliminary_selection` | final `passes_preliminary_selection` acceptance | compare to the plan-47 approximately 70% target |
+| `cosmic_overburdenA.S5_scintillator_balance.ch10` | `cosmic_cry_essLund_overburdenA_v1` | `S5_scintillator_balance` | cumulative survivor count after all six individual cuts | if zero, hand off F-C upper limit rather than exact zero |
+| `beam_direct.S6_preliminary_selection.diag` | `beam_neutron_hibeam_direct_v1` | `S6_preliminary_selection` | diagnostic final survivor count for beam-neutron extension | cannot feed plan-44 rate sum until sample/rate DEC is signed |
+
+These examples define count-row shape only. They do not replace the
+baseline identity rows, and they must be regenerated whenever the
+selection config id or input event hash changes.
 
 ## 2. Closure-test specification / Ch 10 reproduction
 
@@ -312,7 +291,7 @@ for any retuned or MVA selection.
 
 | Candidate | S.6 decision rule | Current/source citation | Class-A status | Comparison metric | Reporting rule |
 |---|---|---|---|---|---|
-| **Thesis cut-flow baseline** | Apply §1 cuts in `CUT_ORDER` order and require `passes_preliminary_selection`. | `_selection_flags` (`vertex.py:293-319`), `CUT_ORDER` (`selection.py:13-20`), and `cutflow_counts` (`selection.py:95-111`). | Production-eligible once upstream truth leaks are removed. | Reproduce Ch 10 signal acceptance and cosmic survivors. | Primary thesis reproduction number. |
+| **Thesis cut-flow baseline** | Apply §1 cuts in the cumulative order enforced by `cutflow_counts` and require `passes_preliminary_selection`. | `_selection_flags` (`vertex.py:293-319`) and `cutflow_counts` (`selection.py:95-111`). | Production-eligible once upstream truth leaks are removed. | Reproduce Ch 10 signal acceptance and cosmic survivors. | Primary thesis reproduction number. |
 | **Retuned rectangular cuts** | Re-derive thresholds from plan-41 N-1 / ROC scans while keeping the same variables. | Reuses §1 produced columns. | Eligible only with DEC entries for threshold changes. | Expected limit sensitivity vs baseline. | Report alongside baseline; do not overwrite Ch 10. |
 | **BDT selection** | Train a bounded tree model on plan-36 variables and threshold the score. | Plan 57-governed replacement for S.6. | Eligible after frozen features, training provenance, and audit. | ROC AUC, background rejection at fixed signal efficiency, calibration. | Ladder comparison row; baseline remains quoted. |
 | **Neural selection** | Train a small NN on the same feature contract. | Plan 57 alternative. | Eligible only if deterministic export and interpretability artifacts land. | Same as BDT plus seed/export reproducibility. | Use only if it materially beats BDT. |

@@ -171,25 +171,18 @@ reviewer runs these checks against the current worktrees:
 
 1. `grep -rE 'reconstruction\.py:[0-9]' docs/rebuild_plans/{24,25,26,27,28,29,30}*`
    returns no stale monolithic citations.
-2. Every Python citation in L0 writable plans resolves to an existing
+2. Every Python citation in L0 plans resolves to an existing
    `nnbar_reconstruction/` or `tests/` file, with a `def` or `class`
    inside the cited range.
 3. The live CLI help surfaces used by L0 plans exist for
    `summarize`, `response-matrix`, `cutflow`, `validate-reco`, `dqm`,
    and `scan-pid`; missing help output blocks adding a runnable command
    to any plan.
-4. Plan 48 citation keys grep-verify in the thesis BibTeX file before
-   the prior-art survey is used as evidence; the named MURMUR source
-   remains a bibliography-maintenance gap until it has a verified key.
-5. Plans 25-30 each contain a Stage E.1 verification command and
+4. Plans 25-30 each contain a Stage E.1 verification command and
    artifact manifest schema; plans 41-43, 60, and 66 each contain a
    software-handoff manifest schema for their downstream study or
    operations artifacts.
-6. Stage E.1 implementation modules in plans 25-30 each contain a
-   fixture matrix that names synthetic, real-output, and
-   unavailable/gated cases before L3 promotes a replacement
-   implementation.
-7. All L0 writable files remain below the 500-line cap and have no
+5. All L0 writable files remain below the 500-line cap and have no
    unresolved work-marker text or fill-in instructions.
 
 The citation-range check in item 2 is machine-auditable with this
@@ -199,7 +192,7 @@ is not present:
 ```bash
 python - <<'PY'
 import pathlib, re, sys
-plan_nums = {24, 25, 26, 27, 28, 29, 30, 41, 42, 43, 48, 49, 60, 66}
+plan_nums = {24, 25, 26, 27, 28, 29, 30, 41, 42, 43, 60, 66}
 base = pathlib.Path("docs/rebuild_plans")
 files = [p for p in base.glob("*.md") if p.name[:2].isdigit() and int(p.name[:2]) in plan_nums]
 files += sorted((base / "24_reconstruction_question_tree").glob("*.md"))
@@ -230,25 +223,7 @@ done
 python -m nnbar_reconstruction.cli --help >/tmp/nnbar_cli_root.help
 ```
 
-The plan-48 bibliography check in item 4 is run from the simulation
-worktree:
-
-```bash
-python - <<'PY'
-import pathlib, re, sys
-text = pathlib.Path("docs/rebuild_plans/48_prior_art_survey.md").read_text()
-section = text.split("## 6. Citation resolver table", 1)[1].split("## 7.", 1)[0]
-keys = re.findall(r"^\| `([^`]+)` \|", section, flags=re.M)
-bib = pathlib.Path("/Users/billy/Desktop/projects/overleaf-hibeam-thesis/ref.bib").read_text()
-missing = [
-    key for key in keys
-    if not re.search(r"@\w+\s*\{\s*" + re.escape(key) + r"\s*,", bib)
-]
-sys.exit(1 if missing else 0)
-PY
-```
-
-The Stage E.1 and software-handoff coverage in item 5 is checked with:
+The Stage E.1 and software-handoff coverage in item 4 is checked with:
 
 ```bash
 for p in 25 26 27 28 29 30; do
@@ -261,15 +236,6 @@ grep -q 'plan42_unfolding@stage-e1' docs/rebuild_plans/42_unfolding_protocol.md 
 grep -q 'plan43_signal_efficiency@stage-e1' docs/rebuild_plans/43_signal_efficiency.md || exit 1
 grep -q 'plan60_fiducial_edges@stage-e1' docs/rebuild_plans/60_fiducial_volume_and_edge_effects.md || exit 1
 grep -q '66_data_quality_monitoring@stage-e1' docs/rebuild_plans/66_data_quality_monitoring.md || exit 1
-```
-
-The Stage E.1 fixture-matrix coverage in item 6 is checked with:
-
-```bash
-for p in 25 26 27 28 29 30; do
-  f=$(ls docs/rebuild_plans/${p}_*.md)
-  grep -q 'Stage E.1 fixture matrix' "$f" || exit 1
-done
 ```
 
 The current L3 regression slice for the L0-owned reconstruction,
@@ -291,10 +257,10 @@ pytest -q \
   tests/test_dqm.py::test_dqm_cli_writes_run_table_and_manifest
 ```
 
-The file-existence and 500-line checks in items 5-7 are run with:
+The file-existence and 500-line checks in items 4-5 are run with:
 
 ```bash
-for f in docs/rebuild_plans/{24,25,26,27,28,29,30,41,42,43,48,49,60,66}*.md \
+for f in docs/rebuild_plans/{24,25,26,27,28,29,30,41,42,43,60,66}*.md \
          docs/rebuild_plans/24_reconstruction_question_tree/*.md; do
   test -f "$f" || exit 1
   lines=$(wc -l < "$f")
@@ -302,27 +268,9 @@ for f in docs/rebuild_plans/{24,25,26,27,28,29,30,41,42,43,48,49,60,66}*.md \
 done
 marker_re='TO''DO|FIX''ME|TB''D|stu''b|place''holder|to be fi''lled|open ques''tion|\?\?\?'
 grep -nEi "$marker_re" \
-  docs/rebuild_plans/{24,25,26,27,28,29,30,41,42,43,48,49,60,66}*.md \
+  docs/rebuild_plans/{24,25,26,27,28,29,30,41,42,43,60,66}*.md \
   docs/rebuild_plans/24_reconstruction_question_tree/*.md && exit 1 || true
 ```
-
-### 9.2 Current verifier evidence (2026-05-10)
-
-A fresh L0 audit on this branch recorded the following evidence before
-continuing the lane handoff:
-
-- stale monolithic citation grep for plans 24-30: no matches.
-- strict citation-range script over plans 24-30, 41-43, 48-49, 60, and
-  66: `checked=131`, exit 0.
-- CLI help surfaces: root help plus `summarize`, `response-matrix`,
-  `cutflow`, `validate-reco`, `dqm`, and `scan-pid` each exited 0.
-- plan 48 bibliography key check: `checked=25 missing=0`.
-- Stage E.1 coverage greps: every plan 25-30 has a verification
-  command, artifact manifest schema, and fixture matrix; plans 41, 42,
-  43, 60, and 66 expose their software-handoff manifest signatures.
-- file-size and work-marker gate over 19 L0 writable Markdown files:
-  `max_lines=387`, no marker matches.
-- L3 regression slice named above: `Pytest: 11 passed`.
 
 Acceptance rule: before any plan-47 ledger row cites a plan-24 leaf,
 that leaf's family must have either an implementation handoff

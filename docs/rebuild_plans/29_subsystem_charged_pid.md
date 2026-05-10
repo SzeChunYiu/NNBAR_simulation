@@ -90,13 +90,10 @@ Per plan 24 C.1 / C.5 / C.6 schemas:
 - **downstream consumers:** plans 32, 38, 43, 45, and 47.
 
 Current implementation citation: `reconstruct_charged_objects`
-(`nnbar_reconstruction/charged.py:151-238`, plan 08 §3.4) owns the
-legacy charged-object reproduction path. It emits `pid_guess`, `dedx`,
-`scintillator_range`, direction components `px`, `py`, and `pz`, plus
-`truth_name` for validation/calibration only. It does **not** emit the
-Stage E.1 C.5 `pid` field or candidate anchor fields, so plan 29 treats
-that function as a reproduction bridge rather than the production C.5
-fixture boundary.
+(`nnbar_reconstruction/charged.py:151-228`, plan 08 §3.4) owns the current C.1/C.5
+path and emits `pid`, `dedx`, `scintillator_range`, `track_anchor`,
+and `track_direction`, with `truth_name` retained for validation only
+after the migration.
 
 ### 1.4 Machine-readable charged-PID fixtures
 
@@ -115,154 +112,6 @@ in separate closure artifacts keyed by `(event_id,
 charged_candidate_id, rule_version)`. A production PID fixture is valid
 only if C.2 and C.3 fixture hashes match the dE/dx and range inputs
 used to compute the C.5 row.
-
-### 1.5 C.1 Physics derivation
-
-- **What is physically measured:** C.1 measures the existence of a charged
-  reconstruction candidate: a detector-only TPC track object with enough
-  quality, containment, and downstream feature support to enter C.2/C.3/C.5.
-  Truth species and legacy `Track_ID` values are validation labels only.
-- **Estimator rationale:** coherent TPC ionisation tracks are the detector
-  signature of charged particles. Requiring V.1 membership, V.2 direction
-  quality, and geometry containment is therefore the Class-A estimator for a
-  charged candidate; TPC and tracking practice are covered by Rubbia/ALICE, and
-  charged-particle interaction context by PDG
-  \cite{rubbia1977liquid,alice2014performance,ParticleDataGroup:2024RPP}.
-- **Statistical character:** the principal bias is a truth-name gate that
-  removes difficult candidates before production scoring. Once removed,
-  inefficiency is driven by sparse/edge tracks and fake rate by conversions or
-  neutral artefacts; C.6 must reject those with reconstructed observables.
-- **Citation:** the cited keys above were checked against
-  `/Users/billy/Desktop/projects/overleaf-hibeam-thesis/ref.bib` on
-  2026-05-10.
-
-### 1.6 C.1 Logic gaps
-
-1. **Minimum hit count / direction-quality cut:** OPEN: derive from V.1/V.2
-   closure by scanning charged-candidate efficiency, fake rate, and downstream
-   C.2/C.3 validity; target resolution date 2026-05-24.
-2. **Track-quality scalar:** OPEN: choose between `chi2_seed`, `chi2_ndf`, and
-   covariance validity once plan 26 emits the full quality contract; target
-   resolution date 2026-05-24.
-3. **Containment and edge state:** OPEN: consume plan-60 fiducial states and
-   define when edge candidates are `warn` versus `fail`; target resolution date
-   2026-05-31.
-4. **EM/neutral rejection boundary:** OPEN: decide which reconstructed
-   lead-glass/topology flags stay in C.6 and which may block C.1 promotion;
-   target resolution date 2026-06-07.
-5. **Legacy `Name` gate removal:** derived from plan 01 Class-B rules; no
-   production candidate filter may depend on truth species labels.
-
-### 1.7 C.1 Closure test for the derivation
-
-1. Build C.1 candidate rows from V.1/V.2 rows after dropping `Name`, `Track_ID`,
-   `Parent_ID`, `origin_vol_name`, and truth momentum columns.
-2. Persist candidate validity and failure reasons before any truth-label join.
-3. In a `validation_only` scorer, compute charged-candidate efficiency and fake
-   rate by particle category, edge state, and V.2 quality state.
-4. The derivation passes when production C.1 rows are byte-identical with and
-   without Class-B columns, and all non-promoted rows cite a detector-quality or
-   geometry reason rather than a species-name rule.
-
-### 1.8 C.5 Physics derivation
-
-- **What is physically measured:** C.5 measures a charged candidate's pion/proton
-  decision score from C.2 dE/dx, C.3 range/stopping, C.4 association, and
-  scintillator energy. Truth PID labels are calibration or validation labels,
-  never production inputs.
-- **Estimator rationale:** dE/dx separates charged particles through
-  Bethe-Bloch response, while stopping range separates short proton tracks from
-  longer pion-like tracks. A cut rule is the reproducible baseline; a
-  likelihood-ratio or discriminant score is the statistically motivated
-  extension for correlated observables and locked training splits
-  \cite{ParticleDataGroup:2024RPP,alice2014performance,Fisher1936Discriminant,Pedregosa:2011Scikit}.
-- **Statistical character:** bias comes from fixed thresholds and calibration
-  sample mismatch; variance comes from C.2/C.3 measurement errors and limited
-  calibration statistics. Robustness requires persisted thresholds, rule
-  versions, source hashes, and no production call to `scan-pid`.
-- **Citation:** the cited keys above were checked against
-  `/Users/billy/Desktop/projects/overleaf-hibeam-thesis/ref.bib` on
-  2026-05-10.
-
-### 1.9 C.5 Logic gaps
-
-1. **`proton_dedx_min`, `short_range_cm`, `short_range_proton_dedx_min`:** OPEN:
-   scan on locked pion/proton calibration samples and freeze the best threshold
-   tuple by balanced F1 plus plan-38 ladder delta; target resolution date
-   2026-05-24.
-2. **Score calibration and likelihood-ratio threshold:** OPEN: require plan-57
-   split hashes, calibration artifact hash, and ROC operating point before any
-   likelihood scorer supersedes the cut baseline; target resolution date
-   2026-05-31.
-3. **C.2/C.3 uncertainty propagation:** OPEN: include dE/dx/range covariance in
-   score uncertainty or publish a no-covariance limitation; target resolution
-   date 2026-05-31.
-4. **Invalid upstream rows:** OPEN: define the policy for missing/failed C.2 or
-   C.3 rows as rejected, unclassified, or low-confidence scored; target
-   resolution date 2026-05-24.
-5. **Class boundary non-regression:** any threshold or classifier change must be
-   recorded in plan 05 and shown not to regress green plan-47 rows.
-
-### 1.10 C.5 Closure test for the derivation
-
-1. Run `classify_charged_candidates` on frozen C.1, C.2, C.3, and C.4 inputs
-   with truth labels absent from the production scoring table.
-2. Tune cut thresholds or likelihood artifacts only on labeling-approved plan-23
-   calibration splits, then freeze `rule_version` and threshold/artifact hashes.
-3. In validation-only scoring, report confusion matrix, balanced F1, ROC AUC,
-   and plan-38 ladder delta for the frozen rule.
-4. The derivation passes when the C.5 rows are unchanged by dropping truth PID
-   labels and the frozen rule meets or beats the cut-based baseline without
-   changing any green ledger row silently.
-
-### 1.11 C.6 Physics derivation
-
-- **What is physically measured:** C.6 measures the observable rejection state
-  for a charged-PID candidate after C.5 scoring. It distinguishes usable
-  pion/proton candidates from invalid upstream rows, EM-like objects,
-  neutral-like artefacts, conversion-like pairs, and geometry-loss cases.
-- **Estimator rationale:** C.6 is a post-PID decision boundary whose inputs are
-  reconstructed topology, lead-glass/shower response, timing, quality states,
-  and geometry side-cars. This keeps species scoring (C.5) separate from
-  detector-quality and background-shape rejection, consistent with PDG
-  interaction categories and TPC/PID reconstruction practice
-  \cite{ParticleDataGroup:2024RPP,alice2014performance}.
-- **Statistical character:** false rejections reduce signal efficiency and
-  charged multiplicity; false acceptances contaminate event-shape and selection
-  leaves. Bias is controlled by observable-only reasons and by retaining
-  `pid_before_rejection` for audit and closure.
-- **Citation:** the cited keys above were checked against
-  `/Users/billy/Desktop/projects/overleaf-hibeam-thesis/ref.bib` on
-  2026-05-10.
-
-### 1.12 C.6 Logic gaps
-
-1. **Allowed rejection reasons:** OPEN: freeze `invalid_candidate_or_dedx`,
-   `em_like_observable`, `neutral_like_observable`,
-   `conversion_like_observable`, and `geometry_outside_acceptance` in the
-   manifest schema; target resolution date 2026-05-24.
-2. **EM-like thresholds:** OPEN: consume plan-32 shower-shape observables and
-   scan false-rejection versus signal-efficiency loss; target resolution date
-   2026-05-31.
-3. **Conversion topology windows:** OPEN: source material-region and pair-vertex
-   windows from plans 16 and 60; target resolution date 2026-06-07.
-4. **Geometry acceptance boundary:** OPEN: decide with plan 60 whether geometry
-   loss is a rejection, a fiducial flag, or both; target resolution date
-   2026-05-31.
-5. **PID audit invariant:** `pid_before_rejection` must persist for every row so
-   C.6 changes cannot erase the C.5 score used by plan 38/47 audits.
-
-### 1.13 C.6 Closure test for the derivation
-
-1. Run the C.6 rejection builder on frozen C.1-C.5 rows plus Class-A
-   lead-glass, timing, topology, quality, and geometry inputs.
-2. Persist `pid_before_rejection`, `pid_after_rejection`, `rejection_flags`, and
-   `primary_reason` before joining validation labels.
-3. In validation-only scoring, report rejection efficiency and fake-rejection
-   rate by truth particle category, conversion topology, and geometry state.
-4. The derivation passes when dropping `Name`, `Interaction`, `Track_ID`, and
-   truth PID labels leaves production C.6 rows unchanged and every rejection has
-   exactly one observable primary reason.
 
 ## 2. Cut-based baseline (current code)
 
@@ -302,7 +151,7 @@ Per plan 57 MVA protocol:
 
 | Alternative | Source paper / codebase | NNBAR-specific adaptation | Expected ladder leaf delta |
 |---|---|---|---|
-| Cut-based baseline | Existing `reconstruct_charged_objects` (`nnbar_reconstruction/charged.py:151-238`) | Keep thesis Ch 8/9 threshold form but remove the C.1 truth-name gate before production scoring. | Reproduces baseline; ladder delta comes primarily from removing truth substitution. |
+| Cut-based baseline | Existing `reconstruct_charged_objects` (`nnbar_reconstruction/charged.py:151-228`) | Keep thesis Ch 8/9 threshold form but remove the C.1 truth-name gate before production scoring. | Reproduces baseline; ladder delta comes primarily from removing truth substitution. |
 | Likelihood-ratio PID | Plan 57 MVA protocol / standard likelihood-ratio classifier | Train on plan 23 charged calibration samples using C.2/C.3/C.4 features and locked train/validation/test splits. | Expected to reduce C.5 π/p confusion, especially near stopping-proton boundaries; must beat cut-based on plan 38. |
 
 ## 4. EM and neutral rejection (C.6)
@@ -344,16 +193,149 @@ TPC topology only.
 
 ## 6. Stage E.1 implementation handoff
 
-The detailed Stage E.1 handoff is split to keep this plan under the
-500-line review cap:
+For L3's charged-side redesign, the C.5 production fixture is now split
+from the legacy charged-object row. The production-like hook is
+`classify_charged_candidates` (`nnbar_reconstruction/charged_pid.py:60-118`), which consumes
+plan-25 C.1 candidates plus plan-27 C.2 and plan-28 C.3 rows. The
+current help-verified calibration scan surface is still `scan-pid`; it
+calls `scan_charged_pid_thresholds` (`nnbar_reconstruction/calibration.py:27-134`), which
+scores labels from `truth_name` after `reconstruct_charged_objects`
+has emitted the legacy rows. That scan is valid for calibration only,
+not for production charged-PID fixture decisions.
 
-- `docs/rebuild_plans/29_subsystem_charged_pid/29_stage_e1_handoff.md`
+Plan-side gates for the L3 implementation:
 
-That annex is normative for L3's C.1/C.5/C.6 fixture promotion. It
-keeps the `classify_charged_candidates` production hook, `scan-pid`
-calibration boundary, code-gap checklist, promotion invariants,
-producer/consumer contract, verification command, manifest schema, and
-fixture matrix in one reviewable file.
+1. Consume the plan-25 C.1 candidate rows, plan-27 C.2 dE/dx rows,
+   plan-28 C.3 range rows, and C.4 scintillator-association sidecar;
+   do not re-open raw TPC truth columns in the C.5 scorer.
+2. Emit separate C.1, C.5, and C.6 fixture rows with the fields in
+   §1.4 and hashes of the consumed C.2/C.3 inputs.
+3. Preserve the cut-based threshold rule as a named reproduction mode,
+   then add likelihood-ratio scoring only behind a plan 57
+   train/validation/test artifact and a plan 05 decision entry.
+4. Keep EM/neutral rejection reasons observable-only: lead-glass
+   shower-shape, conversion-pair topology, hit timing, and geometry
+   side-cars. Truth `Name` and `Interaction` can appear only in
+   validation or labeling artifacts.
+5. Keep the current charged-PID tests in `tests/test_charged_reco.py`:
+   `test_classify_charged_candidates_uses_dedx_and_range_thresholds`
+   (`tests/test_charged_reco.py:282-329`) covers the cut rule and output
+   schema, and
+   `test_classify_charged_candidates_real_sample_has_plan_29_schema`
+   (`tests/test_charged_reco.py:331-350`) covers the real-output chain
+   from C.1/C.2/C.3 into C.5. Extend them so dropping `Name`,
+   `Track_ID`, and truth kinetic energy cannot change production
+   candidate creation or production scoring.
+6. Plan 66 consumes charged-PID validity, rejection-reason fractions,
+   and rule-version drift once the C.5/C.6 fixtures are present.
+
+### 6.1 Stage E.1 code-gap checklist
+
+The live L3 hook already produces truth-free cut-based PID rows, but
+the promoted C.1/C.5/C.6 fixture set still needs explicit provenance
+and rejection coverage. L3 can promote charged PID only after these
+gaps close in `classify_charged_candidates` (`nnbar_reconstruction/charged_pid.py:60-118`):
+
+| Gap | Current live behavior | Required promotion behavior |
+|---|---|---|
+| C.2/C.3 provenance | the scorer reads dE/dx and range rows but does not store consumed input hashes | add fixture hashes for the exact C.2 and C.3 rows used by each C.5 decision |
+| threshold identity | `rule_version=plan29_cut_pid_v0` and threshold values are emitted | keep the rule version stable, and require a plan 05 decision before any threshold or likelihood-ratio promotion changes it |
+| C.4 association | the cut rule uses dE/dx and range only | add the C.4 scintillator-association sidecar when plan 28 exposes associated-hit provenance |
+| rejection coverage | invalid candidates/dE/dx rows are rejected with `invalid_candidate_or_dedx` | add explicit EM/neutral/conversion rejection reasons from observable-only lead-glass, timing, and topology inputs before C.6 is complete |
+| truth-invariance test | current tests assert schema and thresholds, but not Class B-drop invariance | extend tests so dropping `Name`, `Track_ID`, and truth kinetic energy cannot change production C.5/C.6 rows |
+
+Acceptance of this checklist is a plan-side gate, not a request for L0
+to edit L3 code. The matching L3 patch must update
+`test_classify_charged_candidates_uses_dedx_and_range_thresholds`
+(`tests/test_charged_reco.py:282-329`) and
+`test_classify_charged_candidates_real_sample_has_plan_29_schema`
+(`tests/test_charged_reco.py:331-350`) so the synthetic and real-output
+chains assert the provenance, rejection, and truth-invariance fields.
+
+### 6.2 Stage E.1 promotion invariants
+
+C.5 is the first charged-side decision that can directly alter the
+analysis category, so promotion requires more than a schema match. L3
+may replace or extend the cut rule only if these invariants stay true:
+
+| Invariant | Current live behavior | Replacement requirement |
+|---|---|---|
+| truth blindness | `classify_charged_candidates` (`nnbar_reconstruction/charged_pid.py:60-118`) consumes C.1 candidates plus C.2 dE/dx and C.3 range rows | production C.5/C.6 rows must be unchanged when `Name`, `Track_ID`, truth kinetic energy, and interaction labels are removed |
+| calibration separation | `scan-pid` and `scan_charged_pid_thresholds` (`nnbar_reconstruction/calibration.py:27-134`) may score truth labels for calibration | the calibrated threshold or likelihood artifact must be frozen before production scoring and cited through plan 57/plan 05 |
+| rule identity | current rows emit `rule_version=plan29_cut_pid_v0` and threshold values | any threshold, likelihood-ratio, or rejection-taxonomy change must version the rule and keep old rows reproducible |
+| input provenance | current C.5 rows read dE/dx and range values but do not persist consumed-row hashes | promoted rows must hash the exact C.2, C.3, and later C.4 sidecar rows used for each PID decision |
+| observable-only rejection | current invalid rows use `invalid_candidate_or_dedx` | EM, neutral, conversion, and geometry rejections must come from observable lead-glass/timing/topology fields, never truth `Name` or `Interaction` |
+| test invariance | current tests cover thresholds and real-output schema | tests must explicitly drop Class B columns and assert identical C.1/C.5/C.6 production rows before plan 38 ladder scoring |
+
+These invariants keep C.5 as a reproducible analysis rule rather than a
+hidden truth filter. They also define what the future likelihood-ratio
+replacement must prove before it can supersede the cut-based baseline.
+
+### 6.3 Stage E.1 producer/consumer contract
+
+The L3 C.5/C.6 patch must expose a stable table boundary so plan 38
+ladder rows, plan 47 ledgers, and plan 66 DQM can consume charged-PID
+decisions without re-running calibration scans or reopening truth labels:
+
+| Contract item | Required behavior | Downstream check |
+|---|---|---|
+| input key | consume one C.1 candidate keyed by `(event_id, charged_candidate_id)` plus the selected C.2 `estimator_id` and C.3 `range_id` rows | C.5 rows can be joined to the exact dE/dx and range facts used for scoring |
+| output key | emit one C.5 row keyed by `(event_id, charged_candidate_id, pid_decision_id)` and optional C.6 rejection rows keyed by `(event_id, charged_candidate_id, rejection_id)` | plan 38 and plan 47 count attempted candidates without inferring missing rows as accepted or rejected physics |
+| rule provenance | record `rule_version`, `classifier_family`, and threshold or likelihood-artifact hashes in every manifest | plan 05 can audit any threshold or classifier change before promotion |
+| source hashes | record C.1, C.2, C.3, and optional C.4 sidecar hashes before writing C.5/C.6 outputs | plan 47 can prove the same upstream tables fed PID, signal-efficiency, and DQM artifacts |
+| rejection taxonomy | restrict production reasons to observable invalid-state, EM-like, neutral-like, conversion-like, and geometry-loss categories | plan 66 aggregates rejection fractions without reading `Name`, `Interaction`, or truth energy |
+| calibration boundary | consume frozen calibration artifacts only; do not call `scan-pid` from the production scorer | closure studies can score labels after the C.5/C.6 table is frozen, but cannot alter production rows |
+
+This contract keeps `classify_charged_candidates`
+(`nnbar_reconstruction/charged_pid.py:60-118`) as the Stage E.1 C.5/C.6
+producer until L3 replaces the classifier behind the same keys.
+
+### 6.4 Stage E.1 verification command
+
+L3's C.5/C.6 patch is promotable only when the charged-PID slice
+exercises both the synthetic threshold/rejection path and the real-output
+C.1/C.2/C.3→C.5 chain:
+
+```bash
+pytest tests/test_charged_reco.py::test_classify_charged_candidates_uses_dedx_and_range_thresholds \
+       tests/test_charged_reco.py::test_classify_charged_candidates_real_sample_has_plan_29_schema
+```
+
+The review note for that patch must quote the command output and the
+C.5/C.6 artifact manifest fields `rule_version`, `thresholds`,
+`pid_valid`, `decision_reason`, `rejection_flags`, and the consumed
+C.2/C.3 row hashes. A likelihood-ratio replacement also needs the plan
+57 train/validation/test artifact and a plan 05 decision before it can
+replace the cut-based baseline.
+
+### 6.5 Stage E.1 artifact manifest schema
+
+The C.5/C.6 producer must write a manifest that freezes rule identity,
+thresholds, consumed C.2/C.3 rows, and rejection taxonomy before plan 38
+or plan 47 consumes charged-PID decisions:
+
+```yaml
+schema_version: plan29_c5_c6_pid@stage-e1
+dataset_id: <plan-03 dataset id>
+producer: classify_charged_candidates
+rule_version: plan29_cut_pid_v0 | <plan-05-approved successor>
+classifier_family: cut_based | likelihood_ratio
+thresholds_hash: <sha256 of threshold payload>
+input_c1_hash: <sha256 of C.1/V.1 candidate table>
+input_c2_hash: <sha256 of C.2 dE/dx table>
+input_c3_hash: <sha256 of C.3 range table>
+input_c4_hash: <sha256 of scintillator-association sidecar or null>
+output_pid_hash: <sha256 of C.5 PID table>
+output_rejection_hash: <sha256 of C.6 rejection table>
+rejection_reasons_allowed: [none, invalid_candidate_or_dedx, em_like_observable, neutral_like_observable, conversion_like_observable, geometry_outside_acceptance]
+truth_columns_absent: [Name, Track_ID, truth_kinetic_energy, Interaction]
+calibration_artifact: scan-pid | plan57_locked_split | null
+```
+
+The manifest is invalid if `classifier_family=likelihood_ratio` lacks a
+plan 57 split artifact and a plan 05 decision, or if any truth column is
+listed as a production input. Plans 38 and 47 consume this manifest
+before accepting C.5/C.6 ladder or ledger rows.
 
 ## 7. Acceptance criteria
 
@@ -365,7 +347,7 @@ fixture matrix in one reviewable file.
 - §6 Stage E.1 handoff is actionable for L3: current production and
   calibration hooks are cited, production C.1/C.5/C.6 inputs and
   outputs are named, promotion invariants, producer/consumer contract,
-  verification command, artifact manifest schema, and fixture matrix are explicit,
+  verification command, and artifact manifest schema are explicit,
   current charged-reco tests are cited, and the remaining tests must
   prove the production scorer is invariant to dropping Class B truth
   columns.
