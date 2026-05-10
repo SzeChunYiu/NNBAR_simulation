@@ -30,14 +30,15 @@ Leaf P.2: cluster candidates → charged/neutral discriminant inputs
   hit-membership keys; underlying LeadGlass/Scintillator `eDep`,
   `x/y/z`, optional `t`; reconstructed TPC track anchors/directions
   from plans 25–30; reconstructed vertex from plan 30.
-- **Current implementation evidence:** plan 08 records the hard-cone
-  charged-match candidate construction in `reconstruct_photon_objects`
-  (`reconstruction.py:850–889`) after truth-based TPC-track skips in
-  `_tpc_tracks_to_skip_for_charged_matching`
-  (`reconstruction.py:632–688`). The per-cluster charged decision is
-  accepted in `build_photon_row` at `reconstruction.py:941–989`,
-  with diagnostic truth/provenance classes filled at
-  `reconstruction.py:990–1014`.
+- **Current implementation evidence:** the compact current source
+  implements the hard-cone charged/neutral baseline inside
+  `reconstruct_photon_objects` (`reconstruction.py:432-573`).
+  The threshold comes from `ReconstructionConfig`
+  (`reconstruction.py:17-51`) as
+  `charged_cluster_match_angle_deg = 8.0`. The same function also
+  emits the diagnostic `truth_name` and `source_track_id` columns,
+  so those fields remain validation/provenance surfaces rather than
+  production discriminant inputs.
 - **Decision rule (target):** compute shower-shape observables and a
   neutral score without using `Name`, `Parent_ID`, `Track_ID`, or
   source ancestry. The production photon-like flag is a threshold on
@@ -86,11 +87,11 @@ direction or truth charge labels.
 
 | Candidate | P.2 decision rule | Current/source citation | Class-A status | Comparison metric | Failure mode to inspect |
 |---|---|---|---|---|---|
-| **Hard cone (current)** | Mark charged when vertex-to-centroid direction lies within `charged_cluster_match_angle_deg = 10.5°` of a TPC-track direction. | Charged-match candidates and threshold in `reconstruct_photon_objects` (`reconstruction.py:850–889`, `941–989`, plan 08 §3.5.2). | Partly eligible: geometric cone is Class A, but current TPC-track skip logic reads truth (`reconstruction.py:632–688`). | ROC point, charged contamination, neutral efficiency. | Truth-skip path can hide conversion/electron backgrounds. |
-| **Rectangular shower-shape cuts** | Apply tuned cuts on lateral RMS, depth, max-cell fraction, timing RMS, and track distance. | Replaces the single angle threshold in `build_photon_row`. | Production-eligible if thresholds are DEC-logged. | AUC/efficiency and N-1 stability for each variable. | Sharp thresholds may be unstable across clusterers. |
+| **Hard cone (current)** | Mark charged when vertex-to-centroid direction lies within `charged_cluster_match_angle_deg = 8.0°` of a TPC-track direction. | Charged-match candidates, threshold, and output flag live in `reconstruct_photon_objects` (`reconstruction.py:432-573`) with the default in `ReconstructionConfig` (`reconstruction.py:17-51`). | Partly eligible: geometric cone is Class A if upstream track inputs are reconstructed objects; current row still carries provenance columns. | ROC point, charged contamination, neutral efficiency. | Track-key/provenance coupling can hide conversion/electron backgrounds. |
+| **Rectangular shower-shape cuts** | Apply tuned cuts on lateral RMS, depth, max-cell fraction, timing RMS, and track distance. | Replaces the single angle threshold in `reconstruct_photon_objects` (`reconstruction.py:432-573`). | Production-eligible if thresholds are DEC-logged. | AUC/efficiency and N-1 stability for each variable. | Sharp thresholds may be unstable across clusterers. |
 | **BDT discriminant** | Train a bounded tree model on the §1 observables and track-distance variables. | Plan 57-governed replacement for the current hard cone. | Production-eligible after frozen feature contract and training provenance. | ROC AUC, calibration curve, feature-ablated stability. | Overtraining to single-γ calibration topology. |
 | **Neural discriminant** | Train a small NN on the same tabular features; threshold `neutral_score`. | Plan 57-governed alternative to BDT. | Production-eligible only if deterministic export and audit artifacts land. | Same as BDT plus seed/export reproducibility. | Harder to defend than BDT without clear gains. |
-| **Truth-labelled diagnostic** | Use gamma/e± ancestry to label neutral or charged shower origin. | Current source labels flow through `_shower_truth_name` and `truth_charge_match_class` (`reconstruction.py:990–1014`). | Not production-eligible; validation labels only. | Upper-bound/reference ROC. | Inflates performance and fails plan 01 if used in decisions. |
+| **Truth-labelled diagnostic** | Join validation-only gamma/e± labels after production scoring. | Current production rows expose diagnostic `truth_name` in `reconstruct_photon_objects` (`reconstruction.py:432-573`) for validation joins only. | Not production-eligible; validation labels only. | Upper-bound/reference ROC. | Inflates performance and fails plan 01 if used in decisions. |
 
 Plan 38 scores all candidates on identical P.1 cluster inputs. Plan 57
 requires the selected BDT/NN feature list, training split, and threshold
