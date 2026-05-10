@@ -276,6 +276,34 @@ geometry side-car inputs. If the real-output selector skips, the split
 fixture remains a synthetic-only bridge and cannot feed plan 43 or plan
 60 promotion.
 
+### 7.4 Stage E.1 artifact manifest schema
+
+The V.3/V.4/V.5 producer chain must write a manifest that freezes
+projection, aggregation, and foil-acceptance provenance before plan 43,
+47, or 60 consumes vertex rows:
+
+```yaml
+schema_version: plan30_vertex_chain@stage-e1
+dataset_id: <plan-03 dataset id>
+producers: [project_tracks_to_foil, aggregate_event_vertices, apply_foil_acceptance]
+input_v2_hash: <sha256 of V.2 fit table>
+projection_table_hash: <sha256 of V.3 projection table>
+vertex_table_hash: <sha256 of V.4 vertex table>
+foil_acceptance_hash: <sha256 of V.5 foil table>
+geometry_sidecar_hash: <sha256 of plan-16/60 geometry sidecar>
+foil_geometry_version: <geometry version string>
+aggregation_method: mean_projection | billoir | adaptive
+covariance_representation: row_major_3x3_vector | six_components
+validity_fields_required: [projection_valid, vertex_valid, foil_compatible]
+reason_fields_required: [skipped_reason, vertex_failure_reason, acceptance_reason]
+truth_columns_absent: [Track_ID, Name, truth_vertex_x, truth_vertex_y, truth_vertex_z, origin_vol_name]
+```
+
+The manifest is invalid if V.3, V.4, and V.5 hashes are not separate, if
+geometry version is missing, or if truth-origin fields are listed as
+production inputs. Plans 43, 47, and 60 consume this manifest before
+using foil compatibility or vertex residual rows.
+
 ## 8. Acceptance criteria
 
 - §3 migration complete.
@@ -283,7 +311,8 @@ fixture remains a synthetic-only bridge and cannot feed plan 43 or plan
 - §6 closure passes.
 - §7 Stage E.1 handoff is actionable for L3: the legacy reproduction
   hook, split V.3/V.4/V.5 fixture hooks, promotion invariants,
-  verification command, and vertex-reco regression tests are cited; the fixtures remain split
+  verification command, artifact manifest schema, and vertex-reco
+  regression tests are cited; the fixtures remain split
   from closure artifacts; and vertex-reco tests must prove the foil
   gate is invariant to dropping Class B truth columns.
 
