@@ -1,0 +1,249 @@
+---
+id: 64_bayesian_limit_cross_check
+title: Bayesian limit cross-check for low-count NNBAR results
+version: 0.1
+status: draft
+owner: Methodology Council
+depends_on: [00_README, 04_statistical_uncertainty, 43_signal_efficiency, 44_background_taxonomy, 45_systematics_taxonomy, 46_significance_protocol, 47_reproduction_ledger]
+outputs:
+  - {path: docs/rebuild_plans/64_bayesian_limit_cross_check.md, schema: this file}
+  - {path: output/statistics/<result_id>/bayesian_limit.json, schema: §5 result bundle}
+  - {path: output/statistics/<result_id>/prior_sensitivity.parquet, schema: §7 prior-sensitivity table}
+acceptance:
+  - {test: Jeffreys and flat-prior limits are both specified, method: §§2-3 review, pass_when: posterior and integration rules are explicit}
+  - {test: comparison to Feldman-Cousins and CLs is defined, method: §6 review, pass_when: dispatch and difference fields are present}
+  - {test: prior sensitivity is not hidden, method: §7 review, pass_when: sensitivity table and promotion guard are explicit}
+  - {test: plan 46 remains the primary convention, method: §8 review, pass_when: Bayesian output is labelled cross-check unless DEC approves otherwise}
+risks:
+  - {risk: Bayesian credible intervals are presented as the primary frequentist limit, mitigation: §8 labels them cross-check and requires plan-46 dispatch rows}
+  - {risk: prior choice dominates a sparse-count result, mitigation: §7 requires prior-sensitivity bands and a reviewer caveat}
+  - {risk: nuisance marginalisation silently drops unbounded plan-45 caveats, mitigation: §4 carries nuisance ids and unbounded limitations into every result}
+estimated_effort: M
+last_updated: 2026-05-10
+---
+
+# Bayesian limit cross-check
+
+*Charter.* Provide an independent Bayesian cross-check for NNBAR limits
+in the low-count regime. Plan 46 keeps Feldman-Cousins as the primary
+small-count convention and CLs as the high-count cross-check when a
+binned model exists. Plan 64 adds a transparent Bayesian calculation
+with Jeffreys and flat priors so reviewers can see how much the final
+limit depends on prior choice.
+
+## 1. Scope and input contract
+
+Plan 64 consumes the same input bundle as plan 46:
+
+| Input | Source | Required field |
+|---|---|---|
+| signal expectation | plan 43 | `s_expected` or exposure-to-signal conversion |
+| background expectation | plan 44 | `b_expected` plus channel decomposition |
+| nuisance model | plan 45 | nuisance ids, priors/constraints, correlation flags |
+| observed count | plan 47 / result ledger | `n_obs` and analysis region |
+| primary method dispatch | plan 46 | `method_selected`, confidence level, DEC id |
+
+The Bayesian result is not valid without the plan-46 dispatch row. The
+cross-check asks whether a Bayesian credible upper limit is consistent
+with, tighter than, or looser than the primary plan-46 interval; it does
+not silently replace the primary result.
+
+### 1.1 Counting model
+
+For the first implementation, the observed count is modelled as:
+
+`n_obs ~ Poisson(s + b)`
+
+where `s >= 0` is the signal mean and `b >= 0` is the background mean.
+When plan 46 has a binned pyhf/CLs model, plan 64 may either marginalise
+the same bins or collapse to the total-count validation model. The
+chosen mode is recorded in `bayes_model_id`.
+
+## 2. Jeffreys-prior construction
+
+The Jeffreys prior is applied to the total Poisson mean `mu = s + b`.
+For known fixed background `b`, the induced prior on signal strength is:
+
+`pi_J(s | b) proportional to (s + b)^(-1/2), for s >= 0`.
+
+The posterior density is:
+
+`p_J(s | n, b) proportional to Poisson(n | s + b) * (s + b)^(-1/2)`.
+
+The 90% upper credible limit `s90_J` satisfies:
+
+`integral_0^s90_J p_J(s | n, b) ds = 0.90 * integral_0^infinity p_J(s | n, b) ds`.
+
+Rules:
+
+1. Use numerical quadrature or an analytically equivalent incomplete
+   gamma expression; record which implementation is used.
+2. Enforce `s >= 0`; do not allow a negative signal estimate to cancel
+   background.
+3. If `b = 0` and `n = 0`, the posterior remains integrable under the
+   Jeffreys prior; report the finite upper limit with the method id.
+4. When background uncertainty is present, marginalise over `b` before
+   integrating over `s` as specified in §4.
+
+## 3. Flat-prior construction
+
+The flat prior is the common sensitivity cross-check:
+
+`pi_F(s) proportional to 1, for s >= 0`.
+
+The posterior density is:
+
+`p_F(s | n, b) proportional to Poisson(n | s + b)`.
+
+The 90% upper credible limit `s90_F` is the 90% posterior quantile under
+this posterior. The same integration, nonnegative-signal, and nuisance
+marginalisation rules apply.
+
+The flat-prior row is not labelled more objective than Jeffreys. It is a
+reviewer-facing sensitivity bracket. If the flat and Jeffreys limits
+differ by more than the threshold in §7, plan 50 must quote a prior
+sensitivity caveat.
+
+## 4. Nuisance marginalisation
+
+Plan 45 nuisance rows are carried into the Bayesian calculation using
+explicit nuisance ids. For v0.1:
+
+| Nuisance type | Bayesian treatment | Guard |
+|---|---|---|
+| Gaussian calibration nuisance | integrate over truncated Gaussian or use toys | truncation at physical rates |
+| lognormal rate nuisance | integrate over lognormal multiplier | median and sigma recorded |
+| bounded efficiency nuisance | beta or truncated Gaussian constraint | support restricted to [0,1] |
+| unbounded limitation caveat | not marginalised into a numeric prior | copied to `unbounded_limitations` and blocks unconditional quote |
+| correlation group | sample jointly using plan-45 correlation flags | covariance id required |
+
+A result that drops a nuisance id present in the plan-46 input bundle is
+invalid. A result that numerically marginalises an unbounded limitation
+instead of carrying a caveat is invalid.
+
+## 5. Bayesian result bundle
+
+Every Bayesian cross-check writes one JSON-like result bundle and one
+prior-sensitivity table.
+
+| Field | Required content | Review rule |
+|---|---|---|
+| `result_id` | plan-47 result key | matches plan-46 primary result |
+| `bayes_model_id` | total-count or binned model id | replayable |
+| `n_obs`, `s_expected`, `b_expected` | copied inputs | must match plan-46 input bundle |
+| `confidence_level` | 0.90 primary, optional 0.95 | explicit |
+| `primary_method_selected` | Feldman-Cousins or CLs/pyhf from plan 46 | Bayesian row cannot stand alone |
+| `jeffreys_upper` | 90% Jeffreys-prior upper credible limit on signal mean | finite or blocked with reason |
+| `flat_upper` | 90% flat-prior upper credible limit on signal mean | finite or blocked with reason |
+| `nuisance_ids` | plan-45 nuisance ids included | no silent drops |
+| `unbounded_limitations` | inherited caveats | non-empty blocks unconditional defence quote |
+| `prior_sensitivity_status` | pass, warn, fail, or blocked | derived in §7 |
+| `decision_dec_id` | `DEC-64-BAYES-CROSSCHECK` or successor | draft until approved |
+
+## 6. Comparison with Feldman-Cousins and CLs
+
+Plan 64 reports differences against the primary plan-46 result rather
+than re-litigating the primary convention.
+
+| Primary plan-46 method | Bayesian comparison | Required output |
+|---|---|---|
+| Feldman-Cousins low-count limit | compare `s90_J` and `s90_F` to F-C upper limit | ratios and absolute differences |
+| CLs/pyhf high-count limit | compare total-count Bayesian result to CLs expected/observed limit | mark as coarse if binned model is collapsed |
+| Asimov discovery Z | no direct Bayesian replacement | optional posterior predictive p-value row |
+
+Comparison fields:
+
+| Field | Meaning |
+|---|---|
+| `primary_upper` | upper limit from F-C or CLs when applicable |
+| `jeffreys_to_primary_ratio` | `jeffreys_upper / primary_upper` |
+| `flat_to_primary_ratio` | `flat_upper / primary_upper` |
+| `jeffreys_minus_primary` | absolute signal-mean difference |
+| `flat_minus_primary` | absolute signal-mean difference |
+| `comparison_status` | `consistent`, `prior_sensitive`, `model_mismatch`, or `blocked` |
+
+A Bayesian cross-check cannot turn a blocked plan-46 result into an
+accepted result. It can only add evidence or a caveat.
+
+## 7. Prior-sensitivity table
+
+The prior-sensitivity table has one row per result and prior family.
+
+| Column | Meaning |
+|---|---|
+| `result_id` | linked plan-47 result |
+| `prior_id` | `jeffreys_poisson_mean`, `flat_signal_mean`, or approved successor |
+| `upper_limit_signal_mean` | credible upper limit |
+| `upper_limit_rate` | signal mean converted to rate/exposure when available |
+| `ratio_to_primary` | ratio to plan-46 primary upper limit |
+| `ratio_to_other_prior` | Jeffreys/flat ratio or inverse |
+| `nuisance_throw_id` | null for analytic, id for toy marginalisation |
+| `sensitivity_status` | `pass`, `warn`, `fail`, or `blocked` |
+| `review_caveat` | required when status is warn/fail/blocked |
+
+Initial thresholds:
+
+| Status | Rule |
+|---|---|
+| `pass` | both Bayesian priors within 20% of the primary upper limit and of each other |
+| `warn` | difference is 20-50%; quote prior sensitivity in plan 50 |
+| `fail` | difference exceeds 50%; Methodology Council must review before thesis quote |
+| `blocked` | missing nuisance ids, unbounded caveat, or non-replayable model |
+
+Thresholds are review defaults. Any change requires a DEC update because
+it changes how prior sensitivity is judged.
+
+## 8. Governance and promotion rules
+
+Decision-log stubs:
+
+| DEC id | Decision to freeze | Required evidence |
+|---|---|---|
+| `DEC-64-BAYES-CROSSCHECK` | add Bayesian limits as required cross-checks, not primary convention | replayed result bundle for plan-46 examples |
+| `DEC-64-PRIORS` | Jeffreys-on-total-mean and flat-on-signal priors | analytic/numerical validation and reviewer approval |
+| `DEC-64-NUISANCE-MARGINALISATION` | nuisance integration / toy scheme | plan-45 covariance and toy reproducibility rows |
+| `DEC-64-SENSITIVITY-THRESHOLDS` | 20%/50% prior-sensitivity warning thresholds | validation examples and plan-50 caveat policy |
+
+Promotion rules:
+
+1. Plan 46 remains authoritative for primary significance and limits.
+2. Plan 64 must be run for every thesis-facing low-count limit.
+3. A pass status supports the primary result; a warn/fail status creates
+   a plan-50 caveat and may require method review.
+4. A blocked Bayesian row blocks the claim only if plan 46 or plan 50
+   explicitly requires the cross-check for that result class.
+
+## 9. Validation examples
+
+| Example | Inputs | Required behavior |
+|---|---|---|
+| zero survivor | `n_obs=0`, `b=0`, no nuisance | compute finite Jeffreys and flat upper limits; compare to F-C 2.44 primary mean |
+| low background | `n_obs=1`, `b=0.2` | F-C remains primary; Bayesian rows report prior sensitivity |
+| nuisance background | `n_obs=3`, `b=1.2` with rate nuisance | marginalise the rate nuisance and record throw or quadrature id |
+| high-count CLs | `n_obs=18`, `b=12` with binned model | Bayesian total-count result marked coarse unless binned model is used |
+| unbounded caveat | any row with plan-45 unbounded limitation | Bayesian numeric row may exist, but unconditional quote is blocked |
+
+## 10. Acceptance checklist
+
+| Check | Evidence artifact | Failure state |
+|---|---|---|
+| primary dispatch linked | plan-46 dispatch id in result bundle | Bayesian row rejected |
+| both priors computed | §5 `jeffreys_upper` and `flat_upper` | incomplete cross-check |
+| nuisances carried | nuisance id list matches plan-46 bundle | blocked |
+| unbounded caveats copied | `unbounded_limitations` field | reviewer caveat missing |
+| sensitivity table saved | §7 table | no prior-sensitivity claim |
+| comparison ratios saved | §6 fields | cannot judge consistency |
+| DEC stubs named | §8 table | no governance path |
+
+## 11. A+ verifier transcript
+
+Before this plan was committed, the local statistical-convention plans
+were checked for existence and relevant sections. This plan contains no
+runtime nnbar module command and no source-code line citation.
+
+| Claim | Verifier |
+|---|---|
+| plan 04 F-C convention exists | `grep -n "Feldman-Cousins" docs/rebuild_plans/04_statistical_uncertainty.md` |
+| plan 46 primary dispatch exists | `grep -n "method-dispatch" docs/rebuild_plans/46_significance_protocol.md` |
+| plan 45 nuisance handoff exists | `grep -n "nuisance\|correlation" docs/rebuild_plans/45_systematics_taxonomy.md` |
+| no stale code citation | no `*.py:<line>` citation appears in this plan |
