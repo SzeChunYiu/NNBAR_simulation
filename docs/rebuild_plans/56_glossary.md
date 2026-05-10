@@ -76,15 +76,15 @@ code-level usage; deltas are flagged.
 | **prior sensitivity** | Difference between Bayesian limits under approved priors, reported as a reviewer caveat when it exceeds plan-64 thresholds. |
 | **defence overlay** | Extra plan-50 package block that must be present when a result depends on L1 EM, selection, timing, pile-up, strange-background, or Bayesian-limit evidence. |
 | **review-evidence links** | Plan-50 and plan-51 machine-readable pointers from an L1 answer to package, CI, note-annex, glossary-audit, rerun, and staleness artifacts. |
-| **review-artifact hashes** | Plan-54 archive digests for CI report, note annex, and glossary audit artifacts that support an L1 defence package. |
+| **review-artifact hashes** | Stable digests carried by plans 50, 51, 54, and 55 for package, CI report, note-annex, and glossary-audit artifacts that support an L1 defence answer. |
 | **owner sign-off** | Plan-51 accountable approval recorded before an L1 reviewer-question answer can stop blocking a thesis-facing result. |
 | **rerun transcript** | Plan-52 execution record proving which reviewer-triggered rerun rows actually ran, with input hashes, output hashes, environment identity, and pass/fail/block status. |
 | **command-template id** | Stable plan-52 identifier for the verified rerun command contract used by a transcript row; it records replay semantics without depending on prose. |
 | **command-template verifier hash** | Stable digest of the plan-52 CLI verifier transcript proving the command-template surface was checked before a refreshed L1 artifact was trusted. |
 | **CLI verifier transcript** | Plan-52 evidence record containing the checked help command, exit status, supported flags, and digest for an executable command template. |
 | **blocked template** | Plan-52 command-template row used when no execution command is valid because a required input or artifact is missing. |
-| **package freshness** | Plan-50 state in which the L1 defence package staleness summary is `current` against the latest question registry, rerun manifest, rerun transcript, note annex, and glossary audit. |
-| **stale package** | Archived defence package whose evidence is retained for provenance but is not acceptable as current thesis evidence until the plan-50 staleness summary is regenerated. |
+| **package freshness** | Plan-50 state in which the L1 defence package staleness summary is `current` against the latest question registry, rerun manifest, rerun transcript, CI report, note annex, glossary audit, and review-artifact hashes. |
+| **stale package** | Archived defence package whose evidence is retained for provenance but is not acceptable as current thesis evidence until the plan-50 staleness summary and review-artifact hashes are regenerated. |
 | **stale-package caveat** | Plan-55 reviewer-note language that explicitly warns when a note cites stale L1 package evidence as historical provenance rather than current numerical support. |
 
 ## 2. Geant4 / Hep terms
@@ -143,9 +143,9 @@ Audit review rules:
 | every `thesis_delta: flagged` row names a reviewer note | thesis-facing language diverges without explanation |
 | `pass_* columns` always lists plan 37 | cut-flow terminology drifts away from the canonical selection plan |
 | L1 terms list owner L1 | another lane accidentally owns EM/selection terminology |
-| freshness and staleness terms cite plans 50, 54, and 55 | package-state language drifts across defence, archive, and note surfaces |
+| freshness and staleness terms cite plans 50, 53, 54, and 55 | package-state language drifts across defence, CI, archive, and note surfaces |
 | command-template and verifier-hash terms cite plans 52 and 51 | reviewer answers drift away from the verified command registry |
-| review-evidence and review-artifact terms cite plans 50, 51, 53, and 54 | machine-readable handoff language drifts across package, registry, CI, and archive |
+| review-evidence and review-artifact terms cite plans 50, 51, 53, 54, and 55 | machine-readable handoff language drifts across package, registry, CI, archive, and note surfaces |
 | owner sign-off term cites plans 50, 51, and 55 | accountability language drifts between registry, package, and note surfaces |
 
 The fixture is consumed by the plan-53 L1 CI checks and by the plan-55
