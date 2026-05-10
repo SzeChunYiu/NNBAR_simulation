@@ -237,6 +237,15 @@ Any record with missing `decision_dec_id`, hidden `unbounded_limitations`,
 or a method mismatch between dispatch and result is rejected before the
 number reaches the reproduction ledger.
 
+Initial result-record rejection examples:
+
+| `result_rejection_id` | Invalid result pattern | Required status | Review guard |
+|---|---|---|---|
+| `method_dispatch_mismatch` | dispatch selects F-C but result records Asimov or CLs | `blocked` | method must be copied exactly from the dispatch row |
+| `zero_ul_collapsed` | zero-survivor upper limit written as interval `[0, 0]` | `blocked` | F-C interval high must remain positive and explicit |
+| `missing_decision_id` | result has a number but no convention DEC | `blocked` | unsigned methods cannot enter plan 47/50 |
+| `hidden_limitations` | input bundle carries caveats but result row omits `unbounded_limitations` | `blocked` | unconditional defence quote is rejected |
+
 ### 3.4 Machine-readable input-bundle fixture
 
 Every dispatch/result pair also records the input bundle that produced
