@@ -266,7 +266,34 @@ A warning must not disappear in rendered tables. It is reported beside
 statistical and systematic uncertainties so reviewers can distinguish a
 healthy run from a usable-but-qualified run.
 
-## 9. Acceptance criteria
+## 9. Implementation handoff and blocker contract
+
+The DQM producer itself is help-verified, but validation-JSON ingestion,
+registry-manifest hash checking, and registry write-back remain explicit
+follow-up gates. Until those surfaces exist, the current command writes
+the DQM artifacts and the wrapper or promotion job must keep validation
+and registry checks as separate assertions.
+
+L3/software handoff requirements:
+
+1. Extend the DQM producer or a verified wrapper to read
+   `validation.json` and the plan 03 manifest, then populate
+   `vertex_residual_proxy`, `hash_status`, `source_hashes`, and
+   waiver fields without inventing new CLI flags in this plan.
+2. Add fixture tests for `run_quality.parquet` and
+   `quality_manifest.json` that exercise `pass`, `warn`, `fail`, and
+   `not_applicable` statuses plus the lattice `fail > warn > pass`.
+3. Add a registry-mirror handoff that writes the §7 `quality_status`,
+   `quality_manifest`, `quality_checked_at`, `quality_schema`, and
+   `quality_waivers` fields only after plan 03 accepts the schema.
+4. Add CI smoke coverage for a frozen-sample DQM refresh using the
+   verified summarize/validate/dqm command sequence from §5.
+5. Any new command-line surface must be help-verified under the A+
+   examiner gate before this plan names it. Until then, the missing
+   validation/registry joins remain software requirements, not runnable
+   instructions.
+
+## 10. Acceptance criteria
 
 - §3 threshold table has variable, source, threshold, severity, owner,
   and rationale for each required DQM variable.
@@ -277,8 +304,11 @@ healthy run from a usable-but-qualified run.
 - §6 CI hooks define trigger and failure behavior.
 - §7 registry handoff field is specified without editing plan 03 in L0.
 - §8 consumers distinguish DQM status from analysis closure.
+- §9 handoff is complete: validation ingestion, registry hash checking,
+  registry write-back, fixture tests, CI smoke coverage, and the
+  no-invented-CLI rule are all specified.
 
-## 10. Dependencies
+## 11. Dependencies
 
 - **03** — dataset registry and frozen/draft/superseded status.
 - **04** — uncertainty handling for DQM drift summaries.
