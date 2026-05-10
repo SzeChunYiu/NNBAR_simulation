@@ -75,27 +75,51 @@ After all array tasks complete, a finaliser job:
 4. Flip status to `frozen` per plan 03 §6 if all freeze acceptance
    criteria pass.
 
-## 4. Pre-submit checks
+## 4. L1 EM/selection defence rerun bundle
+
+Stage E.3 defence packages need a small, replayable run bundle for the
+L1 EM-object and selection questions. This bundle is not a new physics
+sample; it is an orchestration manifest that names the already-registered
+samples and the artifacts that must be refreshed together when a reviewer
+asks for reproduction.
+
+| Bundle member | Required sample / source | Refreshed artifacts | Consumed by |
+|---|---|---|---|
+| EM chain closure | `cal_singlegamma_v1`, `cal_singleelectron_v1`, `sig_foil_v3` aliases or current plan-03 ids | P.1-P.7 closure rows, Class-B drop hashes, photon/pi0 response summaries | plans 31-35, 50, 55 |
+| Ch 10 selection cut-flow | signal plus cosmic rows used by plan 37/47 | independent `pass_*` counts, cumulative cut-flow counts, final S.6 interval | plans 37, 47, 50 |
+| pile-up overlay | `sig_foil_v3` plus `cosmic_cry_essLund_*` paired rows | overlay manifest, occupancy tails, L11 status row | plans 58, 45, 50 |
+| strange-background closure | Lambda-enriched beam-neutron slice and K_S sideband when available | V0-candidate summary, rejection efficiency, residual survivor interval | plans 59, 44, 50 |
+| TOF timing closure | `cal_*` timing slices plus `cosmic_cry_essLund_*` rows | TOF candidate table, resolution budget, ROC rows, signal-loss interval | plans 61, 41, 50 |
+| Bayesian limit cross-check | plan-46 low-count fixtures and thesis-facing sparse-count rows | Jeffreys/flat prior table and primary-method comparison ratios | plans 64, 46, 50 |
+
+A defence rerun manifest stores the dataset ids, run indices, seed
+formula version, source hashes, produced artifact hashes, and the plan-50
+overlay ids refreshed by the rerun. If one member is not yet implementable
+(for example, no Lambda-enriched slice exists), the manifest keeps a
+blocked row with the missing input named rather than silently omitting the
+question.
+
+## 5. Pre-submit checks
 
 - Cluster quota (storage + CPU hours).
 - Build is up to date (compare current `git rev` to `build_id` in
   manifest).
 - Macro and config files are unchanged (hash check).
 
-## 5. Acceptance criteria
+## 6. Acceptance criteria
 
 - §1 scripts produced for each registered sample (plan 03 entries).
 - §2 seed binding implemented.
 - §3 finaliser job standardised.
-- §4 pre-submit checks land in `scripts/orchestrate/preflight.sh`.
+- §5 pre-submit checks land in `scripts/orchestrate/preflight.sh`.
 
-## 6. Dependencies
+## 7. Dependencies
 
 - **03** — dataset IDs.
 - **11** — build environment.
 - *Consumed by:* every sample regen.
 
-## 7. References
+## 8. References
 
 - LUNARC user documentation.
 - `cluster-status` skill description in the user's environment.
