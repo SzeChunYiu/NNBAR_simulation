@@ -158,7 +158,8 @@ truth-labeling bug, not an uncertainty.
 - Reproducible from `sig_foil_v3` only.
 - §4 software handoff is complete: inclusive and by-channel producers
   have explicit inputs, outputs, failure assertions, provenance fields,
-  and a no-invented-CLI rule.
+  the existing jackknife support helper is cited, and a no-invented-CLI
+  rule is in force.
 
 ### 3.1 Machine-checkable gate mapping
 
@@ -182,10 +183,14 @@ headline signal efficiency.
 ## 4. Software handoff and blocker contract
 
 The verified live CLI can build the reconstruction tables consumed by
-this plan, but it does not yet expose the inclusive or by-channel
-signal-efficiency producers. Until those producers have help-verified
-surfaces, this plan's runnable steps stop at table production and
-manifest assertions.
+this plan, and the current statistics support includes
+`jackknife_efficiency` (`statistics/jackknife.py:31-89`) for the
+plan-04 block-jackknife uncertainty. That helper is regression covered
+by `test_jackknife_efficiency_uses_plan_04_block_size`
+(`tests/test_statistics.py:41-54`). The live software still does not
+expose the inclusive or by-channel signal-efficiency producers. Until
+those producers have help-verified surfaces, this plan's runnable steps
+stop at table production, jackknife support, and manifest assertions.
 
 L3/software handoff requirements:
 
