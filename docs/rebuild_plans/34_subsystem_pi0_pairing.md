@@ -54,6 +54,18 @@ Leaf P.5/P.6: photon objects → π⁰ candidates and accidental tags
   for accidental-rate measurement only; it must not remove or accept
   a production candidate.
 
+### 1.1 Current-to-target photon energy input map
+
+The current pair builder consumes each photon row's `total_energy` for
+`M_γγ` and writes the pair-level `total_energy` column in
+`find_pi0_candidates` (`photon.py:204-263`). The rebuild target may
+receive plan-33 `energy_mev`, but ingestion must normalize exactly one
+photon-energy field into the §1 pair calculation before any cuts run.
+If both `energy_mev` and `total_energy` are present, the chosen source
+and `energy_method` must be recorded; mixed production
+`cluster_sum` and legacy-alias inputs fail schema validation instead
+of being silently combined.
+
 ## 2. Selection per candidate (thesis Ch 8 defaults from
 `ReconstructionConfig` in `reconstruction.py:14-41`):
 
