@@ -146,6 +146,7 @@ l1_defence_ci_report:
         verified_options: [--runs, --all-runs, --json]
         verifier_exit_status: 0
         command_template_verifier_hashes: [sha256:b3cee4613afed558d4704df3dc5b281271aed768965d79a09603f812496806f0]
+        command_template_verifier_sources: [plan52:validate_reco_cutflow_v1, plan52:validate_reco_allruns_v1]
         immutable_template_policy: true
       remediation: null
     - check_id: l1_archive_drill_manifest
@@ -176,11 +177,21 @@ l1_defence_ci_report:
       evidence:
         signoff_terms_checked:
           - pass_* columns
+          - defence overlay
+          - overlay roll-up
+          - unbounded caveat status
+          - L1 archive pack member
+          - rerun transcript
+          - command-template id
           - command-template verifier hash
+          - CLI verifier transcript
+          - blocked template
           - review-evidence links
           - review-artifact hashes
           - owner sign-off
           - package freshness
+          - stale package
+          - stale-package caveat
         required_fields: [defence_package_refs, note_refs, audit_row_ref, thesis_status, approved_by, caveat_text]
         missing_signoff_terms: []
         flagged_delta_rows_have_caveat_text: true
