@@ -80,10 +80,12 @@ code-level usage; deltas are flagged.
 | **review-evidence links** | Plan-50 and plan-51 machine-readable pointers from an L1 answer to the overlay roll-up, CI, note-annex, glossary-audit, rerun, archive, and staleness artifacts. |
 | **review-artifact hashes** | Stable digests carried by plans 50, 51, 52, 53, 54, and 55 for package, CI report, note-annex, glossary-audit, rerun, and staleness artifacts that support an L1 defence answer. |
 | **L1 archive pack member** | Stable plan-54 evidence-class id in the thesis-freeze archive inventory; plan 53 checks that every EM/selection defence class remains represented before freeze. |
+| **defence routing** | Stable L1 crosswalk tying reviewer-question ids, overlay ids, rerun bundle members, archive pack members, note annex rows, and glossary audit rows; plans 52 and 54 store it as `defence_routing`. |
 | **owner sign-off** | Plan-51 accountable approval recorded before an L1 reviewer-question answer can stop blocking a thesis-facing result. |
 | **rerun transcript** | Plan-52 execution record proving which reviewer-triggered rerun rows actually ran, with input hashes, output hashes, environment identity, and pass/fail/block status. |
 | **command-template id** | Stable plan-52 identifier for the verified rerun command contract used by a transcript row; it records replay semantics without depending on prose. |
 | **command-template verifier hash** | Stable digest of the plan-52 CLI verifier transcript proving the command-template surface was checked before a refreshed L1 artifact was trusted. |
+| **command-template verifier source** | Stable plan-52 verifier row id that produced the command-template verifier hash, such as `plan52:validate_reco_cutflow_v1`, so hashes can be traced back to the checked command surface. |
 | **CLI verifier transcript** | Plan-52 evidence record containing the checked help command, exit status, supported flags, and digest for an executable command template. |
 | **blocked template** | Plan-52 command-template row used when no execution command is valid because a required input or artifact is missing. |
 | **package freshness** | Plan-50 state in which the L1 defence package staleness summary is `current` against the latest question registry, rerun manifest, rerun transcript, CI report, archive inventory/drill, note annex, glossary audit, and review-artifact hashes. |
@@ -276,9 +278,9 @@ l1_glossary_audit:
       owner: L1
     - term_group: defence-workflow shorthand
       defined_in_section: "1.1"
-      terms: [defence overlay, overlay roll-up, rerun transcript, command-template id, CLI verifier transcript, blocked template, stale package]
+      terms: [defence overlay, overlay roll-up, rerun transcript, command-template id, command-template verifier source, CLI verifier transcript, blocked template, stale package, defence routing]
       source_plans: [50, 52, 53, 54, 55]
-      required_contexts: [l1_overlay_rollup, rerun_transcript, command_template_registry, archive_inventory]
+      required_contexts: [l1_overlay_rollup, rerun_transcript, command_template_registry, archive_inventory, note_annex]
       thesis_delta: none | flagged
       owner: L1
 ```
@@ -327,16 +329,18 @@ l1_glossary_signoff:
   selection_defence_refs: &selection_defence_refs [selection_cutflow_identity]
   selection_note_refs: &selection_note_refs [event_variable_and_cutflow_identity]
   l1_defence_refs: &l1_defence_refs [em_cluster_truth_blindness, pi0_cut_decomposition, selection_cutflow_identity, pileup_l11_status, strange_v0_contamination, tof_timing_resolution, bayesian_prior_sensitivity, unbounded_caveat_status]
-  l1_note_refs: &l1_note_refs [em_object_chain, event_variable_and_cutflow_identity, pile_up_caveat, strange_background_caveat, timing_tof_cross_check, limit_convention_cross_check, unbounded_caveat_status]
+  l1_note_refs: &l1_note_refs [em_object_chain, event_variable_and_cutflow_identity, pile_up_caveat, strange_background_caveat, timing_tof_cross_check, limit_convention_cross_check, unbounded_caveat_status, defence_routing]
   rows:
     - {term: pass_* columns, defence_package_refs: *selection_defence_refs, note_refs: *selection_note_refs, audit_row_ref: "l1_glossary_audit:pass_* columns", thesis_status: same | translated | flagged_delta, approved_by: <L1-owner-or-null>, caveat_text: <required when thesis_status is flagged_delta>}
     - {term: defence overlay, defence_package_refs: *l1_defence_refs, note_refs: *l1_note_refs, audit_row_ref: l1_glossary_audit:defence overlay, thesis_status: same | translated | flagged_delta, approved_by: <L1-owner-or-null>, caveat_text: <required when thesis_status is flagged_delta>}
     - {term: overlay roll-up, defence_package_refs: *l1_defence_refs, note_refs: *l1_note_refs, audit_row_ref: l1_glossary_audit:overlay roll-up, thesis_status: same | translated | flagged_delta, approved_by: <L1-owner-or-null>, caveat_text: <required when thesis_status is flagged_delta>}
     - {term: unbounded caveat status, defence_package_refs: [unbounded_caveat_status], note_refs: [unbounded_caveat_status], audit_row_ref: l1_glossary_audit:unbounded caveat status, thesis_status: same | translated | flagged_delta, approved_by: <L1-owner-or-null>, caveat_text: <required when thesis_status is flagged_delta>}
     - {term: L1 archive pack member, defence_package_refs: *l1_defence_refs, note_refs: *l1_note_refs, audit_row_ref: l1_glossary_audit:L1 archive pack member, thesis_status: same | translated | flagged_delta, approved_by: <L1-owner-or-null>, caveat_text: <required when thesis_status is flagged_delta>}
+    - {term: defence routing, defence_package_refs: *l1_defence_refs, note_refs: [defence_routing], audit_row_ref: l1_glossary_audit:defence routing, thesis_status: same | translated | flagged_delta, approved_by: <L1-owner-or-null>, caveat_text: <required when thesis_status is flagged_delta>}
     - {term: rerun transcript, defence_package_refs: *l1_defence_refs, note_refs: *l1_note_refs, audit_row_ref: l1_glossary_audit:rerun transcript, thesis_status: same | translated | flagged_delta, approved_by: <L1-owner-or-null>, caveat_text: <required when thesis_status is flagged_delta>}
     - {term: command-template id, defence_package_refs: [em_cluster_truth_blindness, selection_cutflow_identity], note_refs: [em_object_chain, event_variable_and_cutflow_identity], audit_row_ref: l1_glossary_audit:command-template id, thesis_status: same | translated | flagged_delta, approved_by: <L1-owner-or-null>, caveat_text: <required when thesis_status is flagged_delta>}
     - {term: command-template verifier hash, defence_package_refs: [em_cluster_truth_blindness, selection_cutflow_identity], note_refs: [em_object_chain, event_variable_and_cutflow_identity], audit_row_ref: l1_glossary_audit:command-template verifier hash, thesis_status: same | translated | flagged_delta, approved_by: <L1-owner-or-null>, caveat_text: <required when thesis_status is flagged_delta>}
+    - {term: command-template verifier source, defence_package_refs: [em_cluster_truth_blindness, selection_cutflow_identity], note_refs: [em_object_chain, event_variable_and_cutflow_identity], audit_row_ref: l1_glossary_audit:command-template verifier source, thesis_status: same | translated | flagged_delta, approved_by: <L1-owner-or-null>, caveat_text: <required when thesis_status is flagged_delta>}
     - {term: CLI verifier transcript, defence_package_refs: [em_cluster_truth_blindness, selection_cutflow_identity], note_refs: [em_object_chain, event_variable_and_cutflow_identity], audit_row_ref: l1_glossary_audit:CLI verifier transcript, thesis_status: same | translated | flagged_delta, approved_by: <L1-owner-or-null>, caveat_text: <required when thesis_status is flagged_delta>}
     - {term: blocked template, defence_package_refs: [pileup_l11_status, strange_v0_contamination, tof_timing_resolution, bayesian_prior_sensitivity, unbounded_caveat_status], note_refs: [pile_up_caveat, strange_background_caveat, timing_tof_cross_check, limit_convention_cross_check, unbounded_caveat_status], audit_row_ref: l1_glossary_audit:blocked template, thesis_status: same | translated | flagged_delta, approved_by: <L1-owner-or-null>, caveat_text: <required when thesis_status is flagged_delta>}
     - {term: review-evidence links, defence_package_refs: *l1_defence_refs, note_refs: *l1_note_refs, audit_row_ref: l1_glossary_audit:review-evidence links, thesis_status: same | translated | flagged_delta, approved_by: <L1-owner-or-null>, caveat_text: <required when thesis_status is flagged_delta>}
