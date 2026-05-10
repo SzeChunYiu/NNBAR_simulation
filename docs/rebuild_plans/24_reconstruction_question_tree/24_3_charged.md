@@ -62,6 +62,49 @@ Leaf C.1: V.1/V.2 tracks → charged-track candidates
   allowed truth use: validation_only
   downstream consumers: C.2, C.3, C.4, C.5, C.6; plans 27, 28, 29
 
+#### C.1 Physics derivation
+
+- **What is physically measured:** C.1 decides whether a reconstructed TPC
+  track candidate is a charged-particle object eligible for PID, using only
+  detector observables and not truth names or `Track_ID` labels.
+- **Estimator rationale:** in a TPC, a charged particle is evidenced by a
+  coherent ionisation trajectory with finite fitted direction and enough hit
+  support for downstream dE/dx/range observables. TPC measurement and tracking
+  practice support this detector-only candidate definition, while PDG passage
+  material sets the charged-particle energy-loss context
+  \cite{rubbia1977liquid,alice2014performance,ParticleDataGroup:2024RPP}.
+- **Statistical character:** inefficiency is dominated by sparse tracks and
+  detector-edge leakage; fake rate is dominated by EM conversions, neutral
+  artefacts, and merged V.1 candidates. Robustness comes from quality/geometry
+  flags rather than species-name preselection.
+- **Citation:** `rubbia1977liquid`, `alice2014performance`, and
+  `ParticleDataGroup:2024RPP` are resolved in the thesis bibliography.
+
+#### C.1 Logic gaps
+
+1. **Minimum TPC hit count:** OPEN: derive from V.1/V.2 closure by scanning hit
+   count versus charged-candidate efficiency and fake rate; target resolution
+   date 2026-05-24.
+2. **Track-quality threshold / chi2 gate:** OPEN: scan with plan-26 residuals
+   and C.2/C.3 downstream validity as the figure of merit; target resolution
+   date 2026-05-24.
+3. **Containment / edge buffer:** OPEN: import plan-60 TPC fiducial states and
+   decide whether edge rows are `warn` or `fail`; target resolution date
+   2026-05-31.
+4. **EM/neutral pre-rejection boundary:** OPEN: decide which reconstructed
+   topology/shower flags belong in C.1 versus C.6; target resolution date
+   2026-06-07.
+
+#### C.1 Closure test for the derivation
+
+1. Build C.1 rows from frozen V.1/V.2 candidates after dropping `Name`,
+   `Track_ID`, `Parent_ID`, and `origin_vol_name`.
+2. Validate charged-candidate efficiency and fake rate only in a
+   `validation_only` scorer that can inspect truth particle labels.
+3. Pass when production C.1 rows are invariant to Class-B column removal and
+   every rejected candidate has a detector-quality or geometry reason rather
+   than a hidden truth species gate.
+
 Leaf C.2: charged-track candidates → dE/dx estimator
   inputs (Class A): C.1 charged-candidate table plus referenced TPC
                     step columns (Event_ID, eDep, TrackLength, x, y,
