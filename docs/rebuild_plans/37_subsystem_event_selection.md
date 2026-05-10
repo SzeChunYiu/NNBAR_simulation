@@ -165,7 +165,29 @@ Per plan 41:
   upper/lower scint).
 - Significance scan to identify a possibly better operating point.
 
-### 3.1 Machine-readable optimisation handoff fixture
+### 3.1 Machine-readable N-1/ROC scan fixture
+
+Plan 41 scan artifacts must expose enough structure for plan 37 to
+decide whether a proposed threshold change is reviewable:
+
+| Field | Required content | Review rule |
+|---|---|---|
+| `scan_artifact_id` | stable key for the N-1/ROC artifact | referenced by §3.2 handoff rows |
+| `baseline_selection_config_id` | Ch 10 baseline tuple id | must match §1 thresholds before masking one cut |
+| `variable_name` | one §1 input variable or S.6 score | no unregistered feature may enter a scan |
+| `masked_cut_column` | canonical `pass_*` column removed for the N-1 study | null only for all-variable S.6 scans |
+| `threshold_grid` | ordered thresholds or score bins | deterministic and saved with the artifact |
+| `signal_efficiency_curve` | efficiency with plan-04 intervals | computed on held-out or declared validation split |
+| `background_survival_curve` | survivor counts/intervals per threshold | zero-survivor points use F-C intervals |
+| `objective_curve` | expected limit or Z0 proxy with uncertainty | must name the plan-46 method used |
+| `best_candidate_threshold` | selected threshold or null | diagnostic until DEC approval |
+| `scan_status` | `diagnostic`, `candidate`, or `blocked` | blocked rows cannot appear in promotion evidence |
+
+The scan fixture is rejected if it uses a variable outside the §1
+selection contract or if the objective cannot be recomputed from saved
+signal/background curves.
+
+### 3.2 Machine-readable optimisation handoff fixture
 
 Plan 41 may propose thresholds or an S.6 replacement, but plan 37 owns
 the selection contract. Each proposed optimisation therefore enters this
