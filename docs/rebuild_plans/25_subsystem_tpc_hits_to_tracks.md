@@ -93,16 +93,26 @@ quantities. Dropping `Track_ID`, `Parent_ID`, `Name`, and
 `origin_vol_name` from the input must not change any production fixture
 row except rows explicitly labelled `legacy_track_id_diagnostic`.
 
-## 2. Current implementation (per plan 08 §3.2)
+## 2. Current implementation and live redesign hook
 
-`_track_anchor_and_direction(group)` (`charged.py:61-82`).
-Sorts hits by time then input order; takes anchor = first coord,
-direction = (last - first). No fit; no covariance; no quality cut
-beyond ≥ 2 valid coords.
+Legacy reconstruction still calls `_track_anchor_and_direction(group)`
+(`charged.py:61-82`). It sorts hits by time then input order; takes
+anchor = first coord and direction = (last - first); and exposes no fit,
+covariance, or quality cut beyond ≥ 2 valid coordinates. The legacy
+grouping into "tracks" is driven by `Track_ID` (Class B violation), so
+it remains a reproduction baseline and migration item, not the target
+production V.1 path.
 
-The grouping into "tracks" is currently driven by `Track_ID` (Class B
-violation) — this is the migration item: replace with geometric
-clustering on `(x, y, z, t)`.
+The live L3 charged-side hook for this plan is
+`reconstruct_track_candidates` (`charged.py:352-418`). It builds the
+§1.3 typed V.1 candidate columns from Class A TPC hit coordinates,
+records `cluster_method=geometric_cluster`, writes
+`truth_grouping_used=False`, and uses `_hit_membership_key`
+(`charged.py:338-340`) plus `_track_seed_chi2` (`charged.py:343-349`)
+for stable membership and seed-quality fields. This is an initial
+schema-producing hook: it unblocks V.2/plan-26 and DQM wiring, while
+§3 alternatives still own the physics-performance upgrade from the
+event-scoped seed to DBSCAN/Hough/Kalman candidates.
 
 ## 3. Alternative track finders (candidates for plan 49)
 
@@ -174,19 +184,23 @@ or PID thresholds.
 
 ## 6. Stage E.1 implementation handoff
 
-For L3's charged-side redesign, V.1 should become the first typed
-charged-side module:
+For L3's charged-side redesign, V.1 is the first typed charged-side
+module and the plan-side contract is now explicit:
 
 1. Input is the event-scoped TPC Class A hit table with no required
    truth/provenance columns.
-2. Production grouping starts with geometric clustering in `(x, y, z, t)`
-   and records the method label in `cluster_method`.
+2. The live baseline emits one candidate seed per event with
+   `cluster_method=geometric_cluster`; future DBSCAN/Hough/Kalman
+   implementations may change candidate multiplicity but not the §1.3
+   schema without a plan 05 decision.
 3. The legacy `Track_ID` grouping remains available only as
    `legacy_track_id_diagnostic` for reproduction and validation.
 4. Output one V.1 row per candidate with hit indices, anchor, seed
    direction, hit count, quality fields, and no Class B columns.
 5. Freeze the V.1 table before V.2 pull scoring or plan 38 truth
    substitution reads validation labels.
+6. Plan 66 consumes `candidate_quality_state`, `cluster_method`, and
+   `class_a_hit_count` as DQM fields once the V.1 table is present.
 
 ## 7. Acceptance criteria
 
