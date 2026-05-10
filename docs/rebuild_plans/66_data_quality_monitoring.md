@@ -268,11 +268,21 @@ healthy run from a usable-but-qualified run.
 
 ## 9. Implementation handoff and blocker contract
 
-The DQM producer itself is help-verified, but validation-JSON ingestion,
-registry-manifest hash checking, and registry write-back remain explicit
-follow-up gates. Until those surfaces exist, the current command writes
-the DQM artifacts and the wrapper or promotion job must keep validation
-and registry checks as separate assertions.
+The DQM producer itself is help-verified, and the current L3 regression
+coverage already exercises the producer path: healthy-run `pass`
+coverage in `test_evaluate_run_quality_passes_healthy_fixture`
+(`tests/test_dqm.py:36-44`), empty-run `fail` coverage in
+`test_evaluate_run_quality_fails_empty_or_negative_energy_run`
+(`tests/test_dqm.py:46-52`), manifest lattice coverage in
+`test_quality_manifest_uses_fail_warn_pass_lattice`
+(`tests/test_dqm.py:55-69`), and CLI artifact coverage in
+`test_dqm_cli_writes_run_table_and_manifest`
+(`tests/test_dqm.py:72-89`). Validation-JSON ingestion,
+registry-manifest hash checking, registry write-back, and
+`not_applicable` status coverage remain explicit follow-up gates.
+Until those surfaces exist, the current command writes the DQM artifacts
+and the wrapper or promotion job must keep validation and registry
+checks as separate assertions.
 
 L3/software handoff requirements:
 
@@ -280,9 +290,10 @@ L3/software handoff requirements:
    `validation.json` and the plan 03 manifest, then populate
    `vertex_residual_proxy`, `hash_status`, `source_hashes`, and
    waiver fields without inventing new CLI flags in this plan.
-2. Add fixture tests for `run_quality.parquet` and
-   `quality_manifest.json` that exercise `pass`, `warn`, `fail`, and
-   `not_applicable` statuses plus the lattice `fail > warn > pass`.
+2. Extend the current DQM fixture tests for `run_quality.parquet` and
+   `quality_manifest.json` so they also exercise `not_applicable`
+   status and the future validation/registry hash joins; keep the
+   existing lattice `fail > warn > pass` test green.
 3. Add a registry-mirror handoff that writes the §7 `quality_status`,
    `quality_manifest`, `quality_checked_at`, `quality_schema`, and
    `quality_waivers` fields only after plan 03 accepts the schema.
@@ -304,8 +315,9 @@ L3/software handoff requirements:
 - §6 CI hooks define trigger and failure behavior.
 - §7 registry handoff field is specified without editing plan 03 in L0.
 - §8 consumers distinguish DQM status from analysis closure.
-- §9 handoff is complete: validation ingestion, registry hash checking,
-  registry write-back, fixture tests, CI smoke coverage, and the
+- §9 handoff is complete: current DQM regression tests are cited,
+  validation ingestion, registry hash checking, registry write-back,
+  remaining fixture-test coverage, CI smoke coverage, and the
   no-invented-CLI rule are all specified.
 
 ## 11. Dependencies
