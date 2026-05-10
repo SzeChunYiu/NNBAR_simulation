@@ -116,7 +116,7 @@ l1_defence_rerun_manifest:
   requested_by: reviewer-question-id
   request_owner: L1-owner-or-methodology-council
   seed_formula: sha256(dataset_id || run_index || "simulation")[:8]
-  bundle_member_ids: {EM chain closure: em_object_chain, Ch 10 selection cut-flow: ch10_cutflow, Pile-up L11 overlay: pileup_l11, Strange V0 contamination: strange_v0, TOF timing closure: tof_timing, Bayesian limit cross-check: bayesian_limits, Unbounded caveat status: unbounded_caveats}
+  bundle_member_ids: {EM chain closure: em_object_chain, Ch 10 selection cut-flow: ch10_cutflow, Pile-up L11 overlay: pileup_l11, Strange V0 contamination: strange_v0, TOF timing closure: tof_timing, Bayesian limit cross-check: bayesian_limits, Unbounded caveat status: unbounded_caveats, Defence routing: defence_routing}
   review_evidence_links: &l1_review_evidence_links
     overlay_rollup: <plan50-rollup-id>
     staleness_summary: <plan50-staleness-id>
@@ -214,6 +214,18 @@ l1_defence_rerun_manifest:
         - unbounded_caveat_status
       review_evidence_links: *l1_review_evidence_links
       blocker: numeric nuisance bound or caveat row not attached to a concrete result yet
+    - bundle_member: Defence routing
+      status: ready | blocked
+      owner_signoff_ref: L1-routing-owner:<owner-hash-or-null>
+      required_inputs:
+        - artifact_id: plan50_to_plan56_routing_fixture_bundle
+          source_hash: <sha256-or-null>
+      refreshes:
+        - artifact_id: l1_defence_routing_crosswalk
+          output_hash: <sha256-or-null>
+      defence_overlay_ids: [em_cluster_truth_blindness, pi0_cut_decomposition, selection_cutflow_identity, pileup_l11_status, strange_v0_contamination, tof_timing_resolution, bayesian_prior_sensitivity, unbounded_caveat_status]
+      review_evidence_links: *l1_review_evidence_links
+      blocker: null when plan50/51/52/53/54/55/56 hashes agree; otherwise names the drifting fixture
 ```
 
 Manifest review rules:
