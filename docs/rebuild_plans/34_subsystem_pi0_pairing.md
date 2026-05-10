@@ -386,6 +386,11 @@ surfaces.
 - §5 closure passes.
 - §3 accidental rate produced for at least the licentiate signal
   sample.
+- Promotion checks prove candidate-key stability, per-cut/failure
+  columns, bounded accidental rates, and truth-drop hashes before plan
+  35 consumes selected candidates.
+- Evidence bundles distinguish production all-pairs rows from timing
+  veto shadows and truth-parent validation labels.
 
 ## 7. Dependencies
 
