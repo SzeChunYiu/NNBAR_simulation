@@ -41,15 +41,15 @@ comparison in §5. Current source line references come from plan 08
 
 | Leaf | Output column(s) | Formula / decision rule | Units | Current source citation | Ladder status |
 |---|---|---|---|---|---|
-| E.1 | `calorimeter_edep` | `Σ scintillator eDep + Σ lead-glass eDep` | MeV | `summarize_events` sums raw calorimeter hits (`vertex.py:322-447`) | baseline |
-| E.2 | `upper/lower_scintillator_edep`, `upper/lower_leadglass_edep` | split raw cal energy by `y > 0` / `y < 0` | MeV | hemisphere sums are emitted by `summarize_events` (`vertex.py:322-447`) | baseline |
+| E.1 | `calorimeter_edep` | `Σ scintillator eDep + Σ lead-glass eDep` | MeV | `summarize_events` sums raw calorimeter hits (`vertex.py:345-447`) | baseline |
+| E.2 | `upper/lower_scintillator_edep`, `upper/lower_leadglass_edep` | split raw cal energy by `y > 0` / `y < 0` | MeV | hemisphere sums are emitted by `summarize_events` (`vertex.py:345-447`) | baseline |
 | E.3 | `*_longitudinal_energy`, `calorimeter_longitudinal_energy` | `Σ E_i z_i / r_i` | MeV | `_directional_energy` computes the ratio (`vertex.py:48-67`); event rows emit the columns | baseline |
 | E.4 | `*_transverse_energy`, `calorimeter_transverse_energy` | `Σ E_i sqrt(x_i² + y_i²) / r_i` | MeV | `_directional_energy` computes the ratio (`vertex.py:48-67`); event rows emit the columns | baseline |
-| E.5 | `sphericity` | `1.5 * (λ₁ + λ₂)` from normalized momentum tensor | dimensionless | `_sphericity` computes the shape (`vertex.py:255-266`); event rows emit it | baseline |
+| E.5 | `sphericity` | `1.5 * (λ₁ + λ₂)` from normalized momentum tensor | dimensionless | `_sphericity` computes the shape (`vertex.py:278-289`); event rows emit it | baseline |
 | E.6 | `fox_wolfram_h0`, `fox_wolfram_h2`, `fox_wolfram_h4`, `thrust`, `event_shape_valid` | pairwise Legendre moments and thrust axis over reconstructed objects | dimensionless / bool | new variables; no current columns in plan 08 output schema | added |
-| E.7 | `visible_invariant_mass` | `√((Σ E_i)² - |Σ p_i|²)` from charged + photon four-vectors | MeV | `_visible_invariant_mass` computes mass (`vertex.py:269-290`); event rows emit it | baseline |
+| E.7 | `visible_invariant_mass` | `√((Σ E_i)² - |Σ p_i|²)` from charged + photon four-vectors | MeV | `_visible_invariant_mass` computes mass (`vertex.py:292-313`); event rows emit it | baseline |
 | E.8 | `calorimeter_timing_edep`, `calorimeter_out_of_time_edep` plus detector splits | sum hits inside/outside timing windows | MeV | `annotate_timing_windows` marks hit windows (`vertex.py:86-160`); event rows emit sums | baseline |
-| E.9 | `n_charged_objects`, `n_photon_like`, `n_pi0`, `pion_multiplicity` | counts reconstructed objects and selected π⁰ rows | int | object counts are emitted by `summarize_events` (`vertex.py:322-447`) | baseline |
+| E.9 | `n_charged_objects`, `n_photon_like`, `n_pi0`, `pion_multiplicity` | counts reconstructed objects and selected π⁰ rows | int | object counts are emitted by `summarize_events` (`vertex.py:345-447`) | baseline |
 
 Per-leaf **inputs** are the tables in §1; **outputs** are the listed
 `events.csv` columns. E.6 is added by this plan because the licentiate
@@ -100,10 +100,10 @@ worktree before this plan was committed:
 
 | Cited contract | Verifier evidence | Status |
 |---|---|---|
-| event-row assembly and raw sums/counts | `def summarize_events` resolves at `vertex.py:322`, inside the cited `vertex.py:322-447` range. | keep citation |
+| event-row assembly and raw sums/counts | `def summarize_events` resolves at `vertex.py:345`, inside the cited `vertex.py:345-447` range. | keep citation |
 | directional energy helper for E.3/E.4 | `def _directional_energy` resolves at `vertex.py:48`, inside the cited `vertex.py:48-67` range. | keep citation |
-| sphericity helper for E.5 | `def _sphericity` resolves at `vertex.py:255`, inside the cited `vertex.py:255-266` range. | keep citation |
-| visible-mass helper for E.7 | `def _visible_invariant_mass` resolves at `vertex.py:269`, inside the cited `vertex.py:269-290` range. | keep citation |
+| sphericity helper for E.5 | `def _sphericity` resolves at `vertex.py:278`, inside the cited `vertex.py:278-289` range. | keep citation |
+| visible-mass helper for E.7 | `def _visible_invariant_mass` resolves at `vertex.py:292`, inside the cited `vertex.py:292-313` range. | keep citation |
 | timing-window helper for E.8 | `def annotate_timing_windows` resolves at `vertex.py:86`, inside the cited `vertex.py:86-160` range. | keep citation |
 
 Plan 36 does not specify a runtime CLI command, and it does not cite the
@@ -145,13 +145,13 @@ These method ids are ledger labels, not runtime CLI commands.
 
 | Leaf(s) | Current emitted field(s) | Target fixture delta | Source evidence |
 |---|---|---|---|
-| E.1/E.2 | raw scintillator, lead-glass, calorimeter, and hemisphere energy sums | retain current names and add the shared `event_variable_method_id` | `summarize_events` (`vertex.py:322-447`) |
-| E.3/E.4 | detector-level and calorimeter-level longitudinal/transverse energies | retain current names; require finite recomputation from hit positions | `_directional_energy` plus `summarize_events` (`vertex.py:48-67`, `vertex.py:322-447`) |
-| E.5 | `sphericity` | add `event_shape_valid` so sparse-event sentinels are reviewable | `_sphericity` (`vertex.py:255-266`) |
+| E.1/E.2 | raw scintillator, lead-glass, calorimeter, and hemisphere energy sums | retain current names and add the shared `event_variable_method_id` | `summarize_events` (`vertex.py:345-447`) |
+| E.3/E.4 | detector-level and calorimeter-level longitudinal/transverse energies | retain current names; require finite recomputation from hit positions | `_directional_energy` plus `summarize_events` (`vertex.py:48-67`, `vertex.py:345-447`) |
+| E.5 | `sphericity` | add `event_shape_valid` so sparse-event sentinels are reviewable | `_sphericity` (`vertex.py:278-289`) |
 | E.6 | no current production columns | add Fox-Wolfram moments and thrust as disabled-until-approved columns | new plan-36 target fields |
-| E.7 | `visible_invariant_mass` | retain current name and allow null only for declared sparse cases | `_visible_invariant_mass` (`vertex.py:269-290`) |
-| E.8 | timing and out-of-time energy sums for scintillator, lead-glass, and calorimeter | retain current names; require derivation from timing annotations | `annotate_timing_windows` plus `summarize_events` (`vertex.py:86-160`, `vertex.py:322-447`) |
-| E.9 | charged, photon-like, π⁰, pion, proton, PMT, and electron-pair counts | fixture review checks the listed production counts against upstream rows | `summarize_events` (`vertex.py:322-447`) |
+| E.7 | `visible_invariant_mass` | retain current name and allow null only for declared sparse cases | `_visible_invariant_mass` (`vertex.py:292-313`) |
+| E.8 | timing and out-of-time energy sums for scintillator, lead-glass, and calorimeter | retain current names; require derivation from timing annotations | `annotate_timing_windows` plus `summarize_events` (`vertex.py:86-160`, `vertex.py:345-447`) |
+| E.9 | charged, photon-like, π⁰, pion, proton, PMT, and electron-pair counts | fixture review checks the listed production counts against upstream rows | `summarize_events` (`vertex.py:345-447`) |
 
 This map is the implementation checklist: a future code row may add target
 columns before DEC approval, but plan-37 may not consume new E.6 or
@@ -264,15 +264,15 @@ before plan 37 or plan 47 can quote the altered split.
 
 | Leaf(s) | Candidate | Decision rule | Current/source citation | Class-A status | Comparison metric |
 |---|---|---|---|---|---|
-| E.1/E.2 | **Raw hit sums (current)** | Sum raw scintillator and lead-glass `eDep`, with `y` hemisphere split. | `summarize_events` energy sums (`vertex.py:322-447`). | Production-eligible baseline. | Stability vs calibration changes; N-1 selection impact. |
+| E.1/E.2 | **Raw hit sums (current)** | Sum raw scintillator and lead-glass `eDep`, with `y` hemisphere split. | `summarize_events` energy sums (`vertex.py:345-447`). | Production-eligible baseline. | Stability vs calibration changes; N-1 selection impact. |
 | E.1/E.2 | **Calibrated object sums** | Sum calibrated charged/photon/π⁰ objects rather than raw hits. | Uses plan-33/35 outputs instead of raw hit sums. | Eligible after calibration closure. | Visible-mass bias and selection separation. |
 | E.3/E.4 | **Hit-directional energy (current)** | Use hit position ratios `z/r` and `sqrt(x²+y²)/r`. | `_directional_energy` (`vertex.py:48-67`). | Production-eligible. | Agreement with object-vector projection; sensitivity to hit noise. |
-| E.5/E.6 | **Sphericity-only (current thesis)** | Use normalized momentum-tensor eigenvalues. | `_sphericity` (`vertex.py:255-266`). | Production-eligible. | Cut-flow reproduction and ROC AUC. |
+| E.5/E.6 | **Sphericity-only (current thesis)** | Use normalized momentum-tensor eigenvalues. | `_sphericity` (`vertex.py:278-289`). | Production-eligible. | Cut-flow reproduction and ROC AUC. |
 | E.5/E.6 | **Expanded event-shape set** | Add Fox-Wolfram moments and thrust to sphericity. | New plan-36 variables. | Eligible; no truth inputs. | ROC/N-1 gain over sphericity-only. |
-| E.7 | **Raw visible mass (current)** | Charged fixed masses plus massless photons. | `_visible_invariant_mass` (`vertex.py:269-290`). | Production-eligible. | Bias/pull vs truth visible mass. |
+| E.7 | **Raw visible mass (current)** | Charged fixed masses plus massless photons. | `_visible_invariant_mass` (`vertex.py:292-313`). | Production-eligible. | Bias/pull vs truth visible mass. |
 | E.7 | **Fit-aware visible mass** | Prefer plan-35 fitted π⁰/photon four-vectors when fit converged. | Consumes plan-35 outputs. | Eligible after fit closure. | Bias/resolution improvement and selection stability. |
 | E.8 | **Fixed timing windows (current)** | Use config timing resolutions and pion β bounds. | `annotate_timing_windows` (`vertex.py:86-160`). | Production-eligible with calibrated constants. | In/out-of-time separation and cosmic rejection. |
-| E.9 | **Raw object counts (current)** | Count charged, photon-like, and selected π⁰ rows. | `summarize_events` emits object counts (`vertex.py:322-447`). | Production-eligible. | Multiplicity closure and sensitivity to upstream object duplicates. |
+| E.9 | **Raw object counts (current)** | Count charged, photon-like, and selected π⁰ rows. | `summarize_events` emits object counts (`vertex.py:345-447`). | Production-eligible. | Multiplicity closure and sensitivity to upstream object duplicates. |
 
 Plan 38 should score added variables (especially E.6 and fit-aware E.7)
 against the thesis baseline without deleting the reproduced Ch 10 inputs.
