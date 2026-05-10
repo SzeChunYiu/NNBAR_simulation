@@ -36,6 +36,73 @@ The combination must not let Phase-1 observed counts tune Phase-2
 selections. Phase-1 can constrain shared nuisances only through a
 pre-declared likelihood and a signed unblinding protocol.
 
+## 0.1 Wave 6 derivation — joint likelihood and blinding
+
+### Physics derivation
+
+**What is physically measured.** The Phase-1/Phase-2 combination
+measures one common neutron-antineutron signal-strength parameter using
+two detector configurations with different efficiency, background, and
+calibration information. Phase 1 contributes a vertex-only TPC count
+experiment; Phase 2 contributes the fuller NNBAR detector result. The
+ground-truth statistical object is the per-phase likelihood plus the
+nuisance correlation model, not a merged event sample.
+
+**Estimator rationale.** A product likelihood is the appropriate
+combination estimator because Phase-1 and Phase-2 observations are
+statistically distinct while some nuisance parameters are shared
+`\cite{Cowan:2011Likelihood}`. Shared beam flux and annihilation-model
+terms should be represented once; detector-specific efficiencies and
+calibrations should remain phase-specific or partially correlated.
+Blinding protects the estimator from selection bias: observed counts
+are sealed until selections, nuisance classes, and method-dispatch
+rules are frozen.
+
+**Statistical character.** Expected limits depend on efficiency,
+background, exposure, and nuisance priors. Observed limits add
+Poisson/counting variance and are valid only after unblinding. The main
+systematic risk is correlation misclassification: treating a shared
+nuisance as independent double-counts information, while treating
+phase-specific detector effects as shared can over-constrain the joint
+limit.
+
+### Logic gaps
+
+- **Confidence levels 90% and 95%.** Grounding: §1/§2 follow plan 46
+  conventions. `OPEN:` ensure plan 46 carries the final Feldman-Cousins
+  or likelihood-reference citation and method dispatch before quoting a
+  combined observed limit; target resolution date 2026-06-22.
+- **Low-count dispatch threshold (`n_obs <= 5` or `b <= 5`).**
+  Grounding: registry schema mirrors plan 46. `OPEN:` lock the
+  threshold in plan 46/05 before a real Phase-1 packet is combined;
+  target resolution date 2026-06-22.
+- **Nuisance correlation classes.** Grounding: §3 table is the v0.1
+  policy. `OPEN:` validate every nuisance id against plan 45 and add
+  correlation coefficients or shared-prior definitions where "partially
+  shared" is used; target resolution date 2026-06-29.
+- **Blinding state.** Grounding: §4 requires sealed observed counts
+  until freeze. `OPEN:` attach Methodology Council freeze/unblind DEC
+  ids to the registry before any observed limit is reported; target
+  resolution date 2026-06-29.
+- **Missing Phase-1 packet.** Grounding: §8 verifier finds no
+  source-backed data packet. `OPEN:` require a hashed Phase-1 result
+  packet and schema validation before plan-47 rows can quote more than
+  expected limits; target resolution date 2026-06-29.
+
+### Closure test for the derivation
+
+1. Build two toy packets: Phase 1 vertex-only and Phase 2 full-detector,
+   both with expected counts and sealed observed counts.
+2. Validate that the combination registry rejects Phase-2-only detector
+   fields in the Phase-1 packet and rejects any nuisance lacking a
+   correlation class.
+3. Compute expected limits with shared and unshared nuisance settings,
+   verifying that shared nuisance priors are applied once in the joint
+   likelihood.
+4. Attempt an observed-limit calculation with `n_observed: sealed` and
+   require failure. Only after a freeze/unblind decision can observed
+   counts propagate to plan 47.
+
 ## 1. Phase-1 result format
 
 Phase-1 is treated as a vertex-only TPC search result. Its minimal
