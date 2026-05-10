@@ -232,6 +232,7 @@ l1_defence_inventory:
         - docs/rebuild_plans/52_run_orchestration.md
         - docs/rebuild_plans/53_ci_regression_suite.md
         - docs/rebuild_plans/55_internal_note_template.md
+        - docs/rebuild_plans/55_internal_note_template_l1_annex_fixture.md
         - docs/rebuild_plans/56_glossary.md
       artifact_hashes:
         - sha256:<hash-or-null>
@@ -303,6 +304,7 @@ l1_archive_drill:
     - verify_review_artifact_hashes
     - inspect_plan53_l1_ci_report
     - compare_plan55_note_annex
+    - compare_plan55_split_annex_fixture
     - compare_plan56_glossary_audit
   result: pass | fail
   failure_reason: null

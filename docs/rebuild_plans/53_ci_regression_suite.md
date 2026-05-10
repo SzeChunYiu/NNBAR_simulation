@@ -223,11 +223,12 @@ l1_defence_ci_report:
         - docs/rebuild_plans/53_ci_regression_suite.md
         - docs/rebuild_plans/54_open_data_archival.md
         - docs/rebuild_plans/55_internal_note_template.md
+        - docs/rebuild_plans/55_internal_note_template_l1_annex_fixture.md
         - docs/rebuild_plans/56_glossary.md
       evidence:
         ready_package_count: <n>
         ready_packages_with_current_staleness: <n>
-        checked_hash_inputs: [plan50_overlay_schema, plan51_question_registry, plan52_rerun_manifest, plan52_rerun_transcript, plan52_command_templates, plan52_command_template_verifiers, plan53_ci_report, plan54_archive_inventory, plan54_archive_drill, review_artifact_hashes, plan55_note_annex, plan56_glossary_audit]
+        checked_hash_inputs: [plan50_overlay_schema, plan51_question_registry, plan52_rerun_manifest, plan52_rerun_transcript, plan52_command_templates, plan52_command_template_verifiers, plan53_ci_report, plan54_archive_inventory, plan54_archive_drill, review_artifact_hashes, plan55_note_annex, plan55_note_annex_fixture, plan56_glossary_audit]
         archive_hashes_present: true
         stale_ready_packages: []
       remediation: null
