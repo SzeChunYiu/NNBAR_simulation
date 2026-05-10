@@ -354,6 +354,11 @@ cannot silently replace Ch 10 reproduction fields.
 - E.6 Fox-Wolfram and thrust added.
 - §5 closure passes.
 - Plan 38 ladder rows for E.1–E.9 populated.
+- Promotion checks prove method identity, required group closure,
+  sparse-value policy, and shadow status for optional features before
+  plan 37 cuts on any event row.
+- Evidence bundles keep Ch 10 baseline variables separate from E.6
+  diagnostics and fit-aware visible-mass shadows.
 
 ## 7. Dependencies
 
