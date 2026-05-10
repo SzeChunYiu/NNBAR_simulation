@@ -133,6 +133,19 @@ Baseline cut identity rows, before plan-47 counts are attached:
 The count columns are null in the contract row and are populated only by
 dataset-specific plan-47 reproduction rows.
 
+Initial cut-flow result-row examples:
+
+| `cutflow_result_id` | `dataset_id` | `cut_id` | Count fields | Required interval/caveat |
+|---|---|---|---|---|
+| `sig_foil_v3.S1_scintillator_energy.ch10` | `sig_foil_v3` | `S1_scintillator_energy` | fill `n_pass_individual` and `n_after_cut` from the saved event table | Wilson interval on cumulative signal efficiency |
+| `sig_foil_v3.S6_preliminary_selection.ch10` | `sig_foil_v3` | `S6_preliminary_selection` | final `passes_preliminary_selection` acceptance | compare to the plan-47 approximately 70% target |
+| `cosmic_overburdenA.S5_scintillator_balance.ch10` | `cosmic_cry_essLund_overburdenA_v1` | `S5_scintillator_balance` | cumulative survivor count after all six individual cuts | if zero, hand off F-C upper limit rather than exact zero |
+| `beam_direct.S6_preliminary_selection.diag` | `beam_neutron_hibeam_direct_v1` | `S6_preliminary_selection` | diagnostic final survivor count for beam-neutron extension | cannot feed plan-44 rate sum until sample/rate DEC is signed |
+
+These examples define count-row shape only. They do not replace the
+baseline identity rows, and they must be regenerated whenever the
+selection config id or input event hash changes.
+
 ## 2. Closure-test specification / Ch 10 reproduction
 
 1. **Dataset ids:** `sig_foil_v3` for signal acceptance and
