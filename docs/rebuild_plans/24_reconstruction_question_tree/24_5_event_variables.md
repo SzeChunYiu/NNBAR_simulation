@@ -80,6 +80,22 @@ Leaf E.2: calorimeter hits + geometry → hemisphere energy split
   allowed truth use: validation_only
   downstream consumers: S.5, S.6; plans 36, 37, 41
 
+Leaf E.3: reconstructed objects → longitudinal energy EL
+  inputs (Class A): selected charged, photon, and π0 object energies
+                    and directions; V.4 event vertex; beam-axis
+                    convention from geometry
+  forbidden (Class B): truth particle momenta, truth event axis,
+                       Track_ID, Parent_ID, Name
+  decision rule: compute `EL = Σ E_i cos(alpha_i)` with alpha measured
+                 between each reconstructed object direction and the
+                 declared longitudinal axis, matching the Ch 9
+                 definition quoted in plan 08 §3.6.
+  output schema: {event_id: int64, longitudinal_energy_mev: float64,
+                  n_objects_used: int32, axis_definition: string,
+                  signed_longitudinal_energy_mev: float64}
+  allowed truth use: validation_only
+  downstream consumers: S.6; plans 36, 37, 41
+
 ### Next measurement (event-variable branch)
 
 Per-variable distribution comparison: signal sample (plan 20) vs
