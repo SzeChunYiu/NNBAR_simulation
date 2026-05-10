@@ -256,6 +256,27 @@ audit when a seed becomes attached to a concrete ledger result.
   rerun_command_template_id: blocked_missing_input_v1
   rerun_command_template_verifier_hash: null
   rerun_command_template_verifier_source: null
+- id: RQ-L1-BAYES-LIMIT
+  asked_by: anticipated_examiner
+  asked_on: 2026-05-10
+  question: Are low-count limits stable under Jeffreys vs flat Bayesian priors?
+  category: method
+  affects_results: []
+  routes_to_gate: [4, 46, 50, 64]
+  status: open
+  answer:
+    summary: null
+    artifact: null
+    owner_signoff: null
+    review_evidence_links: null
+    review_artifact_hashes: null
+  defense_package_updated: []
+  resolved_on: null
+  l1_overlay_id: bayesian_prior_sensitivity
+  required_artifact_status: missing
+  rerun_command_template_id: blocked_missing_input_v1
+  rerun_command_template_verifier_hash: null
+  rerun_command_template_verifier_source: null
 ```
 
 Review rules:
