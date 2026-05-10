@@ -247,6 +247,37 @@ l1_defence_ci_report:
         note_overlay_links_present: true
         glossary_refs_present: true
       remediation: null
+    - check_id: l1_no_stale_cli_or_code_cites
+      status: pass | fail
+      files_checked:
+        - docs/rebuild_plans/31_subsystem_calorimeter_clustering.md
+        - docs/rebuild_plans/32_subsystem_shower_shape.md
+        - docs/rebuild_plans/33_subsystem_photon_object.md
+        - docs/rebuild_plans/34_subsystem_pi0_pairing.md
+        - docs/rebuild_plans/35_subsystem_kinematic_fit.md
+        - docs/rebuild_plans/36_subsystem_event_variables.md
+        - docs/rebuild_plans/37_subsystem_event_selection.md
+        - docs/rebuild_plans/44_background_taxonomy.md
+        - docs/rebuild_plans/45_systematics_taxonomy.md
+        - docs/rebuild_plans/46_significance_protocol.md
+        - docs/rebuild_plans/50_reviewer_defense_package.md
+        - docs/rebuild_plans/51_reviewer_question_registry.md
+        - docs/rebuild_plans/52_run_orchestration.md
+        - docs/rebuild_plans/53_ci_regression_suite.md
+        - docs/rebuild_plans/54_open_data_archival.md
+        - docs/rebuild_plans/55_internal_note_template.md
+        - docs/rebuild_plans/56_glossary.md
+        - docs/rebuild_plans/58_pileup_at_ess_intensity.md
+        - docs/rebuild_plans/59_strange_baryon_contamination.md
+        - docs/rebuild_plans/61_time_of_flight_discrimination.md
+        - docs/rebuild_plans/64_bayesian_limit_cross_check.md
+      evidence:
+        citation_patterns: ['*.py:<line>', 'nnbar module CLI invocation']
+        code_citation_matches: <n>
+        cli_invocation_matches: <n>
+        verified_cli_help_transcripts: <n>
+        forbidden_removed_file_matches: 0
+      remediation: null
 ```
 
 Report review rules:
