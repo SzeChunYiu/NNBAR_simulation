@@ -169,13 +169,44 @@ with the geometry constants from plan 16.
    the foil-acceptance gate must use plan 16 geometry constants, not
    truth origin labels.
 
-## 7. Acceptance criteria
+## 7. Implementation handoff
+
+The current live vertex hook is `reconstruct_event_vertices`
+(`vertex.py:163-252`). It is sufficient as the reproduction baseline
+because it writes event-level V.4 coordinates and projected/skipped
+track counts, but it still groups by `Track_ID` and does not emit the
+split V.3 projection, V.4 covariance, or V.5 foil-acceptance fixtures
+specified in §1.4.
+
+Plan-side gates for the L3 implementation:
+
+1. Consume V.2 fit rows and plan 16 geometry instead of raw
+   `Track_ID` groupings whenever the V.2 fixture exists.
+2. Emit separate V.3, V.4, and V.5 fixtures with the §1.4 fields and
+   hashes of the consumed V.2 fit table and geometry side-car.
+3. Preserve the current mean-of-projections result as a named
+   reproduction mode; any Billoir or adaptive fitter promotion needs a
+   plan 38 V.4 ladder row and a plan 05 decision entry.
+4. Keep truth vertices and truth origin labels out of production V.3,
+   V.4, and V.5 rows. They may appear only in closure artifacts after
+   the production fixtures are frozen.
+5. Add or extend tests in the existing L3 vertex-reco test file so
+   dropping `Name`, `Track_ID`, and truth vertex columns cannot change
+   the production V.5 foil-acceptance decision.
+6. Plan 60 consumes `foil_geometry_version`, vertex edge distances,
+   and fiducial-profile states once the V.5 fixture is present.
+
+## 8. Acceptance criteria
 
 - §3 migration complete.
 - §4 ladder benchmark recorded.
 - §6 closure passes.
+- §7 handoff is actionable for L3: the reproduction hook is cited, the
+  V.3/V.4/V.5 production fixtures are split from closure artifacts, and
+  vertex-reco tests must prove the foil gate is invariant to dropping
+  Class B truth columns.
 
-## 8. Dependencies
+## 9. Dependencies
 
 - **16, 17, 24, 25, 26, 38, 40** — inputs.
 - *Consumed by:* plans 33 (photon direction needs vertex), 36
