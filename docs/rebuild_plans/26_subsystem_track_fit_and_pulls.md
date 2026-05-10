@@ -322,6 +322,26 @@ V.1 input key set or if covariance order is omitted. Plans 27, 28, 30,
 40, and 66 consume this manifest before trusting direction covariance or
 fit-quality fractions.
 
+### 5.7 Stage E.1 fixture matrix
+
+The V.2 replacement patch must prove that the fitter boundary is stable
+before dE/dx, range, vertex, or pull studies consume the fit manifest:
+
+| Fixture case | Required input condition | Required assertion |
+|---|---|---|
+| truth-column drop | V.1 candidate rows and TPC hits are run with and without Class B labels or truth momentum columns | `direction_method`, direction vector, covariance payload, and quality state are unchanged |
+| one-hit candidate | a V.1 row references only one finite TPC hit | a V.2 row is still emitted with `fit_quality_state=fail`, `fit_failure_reason=insufficient_class_a_hits`, and no silent key drop |
+| nonfinite coordinate | one candidate references a hit with nonfinite `x`, `y`, or `z` | the row is rejected or degraded with a machine-readable failure reason and the residual sidecar excludes invalid hits |
+| V.1 multiplicity | two candidates in the same event share no hit indices | V.2 output preserves `(event_id, candidate_id, hit_membership_key)` multiplicity and emits a unique `fit_id` per candidate |
+| covariance convention | the same candidate is written through six-component and vector covariance representations during migration review | manifest records the chosen order, `covariance_valid`, and downstream consumers do not infer order from column names alone |
+| real C.1 to V.2 chain | real paired output fixture is reconstructed through plan 25 candidate rows first | V.2 consumes the frozen V.1 keys and does not re-cluster or reopen raw TPC rows to repair fit inputs |
+
+The review artifact for any fitter replacement must quote which rows in
+this matrix are covered by synthetic tests and which are covered by the
+real-output selector from §5.5. A matrix row may remain unpromoted only
+if the manifest marks the corresponding quality state as unavailable to
+plans 27, 28, 30, 40, and 66.
+
 ## 6. Acceptance criteria
 
 - §3 closure passes on calibration sample.
@@ -329,7 +349,7 @@ fit-quality fractions.
 - §5 Stage E.1 handoff is actionable for L3: the target public
   function, current unit/integration tests, remaining failure-state test
   obligation, promotion invariants, producer/consumer contract,
-  verification command, artifact manifest schema, and required V.2
+  verification command, artifact manifest schema, fixture matrix, and required V.2
   fields (`fit_id`, direction components,
   covariance components, `chi2_ndf`, `n_residual_degrees_of_freedom`,
   `direction_method`, residual sidecar rows, `fit_quality_state`,
