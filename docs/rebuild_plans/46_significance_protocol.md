@@ -340,6 +340,11 @@ fixture rather than a final result.
   specifies the formula and validation examples only.
 - §2 limit convention chosen and signed.
 - §3 handover implemented and tested.
+- Promotion checks prove recomputed validation cases, complete method
+  dispatch, source-bundle provenance, and signed convention DEC ids
+  before plan 47/50 quote a result.
+- Evidence bundles keep arithmetic validation, F-C zero-survivor
+  endpoints, final quotes, and incomplete-provenance blockers separate.
 
 ## 5. Dependencies
 
