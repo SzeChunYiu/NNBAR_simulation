@@ -183,6 +183,19 @@ for hemisphere-split observables:
 The convention row is rejected if upper/lower energy sums cannot be
 recomputed from raw hit positions using the recorded rules.
 
+Initial hemisphere-boundary examples:
+
+| `hemisphere_case_id` | Hit position pattern | Required accounting | Review guard |
+|---|---|---|---|
+| `strict_upper_hit` | `y > 0` with finite calorimeter energy | contributes only to upper scintillator/lead-glass sums | recomputed E.2/E.8 row matches raw hit sidecar |
+| `strict_lower_hit` | `y < 0` with finite calorimeter energy | contributes only to lower scintillator/lead-glass sums | no double counting across hemispheres |
+| `exact_boundary_y0` | `y = 0` within coordinate precision | stored in boundary count/energy field or deterministic side named by `boundary_rule` | plan-47 ledger records the convention before quoting hemispheric numbers |
+| `nonfinite_y_coordinate` | missing or non-finite `y` | event row flagged invalid for hemisphere sums; energy is not silently assigned | closure row counts the invalid-hit rate |
+
+Boundary examples are convention tests, not new selection cuts. Any
+change from `licentiate_y_sign_v1` requires `DEC-36-HEMISPHERE-CONVENTION`
+before plan 37 or plan 47 can quote the altered split.
+
 ## 4. Alternative comparison matrix
 
 | Leaf(s) | Candidate | Decision rule | Current/source citation | Class-A status | Comparison metric |
