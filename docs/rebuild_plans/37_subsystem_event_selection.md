@@ -47,12 +47,24 @@ Truth-use boundary: S.1–S.6 consume only event-variable columns. Any
 truth/provenance dependence must be resolved upstream before the row is
 eligible for the reproduction ledger.
 
-## 2. Reproduction
+## 2. Closure-test specification / Ch 10 reproduction
 
-Plan 47 ledger row: licentiate Ch 10 final result = "≈ 70% signal
-acceptance, 0 cosmic survivors in finite sample". Reproducing this
-on `sig_foil_v3` + `cosmic_cry_essLund_overburdenA_v1` is a green
-gate.
+1. **Dataset ids:** `sig_foil_v3` for signal acceptance and
+   `cosmic_cry_essLund_overburdenA_v1` for cosmic rejection; beam
+   neutron samples join later through plan 41.
+2. **Observable:** cumulative `_cutflow` counts in the §1 order, final
+   `passes_preliminary_selection` acceptance, per-cut efficiencies,
+   and surviving-event row ids for audit.
+3. **Fitter / estimator:** no fit is applied to the baseline cut-flow;
+   quote binomial/Wilson intervals for acceptance and Poisson or exact
+   upper limits for zero-survivor backgrounds per plan 04.
+4. **Pass criterion:** reproduce the licentiate Ch 10 target recorded
+   in plan 47: approximately `70%` signal acceptance and `0` surviving
+   cosmics in the finite reproduction sample, with every cut threshold
+   matching §1.
+5. **Audit hook:** rerun after dropping upstream truth/provenance
+   columns. Cut booleans, cumulative counts, and final pass/fail must
+   be unchanged.
 
 ## 3. N-1 and ROC
 
