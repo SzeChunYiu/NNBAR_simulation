@@ -52,7 +52,7 @@ pulls_theta_phi
 
 ## 2. Current vs alternative
 
-- *Current.* `_track_anchor_and_direction` (plan 08 §3.2; `reconstruction.py:147-168`): direction
+- *Current.* `_track_anchor_and_direction` (plan 08 §3.2; `charged.py:61-82`): direction
   is `(last_hit - first_hit) / |…|`; no covariance.
 - *Kalman fit.* Seeded by V.1; produces direction + covariance +
   residuals. Standard ACTS implementation. Provides χ²/ndf.
@@ -65,7 +65,7 @@ pulls_theta_phi
 
 | Alternative | Source paper / codebase | NNBAR-specific adaptation | Expected ladder leaf delta |
 |---|---|---|---|
-| Current first-last direction | Existing `_track_anchor_and_direction` (`reconstruction.py:147-168`) | Preserve as reproducibility baseline and degraded fallback when too few hits exist for a covariance fit. | No V.2 improvement; documents current truth-free but covariance-free baseline. |
+| Current first-last direction | Existing `_track_anchor_and_direction` (`charged.py:61-82`) | Preserve as reproducibility baseline and degraded fallback when too few hits exist for a covariance fit. | No V.2 improvement; documents current truth-free but covariance-free baseline. |
 | Linear least-squares / PCA | Standard straight-line total least squares | Fit straight tracks in `(x, y, z)` because plan 17 has no B-field curvature; derive covariance from residuals. | Expected to improve plan 38 IV(V.2) pull width and enable V.4 weighted vertexing with low implementation cost. |
 | Kalman fit | ACTS Kalman track-fitting codebase | Seed from V.1/PCA state and run straight-track process model until magnetic-field scenarios exist. | Best covariance model for plan 38 IV(V.2); likely similar central value to PCA in no-B-field data, but cleaner covariance propagation to V.4. |
 
