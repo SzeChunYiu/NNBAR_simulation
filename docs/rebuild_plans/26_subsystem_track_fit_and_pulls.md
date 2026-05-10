@@ -197,6 +197,20 @@ with explicit remaining gates:
    fraction, and hit count as run-quality fields once those columns are
    present.
 
+### 5.1 L3 target module, functions, and tests
+
+- **Target module:** add/extend `nnbar_reconstruction/track_fit.py`.
+- **Public function:** `fit_track_candidates(candidates, tpc)`.
+- **Unit-test target:** add a `tests/test_charged_reco.py` case that
+  builds synthetic V.1 candidates plus Class A TPC coordinates and
+  asserts finite direction, `direction_method=linear_pca`, covariance
+  shape, residual rows, and explicit failure state for a one-hit
+  candidate.
+- **Integration-test target:** add a real-output schema row that chains
+  the plan-25 candidate function into `fit_track_candidates` on a
+  registered TPC fixture and verifies no Class B truth columns are
+  required.
+
 ## 6. Acceptance criteria
 
 - §3 closure passes on calibration sample.
