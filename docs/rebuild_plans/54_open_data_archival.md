@@ -94,7 +94,7 @@ l1_defence_inventory:
       glossary_audit_hash: sha256:<hash-or-null>
       archive_drill_hash: sha256:<hash-or-null>
     - pack_member: ch10_cutflow
-      source_plans: [37, 47, 50, 55]
+      source_plans: [37, 47, 50, 51, 52, 55]
       artifact_paths:
         - output/defense/<row_id>.yml
       artifact_hashes:
@@ -185,7 +185,7 @@ l1_defence_inventory:
       glossary_audit_hash: sha256:<hash-or-null>
       archive_drill_hash: sha256:<hash-or-null>
     - pack_member: unbounded_caveats
-      source_plans: [1, 45, 50, 51, 55, 56]
+      source_plans: [1, 45, 50, 51, 52, 55, 56]
       artifact_paths:
         - output/defense/<row_id>.yml
         - docs/rebuild_plans/45_systematics_taxonomy.md
