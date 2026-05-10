@@ -358,20 +358,20 @@ Run these before editing any file/function/CLI claim in this plan:
 
 ```bash
 cd /Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3
-ls nnbar_reconstruction/fast_mc/__init__.py \
+rtk ls nnbar_reconstruction/fast_mc/__init__.py \
    nnbar_reconstruction/fast_mc/closure_test.py \
    tests/test_fast_mc.py
-wc -l nnbar_reconstruction/fast_mc/__init__.py \
+rtk wc -l nnbar_reconstruction/fast_mc/__init__.py \
       nnbar_reconstruction/fast_mc/closure_test.py \
       tests/test_fast_mc.py
-grep -n -E "^(def|class) ClosureTolerance" nnbar_reconstruction/fast_mc/closure_test.py
-grep -n -E "^(def|class) FastMCClosureReport" nnbar_reconstruction/fast_mc/closure_test.py
-grep -n -E "^    def as_dict" nnbar_reconstruction/fast_mc/closure_test.py
-grep -n -E "^def smear_truth" nnbar_reconstruction/fast_mc/closure_test.py
-grep -n -E "^def compare_distributions" nnbar_reconstruction/fast_mc/closure_test.py
-grep -n -E "^def tolerance_for_observable" nnbar_reconstruction/fast_mc/closure_test.py
-python3 -m nnbar_reconstruction.cli --help
-pytest tests/test_fast_mc.py -q
+rtk grep -n -E "^(def|class) ClosureTolerance" nnbar_reconstruction/fast_mc/closure_test.py
+rtk grep -n -E "^(def|class) FastMCClosureReport" nnbar_reconstruction/fast_mc/closure_test.py
+rtk grep -n -E "^    def as_dict" nnbar_reconstruction/fast_mc/closure_test.py
+rtk grep -n -E "^def smear_truth" nnbar_reconstruction/fast_mc/closure_test.py
+rtk grep -n -E "^def compare_distributions" nnbar_reconstruction/fast_mc/closure_test.py
+rtk grep -n -E "^def tolerance_for_observable" nnbar_reconstruction/fast_mc/closure_test.py
+rtk proxy python3 -m nnbar_reconstruction.cli --help
+rtk pytest tests/test_fast_mc.py -q
 ```
 
 On 2026-05-10 the file/function checks resolved, and `cli --help` listed
