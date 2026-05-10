@@ -210,8 +210,8 @@ l1_defence_ci_report:
         package_staleness_statuses_allowed: [current, stale-with-caveat]
         staleness_id_present: true
         stale_package_caveat_present_when_needed: true
-        review_evidence_link_keys: [overlay_rollup, owner_signoff_refs, rerun_manifest, rerun_transcript, command_template_id, command_template_verifier, staleness_summary, ci_report, archive_inventory, archive_drill, glossary_audit]
-        review_artifact_hash_keys: [note_annex, defence_package, staleness_summary, ci_report, rerun_manifest, rerun_transcript, command_template_verifier, archive_inventory, archive_drill, glossary_audit]
+        review_evidence_link_keys: [overlay_rollup, defence_routing_crosswalk, owner_signoff_refs, rerun_manifest, rerun_transcript, command_template_id, command_template_verifier, staleness_summary, ci_report, archive_inventory, archive_drill, glossary_audit]
+        review_artifact_hash_keys: [note_annex, defence_package, defence_routing_crosswalk, staleness_summary, ci_report, rerun_manifest, rerun_transcript, command_template_verifier, archive_inventory, archive_drill, glossary_audit]
       remediation: null
     - check_id: l1_package_staleness_guard
       status: pass | fail
