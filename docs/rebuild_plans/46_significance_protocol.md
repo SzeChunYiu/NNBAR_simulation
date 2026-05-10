@@ -59,6 +59,25 @@ copy the table. The gate is:
 4. The zero-survivor background example in §2 computes
    `2.44 / 244000 = 1.0e-5` within displayed precision.
 
+#### 1.1.1 Machine-readable numerical validation fixture
+
+The worked examples are serialized as validation cases so an
+implementation cannot pass by copying prose values:
+
+| Field | Required content | Review rule |
+|---|---|---|
+| `validation_case_id` | stable key such as `asimov_high_b` | unique within plan 46 |
+| `quantity` | `discovery_Z0` or `background_survival_ul` | selects the formula under test |
+| `s_input`, `b_input`, `n_obs_input` | numeric inputs or null where not applicable | copied into a §3.1 dispatch row |
+| `expected_method` | `Asimov Z0` or `Feldman-Cousins` | must follow §3 handover |
+| `expected_display_value` | rounded target such as `8.68` or `1.0e-5` | recomputed by the implementation, not hard-coded |
+| `rounding_rule` | two-decimal Z or displayed-precision upper limit | prevents hidden precision drift |
+| `dispatch_required` | boolean | true for every validation row |
+| `validation_status` | `pass`, `fail`, or `not_run` | `not_run` blocks acceptance |
+
+A validation row is accepted only when the result row, dispatch row, and
+input bundle all agree on method, inputs, and displayed value.
+
 DEC stub: `DEC-46-Z0-ASYMPTOTIC` — choose the Cowan Asimov discovery
 formula above for `s > 5` and `b > 5`; require §3 F-C handover for
 zero/near-zero rows. Status: draft, pending Methodology Council sign-off.
