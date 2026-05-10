@@ -157,6 +157,39 @@ For all examples, `handover_rule`, `confidence_level`,
 `nuisance_ids`, and `decision_dec_id` must be populated even when the
 calculator is a target implementation rather than current CLI surface.
 
+### 3.3 Machine-readable result fixture
+
+Each significance or limit calculation emits a result record as well as
+the dispatch row. This prevents a review from accepting a naked number
+whose method or caveats cannot be reconstructed. Minimum fields:
+
+| Field | Required content | Review rule |
+|---|---|---|
+| `result_id` | stable ledger key | unique within plan 47 and plan 50 |
+| `dataset_or_channel` | plan-43 signal row or plan-44 background node | must match the dispatch row |
+| `quantity` | `discovery_Z0`, `expected_limit`, `observed_limit`, or `background_survival_ul` | drives the allowed method set |
+| `method_selected` | copied from §3.1 | no mismatch between dispatch and result |
+| `central_value` | numeric result or null when dispatch forbids it | asymptotic `Z_0` is null for F-C rows |
+| `interval_low`, `interval_high` | confidence/credible interval endpoints when applicable | never collapse a zero-survivor upper limit to `[0, 0]` |
+| `confidence_level` | `0.90` primary, optional `0.95` cross-check | must match §2 reporting level |
+| `s_expected`, `b_expected`, `n_obs` | post-nuisance counts used by the calculation | copied from dispatch row after rounding policy is applied |
+| `nuisance_ids` | plan-45 nuisance IDs included | empty only for an explicitly nuisance-free validation fixture |
+| `unbounded_limitations` | plan-45 §3.1 caveats affecting the result | non-empty list blocks unconditional defence claims |
+| `decision_dec_id` | signed or draft DEC id | must name the convention that authorised the method |
+
+Review fixtures:
+
+| Fixture | Required record property |
+|---|---|
+| `sig_validation_high_b` | `quantity = discovery_Z0`, `method_selected = Asimov Z0`, and `central_value = 8.68` after rounding |
+| `cosmic_muon_zero_survivor` | `quantity = background_survival_ul`, `method_selected = Feldman-Cousins`, `central_value = null`, and `interval_high = 1.0e-5` within displayed precision |
+| `beam_neutron_low_count` | `method_selected = Feldman-Cousins` and no asymptotic or CLs value is emitted |
+| `background_high_count_shape` | `method_selected = CLs/pyhf` only if a binned model is attached; otherwise `result_status = incomplete` |
+
+Any record with missing `decision_dec_id`, hidden `unbounded_limitations`,
+or a method mismatch between dispatch and result is rejected before the
+number reaches the reproduction ledger.
+
 ## 4. Acceptance criteria
 
 - §1 Z_0 target implementation lands in the L3-owned
