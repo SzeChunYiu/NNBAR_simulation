@@ -71,7 +71,7 @@ leaf or plan-44 background node.
 
 | Annex block | Applies to | Required contents | Source plans |
 |---|---|---|---|
-| EM object chain | photon, pi0, or calorimeter result | P.1-P.7 method ids, Class-B drop hash status, closure row ids, selected DEC stubs | 31, 32, 33, 34, 35 |
+| EM object chain | photon, pi0, or calorimeter result | P.1-P.7 method ids, Class-B drop hash status, closure row ids, plan-34 handoff companion id, selected DEC stubs | 31, 32, 33, 34, 35 |
 | Event-variable and cut-flow identity | Ch 10 selection or event-shape result | E.1-E.9 event-variable method id, canonical `pass_*` columns, independent and cumulative cut counts | 36, 37 |
 | Pile-up caveat | any result carrying L11 or rate/occupancy language | plan-58 study id, ESS time-model id, paired cosmic overlay status, occupancy-tail interval | 01, 44, 58 |
 | Strange-background caveat | beam-neutron or EM-fake background result | K_S/Lambda/Sigma branch snapshot, V0 rejection closure, residual survivor interval | 14, 44, 59 |
