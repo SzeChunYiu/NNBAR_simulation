@@ -278,6 +278,20 @@ l1_defence_ci_report:
         verified_cli_help_transcripts: <n>
         forbidden_removed_file_matches: 0
       remediation: null
+    - check_id: l1_cutflow_identity_guard
+      status: pass | fail
+      files_checked:
+        - docs/rebuild_plans/37_subsystem_event_selection.md
+        - docs/rebuild_plans/50_reviewer_defense_package.md
+        - docs/rebuild_plans/51_reviewer_question_registry.md
+        - docs/rebuild_plans/55_internal_note_template.md
+      evidence:
+        canonical_cut_columns: [pass_scintillator_energy, pass_tpc_foil_track, pass_pion_count, pass_invariant_mass, pass_sphericity, pass_scintillator_balance]
+        final_and_column: passes_preliminary_selection
+        defence_overlay_id: selection_cutflow_identity
+        note_annex_block: event_variable_and_cutflow_identity
+        independent_and_cumulative_counts_required: true
+      remediation: null
 ```
 
 Report review rules:
