@@ -216,6 +216,19 @@ l1_glossary_audit:
         - blocked
       thesis_delta: none | flagged
       owner: L1
+    - term: stale-package caveat
+      defined_in_section: "1.1"
+      source_plans: [50, 53, 54, 55]
+      required_contexts:
+        - staleness_summary
+        - defence_ci_report
+        - archive_inventory
+        - note_annex
+      required_when:
+        - note cites stale package as historical provenance
+        - package staleness status is not current
+      thesis_delta: none | flagged
+      owner: L1
     - term: unbounded caveat status
       defined_in_section: "1.1"
       source_plans: [45, 50, 51, 55]
