@@ -40,9 +40,11 @@ worktree exposes `summarize` and `response-matrix` under
 `python -m nnbar_reconstruction.cli --help`. `summarize --help`
 supports `--run`, `--json`, and `--tables-dir`;
 `response-matrix --help` supports `--all-runs`, `--tables-dir`,
-`--out-dir`, `--observables`, `--bootstrap`, `--min-truth-count`,
-and `--json`. `summarize --help` also supports `--all-runs`,
-`--table`, and `--bootstrap` for multi-run table production.
+`--truth-particle`, `--truth-interaction`, `--reco-events`,
+`--reco-pi0`, `--out`/`--out-dir`, `--observables`, `--bootstrap`,
+`--seed`, `--min-truth-count`, and `--json`. `summarize --help` also
+supports `--all-runs`, `--table`, and `--bootstrap` for multi-run table
+production.
 Later unfolding-tuning, closure, and systematic commands remain
 L3-owned implementation gates until their `--help` surface exists.
 
