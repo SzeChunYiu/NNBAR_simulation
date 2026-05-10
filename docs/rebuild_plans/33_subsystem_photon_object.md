@@ -103,13 +103,25 @@ Plan 38 records separate ladder rows for P.3 direction, P.4 energy,
 and the fragment-merge policy because each can change the photon
 four-vector independently.
 
-## 6. Closure
+## 6. Closure-test specification
 
-`cal_singlegamma_v1` (plan 23) at energies 50, 100, 200, 500, 1000
-MeV:
-
-- Direction pull width ∈ [0.9, 1.2]; \|μ\| < 0.05.
-- Energy bias < 1% in linear regime.
+1. **Dataset id:** `cal_singlegamma_v1` from plan 23 at 50, 100,
+   200, 500, and 1000 MeV; use truth photon momentum and energy only
+   in the evaluator.
+2. **Observable:** P.3 angular residual and pull components, P.4
+   energy response, photon reconstruction efficiency, fallback-origin
+   fraction, and fragment duplicate / over-merge rates.
+3. **Fitter / estimator:** fit direction pull cores with Gaussian
+   means and widths; fit energy response per energy bin with Gaussian
+   core plus bootstrap uncertainty; quote Wilson intervals for
+   efficiency and fragment rates.
+4. **Pass criterion:** direction pull width in `[0.9, 1.2]`,
+   `|μ| < 0.05` for each pull component, absolute energy bias `< 1%`
+   in the linear regime, photon efficiency `≥ 0.95`, and fragment
+   over-merge rate `< 2%`.
+5. **Audit hook:** rerun with truth/provenance columns dropped. Photon
+   direction, energy, merge membership, and selected neutral status
+   must be unchanged.
 
 ## 7. Acceptance criteria
 
