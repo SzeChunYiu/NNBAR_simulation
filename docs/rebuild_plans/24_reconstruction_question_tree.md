@@ -146,6 +146,24 @@ Truth labels can join only in downstream validation, unfolding, or
 ledger artifacts after the production table and manifest hashes are
 frozen.
 
+Stage E.1 implementation order:
+
+1. **Freeze V.1/C.1 first (plan 25).** Candidate ids and hit
+   membership keys are the parent key for V.2, C.2, C.3, C.5, and the
+   vertex projection chain.
+2. **Freeze V.2 second (plan 26).** Direction, covariance, and
+   residual-sidecar semantics must exist before dE/dx, range, vertex,
+   and pull consumers can prove they used the same fit rows.
+3. **Freeze C.2 and C.3 independently (plans 27-28).** They both
+   consume the V.1/V.2 boundary and may progress in either order, but
+   their manifests must be present before charged PID is promoted.
+4. **Freeze C.5/C.6 after C.2/C.3 (plan 29).** PID and rejection rows
+   consume frozen dE/dx and range hashes, not calibration scans or
+   truth labels.
+5. **Freeze V.3/V.4/V.5 once V.2 is stable (plan 30).** Vertex rows
+   can then feed fiducial, efficiency, DQM, and ledger artifacts with a
+   geometry-versioned manifest.
+
 ### 9.1 Reviewer verification checklist
 
 Before a plan-47 ledger row consumes any L0 reconstruction leaf, the
