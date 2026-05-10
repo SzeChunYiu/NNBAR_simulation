@@ -219,6 +219,30 @@ explicit remaining gates:
   behavior, no-`Track_ID` production dependency, geometry
   edge-distance fields, and the future associated-hit sidecar.
 
+### 5.2 Stage E.1 code-gap checklist
+
+The live L3 hook already projects Class A scintillator hits along V.2
+directions, but the promoted C.3 fixture still needs explicit method,
+quality, and edge provenance. L3 can promote C.3 only after these gaps
+close in `reconstruct_range_table` (`range_reco.py:78-107`):
+
+| Gap | Current live behavior | Required promotion behavior |
+|---|---|---|
+| range identity | physics rows carry no stable range-estimator id | add `range_id` so plan 38/40/45 artifacts can key the configured C.3 method |
+| association method | projected forward-hit association is implicit in `_range_row` (`range_reco.py:41-75`) | add `association_method=projected_path` for production rows and reserve `legacy_track_id_diagnostic` for validation-only reproduction |
+| invalid-row reason | `_invalid_row` (`range_reco.py:28-38`) sets `range_valid=false` but does not explain the failure | add `range_quality_state` and `range_failure_reason` with the §4 semantics |
+| edge provenance | no scintillator edge distance or profile bin is emitted | add `scintillator_edge_distance_mm` and `scintillator_profile_bin` once plan 60's geometry side-car is available |
+| hit sidecar | associated scintillator hit ids and projected distances are not persisted | add the sidecar keyed by `(event_id, charged_candidate_id, range_id)` for Bragg closure and plan 45 systematics |
+
+Acceptance of this checklist is a plan-side gate, not a request for L0
+to edit L3 code. The matching L3 patch must update
+`test_reconstruct_range_table_projects_scintillator_hits`
+(`tests/test_charged_reco.py:224-259`) and
+`test_reconstruct_range_table_real_sample_has_plan_28_schema`
+(`tests/test_charged_reco.py:262-279`) so the synthetic and real-output
+chains assert every required C.3 promotion column and invalid-row
+reason.
+
 ## 6. Acceptance criteria
 
 - §3 closure passes.
