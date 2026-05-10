@@ -62,15 +62,19 @@ Observable definitions, all derived from Class A production inputs:
 - **Distance / angle to nearest TPC-extrapolated track impact** —
   geometric matching to reconstructed charged tracks.
 
-## 2. Charged/neutral discriminant (current vs replacement)
+## 2. Charged/neutral discriminant candidates
 
-- *Current.* Vertex-to-centroid direction inside
-  `charged_cluster_match_angle_deg = 10.5°` cone of any TPC track
-  direction (plan 08 §3.5 step 2). Hard cut.
-- *Replacement.* Multivariate discriminant (BDT or NN) on shower
-  shape + cone distance + timing match. Plan 57 protocol; trained
-  on `cal_singlegamma_v1` (neutral) vs `cal_singleelectron_v1`
-  (charged conversion proxy) plus signal sample for in-distribution.
+| Candidate | P.2 decision rule | Current/source citation | Class-A status | Comparison metric | Failure mode to inspect |
+|---|---|---|---|---|---|
+| **Hard cone (current)** | Mark charged when vertex-to-centroid direction lies within `charged_cluster_match_angle_deg = 10.5°` of a TPC-track direction. | Charged-match candidates and threshold in `reconstruct_photon_objects` (`reconstruction.py:850–889`, `941–989`, plan 08 §3.5.2). | Partly eligible: geometric cone is Class A, but current TPC-track skip logic reads truth (`reconstruction.py:632–688`). | ROC point, charged contamination, neutral efficiency. | Truth-skip path can hide conversion/electron backgrounds. |
+| **Rectangular shower-shape cuts** | Apply tuned cuts on lateral RMS, depth, max-cell fraction, timing RMS, and track distance. | Replaces the single angle threshold in `build_photon_row`. | Production-eligible if thresholds are DEC-logged. | AUC/efficiency and N-1 stability for each variable. | Sharp thresholds may be unstable across clusterers. |
+| **BDT discriminant** | Train a bounded tree model on the §1 observables and track-distance variables. | Plan 57-governed replacement for the current hard cone. | Production-eligible after frozen feature contract and training provenance. | ROC AUC, calibration curve, feature-ablated stability. | Overtraining to single-γ calibration topology. |
+| **Neural discriminant** | Train a small NN on the same tabular features; threshold `neutral_score`. | Plan 57-governed alternative to BDT. | Production-eligible only if deterministic export and audit artifacts land. | Same as BDT plus seed/export reproducibility. | Harder to defend than BDT without clear gains. |
+| **Truth-labelled diagnostic** | Use gamma/e± ancestry to label neutral or charged shower origin. | Current source labels flow through `_shower_truth_name` and `truth_charge_match_class` (`reconstruction.py:990–1014`). | Not production-eligible; validation labels only. | Upper-bound/reference ROC. | Inflates performance and fails plan 01 if used in decisions. |
+
+Plan 38 scores all candidates on identical P.1 cluster inputs. Plan 57
+requires the selected BDT/NN feature list, training split, and threshold
+to be frozen before it can replace the hard-cone baseline.
 
 ## 3. Closure (plan 40)
 
