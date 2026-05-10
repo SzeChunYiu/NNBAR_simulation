@@ -39,7 +39,7 @@ Per plan 24 C.3 schema:
 | C.1 charged-candidate table; V.2 direction table; C.4 matched scintillator hit columns `Event_ID`, `x`, `y`, `z`, `t`, `eDep`, `photons`, `module_ID`, `vol_name`, `step_info`; scintillator geometry side-car | `Name`, `Track_ID`, `Parent_ID`, `origin_vol_name`, `particle_x`, `particle_y`, `particle_z` |
 
 Current implementation citation: `reconstruct_charged_objects`
-(`reconstruction.py:430-700`, plan 08 §3.4) reports
+(`reconstruction.py:352-431`, plan 08 §3.4) reports
 `scintillator_range` after matching hits by angular/distance cuts or,
 for sparse legacy tables, exact `Track_ID` fallback. The fallback is
 not a production C.3 rule.
@@ -65,7 +65,7 @@ without consuming truth labels in the production decision path.
 
 | Alternative | Source paper / codebase | NNBAR-specific adaptation | Expected ladder leaf delta |
 |---|---|---|---|
-| Farthest matched scintillator hit | Existing `reconstruct_charged_objects` (`reconstruction.py:430-700`) | Preserve the angular/distance match as the reproduction baseline; disable the exact `Track_ID` fallback for production C.3. | Baseline C.3 range with known granularity floor from scintillator pitch. |
+| Farthest matched scintillator hit | Existing `reconstruct_charged_objects` (`reconstruction.py:352-431`) | Preserve the angular/distance match as the reproduction baseline; disable the exact `Track_ID` fallback for production C.3. | Baseline C.3 range with known granularity floor from scintillator pitch. |
 | Projected path-length integration | Range-stack / sampling-calorimeter reconstruction practice | Project V.2 track direction through ordered scintillator modules and accumulate Class A hit distances until the last in-time module. | Expected to reduce range bias when hits skip modules or the farthest-hit point is noisy. |
 | Bragg-profile endpoint fit | Stopping-proton Bragg-curve reconstruction | Fit cumulative eDep versus projected distance and report `bragg_peak_position_cm` plus fit quality. | Improves stopping-proton discrimination for C.5 when enough scintillator hits exist. |
 | PSTAR-constrained range check | NIST PSTAR proton ranges used only in validation | Compare reconstructed range to kinetic-energy bins inside closure; do not use truth KE or species in production. | Adds calibration/systematics leverage for C.3 without loosening Class A production rules. |

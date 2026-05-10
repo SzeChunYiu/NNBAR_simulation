@@ -14,7 +14,7 @@ acceptance:
 risks:
   - {risk: only modules 0/1 are field-managed (plan 17 §1) → unfielded modules contribute biased projections, mitigation: §4 per-module weighting + alignment scenario as systematic}
 estimated_effort: M
-last_updated: 2026-05-09
+last_updated: 2026-05-10
 ---
 
 # Subsystem — event vertex
@@ -32,9 +32,9 @@ Per plan 24 V.3 / V.4 / V.5 schemas:
 | V.4 vertex aggregation | V.3 projection table and covariance / quality fields | truth primary or interaction vertices; `Track_ID`, `Parent_ID`, `Name` | `{event_id, vertex_xyz, vertex_covariance, n_tracks_used, n_tracks_skipped, radial_rms_mm, aggregation_method, vertex_valid}` |
 | V.5 foil acceptance | V.4 vertex table and plan 16 foil radius / half-thickness | truth primary or interaction vertices; `Track_ID`, `Parent_ID`, `Name` | `{event_id, foil_compatible, vertex_valid, vertex_r_mm, vertex_z_mm, foil_geometry_version, acceptance_reason}` |
 
-Current implementation citation: the vertex path is documented in plan
-08 §3.3 as `reconstruction.py:200-430` (section heading near 200 to
-about 430). It projects valid tracks to `z=0`, averages projections,
+Current implementation citation: the vertex path is implemented by
+`reconstruct_event_vertices` (`reconstruction.py:684-776`; plan 08 §3.3).
+It projects valid tracks to `z=0`, averages projections,
 reports radial RMS / skipped counts, and currently excludes some seeds
 with truth `Name`.
 
@@ -74,7 +74,7 @@ seeds. Migration:
 
 | Alternative | Source paper / codebase | NNBAR-specific adaptation | Expected ladder leaf delta |
 |---|---|---|---|
-| Mean of projections | Existing `reconstruction.py:200-430` | Preserve as reproduction baseline; use V.3 projection validity and no truth-name seed exclusion after migration. | Baseline V.4 result; simple but no covariance weighting. |
+| Mean of projections | Existing `reconstruct_event_vertices` (`reconstruction.py:684-776`) | Preserve as reproduction baseline; use V.3 projection validity and no truth-name seed exclusion after migration. | Baseline V.4 result; simple but no covariance weighting. |
 | Billoir χ² fit | Billoir-style covariance-weighted vertex fit | Use V.2/V.3 covariance matrices and plan 16 foil geometry; downweight high-χ² tracks. | Expected to reduce vertex r/z pull width and improve V.5 foil compatibility stability. |
 | Adaptive vertex fit | Kalman/adaptive robust vertex literature | Iterate weights to suppress outlier tracks from secondary interactions or EM conversions. | Potentially best V.4 robustness in shower-rich signal events; higher tuning burden before plan 38 scoring. |
 
