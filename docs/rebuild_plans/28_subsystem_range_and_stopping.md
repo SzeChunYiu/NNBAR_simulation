@@ -64,14 +64,14 @@ Leaf C.3 — range and stopping observables
 | C.1 charged-candidate table; V.2 direction table; C.4 matched scintillator hit columns `Event_ID`, `x`, `y`, `z`, `t`, `eDep`, `photons`, `module_ID`, `vol_name`, `step_info`; scintillator geometry side-car | `Name`, `Track_ID`, `Parent_ID`, `origin_vol_name`, `particle_x`, `particle_y`, `particle_z` |
 
 Legacy implementation citation: `reconstruct_charged_objects`
-(`charged.py:151-228`, plan 08 §3.4) reports
+(`nnbar_reconstruction/charged.py:151-228`, plan 08 §3.4) reports
 `scintillator_range` after matching hits by angular/distance cuts or,
 for sparse legacy tables, exact `Track_ID` fallback. The fallback is
 not a production C.3 rule. The live Stage E.1 hook is
-`reconstruct_range_table` (`range_reco.py:78-107`), which consumes V.1
+`reconstruct_range_table` (`nnbar_reconstruction/range_reco.py:78-107`), which consumes V.1
 candidates, V.2 fit rows, and Class A scintillator hits, then delegates
 projection and Bragg-position extraction to `_range_row`
-(`range_reco.py:41-75`) or `_invalid_row` (`range_reco.py:28-38`) when
+(`nnbar_reconstruction/range_reco.py:41-75`) or `_invalid_row` (`nnbar_reconstruction/range_reco.py:28-38`) when
 inputs cannot support a range.
 
 Output schema: `{event_id, charged_candidate_id, range_cm,
@@ -122,7 +122,7 @@ without consuming truth labels in the production decision path.
 
 | Alternative | Source paper / codebase | NNBAR-specific adaptation | Expected ladder leaf delta |
 |---|---|---|---|
-| Farthest matched scintillator hit | Existing `reconstruct_charged_objects` (`charged.py:151-228`) | Preserve the angular/distance match as the reproduction baseline; disable the exact `Track_ID` fallback for production C.3. | Baseline C.3 range with known granularity floor from scintillator pitch. |
+| Farthest matched scintillator hit | Existing `reconstruct_charged_objects` (`nnbar_reconstruction/charged.py:151-228`) | Preserve the angular/distance match as the reproduction baseline; disable the exact `Track_ID` fallback for production C.3. | Baseline C.3 range with known granularity floor from scintillator pitch. |
 | Projected path-length integration | Range-stack / sampling-calorimeter reconstruction practice | Project V.2 track direction through ordered scintillator modules and accumulate Class A hit distances until the last in-time module. | Expected to reduce range bias when hits skip modules or the farthest-hit point is noisy. |
 | Bragg-profile endpoint fit | Stopping-proton Bragg-curve reconstruction | Fit cumulative eDep versus projected distance and report `bragg_peak_position_cm` plus fit quality. | Improves stopping-proton discrimination for C.5 when enough scintillator hits exist. |
 | PSTAR-constrained range check | NIST PSTAR proton ranges used only in validation | Compare reconstructed range to kinetic-energy bins inside closure; do not use truth KE or species in production. | Adds calibration/systematics leverage for C.3 without loosening Class A production rules. |
@@ -203,7 +203,7 @@ explicit remaining gates:
 
 - **Target module:** extend `nnbar_reconstruction/range_reco.py`.
 - **Public function:** `reconstruct_range_table(candidates, fits,
-  scintillator)` (`range_reco.py:78-107`).
+  scintillator)` (`nnbar_reconstruction/range_reco.py:78-107`).
 - **Current unit coverage:** `tests/test_charged_reco.py` already
   builds synthetic candidates, V.2 fit rows, and scintillator hits in
   `test_reconstruct_range_table_projects_scintillator_hits`
@@ -224,13 +224,13 @@ explicit remaining gates:
 The live L3 hook already projects Class A scintillator hits along V.2
 directions, but the promoted C.3 fixture still needs explicit method,
 quality, and edge provenance. L3 can promote C.3 only after these gaps
-close in `reconstruct_range_table` (`range_reco.py:78-107`):
+close in `reconstruct_range_table` (`nnbar_reconstruction/range_reco.py:78-107`):
 
 | Gap | Current live behavior | Required promotion behavior |
 |---|---|---|
 | range identity | physics rows carry no stable range-estimator id | add `range_id` so plan 38/40/45 artifacts can key the configured C.3 method |
-| association method | projected forward-hit association is implicit in `_range_row` (`range_reco.py:41-75`) | add `association_method=projected_path` for production rows and reserve `legacy_track_id_diagnostic` for validation-only reproduction |
-| invalid-row reason | `_invalid_row` (`range_reco.py:28-38`) sets `range_valid=false` but does not explain the failure | add `range_quality_state` and `range_failure_reason` with the §4 semantics |
+| association method | projected forward-hit association is implicit in `_range_row` (`nnbar_reconstruction/range_reco.py:41-75`) | add `association_method=projected_path` for production rows and reserve `legacy_track_id_diagnostic` for validation-only reproduction |
+| invalid-row reason | `_invalid_row` (`nnbar_reconstruction/range_reco.py:28-38`) sets `range_valid=false` but does not explain the failure | add `range_quality_state` and `range_failure_reason` with the §4 semantics |
 | edge provenance | no scintillator edge distance or profile bin is emitted | add `scintillator_edge_distance_mm` and `scintillator_profile_bin` once plan 60's geometry side-car is available |
 | hit sidecar | associated scintillator hit ids and projected distances are not persisted | add the sidecar keyed by `(event_id, charged_candidate_id, range_id)` for Bragg closure and plan 45 systematics |
 
@@ -251,10 +251,10 @@ remain stable for C.3 consumers:
 
 | Invariant | Current live behavior | Replacement requirement |
 |---|---|---|
-| truth blindness | `reconstruct_range_table` (`range_reco.py:78-107`) consumes C.1 candidates, V.2 fits, and Class A scintillator rows | production output must be unchanged when legacy `Track_ID`, truth path length, or species labels are absent |
+| truth blindness | `reconstruct_range_table` (`nnbar_reconstruction/range_reco.py:78-107`) consumes C.1 candidates, V.2 fits, and Class A scintillator rows | production output must be unchanged when legacy `Track_ID`, truth path length, or species labels are absent |
 | range identity | current rows have no stable estimator id beyond the table columns | promoted rows must add `range_id` so plan 38/40/45 artifacts can key the configured association method |
-| association transparency | `_range_row` (`range_reco.py:41-75`) projects scintillator hits forward along the fitted direction | promoted rows must set `association_method=projected_path` and reserve any exact-id reproduction as `legacy_track_id_diagnostic` |
-| invalid-row semantics | `_invalid_row` (`range_reco.py:28-38`) emits `range_valid=false` with null physics fields | replacements must add `range_quality_state` and `range_failure_reason` before plan 29 can distinguish no-hit, bad-fit, and edge-loss cases |
+| association transparency | `_range_row` (`nnbar_reconstruction/range_reco.py:41-75`) projects scintillator hits forward along the fitted direction | promoted rows must set `association_method=projected_path` and reserve any exact-id reproduction as `legacy_track_id_diagnostic` |
+| invalid-row semantics | `_invalid_row` (`nnbar_reconstruction/range_reco.py:28-38`) emits `range_valid=false` with null physics fields | replacements must add `range_quality_state` and `range_failure_reason` before plan 29 can distinguish no-hit, bad-fit, and edge-loss cases |
 | edge-profile provenance | current rows do not know the scintillator edge distance or profile bin | the plan 60 side-car must populate `scintillator_edge_distance_mm` and `scintillator_profile_bin` before fiducial systematics consume C.3 |
 | sidecar reproducibility | associated hit ids and projected distances are not persisted | promoted rows must write an associated-hit sidecar keyed by `(event_id, charged_candidate_id, range_id)` for Bragg closure and nuisance propagation |
 
