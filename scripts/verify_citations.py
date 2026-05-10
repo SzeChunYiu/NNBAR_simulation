@@ -89,28 +89,33 @@ def cite_label(path: str, start: int, end: int) -> str:
     return f"{path}:{start}" if start == end else f"{path}:{start}-{end}"
 
 
-def iter_markdown_citations(doc: Path) -> Iterable[tuple[int, str, int, int, str | None]]:
+def iter_markdown_citations(doc: Path) -> Iterable[tuple[int, str, int, int, list[str]]]:
     """Yield source citations and nearby code identifiers from one markdown file."""
-    lines = doc.read_text(encoding="utf-8").splitlines()
+    lines = [normalize_text(line) for line in doc.read_text(encoding="utf-8").splitlines()]
     for index, line in enumerate(lines, start=1):
-        normalized_line = normalize_text(line)
-        backticks = list(BACKTICK_RE.finditer(normalized_line))
-        for match in CITATION_RE.finditer(normalized_line):
+        previous = lines[index - 2] if index > 1 else ""
+        following = lines[index] if index < len(lines) else ""
+        context = "\n".join([previous, line, following])
+        line_offset = len(previous) + 1
+        backticks = list(BACKTICK_RE.finditer(context))
+        for match in CITATION_RE.finditer(line):
             path = match.group("path")
             start = int(match.group("start"))
             end = int(match.group("end") or start)
-            identifier = nearest_identifier(normalized_line, match.start(), match.end(), backticks)
-            yield index, path, start, end, identifier
+            cite_start = line_offset + match.start()
+            cite_end = line_offset + match.end()
+            identifiers = nearby_identifiers(context, cite_start, cite_end, backticks)
+            yield index, path, start, end, identifiers
 
 
-def nearest_identifier(
+def nearby_identifiers(
     line: str,
     cite_start: int,
     cite_end: int,
     backticks: list[re.Match[str]],
-) -> str | None:
-    """Find the nearest likely code identifier in backticks on the same line."""
-    candidates: list[tuple[int, str]] = []
+) -> list[str]:
+    """Find nearby likely code identifiers in priority order."""
+    candidates: list[tuple[int, int, str]] = []
     for tick in backticks:
         content = tick.group(1).strip()
         if CITATION_RE.search(content):
@@ -120,12 +125,15 @@ def nearest_identifier(
             continue
         if not looks_like_signature_claim(content, identifier):
             continue
+        is_after = tick.start() >= cite_end
         distance = min(abs(tick.end() - cite_start), abs(tick.start() - cite_end))
-        candidates.append((distance, identifier))
-    if not candidates:
-        return None
-    candidates.sort(key=lambda item: item[0])
-    return candidates[0][1]
+        candidates.append((1 if is_after else 0, distance, identifier))
+    candidates.sort(key=lambda item: (item[0], item[1]))
+    identifiers: list[str] = []
+    for _, _, identifier in candidates:
+        if identifier not in identifiers:
+            identifiers.append(identifier)
+    return identifiers
 
 
 def extract_identifier(content: str) -> str | None:
@@ -149,7 +157,7 @@ def looks_like_signature_claim(content: str, identifier: str) -> bool:
         return True
     if identifier.startswith("_"):
         return True
-    if identifier and identifier[0].islower():
+    if identifier and (identifier[0].islower() or identifier[0].isupper()):
         return True
     if "class " in content.lower():
         return True
@@ -220,13 +228,13 @@ def verify_one(
     citation_path: str,
     start: int,
     end: int,
-    identifier: str | None,
+    identifiers: list[str],
     source_roots: list[Path],
     strict_missing_identifier: bool,
 ) -> CitationItem:
     """Verify one markdown citation against source candidates."""
     label = cite_label(citation_path, start, end)
-    if identifier is None:
+    if not identifiers:
         status = "missing_identifier" if strict_missing_identifier else "skipped"
         return CitationItem(
             str(doc),
@@ -251,18 +259,21 @@ def verify_one(
             citation_path,
             start,
             end,
-            identifier,
+            identifiers[0],
             "file_not_found",
             "source file not found in configured roots",
             [],
             [],
         )
 
-    all_lines: list[int] = []
     candidate_labels = [str(path) for path in candidates]
-    for candidate in candidates:
-        lines = signature_lines(candidate, identifier)
-        all_lines.extend(lines)
+    line_map: dict[str, list[int]] = {}
+    for identifier in identifiers:
+        found_lines: list[int] = []
+        for candidate in candidates:
+            found_lines.extend(signature_lines(candidate, identifier))
+        lines = sorted(set(found_lines))
+        line_map[identifier] = lines
         if any(start <= line <= end for line in lines):
             return CitationItem(
                 str(doc),
@@ -275,11 +286,24 @@ def verify_one(
                 "ok",
                 "signature line falls inside cited range",
                 candidate_labels,
-                sorted(set(all_lines)),
+                lines,
             )
 
-    status = "symbol_not_found" if not all_lines else "mismatch"
-    message = "signature not found" if not all_lines else "signature exists outside cited range"
+    for identifier in identifiers:
+        if line_map[identifier]:
+            return CitationItem(
+                str(doc),
+                doc_line,
+                label,
+                citation_path,
+                start,
+                end,
+                identifier,
+                "mismatch",
+                "signature exists outside cited range",
+                candidate_labels,
+                line_map[identifier],
+            )
     return CitationItem(
         str(doc),
         doc_line,
@@ -287,11 +311,11 @@ def verify_one(
         citation_path,
         start,
         end,
-        identifier,
-        status,
-        message,
+        identifiers[0],
+        "symbol_not_found",
+        "signature not found",
         candidate_labels,
-        sorted(set(all_lines)),
+        [],
     )
 
 
@@ -308,7 +332,7 @@ def verify_paths(
     for doc in sorted(Path(path) for path in doc_paths):
         if not doc.exists() or not doc.is_file():
             continue
-        for doc_line, path, start, end, identifier in iter_markdown_citations(doc):
+        for doc_line, path, start, end, identifiers in iter_markdown_citations(doc):
             items.append(
                 verify_one(
                     doc=doc,
@@ -316,7 +340,7 @@ def verify_paths(
                     citation_path=path,
                     start=start,
                     end=end,
-                    identifier=identifier,
+                    identifiers=identifiers,
                     source_roots=roots,
                     strict_missing_identifier=strict_missing_identifier,
                 )
