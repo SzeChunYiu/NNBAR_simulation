@@ -63,6 +63,15 @@ Truth-use boundary: S.1–S.6 consume only event-variable columns. Any
 truth/provenance dependence must be resolved upstream before the row is
 eligible for the reproduction ledger.
 
+### 1.2 Cut-column naming contract
+
+The current source uses singular `pass_*` names for the six individual
+cut booleans and `passes_preliminary_selection` for the final AND. Plan
+37 treats those names as the canonical Ch 10 reproduction columns. If a
+future table adds plural aliases for external consumers, those aliases
+must be generated from the canonical `pass_*` columns and must not
+replace them in the plan-47 ledger.
+
 ## 2. Closure-test specification / Ch 10 reproduction
 
 1. **Dataset ids:** `sig_foil_v3` for signal acceptance and
