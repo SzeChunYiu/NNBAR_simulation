@@ -53,9 +53,12 @@ consistent with `eDep`:
 
 Numbered closure procedure:
 
-1. Run `cal_singlepion_mip_v1` (plan 23) using
-   `macro/calibration/scintillator/calib_pion_mip.mac`, with the pion
-   momentum fixed in the MIP region and the origin at the foil center.
+1. Run `cal_singlepion_mip_v1` (plan 23) with the pion momentum fixed
+   in the MIP region and the origin at the foil center, after L2/L3
+   restores or writes the missing MIP macro. The historical target
+   path `macro/calibration/scintillator/calib_pion_mip.mac` is
+   classified as `blocked-absent` in plan 23 §3, so it is not cited as
+   a currently existing input file.
 2. Build a per-track table with TPC path length, TPC `eDep`, TPC
    electron count recomputed with the plan 17 production W-value
    (23.6 eV), scintillator path length, and scintillator `eDep`.
