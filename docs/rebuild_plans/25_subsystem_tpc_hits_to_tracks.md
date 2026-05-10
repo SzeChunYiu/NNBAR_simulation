@@ -69,6 +69,15 @@ Each candidate is benchmarked on the truth-substitution ladder
 | **Kalman seeded by Hough** | ACTS | covariance "for free" | implementation cost |
 | **Riemann fit** | various | analytic for circles | not directly applicable without B-field |
 
+### 3.1 Alternative comparison rows
+
+| Alternative | Source paper / codebase | NNBAR-specific adaptation | Expected ladder leaf delta |
+|---|---|---|---|
+| Geometric clustering | DBSCAN (Ester et al.) / sklearn-style density clustering | Run in `(x, y, z, t)` after per-module normalisation; tune `eps` and `min_samples` on `cal_singlepion_50to600MeV_v2`. | Reduces V.1 truth substitution by removing the `Track_ID` grouping gate; possible efficiency loss in overlapping tracks. |
+| Hough transform | ALICE TPC tracking notes / straight-line Hough variant | Use straight-line parameterisation because plan 17 has no B-field curvature; seed from TPC layer/module IDs. | Improves V.1 robustness for sparse first/last-step records; may add fake tracks in shower-rich events. |
+| Kalman seeded by Hough | ACTS track-fitting codebase | Treat Hough seeds as straight-track states and defer curvature terms until a magnetic-field scenario exists. | Adds covariance for downstream V.2/V.4 weighting, but V.1 delta is qualitative until plan 38 scoring. |
+| Riemann fit | Riemann-circle fit literature | Keep as a documented non-baseline option; without curvature it degenerates to a line-fit cross-check. | Low expected V.1 gain in the current no-B-field setup; useful mainly as a systematic comparison. |
+
 The current "no B-field" configuration (plan 17) makes tracks
 straight; this simplifies finders but eliminates momentum measurement
 from curvature — momentum currently comes from kinematics (KE on
