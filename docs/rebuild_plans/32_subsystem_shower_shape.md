@@ -98,7 +98,28 @@ exports while still making invalid geometry explicit:
 Any row with `shape_features_valid = false` is excluded from training
 labels for BDT/NN candidates but remains in efficiency denominators.
 
-### 1.3 Current-to-target neutral-decision field map
+### 1.3 Machine-readable P.2 discriminant fixture
+
+The P.2 fixture stores one row per P.1 cluster and makes the neutral
+decision reproducible without looking at truth labels:
+
+| Field | Required content | Review rule |
+|---|---|---|
+| `event_id`, `cluster_id`, `hit_membership_key` | join keys from plan 31 | must match the consumed P.1 fixture row |
+| `shape_feature_method_id` | formula/config version for §1.1 features | frozen before model training or threshold scans |
+| `lateral_rms_cm`, `longitudinal_depth_cm`, `longitudinal_rms_cm` | finite shower-shape values | sentinel values allowed only when `shape_features_valid = false` |
+| `max_cell_fraction`, `cluster_time_rms_ns` | finite scalar features | ranges checked by closure histograms |
+| `nearest_track_distance_cm`, `nearest_track_angle_deg` | Class-A reconstructed-track match features | no source-track or truth-charge key may enter |
+| `neutral_score` | calibrated score or legacy 0/1 baseline | method-specific, never a reused uncalibrated probability |
+| `passes_neutral_discriminant` | production boolean | false whenever feature validity fails |
+| `shape_features_valid`, `shape_invalid_reason` | validity audit fields | required for sparse and zero-energy rows |
+
+Fixture review recomputes the hard-cone legacy row and any selected
+shower-shape features from the P.1 cluster and reconstructed-track
+inputs. Dropping `Name`, `Track_ID`, `Parent_ID`, and ancestry aliases
+must leave production features and pass/fail unchanged.
+
+### 1.4 Current-to-target neutral-decision field map
 
 The current compact source does not emit `neutral_score` or
 `passes_neutral_discriminant`; it emits the charged-match diagnostic
