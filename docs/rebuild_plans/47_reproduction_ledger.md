@@ -96,8 +96,8 @@ from this plan, which describes how to maintain the ledger).
 ## 5. Initial coverage list
 
 The living ledger now exists at `docs/thesis_reproduction_ledger.md`,
-with the machine-readable mirror at `data/ledger/rows.yml`. Wave 2
-seeding has added **43 rows** from Chapters 5--6 of the licentiate/PhD
+with the machine-readable mirror at `data/ledger/rows.yml`. Seeding has
+added **86 rows** from Chapters 5--7 of the licentiate/PhD
 thesis pair:
 
 - 20 Chapter 5 rows for detector-model figures, lead-glass calibration
@@ -106,12 +106,18 @@ thesis pair:
   plane settings, cosmic kinetic/angle figures, the three-year cosmic
   count table, per-bin cosmic rates, simulated sample count, and the
   cosmic weighting equation.
+- 43 Chapter 7 rows for event pre-selection thresholds, track-
+  projection equations, vertex-resolution figures, timing-window rules,
+  charged/neutral object-reconstruction formulae, dE/dx diagnostics,
+  pion multiple-scattering/range checks, pi0 mass reconstruction, and
+  the PhD-only HIBEAM TPC ML feature-boundary DEC.
 
-All rows are `not-attempted` in Wave 2: they inventory source claims
-and bind each claim to a plan-03 sample id, a plan-10-style command,
-a plan-24 leaf, and any known DEC references. The current row count
-satisfies the lane's ≥30-row seed requirement; later iterations still
-add Chapters 7--10 and continue toward full coverage.
+All rows are `not-attempted`: they inventory source claims and bind
+each claim to a plan-03/plan-20--23 sample id or stub, a plan-10-style
+command, a plan-24 leaf, and any known DEC references. The current row
+count satisfies both the Wave 2 ≥30-row seed requirement and the Wave 3
+≥60-row ledger-count target; later iterations still add Chapters 8--10
+and continue toward full coverage.
 
 ## 6. Acceptance criteria
 
