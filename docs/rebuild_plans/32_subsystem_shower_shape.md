@@ -157,6 +157,28 @@ in this plan.
 | **Neural discriminant** | Train a small NN on the same tabular features; threshold `neutral_score`. | Plan 57-governed alternative to BDT. | Production-eligible only if deterministic export and audit artifacts land. | Same as BDT plus seed/export reproducibility. | Harder to defend than BDT without clear gains. |
 | **Truth-labelled diagnostic** | Join validation-only gamma/e± labels after production scoring. | Current production rows expose diagnostic `truth_name` in `reconstruct_photon_objects` (`photon.py:60-201`) for validation joins only. | Not production-eligible; validation labels only. | Upper-bound/reference ROC. | Inflates performance and fails plan 01 if used in decisions. |
 
+### 2.1 Machine-readable discriminator-candidate fixture
+
+Every non-diagnostic P.2 candidate writes an inference-bundle row before
+its score can enter photon-object production:
+
+| Field | Required content | Review rule |
+|---|---|---|
+| `discriminant_method_id` | hard-cone, rectangular, BDT, or NN method key | matches §1.3 fixture rows |
+| `candidate_type` | `legacy_rule`, `rectangular`, `bdt`, or `nn` | truth-labelled diagnostics are excluded |
+| `feature_contract_id` | frozen Class-A feature list | must match §1 observables and sentinel rules |
+| `training_dataset_ids` | sample ids used for labelled training, or null for rules | labels are training/evaluator only |
+| `validation_split_id` | held-out split or fixed-threshold validation id | required before threshold freeze |
+| `model_artifact_id` | exported model or rule artifact | null only for legacy hard-cone baseline |
+| `threshold_id`, `threshold_value` | operating-point key and value | required for production `passes_neutral_discriminant` |
+| `calibration_artifact_id` | score calibration row or null with reason | required for probabilistic score claims |
+| `class_a_audit_hash` | feature table hash after dropping Class B columns | must match the inference input hash |
+| `candidate_status` | `diagnostic`, `candidate`, `frozen`, or `blocked` | only frozen rows may replace the baseline |
+
+The bundle is rejected if an inference feature is absent from §1, if a
+truth/provenance column changes the score, or if the threshold cannot be
+replayed from the saved artifact.
+
 Plan 38 scores all candidates on identical P.1 cluster inputs. Plan 57
 requires the selected BDT/NN feature list, training split, and threshold
 to be frozen before it can replace the hard-cone baseline.
