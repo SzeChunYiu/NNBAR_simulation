@@ -186,6 +186,7 @@ l1_defence_ci_report:
           - rerun transcript
           - command-template id
           - command-template verifier hash
+          - command-template verifier source
           - CLI verifier transcript
           - blocked template
           - review-evidence links
