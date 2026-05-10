@@ -213,6 +213,24 @@ l1_defence_rerun_transcript:
         archive_drill: sha256:<hash-or-null>
         note_annex: sha256:<hash-or-null>
         glossary_audit: sha256:<hash>
+    - bundle_member: Unbounded caveat status
+      command_template_id: blocked_missing_input_v1
+      command_template_verifier_hash: null
+      input_hashes: []
+      output_hashes: []
+      started_at: null
+      finished_at: null
+      exit_status: blocked
+      verifier_summary: numeric nuisance bound or caveat row not attached to a concrete result yet
+      owner_signoff_ref: RQ-L1-UNBOUNDED-CAVEATS:<owner-hash-or-null>
+      review_artifact_hashes:
+        package: sha256:<hash-or-null>
+        staleness_summary: sha256:<hash-or-null>
+        ci_report: sha256:<hash-or-null>
+        archive_inventory: sha256:<hash-or-null>
+        archive_drill: sha256:<hash-or-null>
+        note_annex: sha256:<hash-or-null>
+        glossary_audit: sha256:<hash-or-null>
 ```
 
 Transcript review rules:
