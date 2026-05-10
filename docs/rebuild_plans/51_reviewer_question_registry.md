@@ -193,6 +193,27 @@ audit when a seed becomes attached to a concrete ledger result.
   rerun_command_template_id: validate_reco_cutflow_v1
   rerun_command_template_verifier_hash: sha256:b3cee4613afed558d4704df3dc5b281271aed768965d79a09603f812496806f0
   rerun_command_template_verifier_source: plan52:validate_reco_cutflow_v1
+- id: RQ-L1-PILEUP-L11
+  asked_by: anticipated_examiner
+  asked_on: 2026-05-10
+  question: Can signal plus cosmic or beam pile-up change the quoted acceptance?
+  category: systematics
+  affects_results: []
+  routes_to_gate: [1, 44, 45, 50, 58]
+  status: open
+  answer:
+    summary: null
+    artifact: null
+    owner_signoff: null
+    review_evidence_links: null
+    review_artifact_hashes: null
+  defense_package_updated: []
+  resolved_on: null
+  l1_overlay_id: pileup_l11_status
+  required_artifact_status: missing
+  rerun_command_template_id: blocked_missing_input_v1
+  rerun_command_template_verifier_hash: null
+  rerun_command_template_verifier_source: null
 ```
 
 Review rules:
