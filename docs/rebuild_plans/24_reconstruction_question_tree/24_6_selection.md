@@ -109,6 +109,24 @@ Leaf S.4: sphericity → event-shape cut
   allowed truth use: validation_only
   downstream consumers: S.6; plans 37, 41, 47
 
+Leaf S.5: hemisphere energies → balance cut
+  inputs (Class A): E.2 upper/lower scintillator and lead-glass
+                    energy splits, E.1 total calorimeter energy, and
+                    plan 37 hemisphere thresholds
+  forbidden (Class B): truth event direction, truth particle
+                       ancestry, Track_ID, Parent_ID, Name
+  decision rule: pass the licentiate balance cut when upper
+                 scintillator energy is no more than 320 MeV and lower
+                 scintillator energy is no more than 930 MeV (plan 37
+                 §1), using the plan 36 hemisphere convention.
+  output schema: {event_id: int64, upper_scintillator_mev: float64,
+                  lower_scintillator_mev: float64,
+                  upper_threshold_mev: float64,
+                  lower_threshold_mev: float64,
+                  pass_scintillator_balance: bool}
+  allowed truth use: validation_only
+  downstream consumers: S.6; plans 37, 41, 47
+
 ### Next measurement (selection branch)
 
 Reproduce the licentiate's cut-flow on the registered signal sample
