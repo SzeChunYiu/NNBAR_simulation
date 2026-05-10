@@ -262,6 +262,9 @@ l1_defence_rerun_transcript:
       owner_signoff_ref: RQ-L1-SELECTION-CUTFLOW:<owner-hash-or-null>
       review_artifact_hashes:
         package: sha256:<hash>
+        rerun_manifest: sha256:<hash>
+        rerun_transcript: sha256:<hash>
+        command_template_verifier: sha256:b3cee4613afed558d4704df3dc5b281271aed768965d79a09603f812496806f0
         staleness_summary: sha256:<hash>
         ci_report: sha256:<hash>
         archive_inventory: sha256:<hash-or-null>
@@ -280,6 +283,9 @@ l1_defence_rerun_transcript:
       owner_signoff_ref: RQ-L1-UNBOUNDED-CAVEATS:<owner-hash-or-null>
       review_artifact_hashes:
         package: sha256:<hash-or-null>
+        rerun_manifest: sha256:<hash-or-null>
+        rerun_transcript: sha256:<hash-or-null>
+        command_template_verifier: null
         staleness_summary: sha256:<hash-or-null>
         ci_report: sha256:<hash-or-null>
         archive_inventory: sha256:<hash-or-null>
