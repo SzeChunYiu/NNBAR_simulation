@@ -186,6 +186,35 @@ matching transcript row with `exit_status: pass`. Blocked rows remain
 visible and propagate to the plan-50 roll-up instead of being excluded
 from the transcript.
 
+
+### 4.3 L1 command-template registry
+
+Transcript `command_template_id` values are registered in the plan before
+being used. A template is a replay contract: it names the command surface,
+allowed arguments, expected outputs, and the evidence that turns a row from
+`blocked` to `pass`.
+
+| Template id | Command surface | Applies to | Required evidence |
+|---|---|---|---|
+| `validate_reco_cutflow_v1` | `python -m nnbar_reconstruction.cli validate-reco <output_dir> --runs <csv> --json <report>` | Ch 10 selection cut-flow reruns | JSON validation report, input hash list, output hash list, plan-37 cut-flow artifact hash |
+| `validate_reco_allruns_v1` | `python -m nnbar_reconstruction.cli validate-reco <output_dir> --all-runs --json <report>` | EM-chain or selection smoke reruns when run ids are discovered from output files | JSON validation report plus discovered-run manifest |
+| `blocked_missing_input_v1` | no execution command | any row whose required sample or artifact does not exist yet | blocker text, upstream owner, and expected input id |
+
+Template review rules:
+
+| Rule | Failure caught |
+|---|---|
+| command templates use only verified CLI help output | rerun manifest invents unsupported command flags |
+| blocked templates have no fake command | missing evidence is disguised as a skipped successful run |
+| every executable template writes a JSON report | transcript has no machine-readable verifier summary |
+| selected template matches the bundle member | EM closure accidentally uses a cut-flow-only transcript |
+| template id is immutable once archived | old reruns cannot be replayed after command semantics drift |
+
+The two executable templates use the currently verified `validate-reco`
+CLI surface. If L3 later adds a dedicated cut-flow or response-matrix CLI,
+that new command must receive a new template id rather than changing the
+meaning of these archived templates.
+
 ## 5. Pre-submit checks
 
 - Cluster quota (storage + CPU hours).
@@ -202,6 +231,8 @@ from the transcript.
   production orchestration is promoted.
 - L1 reviewer-triggered reruns produce the §4.2 transcript and link it
   from the plan-50 overlay roll-up.
+- Transcript rows use a §4.3 command template with verified CLI surface or
+  an explicit blocked template.
 
 ## 7. Dependencies
 
