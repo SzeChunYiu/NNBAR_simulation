@@ -66,13 +66,19 @@ Leaf C.2 — dE/dx estimator
 |---|---|
 | C.1 charged-candidate table; TPC step columns `Event_ID`, `eDep`, `TrackLength`, `x`, `y`, `z`, `t`, `photons`, `step_info` | `Name`, `Track_ID`, `Parent_ID`, `origin_vol_name`, `particle_x`, `particle_y`, `particle_z` |
 
-Current implementation citation: `reconstruct_charged_objects`
+Legacy implementation citation: `reconstruct_charged_objects`
 (`charged.py:149-228`, plan 08 §3.4) already emits `dedx`,
 but the value is downstream of the current truth-name candidate gate.
+The live Stage E.1 hook is `reconstruct_dedx_table`
+(`dedx.py:91-119`), which consumes V.1 candidate `hit_indices`, calls
+`truncated_mean_dedx` (`dedx.py:41-70`), and obtains path increments
+from `_step_lengths` (`dedx.py:28-38`) without reading truth labels.
 
 Output schema: `{event_id, charged_candidate_id, dedx_mev_per_cm,
 estimator, n_steps_used, path_length_cm, low_truncation_fraction,
-high_truncation_fraction, calibration_source}`.
+high_truncation_fraction, calibration_source}`. The current live hook
+emits this physics schema; §5 quality columns remain an explicit L3
+follow-up before closure sign-off.
 
 ### 1.3 Machine-readable C.2 dE/dx fixture
 
@@ -177,20 +183,27 @@ comparison.
 
 ## 6. Stage E.1 implementation handoff
 
-For L3's charged-side redesign, C.2 should be a typed estimator module:
+For L3's charged-side redesign, C.2 is now a typed estimator seam with
+explicit remaining gates:
 
 1. Input rows come from C.1 candidates, V.2 path-length/covariance
-   outputs, and Class A TPC energy-deposit samples.
+   outputs when available, and Class A TPC energy-deposit samples. The
+   live hook currently uses V.1 hit indices and Class A step lengths; it
+   must prefer V.2 path-length/covariance once plan 26 exposes the full
+   table.
 2. The arithmetic-mean baseline is preserved as a named reproduction
    mode; the default production mode is the signed truncated mean once
    the DEC records its low/high fractions.
-3. The module writes §1 physics fields and §5 quality fields in one row
-   per charged candidate, with nulls plus reasons when C.2 is not
-   applicable.
+3. The module writes §1 physics fields in one row per charged candidate;
+   L3 still must add `dedx_quality_state`, `dedx_failure_reason`,
+   `path_length_source`, `truncation_applied`, and contribution-sidecar
+   rows before plan 40/45 closure can treat C.2 as complete.
 4. Bethe-Bloch residuals and truth momentum live only in the closure
    artifact namespace after the production C.2 table is frozen.
 5. Plan 45 receives a calibration nuisance input from the closure
    residual, not from hand-edited PID thresholds.
+6. Plan 66 consumes dE/dx quality and path-length-source fractions once
+   the §5 fields are present.
 
 ## 7. Acceptance criteria
 
