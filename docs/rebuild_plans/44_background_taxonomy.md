@@ -56,13 +56,15 @@ Each node carries:
 
 | Field | Source |
 |---|---|
-| sample_id | plan 03 |
-| events_generated | plan 03 manifest |
-| survivors | counted on the reconstruction output |
-| rate | survivors / events_generated |
+| node_status | `registered_sample` for §1 rows; `unregistered_caveat` for §3 sentinels |
+| sample_id | plan 03 for registered samples; `unregistered_*` sentinel for caveat rows |
+| events_generated | plan 03 manifest for registered samples; null for caveat rows |
+| survivors | counted on the reconstruction output; null for caveat rows |
+| rate | survivors / events_generated for registered samples; not computed for caveat rows |
 | upper_limit_FC | plan 04 §5 when survivors = 0 |
 | systematic | plan 45 |
 | limitation_flags | plan 01 §6 |
+| rate_included_in_b | true only for registered samples with reviewed rate convention |
 
 Sample-id provenance used by the §1 tree:
 
@@ -105,8 +107,10 @@ appear as explicit caveats beside every total-background quote in plan
 | `beampipe_activation` | plan 14 §4; plan 01 §6 | `unregistered_beampipe_activation` | unbounded by current rebuild | delayed activation γ/charged secondaries correlated with beam operation | L5, L6, L8, L11 |
 
 The `unregistered_*` values are deliberate caveat sentinels, not
-registry dataset ids. A total-background quote must fail review if it
-silently treats one of these sentinels as zero expected background.
+registry dataset ids. Their machine-readable rows must carry
+`node_status = unregistered_caveat` and `rate_included_in_b = false`.
+A total-background quote must fail review if it silently treats one of
+these sentinels as zero expected background.
 
 DEC stub: `DEC-44-UNMODELLED-CAVEATS` — keep these rows out of the
 numeric background sum until simulated samples are registered, but
