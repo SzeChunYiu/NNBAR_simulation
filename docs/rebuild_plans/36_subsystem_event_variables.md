@@ -138,6 +138,25 @@ is defined by the sign of `y` (vertical) for the licentiate. Plan
 36 v0.1 retains this convention; plan 47 ledger explicitly cites it
 when quoting hemispheric numbers.
 
+### 3.1 Machine-readable hemisphere convention fixture
+
+Every event-variable method bundle records the coordinate convention used
+for hemisphere-split observables:
+
+| Field | Required content | Review rule |
+|---|---|---|
+| `hemisphere_convention_id` | stable key, initially `licentiate_y_sign_v1` | referenced by §2.3 event rows and plan-37 inputs |
+| `vertical_axis` | `y` | changes require `DEC-36-HEMISPHERE-CONVENTION` |
+| `upper_rule` | `y > 0` | must match E.2/E.8 split rows |
+| `lower_rule` | `y < 0` | must match E.2/E.8 split rows |
+| `boundary_rule` | hits with `y = 0` recorded in a boundary/count field or deterministic side | no silent double counting |
+| `coordinate_frame_source` | detector geometry snapshot or run config id | copied to closure artifacts |
+| `decision_dec_id` | `DEC-36-HEMISPHERE-CONVENTION` | draft DEC keeps convention provisional |
+| `convention_status` | `draft`, `frozen`, or `blocked` | only frozen rows support final hemispheric claims |
+
+The convention row is rejected if upper/lower energy sums cannot be
+recomputed from raw hit positions using the recorded rules.
+
 ## 4. Alternative comparison matrix
 
 | Leaf(s) | Candidate | Decision rule | Current/source citation | Class-A status | Comparison metric |
