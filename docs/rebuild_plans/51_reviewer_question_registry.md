@@ -102,32 +102,18 @@ audit when a seed becomes attached to a concrete ledger result.
   category: reproducibility
   affects_results: []
   routes_to_gate: [37, 47, 50]
-  status: open | answered | clarified | rejected
+  status: open
   answer:
-    summary: <filled when artifact exists>
-    artifact: <cut-flow identity table or defence package path>
-    owner_signoff: <owner-or-null>
-    review_evidence_links:
-      package: <plan-50 package key>
-      staleness_summary: <plan-50 staleness key>
-      ci_report: <plan-53 report key>
-      archive_inventory: <plan-54 inventory key-or-null>
-      archive_drill: <plan-54 drill key-or-null>
-      note_annex: <plan-55 annex key-or-null>
-      glossary_audit: <plan-56 audit key>
-    review_artifact_hashes:
-      package: sha256:<hash>
-      staleness_summary: sha256:<hash>
-      ci_report: sha256:<hash>
-      archive_inventory: sha256:<hash-or-null>
-      archive_drill: sha256:<hash-or-null>
-      note_annex: sha256:<hash-or-null>
-      glossary_audit: sha256:<hash>
+    summary: null
+    artifact: null
+    owner_signoff: null
+    review_evidence_links: null
+    review_artifact_hashes: null
   defense_package_updated: []
   resolved_on: null
   l1_overlay_id: selection_cutflow_identity
-  required_artifact_status: missing | blocked | present
-  rerun_command_template_id: validate_reco_cutflow_v1 | null
+  required_artifact_status: missing
+  rerun_command_template_id: validate_reco_cutflow_v1
   rerun_command_template_verifier_hash: sha256:b3cee4613afed558d4704df3dc5b281271aed768965d79a09603f812496806f0
   rerun_command_template_verifier_source: plan52:validate_reco_cutflow_v1
   rerun_manifest_id: plan52:Ch 10 selection cut-flow
