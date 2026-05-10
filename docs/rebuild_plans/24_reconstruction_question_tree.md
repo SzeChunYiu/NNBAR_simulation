@@ -130,6 +130,22 @@ Current closure map:
   data-quality decisions that can veto or stratify reconstructed
   samples.
 
+Stage E.1 leaf-to-artifact handoff map:
+
+| Leaf family | Producer plan | Required frozen artifact | Validation / consumer gate |
+|---|---|---|---|
+| V.1 / C.1 candidate seeds | plan 25 | V.1 candidate table plus hit-membership sidecar and `plan25_v1_candidates@stage-e1` manifest | plan 26 may consume only rows with `truth_grouping_used=false`; plan 66 consumes candidate quality fractions |
+| V.2 track fits | plan 26 | V.2 fit table, residual sidecar, and `plan26_v2_fits@stage-e1` manifest | plans 27, 28, 30, and 40 consume the same `fit_id` and covariance convention |
+| C.2 dE/dx | plan 27 | C.2 estimator table, contribution sidecar, and `plan27_c2_dedx@stage-e1` manifest | plan 29 joins by estimator id after truncation and calibration provenance are frozen |
+| C.3 range / C.4 association | plan 28 | C.3 range table, associated-hit sidecar, and `plan28_c3_range@stage-e1` manifest | plans 29, 45, 60, and 66 consume explicit association and edge-state provenance |
+| C.5 / C.6 charged PID and rejection | plan 29 | charged-PID decision table, rejection table, and `plan29_c5_c6_pid@stage-e1` manifest | plans 38 and 47 consume rule-versioned outputs only after calibration artifacts are frozen |
+| V.3 / V.4 / V.5 vertex chain | plan 30 | projection, vertex, foil-acceptance tables, and `plan30_vertex_chain@stage-e1` manifest | plans 43, 47, 60, and 66 consume geometry-versioned vertex/foil rows |
+
+Each artifact row above is an observable-only production boundary.
+Truth labels can join only in downstream validation, unfolding, or
+ledger artifacts after the production table and manifest hashes are
+frozen.
+
 Acceptance rule: before any plan-47 ledger row cites a plan-24 leaf,
 that leaf's family must have either an implementation handoff
 subsystem plan or a software handoff study/operations plan, and the
