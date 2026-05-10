@@ -180,13 +180,44 @@ F1, Punzi figure, and fixed-acceptance rejection. Any new objective is a
 methodology change and must update plan 05 before a cut-search artifact
 can be accepted.
 
-## 4. Acceptance criteria
+## 4. Software handoff and blocker contract
+
+The verified live CLI can build the frozen reconstruction inputs with
+`summarize`, but it does not yet expose the study producers required by
+§§1-3. Until those producers exist, this plan is intentionally blocked
+at the software boundary rather than substituting a hand-made plot.
+
+L3/software handoff requirements:
+
+1. The N-1 producer reads only frozen signal/background `events.csv`
+   tables, plan 37 cut definitions, and a manifest of applied companion
+   cuts. It writes one JSON plus one PNG per cut and fails if any plan
+   37 cut has no artifact.
+2. The ROC producer reads the same frozen `events.csv` hashes, plan 36
+   variable definitions, and background sample identifiers. It writes
+   one JSON plus one PNG per `(variable, background)` pair and fails if
+   any continuous plan 36 variable is missing.
+3. The cut-search producer reads the §3 split manifest, baseline cut
+   tuple, DEC-approved objective, and the frozen ROC/N-1 inputs. It
+   writes validation-grid, frozen-candidate, baseline, test, and
+   promotion-decision artifacts without mutating plan 37.
+4. All three producers record input hashes, bootstrap seed, ladder
+   leaves, and plan 47 ledger hooks. A rendered PNG without the matching
+   JSON and manifest entry is not accepted.
+5. The producer `--help` surfaces must exist before any command line is
+   added to this plan. This avoids inventing CLI names and keeps the A+
+   examiner gate enforceable.
+
+## 5. Acceptance criteria
 
 - §1 N-1 plots complete for plan 37 cuts.
 - §2 ROC curves complete for plan 36 continuous variables.
 - §3 objective signed in DEC; optimal tuple reported on test set.
+- §4 software handoff is complete: each blocked producer has explicit
+  inputs, outputs, failure assertions, provenance fields, and a
+  no-invented-CLI rule.
 
-## 5. Risks and mitigations
+## 6. Risks and mitigations
 
 - *Risk:* the licentiate cuts are already near-optimal; the
   optimisation reports a ≤ 1% gain that statistical fluctuation
@@ -194,7 +225,7 @@ can be accepted.
   *Mitigation:* report bootstrap uncertainty (plan 04 §2) on the
   optimum so improvements within statistical noise are not promoted.
 
-## 6. Dependencies
+## 7. Dependencies
 
 - **04** — uncertainty machinery.
 - **36, 37** — variables and cuts.
