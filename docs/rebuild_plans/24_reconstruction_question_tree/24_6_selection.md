@@ -92,6 +92,23 @@ Leaf S.3: visible invariant mass → mass cut
   allowed truth use: validation_only
   downstream consumers: S.6; plans 37, 41, 47
 
+Leaf S.4: sphericity → event-shape cut
+  inputs (Class A): E.5 sphericity output, E.6 companion
+                    event-shape variables for diagnostics, and plan 37
+                    sphericity threshold
+  forbidden (Class B): truth event topology, truth particle momenta,
+                       Track_ID, Parent_ID, Name
+  decision rule: pass when reconstructed sphericity is valid and at
+                 least the thesis Ch 9 threshold (0.2 in plan 37 §1);
+                 Fox-Wolfram or thrust variants remain ladder-scored
+                 alternatives until plan 41/57 approves a replacement.
+  output schema: {event_id: int64, sphericity: float64,
+                  sphericity_threshold: float64,
+                  pass_sphericity: bool,
+                  event_shape_rule_version: string}
+  allowed truth use: validation_only
+  downstream consumers: S.6; plans 37, 41, 47
+
 ### Next measurement (selection branch)
 
 Reproduce the licentiate's cut-flow on the registered signal sample
