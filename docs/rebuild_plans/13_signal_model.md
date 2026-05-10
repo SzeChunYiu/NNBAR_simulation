@@ -89,16 +89,37 @@ reference to resolve to `ref.bib`.
 
 ## 4. Alternative models (systematic variations)
 
-| Tag | Variation | Source |
-|---|---|---|
-| `nominal_geant4` | Geant4's built-in FTFP hadronic | §2 default |
-| `branching_amsler1991` | Reweight events to match Amsler & Myhrer table | hand-tuned weights |
-| `branching_friedman2007` | Reweight to Friedman & Gal nuclear-modified branching | theory-driven |
-| `eta_omega_enhanced` | +1σ on η/ω fractions | sensitivity bracket |
-| `eta_omega_suppressed` | −1σ on η/ω fractions | sensitivity bracket |
+The nominal sample keeps Geant4's FTFP/BERT annihilation model intact.
+Alternative models are applied as *analysis weights* unless the row
+explicitly requests regeneration. The common recipe is:
 
-Per plan 04 §6, alternative-model deltas combine in quadrature into
-the signal-model systematic for any quoted observable.
+1. Classify each signal event by truth final-state signature from
+   `Particle_output_*.parquet`: charged pion count, neutral pion/
+   photon count, eta/omega/rho tags where present, kaon count, and
+   target volume (foil carbon vs beampipe silicon).
+2. Build a nominal branching table from `nominal_geant4` truth counts
+   after the same event-quality preselection used by the ledger row.
+3. For alternative table `A`, assign
+   `w_event = BR_A(channel) / BR_nominal(channel)`; if only a grouped
+   channel is available, use the grouped multiplicity bin and record
+   the grouping in the row notes.
+4. Renormalise weights so `sum(w_event)` equals the unweighted event
+   count before computing the observable. The systematic shift is the
+   weighted-vs-nominal delta propagated per plan 04 §6.
+
+| Tag | Variation | Source/input | Reweighting recipe | Registry payload |
+|---|---|---|---|---|
+| `nominal_geant4` | Geant4's built-in FTFP/BERT + stopping model | §2 default, physics tag `nominal` from plan 12 | Unit weights; records the truth-channel table used as the denominator for alternatives. | `data/registry/signal_models/nominal_geant4.yml`: Geant4 version, physics tag, channel counts, preselection hash. |
+| `branching_amsler1991` | Low-energy p̄p/n̄p at-rest branching reference | Amsler & Myhrer 1991 (§3) | Map Geant4 truth channels to the Amsler/Myhrer grouped final states (`π+π-π0`, `π+π-2π0`, `2π+2π-`, resonance-enriched bins); weight by `BR_Amsler(group) / BR_nominal(group)`. | `branching_table`, `channel_map`, `unmapped_fraction`, and max event weight. |
+| `branching_friedman2007` | Nuclear-medium modification for carbon/silicon targets | Friedman & Gal 2007 plus `Friedman:2008es` (§3) | Start from `branching_amsler1991`, then apply target-dependent multiplicity migration: carbon events receive the carbon-medium table; beampipe-silicon events receive the silicon proxy table and are reported separately. | `target_tables`, `target_volume_rule`, and per-target normalisation factors. |
+| `branching_intranuclear2019` | Modern intranuclear n̄ transformation generator alternative | `Golubeva:2018mrz` and `Barrow:2021svu` (§3) | Reweight by charged/neutral pion multiplicity and nuclear-remnant category; if a generated comparison sample exists, prefer direct sample ratio over analytic weights. | Generator tag, multiplicity table, remnant categories, comparison-sample id if available. |
+| `eta_omega_enhanced` / `eta_omega_suppressed` | Resonance-fraction sensitivity bracket | Amsler/Myhrer resonance fractions, bounded by §3 bibliography | Multiply events containing η or ω truth particles by `(1 ± σ_res)` and renormalise; default `σ_res` is left unset until extracted from the cited table. | `sigma_res`, affected PDG ids, and renormalisation factor. |
+
+At least `branching_amsler1991` and `branching_friedman2007` are
+required before the signal-model nuisance can be marked complete. Per
+plan 04 §6, alternative-model deltas combine in quadrature into the
+signal-model systematic for any quoted observable unless plan 45 later
+records correlations between the alternatives.
 
 ## 5. Foil-specific closure
 
