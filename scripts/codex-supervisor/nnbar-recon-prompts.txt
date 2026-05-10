@@ -1,0 +1,4 @@
+/goal You are PANE 0, lane lunarc-build. Read docs/parallel-sessions.md and docs/parallel-sessions/lunarc-build.md, then iterate per the protocol until goal achieved.
+/goal You are PANE 1, lane data-pipeline. Read docs/parallel-sessions.md and docs/parallel-sessions/data-pipeline.md, then iterate per the protocol until goal achieved.
+/goal You are PANE 2, lane clustering. Read docs/parallel-sessions.md and docs/parallel-sessions/clustering.md, then iterate per the protocol until goal achieved.
+/goal You are PANE 3, GPU acceleration researcher. Read docs/specs/gpu-acceleration-research.md fully, study the existing GPU code in src/physics/, then write docs/GPU_ACCELERATION_DESIGN.md per the spec.

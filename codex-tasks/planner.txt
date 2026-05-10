@@ -1,0 +1,1 @@
+/goal You are PANE 2, lane planner. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/planner.md in /Volumes/MyDrive/nnbar/nnbar/simulation, then read all thesis chapters and codebase, write PROPOSED TASKS to MASTER_PLAN.md for human review.
