@@ -96,6 +96,19 @@ kind, run id when available, event id, and input-row ordinal or a
 future plan-09 hit id. It must not include `Track_ID`, `Parent_ID`,
 `Name`, or process/ancestry aliases.
 
+### 2.2 Current-to-target cluster identifier map
+
+The current compact source emits `object_id` and `source_track_id` from
+`reconstruct_photon_objects` (`photon.py:60-201`), not a production
+`cluster_id` or hit-membership key. A rebuild bridge may expose the
+current `object_id` only as `legacy_cluster_object_id` with
+`clusterer_method = legacy_track_key`; `source_track_id` remains
+diagnostic provenance and must never become the P.1 `cluster_id`. The
+production `cluster_id`, `hit_membership_key`, and
+`membership_config_id` must be assigned after Class-A clustering so
+plan 32/33 can join by truth-blind membership rather than by simulated
+track ancestry.
+
 ## 3. Replacement candidates and comparison matrix
 
 | Candidate | P.1 decision rule | Current/source citation | Class-A status | Comparison metric | Failure mode to inspect |
