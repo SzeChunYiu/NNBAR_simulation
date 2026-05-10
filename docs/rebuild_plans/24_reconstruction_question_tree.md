@@ -10,7 +10,6 @@ inputs:
   - {path: /Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/docs/reconstruction.md, schema: implementation reference}
 outputs:
   - {path: docs/rebuild_plans/24_reconstruction_question_tree.md, schema: this file}
-  - {path: docs/reconstruction_fundamental_question_tree.md, schema: living tree (mirror)}
 acceptance:
   - {test: every leaf has the answer-now / deeper-question / next-measurement triplet, method: tree review, pass_when: all leaves complete}
   - {test: every leaf names its inputs (Class A columns), decision rule, allowed truth use, outputs, downstream consumers, method: per-leaf review, pass_when: full coverage}
