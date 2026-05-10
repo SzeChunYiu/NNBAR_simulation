@@ -380,6 +380,15 @@ Evidence bundles make it explicit which π⁰ rows are production candidates,
 which are accidental-rate studies, and which are validation or shadow
 surfaces.
 
+Initial reviewer audit cases:
+
+| `audit_case_id` | Reviewer question | Required evidence before accept | Reject condition |
+|---|---|---|---|
+| `p34_candidate_key_audit` | Is every π⁰ candidate reproducibly keyed from ordered photon ids? | candidate fixture, pairing method id, and cut-config id | key can change when rows are resorted or fit outputs are added |
+| `p34_cut_columns_audit` | Are all Ch 8 cut booleans and failure reasons emitted? | six per-cut booleans, strict final AND, and failure-reason fixture | only a final pass/fail column is available |
+| `p34_accidental_audit` | Is P.6 fake rejection bounded on no-π⁰ and wrong-parent samples? | accidental-rate rows with denominators and intervals | fake rate is inferred from signal rows only |
+| `p34_truth_drop_audit` | Are evaluator labels droppable without changing production rows? | before/after pair-list, kinematic, and cut hashes | truth labels alter pair ordering, cuts, or selected candidates |
+
 ## 6. Acceptance criteria
 
 - §2 individual passes_* columns + `passes_selection`.
