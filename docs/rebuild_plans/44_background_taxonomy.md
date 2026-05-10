@@ -315,6 +315,11 @@ collapsing into one background-sum scalar.
 - §1 tree complete.
 - §2 zero-survivor handling correct.
 - §3 unmodelled list audited against plan 01 §6.
+- Promotion checks prove node registry completeness, authorised rate
+  rows, zero-survivor intervals, and preserved caveats before plan 46
+  receives a numeric background expectation.
+- Evidence bundles keep registered sums, zero-survivor limits,
+  unmodelled caveats, and unsigned rates distinct.
 
 ## 5. Dependencies
 
