@@ -38,9 +38,11 @@ l1_note_annex:
       required_contents:
         - P.1-P.7 method ids and closure row ids
         - Class-B drop hash status for production EM decisions
+        - plan-33 promotion companion id
         - selected DEC stubs for clusterer, discriminator, and pi0 cuts
       evidence_refs:
         - p1_p7_closure_rows
+        - photon_promotion_examples
         - photon_pi0_response_and_handoff_summary
         - DEC-31-CLUSTERER-CHOICE
         - DEC-32-DISCRIMINANT-CHOICE
