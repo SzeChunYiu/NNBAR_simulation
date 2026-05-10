@@ -331,6 +331,26 @@ production table or if any forbidden column appears in the recorded
 producer input. Plan 26 and plan 66 consume this manifest before they
 trust V.1 row counts or candidate-quality fractions.
 
+### 6.7 Stage E.1 fixture matrix
+
+The L3 replacement patch must prove the V.1 boundary with fixtures that
+exercise row keys, quality states, and truth blindness before plan 26 or
+plan 66 consumes the manifest:
+
+| Fixture case | Required input condition | Required assertion |
+|---|---|---|
+| truth-column drop | paired TPC rows with and without `Track_ID`, `Parent_ID`, `Name`, and `origin_vol_name` | candidate count, `hit_membership_key`, and quality fields are unchanged; manifest records `truth_grouping_used=false` |
+| input row shuffle | the same Class A hits in a different row order | ordered sidecar and candidate numbering are deterministic after sorting by explicit hit key, not by file order |
+| sparse candidate | one or two finite TPC hits for an event | a row is emitted with `candidate_quality_state=fail` or `warn` and a documented `candidate_failure_reason`; downstream consumers do not infer failure from row absence |
+| two separated candidates | one event contains two spatially separated Class A hit groups | `candidate_id` values are deterministic, sidecar keys are unique, and no V.2 join reopens raw TPC rows to recover membership |
+| edge-tagged candidate | candidate lies near a plan-60 fiducial edge profile when that sidecar is available | clustering thresholds are unchanged; the geometry/profile key travels as provenance for plan 60 and plan 66 |
+| real paired output | real `Particle_output` / `TPC_output` fixture used only to locate paired run files | production candidate rows do not carry Class B fields, and any legacy labels are written only to validation artifacts |
+
+This matrix is intentionally small enough to stay in the charged-reco
+test slice from §6.5. If a future finder family requires additional
+fixtures, the new case must name the required input condition,
+observable assertion, and downstream plan consuming the result.
+
 ## 7. Acceptance criteria
 
 - §1 inputs match plan 09 (no Class B in production path).
@@ -340,7 +360,7 @@ trust V.1 row counts or candidate-quality fractions.
 - §6 Stage E.1 handoff is actionable for L3: the target public
   function, current unit/integration tests, remaining test obligation,
   code-gap checklist, promotion invariants, producer/consumer contract,
-  verification command, artifact manifest schema, and mandatory V.1 fields (`candidate_id`, hit indices, anchor,
+  verification command, artifact manifest schema, fixture matrix, and mandatory V.1 fields (`candidate_id`, hit indices, anchor,
   direction, hit count, `cluster_method`, `candidate_quality_state`,
   `candidate_failure_reason`, `truth_grouping_used=False`, and
   `hit_membership_key`) are all named before replacement promotion.
