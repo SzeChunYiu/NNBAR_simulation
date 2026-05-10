@@ -269,6 +269,15 @@ plan-05 DEC entries before implementation can be signed:
 | `DEC-31-ADJACENCY-THRESHOLDS` | Freeze adjacency radius / cell-neighbour rule, seed threshold, and split/merge thresholds | N-1 threshold scan showing closure pass margins and π⁰ over-merge rate |
 | `DEC-31-TRUTH-LABEL-QUARANTINE` | Keep `Track_ID`-based and truth-label comparisons only in validation labels and plan-47 reproduction baselines | plan-01 audit output showing production membership unchanged after Class B columns are dropped |
 
+Initial adjacency-threshold scan examples:
+
+| `scan_case_id` | Varied parameter | Required diagnostic row | Promotion guard |
+|---|---|---|---|
+| `topo_seed_low_v0` | lower topological seed threshold below the nominal §3.1 value | closure row records extra low-energy clusters and split rate | cannot promote if `split_rate` exceeds the §4 budget in any energy bin |
+| `topo_adjacency_wide_v0` | widen neighbour radius / cell adjacency | closure row records merge rate and π⁰-daughter over-merge stress | cannot promote without `DEC-31-ADJACENCY-THRESHOLDS` evidence for over-merge margin |
+| `sliding_window_overlap_v0` | vary sliding-window overlap merge fraction | closure row records duplicate-cluster and edge-cell inefficiency rates | only diagnostic unless it beats topological closure without truth labels |
+| `class_b_track_key_probe` | repeat the selected scan with Class-B ancestry columns dropped | `class_b_drop_hash` compared to the production scan | any membership change blocks `DEC-31-TRUTH-LABEL-QUARANTINE` approval |
+
 These are stubs, not approved methodology. The approved entries live in
 `docs/governance/DECISION_LOG.md` once the selected implementation and
 closure evidence exist.
