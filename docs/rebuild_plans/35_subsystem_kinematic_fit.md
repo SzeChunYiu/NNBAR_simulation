@@ -350,6 +350,15 @@ Evidence bundles keep raw preservation, covariance validity, and fit
 quality use separable, preventing a successful fit subset from hiding
 non-converged candidates.
 
+Initial reviewer audit cases:
+
+| `audit_case_id` | Reviewer question | Required evidence before accept | Reject condition |
+|---|---|---|---|
+| `p35_raw_preservation_audit` | Are all plan-34 raw candidates retained regardless of fit status? | raw candidate hash, fit-attempt row, and failure-status counts | failed fits disappear from denominators |
+| `p35_covariance_audit` | Are covariance inputs finite, positive, and tied to the fit mode? | covariance fixture rows for both photons and fit mode | fitted values are emitted with missing or singular covariance |
+| `p35_closure_audit` | Does the fit improve resolution without bad pulls or χ² shape? | width, pull, convergence, and χ² K-S rows | only a successful-fit subset is reported |
+| `p35_selection_use_audit` | Is any downstream cut/ranking on fit quality DEC-approved? | fit-quality DEC id and sidecar handoff id | plan 37 consumes fit outputs as baseline without approval |
+
 ## 6. Acceptance criteria
 
 - §2 implementation lands; §5 closure passes.
