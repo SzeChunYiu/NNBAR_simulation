@@ -32,8 +32,7 @@ Leaf P.7: raw π⁰ candidates → fitted four-vectors and fit quality
   vertex/covariance when available, and calibrated resolution models
   from plans 18 and 40.
 - **Current implementation evidence:** the compact current baseline
-  has only raw π⁰ kinematics in `find_pi0_candidates`
-  (`reconstruction.py:777-836`). It emits mass, opening angle, energy
+  has only raw π⁰ kinematics in `find_pi0_candidates` (`reconstruction.py:777-836`). It emits mass, opening angle, energy
   sums, lead-glass fraction, and the strict `passes_selection` flag,
   but no fitted four-vector, covariance, `fit_chi2`, or `fit_ndf`.
 - **Decision rule (target):** for every candidate selected for fit,
