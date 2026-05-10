@@ -186,6 +186,78 @@ rows fail closed to `_HP`.
    the required production tag for that row; otherwise carry the
    HP/non-HP delta as a plan-45 model systematic.
 
+## 2.2 Wave 6 derivation — EM, decay, and optical constructors
+
+### Physics derivation
+
+**What is physically measured.** The non-hadronic constructors map
+charged and neutral final-state particles into electromagnetic showers,
+decay daughters, optical photons, and delayed radioactive products. The
+load-bearing measured quantities are lead-glass/scintillator energy
+deposits, photon-conversion rates, π⁰/η decay photon kinematics,
+scintillation/Cerenkov photon yields, and any activation or delayed
+decay products that can enter background rows.
+
+**Estimator rationale.** `G4EmStandardPhysics_option4` is the precision
+Geant4 EM configuration for low-energy electrons, positrons, and
+photons, so it is the correct default for photon conversion,
+calorimeter showering, and scintillator/lead-glass energy response
+`\cite{bagulya2017recent,ParticleDataGroup:2024RPP}`.
+`G4DecayPhysics` and `G4RadioactiveDecayPhysics` are required because
+the annihilation final state contains unstable mesons and neutron
+capture/activation products. `G4OpticalPhysics` is required for
+optical-mode calibration and photon-yield closure, but fast-mode rows
+must remain explicit when optical transport is disabled or zero-yield.
+
+**Statistical character.** EM and decay processes are high-statistics
+for signal rows, so small model or material-constant biases can dominate
+over counting variance. Optical photon transport can add large
+per-event variance and CPU cost; if the optical material table is
+disabled, fast-mode photon-equivalent output is a different estimator
+and cannot be silently treated as optical closure.
+
+### Logic gaps
+
+- **`option4` vs `em_opt0`.** Grounding: §1 observes `option4` in the
+  source and §3 defines `em_opt0` as a planned systematic. `OPEN:` run
+  paired single-gamma and π⁰ samples to quantify conversion fraction,
+  lead-glass energy, and shower-shape deltas before `em_opt0` is used
+  in plan 45; target resolution date 2026-06-22.
+- **Optical physics constants.** Grounding: plan 18 records fast-mode
+  scintillator yield and disabled optical yield. `OPEN:` restore or
+  replace source-backed scintillation/Cerenkov/WLS constants before any
+  optical-mode thesis row is marked reproduced; target resolution date
+  2026-06-15.
+- **Celeritas EM equivalence tolerances (1% event EM eDep and 5% block
+  eDep).** Grounding: §5 paired-sample closure. `OPEN:` derive these
+  tolerances from plan-18 calorimeter/scintillator calibration budgets
+  before promoting a Celeritas-on sample; target resolution date
+  2026-06-22.
+- **Decay tables and radioactive products.** Grounding:
+  `G4DecayPhysics` and `G4RadioactiveDecayPhysics` are registered but
+  no row-specific delayed-activity closure exists. `OPEN:` add a
+  capture/activation diagnostic row once plan 22 source-backed neutron
+  samples exist; target resolution date 2026-06-29.
+- **Optical CPU/statistical variance.** Grounding: §2 `_HP` already
+  separates CPU-expensive physics by sample class. `OPEN:` define
+  optical-mode event counts and seed binding in plan 04/23 before using
+  optical photon statistics as a thesis equality claim; target
+  resolution date 2026-06-29.
+
+### Closure test for the derivation
+
+1. Run paired `nominal` and `em_opt0` samples for a single-gamma scan
+   and a π⁰ calibration sample; compare conversion probability,
+   reconstructed photon energy, shower shape, and total EM eDep.
+2. Run paired fast-mode and optical-enabled scintillator/lead-glass
+   calibration samples once optical constants are source-backed; compare
+   photons-per-MeV, energy linearity, and timing.
+3. For decay/activation, use a neutron-capture sample to count delayed
+   gamma and radioactive-decay products by isotope/material.
+4. Record all deltas as plan-47 artifacts and route material/constant
+   failures to plans 15, 18, 22, and 45 rather than changing event
+   selections.
+
 ## 3. Alternative physics lists (model systematics)
 
 For systematic comparison, the audit registers these alternatives:
