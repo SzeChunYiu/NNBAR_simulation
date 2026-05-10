@@ -27,8 +27,9 @@ factorisation reveals where loss occurs.
 ## 1. Factorisation
 
 **Verified CLI surface (A+ gate, 2026-05-10).** The live L3
-worktree exposes `summarize`, `scan-pid`, `response-matrix`, and
-`validate-reco` under `python -m nnbar_reconstruction.cli --help`;
+worktree exposes `summarize`, `scan-pid`, `response-matrix`,
+`cutflow`, and `validate-reco` under
+`python -m nnbar_reconstruction.cli --help`;
 `summarize --help` supports `--all-runs`, `--tables-dir`,
 `--table`, `--bootstrap`, and `--json`.
 It does not expose signal-efficiency commands yet, so those steps below
@@ -183,14 +184,18 @@ headline signal efficiency.
 ## 4. Software handoff and blocker contract
 
 The verified live CLI can build the reconstruction tables consumed by
-this plan, and the current statistics support includes
+this plan, can verify the selection-factor cut-flow support with
+`cutflow` (`cli.py:254-263`), and the current statistics support includes
 `jackknife_efficiency` (`statistics/jackknife.py:31-89`) for the
 plan-04 block-jackknife uncertainty. That helper is regression covered
 by `test_jackknife_efficiency_uses_plan_04_block_size`
-(`tests/test_statistics.py:41-54`). The live software still does not
+(`tests/test_statistics.py:41-54`), while the cut-flow CLI is covered by
+`test_cutflow_cli_reads_events_csv` (`tests/test_selection.py:103-119`).
+The live software still does not
 expose the inclusive or by-channel signal-efficiency producers. Until
 those producers have help-verified surfaces, this plan's runnable steps
-stop at table production, jackknife support, and manifest assertions.
+stop at table production, cut-flow support, jackknife support, and
+manifest assertions.
 
 L3/software handoff requirements:
 
