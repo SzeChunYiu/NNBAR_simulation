@@ -14,7 +14,7 @@ This split file holds the Wave 6 V.4 scientific derivation for plan 30.
 It is separate from `30_subsystem_vertex.md` only to keep the parent plan
 under the 500-line cap; the parent still owns V.3-V.5 fixture integration.
 
-## 1. V.4 physics derivation
+## 1. V.4 Physics derivation
 
 - **What is physically measured:** V.4 measures the event-level reconstructed
   annihilation vertex coordinate by combining valid V.3 foil-plane projection
@@ -35,7 +35,7 @@ under the 500-line cap; the parent still owns V.3-V.5 fixture integration.
   (`nnbar_reconstruction/vertex_reco.py:150-154`) is currently empirical and
   must be replaced or calibrated before precision pull claims.
 
-## 2. V.4 logic gaps
+## 2. V.4 Logic gaps
 
 1. **Projection multiplicity:** OPEN: compare `n_tracks_used >= 1` reproduction
    mode against a physics-motivated `n_tracks_used >= 2` gate and N>=3 robust
@@ -54,7 +54,7 @@ under the 500-line cap; the parent still owns V.3-V.5 fixture integration.
    residuals so single-track or nearly collinear events cannot report zero
    uncertainty; target resolution date 2026-05-31.
 
-## 3. V.4 closure test for the derivation
+## 3. V.4 Closure test for the derivation
 
 1. Run `aggregate_event_vertices` on frozen V.3 projection rows for
    `sig_foil_v3`, with truth vertices, `Track_ID`, particle names, and truth
