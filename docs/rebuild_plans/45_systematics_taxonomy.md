@@ -48,12 +48,24 @@ frozen; otherwise they default to independent.
 
 A nuisance is fully correlated with itself, fully anti-correlated
 with its inverse, and otherwise nominally uncorrelated. Special
-cases:
+cases are seeded from the §1 flags:
 
-- N1 (W-value) and N4 (physics list) are slightly correlated through
-  shared ionisation modelling — fix coefficient empirically from
-  paired runs.
-- N5 (signal branching) and N6/N7 (background flux) are uncorrelated.
+| Pair / group | Initial correlation | How it is frozen |
+|---|---:|---|
+| same nuisance varied up/down | -1.0 | analytic by construction |
+| same correlation flag, e.g. N2/N3/N9 `calorimeter_energy` | `rho_measured` | paired toy/reconstruction runs; default 0 until measured |
+| N1/N4 ionisation-model overlap | `rho_measured` | paired W-value and physics-list variation |
+| N5 signal branching vs N6/N7 background fluxes | 0.0 | independent source models |
+| N8 geometry vs N10 material budget | `rho_measured` | geometry/material paired scenario envelope |
+| no shared flag and no listed exception | 0.0 | default independence |
+
+DEC stubs:
+
+| DEC id | Convention to sign | Default |
+|---|---|---|
+| `DEC-45-CORRELATION-SEED` | initial correlation policy before paired runs exist | self = +1, up/down = -1, unshared pairs = 0 |
+| `DEC-45-CALIBRATION-GROUPING` | whether N2/N3/N9 share the `calorimeter_energy` group | group them and require paired runs before final covariance |
+| `DEC-45-GEOMETRY-MATERIAL-GROUPING` | whether N8/N10 are correlated | treat as measured-only correlation, default 0 |
 
 ## 3. Single-source rule
 
