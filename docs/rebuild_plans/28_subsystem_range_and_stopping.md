@@ -63,15 +63,22 @@ Leaf C.3 — range and stopping observables
 |---|---|
 | C.1 charged-candidate table; V.2 direction table; C.4 matched scintillator hit columns `Event_ID`, `x`, `y`, `z`, `t`, `eDep`, `photons`, `module_ID`, `vol_name`, `step_info`; scintillator geometry side-car | `Name`, `Track_ID`, `Parent_ID`, `origin_vol_name`, `particle_x`, `particle_y`, `particle_z` |
 
-Current implementation citation: `reconstruct_charged_objects`
+Legacy implementation citation: `reconstruct_charged_objects`
 (`charged.py:149-228`, plan 08 §3.4) reports
 `scintillator_range` after matching hits by angular/distance cuts or,
 for sparse legacy tables, exact `Track_ID` fallback. The fallback is
-not a production C.3 rule.
+not a production C.3 rule. The live Stage E.1 hook is
+`reconstruct_range_table` (`range_reco.py:78-107`), which consumes V.1
+candidates, V.2 fit rows, and Class A scintillator hits, then delegates
+projection and Bragg-position extraction to `_range_row`
+(`range_reco.py:41-75`) or `_invalid_row` (`range_reco.py:28-38`) when
+inputs cannot support a range.
 
 Output schema: `{event_id, charged_candidate_id, range_cm,
 range_edep_mev, n_scintillator_hits, last_hit_module_id,
-bragg_peak_position_cm, range_valid}`.
+bragg_peak_position_cm, range_valid}`. The current live hook emits this
+physics schema; §4 quality, edge, and association-method columns remain
+explicit L3 follow-up gates before closure sign-off.
 
 ### 1.3 Machine-readable C.3 range fixture
 
@@ -166,22 +173,31 @@ plan 05 approval and a plan 38 C.3/C.5 ladder delta.
 
 ## 5. Stage E.1 implementation handoff
 
-For L3's charged-side redesign, this plan needs C.3 to be a typed module
-with a stable seam:
+For L3's charged-side redesign, C.3 is now a typed range seam with
+explicit remaining gates:
 
 1. Inputs are C.1 charged candidates, V.2 direction/covariance rows,
-   Class A scintillator hits, and the plan 60 geometry side-car.
-2. The production association path is angular/distance or projected
-   path-length matching; exact `Track_ID` is retained only under an
-   explicitly named diagnostic mode.
-3. The module writes both the physics observables in §1 and the quality
-   fields in §4 in one row per charged candidate.
+   Class A scintillator hits, and the plan 60 geometry side-car. The
+   live hook currently uses V.2 direction rows and all event-scoped
+   scintillator hits; it must add geometry edge distances once plan 60's
+   side-car is implemented.
+2. The production association path is projected path-length matching;
+   exact `Track_ID` is retained only under an explicitly named diagnostic
+   mode.
+3. The module writes §1 physics observables in one row per charged
+   candidate. L3 still must add `range_id`, `association_method`,
+   `range_quality_state`, `range_failure_reason`,
+   `scintillator_edge_distance_mm`, `scintillator_profile_bin`, and the
+   associated-hit sidecar before plan 40/45 closure can treat C.3 as
+   complete.
 4. The closure runner compares range and Bragg position only after the
    output table is frozen, with truth path length held in a validation
    namespace.
 5. Plan 29 consumes only `range_cm`, `range_edep_mev`,
    `bragg_peak_position_cm`, and `range_valid` unless a later DEC
    promotes a quality field into PID.
+6. Plan 66 consumes range quality, edge-distance, and association-method
+   fractions once the §4 fields are present.
 
 ## 6. Acceptance criteria
 
