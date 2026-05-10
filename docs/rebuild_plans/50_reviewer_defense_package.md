@@ -66,6 +66,12 @@ defence:
     pull_mean: 0.02
     pull_width: 1.05
     closure_chi2_dof: 1.1
+  l1_review_evidence:
+    overlay_rollup: <path or package key>
+    rerun_manifest: <path-or-null>
+    rerun_transcript: <path-or-null>
+    command_template_ids: [validate_reco_cutflow_v1]
+    staleness_status: current | stale | blocked
 ```
 
 ## 2. Mapping reviewer questions to blocks
@@ -246,6 +252,8 @@ The generator joins ledger rows × dataset manifests × ladder matrices
 - Ready L1 packages include plan-52 rerun manifest, transcript, and
   command-template registry links when refreshed artifacts are claimed.
 - Ready L1 packages carry a current §2.4 staleness summary.
+- The package schema exposes `l1_review_evidence` links for overlays,
+  rerun artifacts, command templates, and staleness status.
 - §3 generation automated.
 
 ## 5. Dependencies
