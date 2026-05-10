@@ -43,6 +43,21 @@ pass_invariant_mass → pass_sphericity → pass_scintillator_balance`.
 | S.5 | 6 | `upper_scintillator_edep`, `lower_scintillator_edep` | `pass_scintillator_balance` | upper `≤ 320 MeV` and lower `≤ 930 MeV` | licentiate Ch 10 cut-flow | config `selection_upper/lower_scintillator_max` (`reconstruction.py:46–47`); flag at `1589–1592` |
 | S.6 | — | all S.1–S.5 booleans | `passes_preliminary_selection` | logical AND of the six cut booleans | licentiate Ch 10 final preselection | AND at `reconstruction.py:1593–1600`; cumulative report in `cli._cutflow` |
 
+### 1.1 Per-cut and cumulative accounting
+
+The event table stores the six `pass_*` columns as independent cut
+flags plus `passes_preliminary_selection` as their logical AND. The
+CLI `_cutflow` report is cumulative in the order above. Plan 47 rows
+must therefore store both:
+
+- `n_pass_individual_<cut>` — count passing that cut alone; and
+- `n_after_<cut>` — count passing all cuts up to that CLI step.
+
+The Ch 10 reproduction claim uses the cumulative counts. N-1 / ROC
+studies in plan 41 use the independent flags and may propose
+retuned thresholds, but those retuned thresholds require a plan-05
+DEC entry and must not overwrite the Ch 10 baseline columns.
+
 Truth-use boundary: S.1–S.6 consume only event-variable columns. Any
 truth/provenance dependence must be resolved upstream before the row is
 eligible for the reproduction ledger.
