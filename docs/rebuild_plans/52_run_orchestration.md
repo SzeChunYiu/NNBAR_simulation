@@ -296,7 +296,7 @@ is consumed by plan 53's command-template CI check.
   same plan-51 owner sign-off refs as the plan-50 defence package.
 - Rerun manifests/transcripts that support thesis-facing notes carry the
   same review-evidence links and review-artifact hashes used by plans
-  50, 51, 53, 55, and 56.
+  50, 51, 53, 54, 55, and 56.
 
 ## 7. Dependencies
 
