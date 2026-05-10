@@ -94,10 +94,11 @@ asks for reproduction.
 
 A defence rerun manifest stores the dataset ids, run indices, seed
 formula version, source hashes, produced artifact hashes, and the plan-50
-overlay ids refreshed by the rerun. If one member is not yet implementable
-(for example, no Lambda-enriched slice exists), the manifest keeps a
-blocked row with the missing input named rather than silently omitting the
-question.
+overlay ids refreshed by the rerun. It also carries the plan-51 owner
+sign-off reference when a rerun is used to answer or close a reviewer
+question. If one member is not yet implementable (for example, no
+Lambda-enriched slice exists), the manifest keeps a blocked row with the
+missing input named rather than silently omitting the question.
 
 
 ### 4.1 Defence rerun manifest fixture
@@ -112,10 +113,12 @@ those samples.
 l1_defence_rerun_manifest:
   manifest_version: 1
   requested_by: reviewer-question-id
+  request_owner: L1-owner-or-methodology-council
   seed_formula: sha256(dataset_id || run_index || "simulation")[:8]
   rows:
     - bundle_member: EM chain closure
       status: ready | blocked
+      owner_signoff_ref: RQ-L1-EM-P1-CLUSTERING:<owner-hash-or-null>
       required_inputs:
         - dataset_id: cal_singlegamma_v1
           run_indices: [0, 1, 2]
@@ -139,6 +142,7 @@ Manifest review rules:
 | every blocked row names the missing input | unavailable samples are hidden as silent skips |
 | overlay ids point back to plan 50 | rerun evidence is disconnected from the defence package |
 | seed formula matches §2 exactly | reviewer rerun is not bitwise reproducible |
+| answered or closed reviewer questions carry an owner sign-off ref | rerun evidence closes a question without accountable approval |
 
 The CI check in plan 53 consumes this fixture shape. A weekly failure is
 acceptable only when the blocked row names an upstream owner and the
@@ -170,6 +174,7 @@ l1_defence_rerun_transcript:
       finished_at: <timestamp>
       exit_status: pass | fail | blocked
       verifier_summary: <short status or blocker>
+      owner_signoff_ref: RQ-L1-SELECTION-CUTFLOW:<owner-hash-or-null>
 ```
 
 Transcript review rules:
@@ -182,6 +187,7 @@ Transcript review rules:
 | failed rows keep verifier summaries | rerun failures are hidden as missing artifacts |
 | blocked rows preserve the upstream owner | reviewer-triggered rerun becomes an unowned deferral |
 | host class and environment lock are recorded | local, LUNARC, and container reruns cannot be compared |
+| transcript owner sign-off refs match the manifest and plan 51 | execution evidence is promoted under a different approval than the request |
 
 A rerun is promotable only when every `ready` row in §4.1 has a
 matching transcript row with `exit_status: pass`. Blocked rows remain
@@ -267,6 +273,8 @@ is consumed by plan 53's command-template CI check.
 - Transcript rows use a §4.3 command template with verifier hash evidence
   for verified CLI surface or an explicit blocked template.
 - Executable L1 command templates carry the §4.4 verifier transcript.
+- Rerun manifests/transcripts that close reviewer questions carry the
+  same plan-51 owner sign-off refs as the plan-50 defence package.
 
 ## 7. Dependencies
 
