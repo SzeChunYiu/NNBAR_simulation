@@ -6,7 +6,7 @@ status: draft
 owner: Physics Modeling
 depends_on: [00_README, 04_statistical_uncertainty, 07_simulation_atomic_walkthrough]
 inputs:
-  - {path: NNBAR_Detector/src/core/PhysicsList.cc, schema: current physics list source}
+  - {path: NNBAR_Detector/src/PhysicsList.cc, schema: current physics list source}
 outputs:
   - {path: docs/rebuild_plans/12_physics_list_audit.md, schema: this file}
   - {path: data/registry/physics_list/<tag>.yml, schema: per-list configuration record}
@@ -18,7 +18,7 @@ risks:
   - {risk: FTFP_BERT (no _HP) misses low-energy neutron transport, mitigation: §4 cosmic-neutron and beam-neutron studies use FTFP_BERT_HP variant; result delta is a systematic in plan 45}
   - {risk: Celeritas + non-Celeritas EM physics quietly differ, mitigation: §5 paired-sample closure test}
 estimated_effort: M
-last_updated: 2026-05-09
+last_updated: 2026-05-10
 ---
 
 # Geant4 physics-list audit
@@ -31,23 +31,30 @@ inheriting the default.
 
 ## 1. Current configuration
 
-Source: `NNBAR_Detector/src/core/PhysicsList.cc` (plan 07 §4). Verbatim
-constructor list (lines 71–93):
+Source: `NNBAR_Detector/src/PhysicsList.cc` (plan 07 §4), verified in
+the L3 worktree at `src/PhysicsList.cc`. Verbatim constructor list
+from `PhysicsList::PhysicsList()` lines 59–79:
 
 | Constructor | Purpose | Justification + citation |
 |---|---|---|
-| `G4EmStandardPhysics_option4` (or `G4EmStandardPhysics` if Celeritas active) | EM transport for e±, γ, and charged ions | `option4` is the precision EM configuration used when CPU Geant4 owns EM showers; it is appropriate for lead-glass/scintillator energy response because it enables the more detailed EM model choices documented by the Geant4 EM manual and LHC EM-validation updates (`bagulya2017recent`). The fallback to base `G4EmStandardPhysics` is only the Celeritas-compatibility path and must be covered by §5 closure. |
+| `G4EmStandardPhysics_option4` (line 59) | EM transport for e±, γ, and charged ions | `option4` is the precision EM configuration used when CPU Geant4 owns EM showers; it is appropriate for lead-glass/scintillator energy response because it enables the more detailed EM model choices documented by the Geant4 EM manual and LHC EM-validation updates `\cite{bagulya2017recent}`. No current `src/PhysicsList.cc` line registers base `G4EmStandardPhysics`; the `em_opt0` variant in §3 is therefore a planned systematic, not a source-observed Celeritas fallback. |
 | `G4DecayPhysics` | Decays of unstable particles | Required because signal final states contain π⁰/π±, kaons, eta/omega/rho daughters, and muons. The Geant4 Physics Reference Manual decay chapter defines the standard decay-process registration used here. |
 | `G4HadronElasticPhysics` | Elastic hadron scattering | Needed as a separate constructor so low-energy pions, protons, neutrons, and nuclear fragments scatter elastically in material before depositing energy; Geant4's hadronic manual treats elastic and inelastic processes as distinct components. |
-| `G4HadronPhysicsFTFP_BERT` (line 86) | Hadronic inelastic interactions | Provides FTFP string fragmentation at high energy and Bertini intranuclear cascade at lower energy. This matches the signal's multi-hadron annihilation/transport needs and the cosmic/beam hadronic tail; cite Fritiof/Lund model papers (`Andersson:1986gw`, `Nilsson-Almqvist:1986ast`), QGS/string context (`Kaidalov:1983ew`), and Bertini validation (`Wright:2015xia`). The `_HP` variant is discussed in §2. |
+| `G4HadronPhysicsFTFP_BERT` (line 63) | Hadronic inelastic interactions | Provides FTFP string fragmentation at high energy and Bertini intranuclear cascade at lower energy. This matches the signal's multi-hadron annihilation/transport needs and the cosmic/beam hadronic tail; cite Fritiof/Lund model papers `\cite{Andersson:1986gw,Nilsson-Almqvist:1986ast}`, QGS/string context `\cite{Kaidalov:1983ew}`, and Bertini validation `\cite{Wright:2015xia}`. The `_HP` variant is discussed in §2. |
 | `G4StoppingPhysics` | Stopped-particle absorption/annihilation | Required for stopped negative hadrons and antinucleons, including the antineutron-at-rest signal topology. The Geant4 hadronic/stopping manual covers capture and annihilation at rest, while plan 13 supplies the signal-model bibliography. |
 | `G4IonPhysics` | Ion and light-fragment interactions | Needed because antineutron annihilation and neutron captures can create deuterons, alphas, and heavier nuclear fragments that transport through the detector; Geant4's ion physics manual defines the light-ion process set. |
 | `G4NeutronTrackingCut` | Time/energy control for neutrons | Bounds CPU cost from long-lived thermal neutrons while preserving explicit tracking until the configured cut; this constructor is documented in the Geant4 hadronic neutron-transport guidance. Any cut value becomes a plan-03/12 build parameter for neutron-background samples. |
 | `G4RadioactiveDecayPhysics` | Decays of radioactive isotopes | Needed for activation/capture products in shielding and material studies even if not part of the first thesis-rate quote. The Geant4 Radioactive Decay manual is the governing citation. |
-| `G4StepLimiterPhysics` | User step-limiter support | Enables `G4UserLimits` on logical volumes, which is required for reproducible tracking granularity near thin targets, TPC segmentation, and detector boundaries. The Geant4 tracking/user-limits manual is the governing citation. |
-| `G4OpticalPhysics` (gated by `WITH_SCINTILLATION` and not Celeritas) | Optical photons from Cerenkov/scintillation/WLS | Required for optical-mode intercalibration and for Ch5 lead-glass/scintillator photon-yield figures. The Geant4 optical-photon manual covers Cerenkov, scintillation, WLS, and boundary processes; Celeritas-off runs must be used because optical photons are not registered in the active Celeritas path. |
+| `G4OpticalPhysics` (lines 71–79) | Optical photons from Cerenkov/scintillation/WLS | Required for optical-mode intercalibration and for Ch5 lead-glass/scintillator photon-yield figures. The Geant4 optical-photon manual covers Cerenkov, scintillation, WLS, and boundary processes. |
 
-PAI ionisation model is *available* but not invoked (lines 196–235);
+No `G4StepLimiterPhysics` registration is present in the verified
+constructor block, so this plan no longer counts it as a registered
+constructor. If user limits become required, they need a source change
+and a separate DEC entry before plan 12 can cite them.
+
+PAI ionisation model is *available* but not invoked (helper definitions
+at lines 134–173; the `AddPAIModel("pai")` call is commented out at
+line 68);
 plan 27 dE/dx audit decides whether to enable it for the TPC region.
 
 Production cuts (plan 07 §3.4): 1 keV–10 TeV; default cut value
@@ -55,7 +62,8 @@ Production cuts (plan 07 §3.4): 1 keV–10 TeV; default cut value
 
 ## 2. The `_HP` decision
 
-Comment at `PhysicsList.cc:86`: *"_HP will slow down a lot"*. The
+The source comment beside the line-63 registration says
+*"_HP will slow down a lot"*. The
 non-HP `G4HadronPhysicsFTFP_BERT` does not use the High-Precision
 neutron data (`G4NDL`) for `E < 20 MeV`. Consequences:
 
@@ -100,7 +108,7 @@ For systematic comparison, the audit registers these alternatives:
 | `nominal_hp` | Same with `G4HadronPhysicsFTFP_BERT_HP` | Cosmic + beam neutron baseline |
 | `qgsp_bert` | `G4HadronPhysicsQGSP_BERT_HP` instead of FTFP | Hadronic-model systematic (plan 45) |
 | `qgsp_bic` | `G4HadronPhysicsQGSP_BIC_HP` | Alternative cascade model |
-| `em_opt0` | `G4EmStandardPhysics` (no option4) | EM systematic; same as Celeritas-on path |
+| `em_opt0` | `G4EmStandardPhysics` (no option4) | Planned EM systematic; no source-observed Celeritas fallback is currently registered in `src/PhysicsList.cc`. |
 
 Plan 45 (systematics taxonomy) names how these alternatives propagate
 into final analysis numbers. Plan 47 (ledger) records which
@@ -128,10 +136,11 @@ alternative weighting is applied.
 
 ## 5. Celeritas EM closure
 
-When `WITH_CELERITAS=ON`:
+When a `WITH_CELERITAS=ON` build path exists:
 
-- The EM constructor switches from `option4` to base
-  `G4EmStandardPhysics` (§1).
+- The EM constructor must be line-cited before use. The 2026-05-10
+  source audit only finds `G4EmStandardPhysics_option4` in
+  `src/PhysicsList.cc`.
 - GPU-tracked e±/γ deposits flow into `GPUEnergy_output_*.parquet`
   (plan 09 §12) instead of the CPU SDs.
 
@@ -185,9 +194,9 @@ thesis-quoted samples until reconciled.
   hadronic elastic/inelastic, stopping, ion, neutron tracking-cut,
   radioactive-decay, optical-photon, and user-limits chapters.
 - `G4HadronPhysicsFTFP_BERT[_HP]` source headers.
-- `Andersson:1986gw`; `Nilsson-Almqvist:1986ast`; `Kaidalov:1983ew`
+- `\cite{Andersson:1986gw,Nilsson-Almqvist:1986ast,Kaidalov:1983ew}`
   for the Fritiof/string-model side of FTFP.
-- `Wright:2015xia` / `wright2015geant4` for Bertini-cascade validation.
-- `bagulya2017recent` for Geant4 EM physics validation updates.
+- `\cite{Wright:2015xia,wright2015geant4}` for Bertini-cascade validation.
+- `\cite{bagulya2017recent}` for Geant4 EM physics validation updates.
 - KEK / Brookhaven n̄p cross-section measurements and antineutron
   model papers cited verbatim in plan 13.
