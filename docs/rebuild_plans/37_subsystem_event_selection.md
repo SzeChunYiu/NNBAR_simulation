@@ -215,6 +215,20 @@ The scan fixture is rejected if it uses a variable outside the §1
 selection contract or if the objective cannot be recomputed from saved
 signal/background curves.
 
+Required scan row-key inventory:
+
+| `scan_artifact_id` | `variable_name` | `masked_cut_column` | Required row purpose | Acceptance guard |
+|---|---|---|---|---|
+| `scan_s1_scintillator_edep` | `scintillator_edep` | `pass_scintillator_energy` | retune total scintillator-energy window | stores both low/high threshold grids |
+| `scan_s3_visible_mass` | `visible_invariant_mass` | `pass_invariant_mass` | retune visible-mass lower bound | objective curve names the plan-46 method |
+| `scan_s4_sphericity` | `sphericity` | `pass_sphericity` | retune event-shape threshold | signal/background curves include plan-04 intervals |
+| `scan_s5_upper_scintillator` | `upper_scintillator_edep` | `pass_scintillator_balance` | retune upper scintillator-balance bound | paired with lower-bound scan before handoff |
+| `scan_s5_lower_scintillator` | `lower_scintillator_edep` | `pass_scintillator_balance` | retune lower scintillator-balance bound | paired with upper-bound scan before handoff |
+| `scan_s6_candidate_score` | `candidate_selection_score` | null | score-threshold scan for BDT/NN replacement | diagnostic until plan-57 feature freeze exists |
+
+The inventory defines required scan artifacts only; promotion still
+requires a §3.2 handoff row, held-out result, and DEC approval.
+
 ### 3.2 Machine-readable optimisation handoff fixture
 
 Plan 41 may propose thresholds or an S.6 replacement, but plan 37 owns
