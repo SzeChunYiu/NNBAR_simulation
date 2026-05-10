@@ -110,7 +110,30 @@ Leaf V.2: track candidates → fitted track directions
   allowed truth use: validation_only
   downstream consumers: V.3, V.4, C.2, C.4; plans 26, 27, 29, 30
 
-Leaves V.3–V.5 follow the same pattern (populated by plan 30).
+Leaf V.3: fitted track directions → foil-plane projections
+  inputs (Class A): V.2 direction table
+                    (event_id, candidate_id, anchor_xyz,
+                     direction_xyz, direction_covariance, chi2_ndf)
+                    plus the foil-plane definition from plan 16
+  forbidden (Class B): Track_ID, Parent_ID, Name, origin_vol_name,
+                       particle_x, particle_y, particle_z, Vx, Vy, Vz
+                       from truth-primary or interaction tables
+  decision rule: intersect the track ray
+                 `anchor_xyz + λ direction_xyz` with the nominal
+                 foil plane (`z = 0` in the current baseline from
+                 plan 08 §3.3); mark the projection invalid instead
+                 of substituting truth when direction_z is zero,
+                 non-finite, or the input candidate is below the
+                 V.2 quality gate.
+  output schema: {event_id: int64, candidate_id: int64,
+                  projection_xyz: float64[3],
+                  projection_covariance: float64[3,3],
+                  projection_valid: bool, skipped_reason: string,
+                  source_chi2_ndf: float64}
+  allowed truth use: validation_only
+  downstream consumers: V.4, V.5; plan 30
+
+Leaves V.4–V.5 follow the same pattern (populated by plan 30).
 
 ### Next measurement (vertex branch)
 
