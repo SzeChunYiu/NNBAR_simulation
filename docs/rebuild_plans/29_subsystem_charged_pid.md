@@ -116,6 +116,54 @@ charged_candidate_id, rule_version)`. A production PID fixture is valid
 only if C.2 and C.3 fixture hashes match the dE/dx and range inputs
 used to compute the C.5 row.
 
+### 1.5 C.1 Physics derivation
+
+- **What is physically measured:** C.1 measures the existence of a charged
+  reconstruction candidate: a detector-only TPC track object with enough
+  quality, containment, and downstream feature support to enter C.2/C.3/C.5.
+  Truth species and legacy `Track_ID` values are validation labels only.
+- **Estimator rationale:** coherent TPC ionisation tracks are the detector
+  signature of charged particles. Requiring V.1 membership, V.2 direction
+  quality, and geometry containment is therefore the Class-A estimator for a
+  charged candidate; TPC and tracking practice are covered by Rubbia/ALICE, and
+  charged-particle interaction context by PDG
+  \cite{rubbia1977liquid,alice2014performance,ParticleDataGroup:2024RPP}.
+- **Statistical character:** the principal bias is a truth-name gate that
+  removes difficult candidates before production scoring. Once removed,
+  inefficiency is driven by sparse/edge tracks and fake rate by conversions or
+  neutral artefacts; C.6 must reject those with reconstructed observables.
+- **Citation:** the cited keys above were checked against
+  `/Users/billy/Desktop/projects/overleaf-hibeam-thesis/ref.bib` on
+  2026-05-10.
+
+### 1.6 C.1 Logic gaps
+
+1. **Minimum hit count / direction-quality cut:** OPEN: derive from V.1/V.2
+   closure by scanning charged-candidate efficiency, fake rate, and downstream
+   C.2/C.3 validity; target resolution date 2026-05-24.
+2. **Track-quality scalar:** OPEN: choose between `chi2_seed`, `chi2_ndf`, and
+   covariance validity once plan 26 emits the full quality contract; target
+   resolution date 2026-05-24.
+3. **Containment and edge state:** OPEN: consume plan-60 fiducial states and
+   define when edge candidates are `warn` versus `fail`; target resolution date
+   2026-05-31.
+4. **EM/neutral rejection boundary:** OPEN: decide which reconstructed
+   lead-glass/topology flags stay in C.6 and which may block C.1 promotion;
+   target resolution date 2026-06-07.
+5. **Legacy `Name` gate removal:** derived from plan 01 Class-B rules; no
+   production candidate filter may depend on truth species labels.
+
+### 1.7 C.1 Closure test for the derivation
+
+1. Build C.1 candidate rows from V.1/V.2 rows after dropping `Name`, `Track_ID`,
+   `Parent_ID`, `origin_vol_name`, and truth momentum columns.
+2. Persist candidate validity and failure reasons before any truth-label join.
+3. In a `validation_only` scorer, compute charged-candidate efficiency and fake
+   rate by particle category, edge state, and V.2 quality state.
+4. The derivation passes when production C.1 rows are byte-identical with and
+   without Class-B columns, and all non-promoted rows cite a detector-quality or
+   geometry reason rather than a species-name rule.
+
 ## 2. Cut-based baseline (current code)
 
 `/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/charged.py`
