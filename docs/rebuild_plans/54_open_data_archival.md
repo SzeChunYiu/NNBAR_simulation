@@ -110,6 +110,24 @@ l1_defence_inventory:
       note_annex_hash: sha256:<hash-or-null>
       glossary_audit_hash: sha256:<hash-or-null>
       archive_drill_hash: sha256:<hash-or-null>
+    - pack_member: strange_v0
+      source_plans: [14, 22, 44, 50, 51, 52, 55, 59]
+      artifact_paths:
+        - output/defense/<row_id>.yml
+        - output/strange_baryon/<study_id>/v0_candidates.parquet
+      artifact_hashes:
+        - sha256:<hash-or-null>
+      status: present | blocked | stale
+      caveat: <required until Lambda-enriched closure is present>
+      staleness_summary_hash: sha256:<hash-or-null>
+      owner_signoff_refs: [RQ-L1-STRANGE-BARYON:<owner-hash-or-null>]
+      command_template_ids: [blocked_missing_input_v1]
+      command_template_verifier_hashes: []
+      command_template_verifier_sources: []
+      ci_report_hash: sha256:<hash-or-null>
+      note_annex_hash: sha256:<hash-or-null>
+      glossary_audit_hash: sha256:<hash-or-null>
+      archive_drill_hash: sha256:<hash-or-null>
     - pack_member: unbounded_caveats
       source_plans: [1, 45, 50, 51, 55, 56]
       artifact_paths:
