@@ -23,7 +23,23 @@ last_invented: 2026-05-09
 C.6 (rejection). Combines dE/dx (plan 27) and range (plan 28) into
 a per-track classification.
 
-## 1. Cut-based baseline (current code)
+## 1. Leaf input/output schemas
+
+Per plan 24 C.1 / C.5 / C.6 schemas:
+
+| Leaf | Class A inputs | Forbidden Class B | Output schema |
+|---|---|---|---|
+| C.1 charged candidate | V.1/V.2 track tables; TPC `Event_ID`, `x`, `y`, `z`, `t`, `eDep`, `photons`, `px`, `py`, `pz`, `xHitID`, `module_ID`, `step_info`, `vol_name` | `Name`, `Track_ID`, `Parent_ID`, `origin_vol_name`, `particle_x/y/z` | `{event_id, charged_candidate_id, candidate_id, anchor_xyz, direction_xyz, n_tpc_hits, track_quality, charged_candidate_valid}` |
+| C.5 π/p decision | C.1 candidate table, C.2 dE/dx, C.3 range, C.4 scintillator association, PID thresholds | `Name`, `Track_ID`, `Parent_ID`, `origin_vol_name`, truth PID labels | `{event_id, charged_candidate_id, pid, proton_score, pion_score, thresholds, rule_version, pid_valid, decision_reason}` |
+| C.6 rejection | C.1-C.5 outputs, Class A lead-glass / shower-shape observables, TPC pair topology, hit timing, geometry side-cars | `Name`, `Track_ID`, `Parent_ID`, `origin_vol_name`, `Interaction`, `particle_x/y/z`, truth PID labels | `{event_id, charged_candidate_id, rejected, rejection_flags, primary_reason, pid_before_rejection, pid_after_rejection, rule_version}` |
+
+Current implementation citation: `reconstruct_charged_objects`
+(`reconstruction.py:430-700`, plan 08 §3.4) owns the current C.1/C.5
+path and emits `pid`, `dedx`, `scintillator_range`, `track_anchor`,
+and `track_direction`, with `truth_name` retained for validation only
+after the migration.
+
+## 2. Cut-based baseline (current code)
 
 `reconstruction.py` `reconstruct_charged_objects` (plan 08 §3.4):
 
@@ -42,7 +58,7 @@ proton, antiproton}` before the PID rule applies. Migration: drop
 this filter; treat any TPC track as a candidate; the PID rule plus
 EM/neutral rejection (§3) replaces the filter.
 
-## 2. Likelihood-ratio PID (target improvement)
+## 3. Likelihood-ratio PID (target improvement)
 
 Per plan 57 MVA protocol:
 
@@ -55,7 +71,7 @@ Per plan 57 MVA protocol:
 4. Score on the ladder (plan 38 leaf C.5). Improvement is reported
    as IV(C.5) reduction.
 
-## 3. EM and neutral rejection (C.6)
+## 4. EM and neutral rejection (C.6)
 
 When `Name` filter is removed (§1 migration), the candidate set
 includes:
@@ -77,21 +93,21 @@ Rejection rules:
 Each rejection is implemented in Class A: lead-glass clusters and
 TPC topology only.
 
-## 4. Acceptance criteria
+## 5. Acceptance criteria
 
-- §1 cut-based baseline reproduced.
-- §1 Name filter removed; replaced by §3 rejections.
-- §2 likelihood-ratio scored on ladder; matrix entry in plan 38.
+- §2 cut-based baseline reproduced.
+- §2 Name filter removed; replaced by §4 rejections.
+- §3 likelihood-ratio scored on ladder; matrix entry in plan 38.
 - Plan 47 ledger row "licentiate Ch 8 charged PID accuracy"
   reproduced.
 
-## 5. Risks
+## 6. Risks
 
 - *Risk:* likelihood-ratio overfits on calibration sample.
   *Mitigation:* plan 57 §3 overtraining check; final score on
   signal-sample-derived test set.
 
-## 6. Dependencies
+## 7. Dependencies
 
 - **23, 24, 27, 28, 57** — inputs.
 - *Consumed by:* plans 32 (event selection), 38 (ladder), 47.
