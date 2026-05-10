@@ -73,8 +73,8 @@ ledger result cites the affected plan.
 
 | Seed id | Anticipated question | Category | Routes to gate | Required answer artifact | Initial status |
 |---|---|---|---|---|---|
-| `RQ-L1-EM-P1-CLUSTERING` | How do we know the neutral-shower clusterer is not using truth Track_ID grouping? | realism | plans 31, 38, 50, 57 | Class-B drop hash plus P.1 closure rows | open until measured |
-| `RQ-L1-EM-P2-DISCRIMINANT` | Is the charged/neutral discriminator calibrated, or just a hard-cone reproduction rule? | method | plans 32, 38, 50, 57 | ROC/AUC bundle, threshold DEC, and calibration artifact | open until closure |
+| `RQ-L1-EM-P1-CLUSTERING` | How do we know the neutral-shower clusterer is not using truth Track_ID grouping? | realism | plans 31, 38, 50, 57 | Class-B drop hash, P.1 closure rows, and plan-33 promotion companion | open until measured |
+| `RQ-L1-EM-P2-DISCRIMINANT` | Is the charged/neutral discriminator calibrated, or just a hard-cone reproduction rule? | method | plans 32, 38, 50, 57 | ROC/AUC bundle, threshold DEC, calibration artifact, and plan-33 promotion companion | open until closure |
 | `RQ-L1-PI0-CUTS` | Are the six pi0 selection cuts decomposed into individual pass columns? | reproducibility | plans 34, 37, 47, 50 | per-cut fixture, plan-34 handoff companion, and Ch 8/Ch 10 ledger row | open until ledger/package artifact |
 | `RQ-L1-SELECTION-CUTFLOW` | Does the Ch 10 cut-flow use the current canonical singular `pass_*` columns? | reproducibility | plans 37, 47, 50 | cut-flow identity table and cumulative-count artifact | open until ledger/package artifact |
 | `RQ-L1-PILEUP-L11` | Can signal plus cosmic or beam pile-up change the quoted acceptance? | systematics | plans 01, 58, 44, 45, 50 | paired overlay closure and L11 caveat status | open until plan 58 closure |
