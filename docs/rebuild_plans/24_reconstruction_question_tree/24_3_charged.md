@@ -345,6 +345,47 @@ Leaf C.6: PID candidates + topology → rejected-candidate mask
   allowed truth use: validation_only
   downstream consumers: E.9, S.2; plans 29, 32, 36, 37
 
+#### C.6 Physics derivation
+
+- **What is physically measured:** C.6 estimates whether a charged-PID candidate
+  should be rejected from pion/proton counting because reconstructed observables
+  indicate invalid upstream state, EM-like topology, neutral artefact,
+  conversion-like pair topology, or geometry loss.
+- **Estimator rationale:** rejection is a detector-side decision boundary after
+  C.5 scoring: invalid C.1-C.5 quality states reject by construction, while
+  EM/conversion/neutral hypotheses must be inferred from lead-glass response,
+  timing, topology, and geometry rather than truth labels. PDG particle-interaction
+  summaries and TPC/PID practice motivate separating PID score from observable
+  rejection categories \cite{ParticleDataGroup:2024RPP,alice2014performance}.
+- **Statistical character:** false rejection biases signal efficiency, while
+  false acceptance contaminates pion/proton multiplicities. Robustness comes
+  from preserving `pid_before_rejection`, versioned reasons, and validation-only
+  fake-rate studies.
+- **Citation:** `ParticleDataGroup:2024RPP` and `alice2014performance` are
+  resolved in the thesis bibliography.
+
+#### C.6 Logic gaps
+
+1. **Rejection taxonomy:** OPEN: freeze the allowed observable-only reasons
+   (`invalid`, `em_like`, `neutral_like`, `conversion_like`, `geometry_loss`) in
+   the plan-29 manifest; target resolution date 2026-05-24.
+2. **EM-like thresholds:** OPEN: import plan-32 shower-shape variables and scan
+   fake rejection versus signal efficiency; target resolution date 2026-05-31.
+3. **Conversion-pair topology:** OPEN: define pair-distance and material-region
+   windows from plans 16 and 60; target resolution date 2026-06-07.
+4. **Geometry-loss rejection:** OPEN: align with plan-60 fiducial states before
+   any rejection affects signal efficiency; target resolution date 2026-05-31.
+
+#### C.6 Closure test for the derivation
+
+1. Run C.6 on frozen C.1-C.5 rows plus reconstructed lead-glass/topology/timing
+   inputs, with truth labels absent from the rejection function.
+2. In validation-only scoring, report rejection efficiency and fake rejection by
+   truth category, geometry state, and C.5 PID state.
+3. Pass when rejection rows are invariant to dropping truth labels and every
+   rejected candidate retains `pid_before_rejection` plus one observable primary
+   reason.
+
 ### Next measurement (charged branch)
 
 Per-species reconstructed efficiency on `cal_singlepion*` and
