@@ -157,6 +157,54 @@ This map is the implementation checklist: a future code row may add target
 columns before DEC approval, but plan-37 may not consume new E.6 or
 fit-aware E.7 fields until the relevant §5.2 DEC is signed.
 
+### 2.5 Physics derivation for E.1-E.9
+
+#### Physics derivation
+
+E.1-E.9 physically estimate event-level energy flow, topology, timing,
+visible mass, and object multiplicity from reconstructed Class-A
+objects. The truth-side quantities are the visible final-state
+four-vectors and detector energy deposits; the production estimator sees
+only calibrated hit sums, reconstructed object four-vectors, timing
+annotations, and object-count rows. Energy sums and visible invariant
+mass follow directly from calorimeter response and four-vector
+conservation, while sphericity, thrust, and Fox-Wolfram moments are
+standard event-shape summaries of momentum flow
+\cite{BjorkenBrodsky1970,DasguptaSalam2004,ParticleDataGroup:2024RPP}.
+
+The estimator is therefore a deterministic event-row reducer: sum
+calorimeter deposits by detector/hemisphere, compute directional
+energies from hit positions, compute event-shape tensors/moments from
+reconstructed object momenta, compute visible invariant mass from the
+chosen raw-or-fitted four-vectors, and count upstream objects. Dominant
+uncertainties are upstream object efficiency, energy calibration,
+vertex/direction resolution, sparse-event sentinel policy, timing-window
+calibration, and the convention used for hemisphere splits.
+
+#### Logic gaps
+
+| Parameter | Status before production | Closure study / target date |
+|---|---|---|
+| hemisphere rule `y > 0` / `y < 0` and boundary handling | Ch 10 reproduction convention; boundary rule remains `OPEN:` | Recompute hemisphere sums with boundary sidecars and quote invalid/boundary rates; target 2026-06-20 |
+| sparse sentinels `sphericity = -1`, `thrust = -1`, `H_l = 0`, null visible mass | `OPEN:` safe sentinels need selection-impact proof | Inject no-object, one-object, and zero-momentum fixtures; require plan-37 cuts fail by validity flags; target 2026-06-20 |
+| Fox-Wolfram retained moments `l in {0, 2, 4}` and thrust seed-axis scan | Literature-grounded event-shape family, but retained set is `OPEN:` | Compare ROC/N-1 gain and stability versus sphericity-only baseline; target 2026-07-05 |
+| timing-window in/out-of-time sums | `OPEN:` depends on plan-61 timing resolution and calibration | Repeat E.8 closure after timing constants are frozen; target 2026-06-30 |
+| visible-mass source: raw versus fit-aware plan-35 four-vectors | raw is reproduction baseline; fit-aware source is `OPEN:` | Compare E.7 bias/pull and plan-37 S.3 stability for raw and approved fit modes; target 2026-07-05 |
+
+#### Closure test for the derivation
+
+1. Build one event-variable row per event from frozen charged, photon,
+   π⁰, fit, timing, and calorimeter fixtures using only Class-A inputs.
+2. Recompute each E.1-E.9 column from the source sidecars and verify
+   finite values or explicit sparse/null status for every event.
+3. On `sig_foil_v3`, compare visible-mass residuals and object counts
+   to evaluator-only truth labels; on the plan-41 panel, compare
+   distribution shapes for energy, timing, and event-shape groups.
+4. Run sparse-sentinel and hemisphere-boundary fixtures through the
+   plan-37 cut booleans to prove invalid rows cannot pass accidentally.
+5. Drop truth/provenance columns from upstream inputs and require every
+   event-variable output hash to remain unchanged.
+
 ## 3. Hemisphere convention
 
 The detector is symmetric about z=0 (the foil). "Upper" / "lower"
