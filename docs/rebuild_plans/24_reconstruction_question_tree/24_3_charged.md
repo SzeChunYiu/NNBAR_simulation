@@ -150,6 +150,46 @@ Leaf C.3: charged-track candidates + scintillator hits → stopping range
   allowed truth use: validation_only
   downstream consumers: C.5, C.6; plans 28, 29
 
+#### C.3 Physics derivation
+
+- **What is physically measured:** C.3 estimates the charged candidate's
+  stopping range through the scintillator stack and the Bragg-profile endpoint
+  from Class-A scintillator hit positions and energy deposits.
+- **Estimator rationale:** range is the maximum forward path length along the
+  reconstructed V.2 direction for associated scintillator hits; for stopping
+  protons, CSDA/PSTAR tables provide the validation expectation, and the Bragg
+  peak follows from increasing stopping power near the endpoint
+  \cite{NISTSTAR,ParticleDataGroup:2024RPP}.
+- **Statistical character:** bias comes from missed/extra associated hits,
+  scintillator pitch, edge leakage, and V.2 direction error; variance is
+  granularity-limited once hit association is fixed. Robust rows must separate
+  no-hit, edge-loss, and invalid-fit failures.
+- **Citation:** `NISTSTAR` and `ParticleDataGroup:2024RPP` are resolved in the
+  thesis bibliography.
+
+#### C.3 Logic gaps
+
+1. **Forward projection cut = `projection >= 0`:** derived from the definition
+   of downstream range along the reconstructed track direction.
+2. **Association angle 10 deg / distance 15 cm:** OPEN: C.4 must retune these
+   with range residual and fake-association rate as the figure of merit; target
+   resolution date 2026-05-24.
+3. **Bragg minimum hits = 3:** OPEN: scan 2-5 associated hits and require stable
+   endpoint bias versus PSTAR; target resolution date 2026-05-24.
+4. **Range closure tolerance = max(1 cm, one bar pitch):** OPEN: bind the bar
+   pitch to plan-16/60 geometry and update the tolerance if the geometry tag
+   changes; target resolution date 2026-05-31.
+
+#### C.3 Closure test for the derivation
+
+1. Build C.3 rows on `cal_singleproton_50to500MeV_v2` using frozen C.1/V.2 rows
+   and Class-A scintillator hits only.
+2. Join validation-only kinetic energy/path labels after the range table is
+   frozen, then compare `range_cm` to PSTAR/CSDA expectations in energy bins.
+3. Pass when mean range closes within the plan-28 tolerance and the Bragg peak
+   is resolved within one bar pitch for stopping protons, with edge failures
+   reported separately from nominal rows.
+
 Leaf C.4: charged-track candidates + scintillator hits → hit association
   inputs (Class A): C.1 charged-candidate table, V.2 direction table,
                     scintillator hit columns (Event_ID, x, y, z, t,

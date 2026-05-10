@@ -105,6 +105,56 @@ whether each hit contributes to the Bragg-profile fit. Dropping
 species from the production input must not change rows whose
 `association_method` is not explicitly diagnostic.
 
+### 1.4 Physics derivation
+
+- **What is physically measured:** C.3 measures the projected range of a charged
+  candidate in the scintillator system and, when sampled well enough, the
+  Bragg-peak endpoint position. Truth path length and kinetic energy are
+  validation targets only.
+- **Estimator rationale:** for a reconstructed charged ray, the Class-A range
+  estimator is the farthest associated scintillator hit projected along the V.2
+  direction; stopping-proton validation is anchored by CSDA/PSTAR ranges and
+  the PDG stopping-power picture \cite{NISTSTAR,ParticleDataGroup:2024RPP}.
+- **Statistical character:** the estimator is biased low by missed terminal
+  hits and edge leakage, biased high by fake forward associations, and has a
+  granularity floor from scintillator pitch. Bragg-position variance is high
+  unless several ordered hits sample the energy profile.
+- **Citation:** the cited keys above were checked against
+  `/Users/billy/Desktop/projects/overleaf-hibeam-thesis/ref.bib` on
+  2026-05-10.
+
+### 1.5 Logic gaps
+
+1. **Forward projection threshold = 0 cm:** derived from the definition of
+   downstream range along the fitted direction; negative projections are not
+   part of the stopping path.
+2. **Association angle = 10 deg and distance = 15 cm:** OPEN: retune jointly
+   with C.4 on `cal_singleproton_50to500MeV_v2` and `sig_foil_v3`; optimise
+   range residual and fake-association rate; target resolution date
+   2026-05-24.
+3. **Bragg-profile minimum hits = 3:** OPEN: scan minimum 2-5 associated hits;
+   choose the smallest count with stable endpoint bias versus PSTAR; target
+   resolution date 2026-05-24.
+4. **Closure tolerance = max(1 cm, one scintillator bar pitch):** OPEN: resolve
+   the bar pitch from plan 16/60 geometry tags and update the tolerance if the
+   active geometry changes; target resolution date 2026-05-31.
+5. **Edge-distance warning buffer:** OPEN: derive from plan 60 efficiency-vs-edge
+   slices before promoting `range_quality_state=warn` to any PID policy; target
+   resolution date 2026-06-07.
+
+### 1.6 Closure test for the derivation
+
+1. Run `reconstruct_range_table` on frozen C.1 candidates, V.2 fits, and
+   Class-A scintillator hits for `cal_singleproton_50to500MeV_v2`.
+2. Persist C.3 range rows and associated-hit sidecars before any truth kinetic
+   energy, species, or path-length join.
+3. In a `validation_only` scorer, compare `range_cm` and
+   `bragg_peak_position_cm` with PSTAR/CSDA expectations in kinetic-energy and
+   edge-distance bins.
+4. The derivation passes when nominal rows close within the plan-28 range
+   tolerance and failures are classified as no-hit, invalid-fit, or edge-loss
+   rather than hidden inside PID thresholds.
+
 ## 2. Bragg-peak
 
 For stopping protons, the energy-vs-position profile peaks near the
