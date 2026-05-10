@@ -906,3 +906,56 @@ def cluster_with_hdbscan(
         len(xyz),
     )
     return labels.astype(np.int32)
+
+def cluster_with_gpu_dbscan(
+    xyz: np.ndarray,
+    eps=2.0,
+    min_samples=3,
+) -> np.ndarray:
+    """Cluster 3-D hit coordinates with optional cuML GPU DBSCAN.
+
+    GPU execution is attempted only when ``NNBAR_ENABLE_GPU=1`` is set.
+    Any missing dependency or runtime error falls back to sklearn DBSCAN.
+
+    Args:
+        xyz: (N, 3) array of (x, y, z) coordinates.
+        eps: Neighbourhood radius for DBSCAN.
+        min_samples: Minimum samples for a core point.
+
+    Returns:
+        1-D integer labels with -1 marking noise.
+    """
+    if len(xyz) < min_samples:
+        return np.full(len(xyz), -1, dtype=np.int32)
+
+    labels = None
+    backend = 'sklearn'
+    if os.getenv('NNBAR_ENABLE_GPU', '0') == '1':
+        try:
+            from cuml.cluster import DBSCAN as cuDBSCAN
+            db = cuDBSCAN(eps=eps, min_samples=min_samples)
+            labels_raw = db.fit_predict(xyz.astype(np.float32))
+            try:
+                labels = labels_raw.to_numpy()
+            except AttributeError:
+                labels = labels_raw
+            labels = np.asarray(labels, dtype=np.int32)
+            backend = 'cuml'
+        except ImportError:
+            logger.debug(
+                "NNBAR_ENABLE_GPU=1 but cuml is unavailable; using sklearn DBSCAN."
+            )
+        except Exception as exc:
+            logger.warning("cuML DBSCAN failed (%s); using sklearn DBSCAN.", exc)
+
+    if labels is None:
+        db = SklearnDBSCAN(eps=eps, min_samples=min_samples)
+        labels = db.fit_predict(xyz).astype(np.int32)
+
+    logger.info(
+        "DBSCAN backend=%s produced %d cluster(s) from %d inputs.",
+        backend,
+        len(set(labels.tolist()) - {-1}),
+        len(xyz),
+    )
+    return labels
