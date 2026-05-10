@@ -14,7 +14,7 @@ acceptance:
 risks:
   - {risk: per-hemisphere split assumes detector orientation; off-axis events misclassified, mitigation: §3 hemisphere convention documented}
 estimated_effort: M
-last_updated: 2026-05-09
+last_updated: 2026-05-10
 ---
 
 # Subsystem — event variables
@@ -46,14 +46,14 @@ comparison in §5. Current source line references come from plan 08
 | E.3 | `*_longitudinal_energy`, `calorimeter_longitudinal_energy` | `Σ E_i z_i / r_i` | MeV | `_directional_energy` computes the ratio (`vertex.py:48-67`); event rows emit the columns | baseline |
 | E.4 | `*_transverse_energy`, `calorimeter_transverse_energy` | `Σ E_i sqrt(x_i² + y_i²) / r_i` | MeV | same as E.3 | baseline |
 | E.5 | `sphericity` | `1.5 * (λ₁ + λ₂)` from normalized momentum tensor | dimensionless | `_sphericity` computes the shape (`vertex.py:255-266`); event rows emit it | baseline |
-| E.6 | `fox_wolfram_h0`, `fox_wolfram_h2`, `thrust` | pairwise Legendre moments and thrust axis over reconstructed objects | dimensionless | new variables; no current columns in plan 08 output schema | added |
+| E.6 | `fox_wolfram_h0`, `fox_wolfram_h2`, `fox_wolfram_h4`, `thrust`, `event_shape_valid` | pairwise Legendre moments and thrust axis over reconstructed objects | dimensionless / bool | new variables; no current columns in plan 08 output schema | added |
 | E.7 | `visible_invariant_mass` | `√((Σ E_i)² - |Σ p_i|²)` from charged + photon four-vectors | MeV | `_visible_invariant_mass` computes mass (`vertex.py:269-290`); event rows emit it | baseline |
 | E.8 | `calorimeter_timing_edep`, `calorimeter_out_of_time_edep` plus detector splits | sum hits inside/outside timing windows | MeV | `annotate_timing_windows` marks hit windows (`vertex.py:86-160`); event rows emit sums | baseline |
 | E.9 | `n_charged_objects`, `n_photon_like`, `n_pi0`, `pion_multiplicity` | counts reconstructed objects and selected π⁰ rows | int | object counts are emitted by `summarize_events` (`vertex.py:322-447`) | baseline |
 
 Per-leaf **inputs** are the tables in §1; **outputs** are the listed
 `events.csv` columns. E.6 is added by this plan because the licentiate
-used only sphericity; plan 38 scores it as an optional discriminator.
+used only sphericity; plan 38 scores it as an optional discriminator. The E.6 schema includes `fox_wolfram_h4` because §2.1 defines the retained moments as `l ∈ {0, 2, 4}`.
 
 ### 2.1 Event-shape formulas for E.5/E.6
 
