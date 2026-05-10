@@ -28,10 +28,10 @@ replacement is Class A topological / particle-flow-style clustering.
 
 The current L3 reconstruction code has no separate source-resolver
 helper and no separate photon-row-builder helper. Plan 31 therefore
-treats `reconstruct_photon_objects` (`reconstruction.py:432-573`) as the current clustering surface. It
+treats `reconstruct_photon_objects` (`photon.py:60-201`) as the current clustering surface. It
 groups lead-glass rows by `(Event_ID, Track_ID)`, attaches same-key
 scintillator energy, computes an energy-weighted centroid with
-`_weighted_centroid` (`reconstruction.py:93-113`), and emits one
+`_weighted_centroid` (`photon.py:28-48`), and emits one
 photon-like row per surviving group.
 
 This is still only a reproduction baseline for leaf P.1. `Track_ID`
@@ -55,9 +55,9 @@ Leaf P.1: calorimeter hits → neutral-shower cluster candidates
   suffixes, plan 09 §14 must state those units explicitly.
 - **Current implementation evidence:** the compact current source
   combines clustering and photon-row emission inside
-  `reconstruct_photon_objects` (`reconstruction.py:432-573`).
+  `reconstruct_photon_objects` (`photon.py:60-201`).
   The emitted photon-like table schema in that function currently
-  doubles as the cluster surface. The helper `_weighted_centroid` (`reconstruction.py:93-113`) supplies the energy-weighted position.
+  doubles as the cluster surface. The helper `_weighted_centroid` (`photon.py:28-48`) supplies the energy-weighted position.
 - **Decision rule (target):** seed clusters from local calorimeter
   energy maxima, grow by detector adjacency / spatial proximity, and
   split or merge clusters using only hit energy, hit position, timing,
@@ -83,10 +83,10 @@ Leaf P.1: calorimeter hits → neutral-shower cluster candidates
 
 | Candidate | P.1 decision rule | Current/source citation | Class-A status | Comparison metric | Failure mode to inspect |
 |---|---|---|---|---|---|
-| **Topological clustering** | Seed highest-energy unassigned hit; grow through adjacent cells while neighbour significance or `eDep / Σ_cluster` exceeds threshold; split shared local maxima. | Replaces the `(Event_ID, Track_ID)` grouping inside `reconstruct_photon_objects` (`reconstruction.py:432-573`). | Production-eligible: uses `Event_ID`, `eDep`, `x/y/z`, optional `t`, and geometry. | Energy response, centroid residual, split/merge rate on `cal_singlegamma_v1`. | Over-merges close π⁰ daughters; threshold DEC entry required. |
-| **Sliding-window** | Scan fixed geometry windows around local maxima; assign each hit to the highest-window sum and merge overlapping windows. | Replaces the current photon-like row emission path in `reconstruct_photon_objects` (`reconstruction.py:432-573`). | Production-eligible if window geometry comes only from detector layout. | Same closure metrics plus runtime and edge-cell inefficiency. | Loses irregular or grazing showers; sensitive to window size. |
-| **Particle-flow-style** | Competing charged/neutral hypotheses claim hits using tracks, timing, and energy compatibility. | Interacts with charged-track matching inside `reconstruct_photon_objects` (`reconstruction.py:432-573`). | Eligible only if truth labels are excluded and track inputs are reconstructed objects. | Closure metrics plus charged/neutral confusion against plan 32 labels. | Coupled to charged-object performance; too complex for first replacement. |
-| **Track-key grouped (current)** | Group deposits by `(Event_ID, Track_ID)` and emit photon-like rows from the same function. | Current baseline is `reconstruct_photon_objects` (`reconstruction.py:432-573`) plus `_weighted_centroid` (`reconstruction.py:93-113`). | Not production-eligible until Track_ID provenance is either proven Class A for this decision or replaced by geometry-only membership. | Reproduction baseline only; must be beaten or matched by Class-A candidates. | Inflated closure if `Track_ID` encodes MC truth ancestry; fails plan 01 if used as production membership. |
+| **Topological clustering** | Seed highest-energy unassigned hit; grow through adjacent cells while neighbour significance or `eDep / Σ_cluster` exceeds threshold; split shared local maxima. | Replaces the `(Event_ID, Track_ID)` grouping inside `reconstruct_photon_objects` (`photon.py:60-201`). | Production-eligible: uses `Event_ID`, `eDep`, `x/y/z`, optional `t`, and geometry. | Energy response, centroid residual, split/merge rate on `cal_singlegamma_v1`. | Over-merges close π⁰ daughters; threshold DEC entry required. |
+| **Sliding-window** | Scan fixed geometry windows around local maxima; assign each hit to the highest-window sum and merge overlapping windows. | Replaces the current photon-like row emission path in `reconstruct_photon_objects` (`photon.py:60-201`). | Production-eligible if window geometry comes only from detector layout. | Same closure metrics plus runtime and edge-cell inefficiency. | Loses irregular or grazing showers; sensitive to window size. |
+| **Particle-flow-style** | Competing charged/neutral hypotheses claim hits using tracks, timing, and energy compatibility. | Interacts with charged-track matching inside `reconstruct_photon_objects` (`photon.py:60-201`). | Eligible only if truth labels are excluded and track inputs are reconstructed objects. | Closure metrics plus charged/neutral confusion against plan 32 labels. | Coupled to charged-object performance; too complex for first replacement. |
+| **Track-key grouped (current)** | Group deposits by `(Event_ID, Track_ID)` and emit photon-like rows from the same function. | Current baseline is `reconstruct_photon_objects` (`photon.py:60-201`) plus `_weighted_centroid` (`photon.py:28-48`). | Not production-eligible until Track_ID provenance is either proven Class A for this decision or replaced by geometry-only membership. | Reproduction baseline only; must be beaten or matched by Class-A candidates. | Inflated closure if `Track_ID` encodes MC truth ancestry; fails plan 01 if used as production membership. |
 
 Plan 38 ladder leaf P.1 scores each row with identical closure inputs.
 Plan 47 first records the truth-labelled reproduction baseline, then
