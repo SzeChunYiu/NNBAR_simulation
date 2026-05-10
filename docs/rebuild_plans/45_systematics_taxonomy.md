@@ -15,7 +15,7 @@ acceptance:
 risks:
   - {risk: double-counting if a calibration uncertainty enters both as a Class C constant and a nuisance parameter, mitigation: §3 single-source rule}
 estimated_effort: M
-last_updated: 2026-05-09
+last_updated: 2026-05-10
 ---
 
 # Systematics taxonomy
@@ -80,6 +80,23 @@ Freeze rules:
 | N6 cosmic flux vs N7 beam-neutron flux | 0.0 | independent source normalisations despite sharing a broad background-normalisation label |
 | N8 geometry vs N10 material budget | M0 | geometry/material paired scenario envelope |
 | no shared flag and no listed exception | 0.0 | default independence |
+
+### 2.1 Correlation-matrix validation gate
+
+Before plan 47 or plan 50 quotes a covariance result, the nuisance
+matrix is checked mechanically:
+
+1. The §1 registry must contain exactly one row for each ID `N1`–`N10`.
+2. The §2 matrix must be square with the same row/column IDs and no
+   missing cells.
+3. Diagonal entries must be `1.0`; off-diagonal entries must be one of
+   `0.0` or `M0` until paired variation runs replace them with a
+   measured coefficient.
+4. The matrix must be symmetric. A pair such as `N2/N8` may be marked
+   `M0`, but both directions must carry the same marker.
+5. Any `M0` pair used in a quoted result is listed in the plan-47
+   ledger as a missing-correlation flag, even though the interim
+   numeric covariance uses `0.0` for that pair.
 
 DEC stubs:
 
