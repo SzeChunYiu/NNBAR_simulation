@@ -140,6 +140,32 @@ l1_defence_rerun_manifest:
         note_annex: <plan55-annex-id-or-null>
         glossary_audit: <plan56-audit-id>
       blocker: null
+    - bundle_member: Ch 10 selection cut-flow
+      status: ready | blocked
+      owner_signoff_ref: RQ-L1-SELECTION-CUTFLOW:<owner-hash-or-null>
+      required_inputs:
+        - dataset_id: sig_foil_v3
+          run_indices: [0, 1]
+          source_hash: <sha256>
+        - dataset_id: cosmic_cry_essLund_overburdenA_v1
+          run_indices: [0, 1]
+          source_hash: <sha256>
+      refreshes:
+        - artifact_id: plan37_cutflow_counts
+          output_hash: <sha256>
+        - artifact_id: selection_truth_blind_hash
+          output_hash: <sha256>
+      defence_overlay_ids:
+        - selection_cutflow_identity
+      review_evidence_links:
+        package_rollup: <plan50-rollup-id>
+        staleness_summary: <plan50-staleness-id>
+        ci_report: <plan53-l1-report-id>
+        archive_inventory: <plan54-inventory-id-or-null>
+        archive_drill: <plan54-drill-id-or-null>
+        note_annex: <plan55-annex-id-or-null>
+        glossary_audit: <plan56-audit-id>
+      blocker: null
     - bundle_member: Unbounded caveat status
       status: blocked
       owner_signoff_ref: RQ-L1-UNBOUNDED-CAVEATS:<owner-hash-or-null>
