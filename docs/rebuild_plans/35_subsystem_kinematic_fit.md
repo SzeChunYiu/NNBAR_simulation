@@ -23,7 +23,34 @@ last_updated: 2026-05-09
 level four-vector consistency by mass-constrained / vertex-
 constrained fits.
 
-## 1. Mass-constrained π⁰ fit
+## 1. Leaf P.7 input/output schema
+
+Leaf P.7: raw π⁰ candidates → fitted four-vectors and fit quality
+
+- **Inputs (production, Class A only):** plan-34 candidate rows,
+  plan-33 photon four-vectors and covariance estimates, plan-30
+  vertex/covariance when available, and calibrated resolution models
+  from plans 18 and 40.
+- **Current implementation evidence:** plan 08 shows the current
+  baseline has only raw π⁰ kinematics in `find_pi0_candidates`
+  (`reconstruction.py:1316–1530`). The output schema declared at
+  `reconstruction.py:1322–1365` contains mass, opening angle,
+  energies, cut booleans, timing/provenance diagnostics, and failure
+  reasons, but no fitted four-vector, covariance, `fit_chi2`, or
+  `fit_ndf`. Raw mass is computed at `reconstruction.py:1414–1417`.
+- **Decision rule (target):** for every candidate selected for fit,
+  solve a constrained least-squares problem using reconstructed
+  quantities and their covariance; accept or rank candidates by
+  `fit_chi2/fit_ndf` only after closure validates the χ² law.
+- **Outputs:** `event_id`, photon ids, raw mass, `fit_mass`,
+  fitted photon four-vectors, fitted π⁰ four-vector, covariance
+  summary, `fit_chi2`, `fit_ndf`, `fit_probability`,
+  `fit_converged`, and `fit_failure_reason`.
+- **Truth-use boundary:** truth π⁰ labels and generated four-vectors
+  are closure labels only; they must not seed, constrain, or choose a
+  production fit.
+
+## 2. Mass-constrained π⁰ fit
 
 For each pair from plan 34 satisfying basic cuts:
 
@@ -35,7 +62,7 @@ For each pair from plan 34 satisfying basic cuts:
 
 Belle II / GlueX style; standard kinematic-fit literature.
 
-## 2. Vertex-constrained event fit
+## 3. Vertex-constrained event fit
 
 When the event vertex is reconstructed (plan 30):
 
@@ -45,25 +72,25 @@ When the event vertex is reconstructed (plan 30):
 
 Used by plan 37 (event selection) as an additional cut variable.
 
-## 3. Closure
+## 4. Closure
 
 `cal_singlegamma_v1` paired into synthetic π⁰s — verify σ(M_γγ)
 improves by ≥ 20% after the constraint vs raw photon four-vectors.
 On `sig_foil_v3` π⁰ candidates, the fitted-four-vector pulls follow
 plan 40 §2 tolerances.
 
-## 4. Acceptance criteria
+## 5. Acceptance criteria
 
-- §1 implementation lands; §3 closure passes.
-- §1 χ² distribution follows expected ndf within K-S p > 0.01.
+- §2 implementation lands; §4 closure passes.
+- §2 χ² distribution follows expected ndf within K-S p > 0.01.
 
-## 5. Dependencies
+## 6. Dependencies
 
 - **24, 30, 33, 34, 38, 40** — inputs.
 - *Consumed by:* plan 36 (event variables; uses fitted four-vectors),
   plan 37 (selection), plan 38 (ladder leaf P.7).
 
-## 6. References
+## 7. References
 
 - Belle II kinematic-fit framework documentation.
 - GlueX π⁰ kinematic fit notes.
