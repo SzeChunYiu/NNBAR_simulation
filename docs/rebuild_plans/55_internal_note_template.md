@@ -121,6 +121,26 @@ The note author may add prose after the structured annex, but the
 structured row is the reviewable source of truth for CI and plan-50
 package regeneration.
 
+
+### 1.3 L1 annex completeness checklist
+
+Before a note is promoted to thesis-quote status, the L1 annex is checked
+against the reviewer-question registry and the defence package. The check
+is a small matrix, not a prose judgement, so omissions are visible in CI.
+
+| Checklist item | Applies when | Required evidence |
+|---|---|---|
+| reviewer question coverage | any annex row has `applicability: applies` | at least one plan-51 question id is listed |
+| defence package handoff | any note quotes a final EM/selection number | plan-50 overlay id and package revision are recorded |
+| rerun reproducibility | any note says an artifact was refreshed | plan-52 rerun manifest row id and output hash are recorded |
+| CI transcript | any note is promoted after Stage E.3 starts | plan-53 L1 report id is recorded |
+| glossary consistency | any annex introduces shorthand | plan-56 glossary audit row is recorded |
+
+The note may still be circulated internally with incomplete rows, but it
+cannot be used as thesis evidence until every applicable checklist item
+is either satisfied or explicitly blocked with the same blocker text used
+in the plan-50 defence package.
+
 ## 2. Plan vs note separation
 
 - A *plan* describes intent, gates, ownership, acceptance criteria.
@@ -133,9 +153,13 @@ cite plans by ID.
 
 ## 3. Acceptance criteria
 
-- §1 template lives at `docs/notes/_template.md`.
+- §1 template target path is `docs/notes/_template.md`, created before
+  the first note is promoted.
 - First three notes drafted: licentiate Ch 6 reproduction, Ch 8 π⁰
   reproduction, Ch 10 selection reproduction.
+- Stage E.3 notes that quote L1 EM, selection, timing, pile-up,
+  strange-background, or Bayesian-limit evidence satisfy the §1.3
+  checklist.
 
 ## 4. Dependencies
 
