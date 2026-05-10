@@ -356,6 +356,15 @@ Initial evidence-bundle examples:
 Evidence bundles preserve the source-cluster, direction, and energy
 method context that plan 34 needs to reproduce pair kinematics.
 
+Initial reviewer audit cases:
+
+| `audit_case_id` | Reviewer question | Required evidence before accept | Reject condition |
+|---|---|---|---|
+| `p33_fourvector_audit` | Can every photon four-vector be traced to source clusters and methods? | photon fixture row, direction method, energy method, and source-cluster ids | row has energy/direction but no stable photon id or source list |
+| `p33_fallback_audit` | Are origin-fallback photons separated from vertex-based rows? | fallback flag, category closure row, and angular-pull summary | fallback rows are mixed into primary closure without a category |
+| `p33_fragment_audit` | Does merging improve duplicates without hiding daughter loss? | no-merge baseline, merge scan, duplicate rate, and over-merge metric | only post-merge efficiency is shown |
+| `p33_scint_guard_audit` | Are scintillator-only rows blocked from unsupported π⁰ use? | lead-glass-fraction guard and Ch 8 impact table | any unsupported row can seed a production π⁰ candidate |
+
 ## 7. Acceptance criteria
 
 - §2, §3 produce photon four-vector with stated semantics.
