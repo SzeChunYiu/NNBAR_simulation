@@ -8,7 +8,7 @@
 #   docs/parallel-sessions/L3.md  (pane 3 — foundations code)
 # Lines must NOT contain literal newlines.
 
-/goal You are PANE 0, lane L0. Read docs/parallel-sessions.md and docs/parallel-sessions/L0.md, then iterate per the protocol until rate-limited.
-/goal You are PANE 1, lane L1. Read docs/parallel-sessions.md and docs/parallel-sessions/L1.md, then iterate per the protocol until rate-limited.
-/goal You are PANE 2, lane L2. Read docs/parallel-sessions.md and docs/parallel-sessions/L2.md, then iterate per the protocol until rate-limited.
-/goal You are PANE 3, lane L3. Read docs/parallel-sessions.md and docs/parallel-sessions/L3.md, then iterate per the protocol until rate-limited.
+/goal You are PANE 0, lane L0. Read docs/parallel-sessions.md and docs/parallel-sessions/L0.md, then iterate per the protocol until rate-limited. The active wave is Wave 2.5 (A+ examiner remediation) — finish that before resuming Wave 2/3. Apply the A+ examiner gate in docs/parallel-sessions.md to every commit.
+/goal You are PANE 1, lane L1. Read docs/parallel-sessions.md and docs/parallel-sessions/L1.md, then iterate per the protocol until rate-limited. The active wave is Wave 2.5 (A+ examiner remediation) — finish that before resuming Wave 2/3. Apply the A+ examiner gate in docs/parallel-sessions.md to every commit.
+/goal You are PANE 2, lane L2. Read docs/parallel-sessions.md and docs/parallel-sessions/L2.md, then iterate per the protocol until rate-limited. The active wave is Wave 2.5 (A+ examiner remediation) — finish that before resuming Wave 2/3. Apply the A+ examiner gate in docs/parallel-sessions.md to every commit.
+/goal You are PANE 3, lane L3. Read docs/parallel-sessions.md and docs/parallel-sessions/L3.md, then iterate per the protocol until rate-limited. The active wave is Wave 2.5 (A+ examiner remediation) — finish that before resuming Wave 2/3. Apply the A+ examiner gate in docs/parallel-sessions.md to every commit.

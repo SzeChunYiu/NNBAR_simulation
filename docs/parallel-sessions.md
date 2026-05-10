@@ -89,6 +89,57 @@ stuck for > 120 seconds.
 If `git push` ever appears in a script, ignore it for now — there is
 no remote configured for the orchestration repo.
 
+## A+ examiner gate (mandatory before declaring "Goal achieved")
+
+The user is grading this rebuild at A+ standard. An examiner pass on
+2026-05-10 caught the following classes of failure that **must not
+re-appear**:
+
+1. **Hallucinated line refs.** Plans 25–31 cited functions in
+   `nnbar_reconstruction/reconstruction.py` at line ranges that were
+   either off by 50–150 lines, pointed past EOF, or named functions
+   (`_leadglass_shower_sources`, `build_photon_row`) that don't exist.
+2. **Hallucinated files.** Lane spec referenced
+   `nnbar_reconstruction/{pi0_study.py,charged_study.py}` at ~2 kLOC
+   each — these never existed in any branch.
+3. **Hallucinated CLI commands.** Plan 42 §2.1 prescribed
+   `python -m nnbar_reconstruction.cli response-matrix …` with flags
+   (`--all-runs`, `--table`, `--bootstrap`) that don't exist.
+
+Before any commit, every claim of the form
+`<file>:<line>` / `<file>:<L>-<M>` / `python -m nnbar_reconstruction.<x>`
+/ `<function_name>` / "the existing file `<path>`" must satisfy:
+
+- **Citation verifier.** Run, from the worktree root that contains the
+  cited file:
+  ```
+  grep -n "^(def|class|void|TString|using|inline|template) <name>" <file>
+  ```
+  The match line number must fall **inside** the cited range. If you
+  cite a single line, the match must be on that line. If the function
+  is C++ (`reconstructor.cc` etc.), use the same grep with the C++
+  signature.
+- **CLI verifier.** Run
+  `python -m nnbar_reconstruction.<subcommand> --help` from the L3
+  worktree. If it errors, the command does not exist — either remove
+  the cite or stop and ask L3 to implement it. **Never invent CLI
+  surface in a plan.**
+- **File-existence verifier.** Run `ls <path>` (or `git show <ref>:<path>`)
+  before claiming a file exists at a particular size. Quote the
+  `wc -l` output, not a guess.
+- **Bibtex verifier.** When citing a paper in plans 12–15, grep
+  `/Users/billy/Desktop/projects/overleaf-hibeam-thesis/ref.bib` for
+  the cite key. No key, no cite.
+
+If a verifier fails, **fix the citation** before committing. If you
+cannot fix it (e.g. the function genuinely doesn't exist), remove the
+claim and replace it with a TODO that names the lane responsible for
+filling the gap.
+
+Files in scope for citation auditing live under
+`docs/rebuild_plans/`, `docs/parallel-sessions/`, and any
+`*.md` written in this iteration.
+
 ## When to stop and ask
 
 Only stop and surface a question when:
