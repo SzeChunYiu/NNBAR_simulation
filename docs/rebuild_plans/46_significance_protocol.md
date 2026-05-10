@@ -306,6 +306,19 @@ These handoff ids keep validation fixtures, draft calculations, and final
 analysis quotes separable. A naked `Z_0`, limit, or upper-limit number
 without this linkage is rejected even if the arithmetic is correct.
 
+Initial production-promotion checklist:
+
+| `promotion_check_id` | Evidence required | Blocks promotion when missing |
+|---|---|---|
+| `p46_validation_cases_recomputed` | worked-example rows linked to dispatch/result/input bundles | formula implementation could be hard-coded or stale |
+| `p46_method_dispatch_complete` | every result has a handover-rule row with method and confidence level | low-count rows may use the wrong convention |
+| `p46_input_bundle_provenance` | signal, background, nuisance, and caveat inputs trace to plan rows | counts cannot be audited back to sources |
+| `p46_limit_conventions_signed` | DEC ids for Z0, limit convention, and F-C handover | unsigned methods could enter plan 47/50 quotes |
+
+A significance or limit row is promotion-ready only when all four checks
+are present. Validation rows may exercise arithmetic, but final quotes
+require complete provenance and signed convention decisions.
+
 ## 4. Acceptance criteria
 
 - §1 Z_0 target implementation lands in the L3-owned
