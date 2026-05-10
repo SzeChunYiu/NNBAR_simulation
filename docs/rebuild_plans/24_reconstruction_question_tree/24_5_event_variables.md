@@ -112,6 +112,21 @@ Leaf E.4: reconstructed objects → transverse energy ET
   allowed truth use: validation_only
   downstream consumers: S.6; plans 36, 37, 41
 
+Leaf E.5: reconstructed object momenta → sphericity
+  inputs (Class A): charged, photon, and π0 reconstructed momenta or
+                    energy-direction four-vectors after C/P selection
+  forbidden (Class B): truth particle momenta, truth multiplicities,
+                       Track_ID, Parent_ID, Name
+  decision rule: build the standard sphericity tensor from
+                 reconstructed three-momenta and use its eigenvalues
+                 to compute the scalar sphericity; plan 08 §3.6 records
+                 this as the current event-shape baseline.
+  output schema: {event_id: int64, sphericity: float64,
+                  eigenvalues: float64[3], n_objects_used: int32,
+                  tensor_normalization: string}
+  allowed truth use: validation_only
+  downstream consumers: S.4, S.6; plans 36, 37, 41
+
 ### Next measurement (event-variable branch)
 
 Per-variable distribution comparison: signal sample (plan 20) vs
