@@ -251,6 +251,26 @@ to edit L3 code. The matching L3 patch must update
 (`tests/test_charged_reco.py:209-221`) so the synthetic and real-output
 chains assert every required C.2 promotion column.
 
+### 6.3 Stage E.1 promotion invariants
+
+The current live hook is a truth-blind C.2 bridge. L3 may replace the
+estimator or path-length source only if these invariants remain explicit
+in the production table and in the plan-27 tests:
+
+| Invariant | Current live behavior | Replacement requirement |
+|---|---|---|
+| truth blindness | `reconstruct_dedx_table` (`dedx.py:91-119`) joins V.1 hit membership to Class A TPC energy-deposit rows | output must be unchanged when particle species, truth momentum, parentage, and legacy track ids are absent |
+| estimator identity | `truncated_mean_dedx` (`dedx.py:41-70`) emits `estimator=truncated_mean` and `calibration_source=plan27_truncated_mean_v0` | promoted rows must add a stable `estimator_id` that keys truncation fractions, calibration constants, and DEC history |
+| path provenance | `path_length_cm` is derived from Class A length-like fields or coordinate deltas | promoted rows must add `path_length_source` and must not substitute validation-only truth path length into production C.2 |
+| truncation audit | current rows preserve low/high fractions but not selected sample ids | replacement must emit `truncation_applied` and a contribution sidecar keyed by `(event_id, charged_candidate_id, estimator_id)` |
+| quality-state semantics | missing or non-positive path support currently yields null physics values without a machine-readable reason | promoted rows must set `dedx_quality_state` and `dedx_failure_reason` with the §5 `pass`/`warn`/`fail`/`not_applicable` meanings |
+| validation separation | Bethe-Bloch residuals are a closure artifact, not a production input | closure residual rows must join to frozen `estimator_id` rows and never change `dedx_mev_per_cm` after the production table is written |
+
+These invariants are the C.2 promotion gate for L3's implementation
+patch. They keep plan 29 PID and plan 45 calibration nuisances from
+learning hidden truth labels or silently changing the dE/dx estimator
+between calibration and signal samples.
+
 ## 7. Acceptance criteria
 
 - §3 closure within 5% across the charged calibration set.
@@ -259,7 +279,7 @@ chains assert every required C.2 promotion column.
   high-dE/dx-quoted result.
 - §6 Stage E.1 handoff is actionable for L3: the target public
   functions, current unit/integration tests, remaining test obligation,
-  and required C.2 fields (`estimator_id`, `dedx_mev_per_cm`,
+  promotion invariants, and required C.2 fields (`estimator_id`, `dedx_mev_per_cm`,
   `path_length_cm`, `path_length_source`, `n_steps_used`, truncation
   fractions, `truncation_applied`, `dedx_quality_state`,
   `dedx_failure_reason`, `calibration_source`, and contribution sidecar
