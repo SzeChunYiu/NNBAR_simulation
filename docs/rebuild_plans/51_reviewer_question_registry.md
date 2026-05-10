@@ -4,7 +4,7 @@ title: Reviewer-question registry — living, append-only
 version: 0.1
 status: draft
 owner: Reproducibility WG
-depends_on: [00_README, 50_reviewer_defense_package]
+depends_on: [00_README, 50_reviewer_defense_package, 52_run_orchestration, 53_ci_regression_suite, 54_open_data_archival, 55_internal_note_template, 56_glossary]
 outputs:
   - {path: docs/rebuild_plans/51_reviewer_question_registry.md, schema: this file}
   - {path: docs/reviewer_question_registry.md, schema: living registry}
