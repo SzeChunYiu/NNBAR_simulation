@@ -8,7 +8,7 @@ depends_on: [00_README, 17_field_calibration, 23_sample_calibration_aux, 24_reco
 outputs:
   - {path: docs/rebuild_plans/27_subsystem_dedx.md, schema: this file}
 acceptance:
-  - {test: dE/dx vs βγ matches Bethe-Bloch on cal_singlepion / cal_singleproton, method: closure plot, pass_when: residual < 5%}
+  - {test: dE/dx vs βγ matches Bethe-Bloch on cal_singlepion_50to600MeV_v2 / cal_singleproton_50to500MeV_v2, method: closure plot, pass_when: residual < 5%}
   - {test: truncated-mean estimator chosen with cut fraction recorded, method: §2 review, pass_when: signed in DEC}
 risks:
   - {risk: TPC W-value mismatch (plan 17) shifts dE/dx scale, mitigation: §3 paired audit with W=23.6 vs reference}
@@ -58,16 +58,20 @@ Calibration anchor: MIP π+ from `cal_singlepion_mip_v1` (plan 23).
 Mean dE/dx at MIP = ~1.6 keV/cm in Ar/CO₂ 90/10 (literature).
 Closure: simulator output should match within 5%.
 
-## 3. Bethe-Bloch closure
+## 3. Closure-test specification
 
-For each sample in plan 23 charged set, compute mean dE/dx vs βγ.
-Fit to Bethe-Bloch:
-
-```
--<dE/dx> = K (z²/β²) [½ ln(2 m_e c² β² γ² T_max / I²) - β² - δ/2]
-```
-
-Residuals < 5% across [0.5, 5] in βγ is the pass.
+1. **Dataset ids:** `cal_singlepion_50to600MeV_v2` and
+   `cal_singleproton_50to500MeV_v2` from plan 03.
+2. **Observable:** mean reconstructed `dedx_mev_per_cm` versus
+   validation-only βγ bins, with pion and proton curves reported
+   separately.
+3. **Fitter / model:** fit the Bethe-Bloch form
+   `-<dE/dx> = K (z^2/beta^2) [0.5 ln(2 m_e c^2 beta^2 gamma^2 T_max / I^2) - beta^2 - delta/2]`
+   after the C.2 estimator has produced Class A dE/dx values; truth
+   momentum enters only in the closure fitter.
+4. **Pass criterion:** residual < 5% across βγ in `[0.5, 5]`; if the
+   TPC W-value discrepancy dominates, record the paired plan 17
+   calibration limitation and do not tune PID thresholds silently.
 
 ## 4. Saturation
 
