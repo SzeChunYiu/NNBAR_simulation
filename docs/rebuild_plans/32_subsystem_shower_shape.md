@@ -160,6 +160,57 @@ removed legacy split-study files. If the P.2 scorer later gains a CLI
 entry, the command must pass the L3 `--help` verifier before it appears
 in this plan.
 
+### 1.6 Physics derivation for P.2
+
+#### Physics derivation
+
+P.2 physically estimates whether a P.1 cluster is compatible with a
+neutral electromagnetic shower rather than a charged particle or charged
+track-associated deposit. The truth-side quantity is the initiating
+particle charge and electromagnetic/hadronic shower character, but the
+production estimator may observe only the deposited-energy moments,
+cluster timing, and reconstructed track geometry. EM shower development
+has compact lateral profiles set by radiation length and Moliere radius,
+and longitudinal moments plus maximum-cell fraction capture leakage and
+shower-start differences \cite{ParticleDataGroup:2024RPP,fabjan2020particle}.
+The nearest-track distance/angle is a Class-A proxy for charged-particle
+compatibility; the HIBEAM/NNBAR calorimeter prototype motivates
+calibrating those observables with detector-specific response data
+\cite{Dunne2022CalorimeterPrototype}.
+
+The selected estimator is therefore a calibrated score over energy-weighted
+shape moments and reconstructed-track matching. Its dominant biases are
+upstream cluster splitting/merging from P.1 and charged-track inefficiency;
+its variance is driven by calorimeter energy resolution, finite cell
+granularity, and limited labelled calibration samples. Robustness is
+checked by feature-contract immutability, component-wise fake-rate limits,
+and a Class-B drop hash proving no truth/provenance feature affects the
+score.
+
+#### Logic gaps
+
+| Parameter | Status before production | Closure study / target date |
+|---|---|---|
+| `charged_cluster_match_angle_deg = 8.0` | `OPEN:` legacy hard-cone reproduction value, not derived from track/angular resolution | Scan cone angle on `cal_singlegamma_v1`, `cal_singleelectron_v1`, and charged-pion clusters; minimise fake rate at fixed neutral efficiency; target 2026-06-20 |
+| finite sentinels `nearest_track_distance_cm = 1.0e9`, `nearest_track_angle_deg = 180.0`, invalid score `0.0` | `OPEN:` safe-table constants, not physics thresholds | Verify no candidate threshold treats sentinel rows as high-quality neutral clusters; target 2026-06-15 |
+| rectangular shower-shape thresholds | `OPEN:` no frozen lateral/depth/max-cell/timing cuts yet | N-1 scan of each §1.1 feature; require stable ROC and feature-contract DEC; target 2026-06-30 |
+| learned-score threshold `neutral_score_threshold` | `OPEN:` candidate rows leave threshold null | Bootstrap ROC scan; choose first point satisfying neutral efficiency and component fake-rate guards; target 2026-06-30 |
+| pass limits AUC `>= 0.95`, neutral efficiency `>= 0.90`, fake rate `<= 0.05` | `OPEN:` analysis-quality guard needs downstream photon-yield impact study | Propagate threshold choices through plans 33/37 and require no Ch 10 reproduction regression; target 2026-07-05 |
+
+#### Closure test for the derivation
+
+1. Build P.2 feature rows from a fixed P.1 cluster fixture using only
+   Class-A cluster, hit, timing, and reconstructed-track columns.
+2. Label positives with `cal_singlegamma_v1` and negatives with
+   `cal_singleelectron_v1` plus `sig_foil_v3:charged_pion_clusters`,
+   keeping labels outside the inference feature table.
+3. Fit or scan the candidate score, then report AUC, neutral efficiency,
+   and component fake-rate intervals for every labelled component.
+4. Repeat after dropping `Name`, `Track_ID`, `Parent_ID`, and ancestry
+   aliases; the feature hash, score hash, and pass/fail hash must match.
+5. Promote only if the chosen threshold satisfies §3 component guards and
+   the downstream plan-33/37 shadow study shows no reproduction regression.
+
 ## 2. Charged/neutral discriminant candidates
 
 | Candidate | P.2 decision rule | Current/source citation | Class-A status | Comparison metric | Failure mode to inspect |
