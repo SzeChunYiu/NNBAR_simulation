@@ -322,6 +322,19 @@ blocked. The event-variable fixture is the boundary surface; downstream
 plans should join by `event_id` and method ids rather than recomputing
 variables from upstream objects with hidden conventions.
 
+Initial production-promotion checklist:
+
+| `promotion_check_id` | Evidence required | Blocks promotion when missing |
+|---|---|---|
+| `p36_method_bundle_present` | event-variable method id, hemisphere convention, and source-mode tags | plan 37 cannot prove which variable semantics were cut on |
+| `p36_required_groups_closed` | closure rows for E.1/E.2 through E.9 groups and Class-B drop hashes | a quoted selection input lacks finite-value or truth-blind evidence |
+| `p36_sparse_policy_audited` | sparse sentinels and validity flags checked against cut booleans | invalid values may accidentally pass plan-37 cuts |
+| `p36_new_features_shadowed` | E.6 and fit-aware E.7 are separate from Ch 10 baseline fields | optional variables could silently replace reproduction inputs |
+
+Plan 37 may consume only method bundles satisfying these checks. Missing
+checks keep event-shape additions, fit-aware mass, or altered hemisphere
+conventions in diagnostic/ladder status.
+
 ## 6. Acceptance criteria
 
 - §2 table complete; every variable produced.
