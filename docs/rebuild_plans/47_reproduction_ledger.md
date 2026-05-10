@@ -29,6 +29,75 @@ nuisances (plan 45), and the leaf (plan 24) the row exercises. Plan
 47 is the artifact that lets a reviewer verify every single thesis
 number in finite time.
 
+## 0.1 Wave 6 derivation — why each ledger row is load-bearing
+
+### Physics derivation
+
+**What is physically measured.** A ledger row measures one thesis
+claim: a number, equation, table entry, plotted distribution, or figure
+panel. The ground-truth object is not "the whole rebuild"; it is the
+specific observable and source sample named by the row. Each row binds
+the thesis claim to a sample id, command surface, reproduced value,
+uncertainty convention, status, leaf owner, and delta explanation.
+
+**Estimator rationale.** The ledger is the audit estimator for thesis
+reproducibility because it decomposes a defence-scale narrative into
+individually falsifiable claims. Numeric rows use direct value
+comparison against tolerance. Figure rows use visual, bin-by-bin, and
+distributional equality. Mismatch rows are valid evidence only when the
+reproduced artifact, delta, and hypothesised cause are recorded; blocked
+rows are valid evidence only when the missing sample or command surface
+is named rather than invented.
+
+**Statistical character.** Ledger uncertainty combines statistical
+uncertainty from plan 04, systematic/nuisance uncertainty from plan 45,
+and provenance uncertainty from missing or non-isomorphic samples. A
+`reproduced` status requires agreement under the row's tolerance; a
+`mismatch` status requires a concrete reproduced value and delta; a
+`blocked-no-sample` status is fail-closed and must not be counted as
+agreement. Aggregating rows without respecting these statuses would
+overstate the rebuild's evidence.
+
+### Logic gaps
+
+- **Default numeric tolerance ±5%.** Grounding: §2 status definition.
+  `OPEN:` replace the default with row-specific tolerances for every
+  defence-critical number, derived from plan 04 and the relevant
+  subsystem plan; target resolution date 2026-06-22.
+- **Figure equality χ²/dof <2 and visual agreement.** Grounding: §3
+  default figure protocol. `OPEN:` digitise or export the underlying
+  thesis/rebuild data for each defence-critical plot so visual
+  agreement is not the sole evidence; target resolution date
+  2026-06-29.
+- **Row coverage completeness.** Grounding: §5 currently reports 161
+  rows spanning Chapters 5--10. `OPEN:` re-run the chapter scanner after
+  each thesis edit and add a row-level diff artifact; target resolution
+  date 2026-06-15.
+- **Command-surface provenance.** Grounding: the A+ gate forbids
+  invented CLI surfaces. `OPEN:` every non-TODO command must have a
+  current help check or source-backed API verifier attached to the row
+  before it can be counted as reproduced; target resolution date
+  2026-06-22.
+- **Mismatch cause taxonomy.** Grounding: Wave 5 required nonempty
+  mismatch notes. `OPEN:` replace broad proxy explanations with
+  row-specific causes tied to plans 12, 17, 18, 39, or 40 as exact
+  artifacts become available; target resolution date 2026-06-29.
+
+### Closure test for the derivation
+
+1. Parse `data/ledger/rows.yml` and verify row count, chapter span,
+   statuses, and the invariant that reproduced/mismatch rows have
+   nonempty `reproduced_value` and `delta` fields.
+2. For a selected row, run or verify the declared command/API surface,
+   regenerate the output artifact, and compare it to the thesis value
+   using the row's numeric or figure-equality protocol.
+3. Copy the reproduced value, uncertainty, status, delta, and source
+   artifact path into both the YAML and living markdown ledger.
+4. Reject any aggregate claim whose supporting rows include
+   `blocked-no-sample`, missing deltas, stale command surfaces, or
+   figure-only visual comparisons without the required numeric
+   protocol.
+
 ## 1. Row schema
 
 ```yaml
@@ -127,8 +196,8 @@ thesis pair:
   precision-recall curve.
 
 A+ truthing on 2026-05-10 has updated all rows out of the seed-only
-`not-attempted` state: **1 row is `reproduced`**, **42 rows are
-`mismatch` with nonempty `reproduced_value` and `delta` fields**, **118 rows are
+`not-attempted` state: **1 row is `reproduced`**, **43 rows are
+`mismatch` with nonempty `reproduced_value` and `delta` fields**, **117 rows are
 `blocked-no-sample`**, and **0 rows remain `not-attempted`**. The current
 row count satisfies the Wave 2 ≥30-row seed requirement, the Wave 3
 ≥60-row ledger-count/span target across Chapters 5--10, and the Wave 4
