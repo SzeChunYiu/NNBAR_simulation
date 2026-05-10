@@ -127,7 +127,7 @@ variables, 37 event selection.)
 
 This tree is signed off only after a reviewer has tried to find a
 reconstruction decision that does not fit any leaf above. New leaves
-identified by review become §2–§6 additions in v0.2.
+identified by review become signed §2–§6 revision additions.
 
 ## 11. Risks and mitigations
 
