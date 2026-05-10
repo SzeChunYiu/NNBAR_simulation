@@ -127,6 +127,30 @@ Leaf S.5: hemisphere energies → balance cut
   allowed truth use: validation_only
   downstream consumers: S.6; plans 37, 41, 47
 
+Leaf S.6: cut-flow + datasets → final rate and uncertainty
+  inputs (Class A): S.1-S.5 cut decisions, dataset IDs and sample
+                    counts from plan 03, statistical conventions from
+                    plan 04, and systematic inputs from plans 43-46
+  forbidden (Class B): per-event truth variables in the selection
+                       decision, truth ancestry, Track_ID, Parent_ID,
+                       Name; sample-type labels are used only for
+                       validation/reproduction accounting
+  decision rule: compute the cumulative AND cut-flow in the plan 08
+                 §4.1 order, then quote signal acceptance,
+                 background survival, and final rate with the plan 04
+                 interval convention; MVA replacements must be shown
+                 alongside the cut-based baseline, not silently replace
+                 it.
+  output schema: {dataset_id: string, n_generated: int64,
+                  n_after_s1: int64, n_after_s2: int64,
+                  n_after_s3: int64, n_after_s4: int64,
+                  n_after_s5: int64, acceptance: float64,
+                  background_survival: float64,
+                  rate_estimate: float64, uncertainty: float64,
+                  interval_method: string}
+  allowed truth use: validation_only
+  downstream consumers: plans 37, 41, 43, 44, 45, 46, 47, 50
+
 ### Next measurement (selection branch)
 
 Reproduce the licentiate's cut-flow on the registered signal sample
