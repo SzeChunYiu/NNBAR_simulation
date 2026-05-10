@@ -205,6 +205,21 @@ done
 python -m nnbar_reconstruction.cli --help >/tmp/nnbar_cli_root.help
 ```
 
+The file-existence and 500-line checks in items 4-5 are run with:
+
+```bash
+for f in docs/rebuild_plans/{24,25,26,27,28,29,30,41,42,43,60,66}*.md \
+         docs/rebuild_plans/24_reconstruction_question_tree/*.md; do
+  test -f "$f" || exit 1
+  lines=$(wc -l < "$f")
+  test "$lines" -le 500 || { echo "$f has $lines lines"; exit 1; }
+done
+marker_re='TO''DO|FIX''ME|TB''D|stu''b|place''holder|to be fi''lled|open ques''tion|\?\?\?'
+grep -nEi "$marker_re" \
+  docs/rebuild_plans/{24,25,26,27,28,29,30,41,42,43,60,66}*.md \
+  docs/rebuild_plans/24_reconstruction_question_tree/*.md && exit 1 || true
+```
+
 Acceptance rule: before any plan-47 ledger row cites a plan-24 leaf,
 that leaf's family must have either an implementation handoff
 subsystem plan or a software handoff study/operations plan, and the
