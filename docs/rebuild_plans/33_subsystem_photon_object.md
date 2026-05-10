@@ -130,6 +130,23 @@ four-vector independently.
    direction, energy, merge membership, and selected neutral status
    must be unchanged.
 
+### 6.1 Decision-log stubs for photon-object choices
+
+P.3/P.4 choices feed π⁰ mass, visible mass, and event selection, so
+they need explicit methodology approval before replacing the
+reproduction baseline:
+
+| DEC stub | Decision to freeze | Required evidence before approval |
+|---|---|---|
+| `DEC-33-DIRECTION-METHOD` | Choose vertex→centroid, origin fallback policy, or cluster-axis fit for production photon direction | §6 angular pull closure plus fallback-rate audit by sample |
+| `DEC-33-ENERGY-METHOD` | Choose calibrated cluster sum, lead-glass-only, or regression calibration for production photon energy | §6 energy-response closure and plan-18 calibration provenance |
+| `DEC-33-FRAGMENT-MERGE` | Freeze truth-blind fragment-merge thresholds and duplicate policy | duplicate/over-merge rate scan and plan-01 audit proving no truth-label dependence |
+| `DEC-33-SCINT-ONLY-PHOTONS` | Freeze `leadglass_fraction = 0` semantics and downstream handling for scintillator-only photon rows | plan-34/37 impact table showing they do not enter Ch 8 π⁰ selection accidentally |
+
+Until approval, alternative direction/energy/merge outputs remain
+plan-38 ladder rows; the Ch 10 reproduction keeps the current
+baseline semantics.
+
 ## 7. Acceptance criteria
 
 - §2, §3 produce photon four-vector with stated semantics.
