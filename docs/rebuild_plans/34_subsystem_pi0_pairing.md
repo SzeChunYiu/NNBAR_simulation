@@ -66,17 +66,20 @@ and `energy_method` must be recorded; mixed production
 `cluster_sum` and legacy-alias inputs fail schema validation instead
 of being silently combined.
 
-## 2. Selection per candidate (thesis Ch 8 defaults from
-`ReconstructionConfig` in `reconstruction.py:14-41`):
+## 2. Selection per candidate
+
+Thesis Ch 8 defaults are held in the current `ReconstructionConfig`
+range cited in §2.2; the compact current implementation evaluates the
+strict six-cut AND in `find_pi0_candidates` (`photon.py:204-263`).
 
 | Cut column | Default | Thesis source | Code citation |
 |---|---|---|---|
-| `passes_mass_window` | 100 ≤ M ≤ 180 MeV | thesis Ch 8 | threshold configured by `ReconstructionConfig` (`reconstruction.py:14-41`); current strict AND in `find_pi0_candidates` (`photon.py:204-263`) |
-| `passes_total_energy` | E ≤ 720 MeV | thesis Ch 8 | threshold configured by `ReconstructionConfig` (`reconstruction.py:14-41`); current strict AND in `find_pi0_candidates` (`photon.py:204-263`) |
-| `passes_scintillator_energy` | Σ_scint ≤ 250 MeV | thesis Ch 8 | threshold configured by `ReconstructionConfig` (`reconstruction.py:14-41`); current strict AND in `find_pi0_candidates` (`photon.py:204-263`) |
-| `passes_leadglass_energy` | Σ_LG ≤ 980 MeV | thesis Ch 8 | threshold configured by `ReconstructionConfig` (`reconstruction.py:14-41`); current strict AND in `find_pi0_candidates` (`photon.py:204-263`) |
-| `passes_leadglass_fraction` | LG_fraction ≥ 0.55 | thesis Ch 8 | threshold configured by `ReconstructionConfig` (`reconstruction.py:14-41`); current strict AND in `find_pi0_candidates` (`photon.py:204-263`) |
-| `passes_opening_angle` | α ≥ 30° | thesis Ch 8 | threshold configured by `ReconstructionConfig` (`reconstruction.py:14-41`); current strict AND in `find_pi0_candidates` (`photon.py:204-263`) |
+| `passes_mass_window` | 100 ≤ M ≤ 180 MeV | thesis Ch 8 | config field verified in §2.2; current strict AND verified in `find_pi0_candidates` (`photon.py:204-263`) |
+| `passes_total_energy` | E ≤ 720 MeV | thesis Ch 8 | config field verified in §2.2; current strict AND verified in `find_pi0_candidates` (`photon.py:204-263`) |
+| `passes_scintillator_energy` | Σ_scint ≤ 250 MeV | thesis Ch 8 | config field verified in §2.2; current strict AND verified in `find_pi0_candidates` (`photon.py:204-263`) |
+| `passes_leadglass_energy` | Σ_LG ≤ 980 MeV | thesis Ch 8 | config field verified in §2.2; current strict AND verified in `find_pi0_candidates` (`photon.py:204-263`) |
+| `passes_leadglass_fraction` | LG_fraction ≥ 0.55 | thesis Ch 8 | config field verified in §2.2; current strict AND verified in `find_pi0_candidates` (`photon.py:204-263`) |
+| `passes_opening_angle` | α ≥ 30° | thesis Ch 8 | config field verified in §2.2; current strict AND verified in `find_pi0_candidates` (`photon.py:204-263`) |
 
 Strict `passes_selection` = AND of all six.
 
@@ -106,6 +109,21 @@ source-alias diagnostics, or prompt-timing π⁰ diagnostics. Those are
 target outputs for this plan or downstream validation artifacts, and
 must remain diagnostic-only per plan 01.
 
+### 2.2 A+ citation audit for current cut implementation
+
+Current-source claims in §1-§2 were re-checked against the L3 worktree
+before this plan was committed:
+
+| Cited contract | Verifier evidence | Status |
+|---|---|---|
+| π⁰ threshold defaults | `class ReconstructionConfig` resolves at `reconstruction.py:14`, inside the cited `reconstruction.py:14-41` range. | keep citation |
+| raw pair construction and strict six-cut AND | `def find_pi0_candidates` resolves at `photon.py:204`, inside the cited `photon.py:204-263` range. | keep citation |
+| optional prompt-timing veto source | `def annotate_timing_windows` resolves at `vertex.py:86`, inside the cited `vertex.py:86-160` range. | keep citation |
+
+Plan 34 does not specify a runtime CLI command, and it does not cite the
+removed legacy split-study files. Any future CLI-facing π⁰ study row must
+first pass the L3 `--help` verifier from the parallel-session protocol.
+
 Closure on truth π⁰s is specified in §5; plan 35 separately
 measures the post-fit mass resolution.
 
@@ -129,7 +147,7 @@ Plan 47 ledger quotes both.
 | P.5 | **All unordered pairs (current)** | Pair every neutral photon pair once by object-id ordering. | Current implementation is `find_pi0_candidates` (`photon.py:204-263`). | Production-eligible; O(N²). | π⁰ efficiency, candidate multiplicity, runtime. |
 | P.5 | **Best mass match per photon** | Build all pairs, then greedily keep pairs closest to `m_π⁰` without reusing photons. | Replacement after raw pair enumeration. | Eligible; mass threshold DEC required. | Correct-pair efficiency and high-multiplicity fake rate. |
 | P.5 | **Kinematic-fit ranked pairing** | Rank raw pairs by plan-35 χ² and mass pull. | Consumes plan-35 fit outputs after raw pair construction. | Eligible once fit covariance is validated. | Mass resolution and accidental rejection at fixed efficiency. |
-| P.6 | **Six-cut selection (current)** | Apply mass, total-energy, scintillator-energy, lead-glass-energy, LG-fraction, and opening-angle cuts. | Thresholds live in `ReconstructionConfig` (`reconstruction.py:14-41`); the compact strict AND lives in `find_pi0_candidates` (`photon.py:204-263`). | Production-eligible; thresholds must be thesis-cited or DEC-logged. | Signal efficiency, fake rate, N-1 sensitivity. |
+| P.6 | **Six-cut selection (current)** | Apply mass, total-energy, scintillator-energy, lead-glass-energy, LG-fraction, and opening-angle cuts. | Thresholds and strict AND are verified once in §2.2; current compact implementation is `find_pi0_candidates` (`photon.py:204-263`). | Production-eligible; thresholds must be thesis-cited or DEC-logged. | Signal efficiency, fake rate, N-1 sensitivity. |
 | P.6 | **Prompt-timing veto** | Require photon time residuals near zero before accepting prompt π⁰s. | New veto would consume timing annotations from `annotate_timing_windows` (`vertex.py:86-160`) after photon construction. | Eligible after timing calibration and DEC. | Accidental-rate reduction vs efficiency loss. |
 | P.6 | **Truth-parent label** | Reject pairs whose photons do not share a truth π⁰ parent. | Validation-only diagnostic inherited from source aliases. | Not production-eligible. | Upper-bound accidental rejection only. |
 
