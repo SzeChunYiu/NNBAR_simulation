@@ -333,6 +333,12 @@ neutral-discriminator output.
 - §1 observables produced for every cluster.
 - §2 classifier replaces fixed-cone with paired ladder benchmark.
 - §3 ROC closure passes.
+- Promotion checklist rows prove the feature contract, label-component
+  closures, Class-B drop hash, and downstream shadow columns before plan
+  33 consumes a discriminator output.
+- Evidence bundles mark reproduction, candidate, shadow-threshold, and
+  blocked contracts distinctly so a retune cannot overwrite the Ch 10
+  baseline.
 
 ## 5. Dependencies
 
