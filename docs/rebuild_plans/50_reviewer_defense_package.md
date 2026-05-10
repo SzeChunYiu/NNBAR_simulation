@@ -78,6 +78,7 @@ defence:
     glossary_audit: <path-or-null>
     staleness_summary: <plan50-staleness-id-or-path>
     review_artifact_hashes:
+      package: sha256:<hash-or-null>
       ci_report: sha256:<hash-or-null>
       note_annex: sha256:<hash-or-null>
       glossary_audit: sha256:<hash-or-null>
