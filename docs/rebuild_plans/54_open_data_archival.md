@@ -227,8 +227,12 @@ l1_defence_inventory:
       source_plans: [50, 51, 52, 53, 54, 55, 56]
       artifact_paths:
         - output/defense/<row_id>.yml
+        - docs/rebuild_plans/50_reviewer_defense_package.md
         - docs/rebuild_plans/51_reviewer_question_registry.md
         - docs/rebuild_plans/52_run_orchestration.md
+        - docs/rebuild_plans/53_ci_regression_suite.md
+        - docs/rebuild_plans/55_internal_note_template.md
+        - docs/rebuild_plans/56_glossary.md
       artifact_hashes:
         - sha256:<hash-or-null>
       status: present | blocked | stale
