@@ -208,6 +208,16 @@ l1_defence_rerun_manifest:
         note_annex: <plan55-annex-id-or-null>
         glossary_audit: <plan56-audit-id>
       blocker: Lambda-enriched strange-background closure artifact is not attached to a concrete result yet
+    - {bundle_member: TOF timing closure, status: blocked,
+       owner_signoff_ref: RQ-L1-TOF:<owner-hash-or-null>,
+       required_inputs: [{dataset_id: cal_timing_slice_v1, source_hash: null}, {dataset_id: cosmic_cry_essLund_overburdenA_v1, source_hash: <sha256-or-null>}],
+       refreshes: [{artifact_id: plan61_tof_resolution_roc, output_hash: null}, {artifact_id: plan61_signal_loss_interval, output_hash: null}], defence_overlay_ids: [tof_timing_resolution],
+       review_evidence_links: {package_rollup: <plan50-rollup-id>, staleness_summary: <plan50-staleness-id>, ci_report: <plan53-l1-report-id>, archive_inventory: <plan54-inventory-id-or-null>, archive_drill: <plan54-drill-id-or-null>, note_annex: <plan55-annex-id-or-null>, glossary_audit: <plan56-audit-id>}, blocker: calibrated timing slice and TOF closure artifact are not attached to a concrete result yet}
+    - {bundle_member: Bayesian limit cross-check, status: blocked,
+       owner_signoff_ref: RQ-L1-BAYES-LIMIT:<owner-hash-or-null>,
+       required_inputs: [{artifact_id: plan46_low_count_fixture_or_result, source_hash: null}],
+       refreshes: [{artifact_id: plan64_prior_sensitivity_table, output_hash: null}, {artifact_id: plan64_primary_method_ratio, output_hash: null}], defence_overlay_ids: [bayesian_prior_sensitivity],
+       review_evidence_links: {package_rollup: <plan50-rollup-id>, staleness_summary: <plan50-staleness-id>, ci_report: <plan53-l1-report-id>, archive_inventory: <plan54-inventory-id-or-null>, archive_drill: <plan54-drill-id-or-null>, note_annex: <plan55-annex-id-or-null>, glossary_audit: <plan56-audit-id>}, blocker: Bayesian prior-sensitivity result table is not attached to a concrete result yet}
     - bundle_member: Unbounded caveat status
       status: blocked
       owner_signoff_ref: RQ-L1-UNBOUNDED-CAVEATS:<owner-hash-or-null>
