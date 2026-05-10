@@ -157,6 +157,27 @@ Plan 38 ladder leaf P.1 scores each row with identical closure inputs.
 Plan 47 first records the truth-labelled reproduction baseline, then
 quotes the selected Class-A replacement and the residual difference.
 
+### 3.1 Machine-readable clusterer-config fixture
+
+Each replacement candidate has a frozen configuration row before it can
+write P.1 cluster fixtures:
+
+| Field | Required content | Review rule |
+|---|---|---|
+| `clusterer_config_id` | stable threshold/config key | referenced by `membership_config_id` |
+| `clusterer_method` | topological, sliding-window, particle-flow-style, or legacy baseline | must match a §3 candidate |
+| `seed_threshold_mev` | local-maximum or window seed threshold | null only for documented legacy baseline |
+| `adjacency_rule_id` | geometry neighbour rule or window shape | resolves to a plan-09 geometry sidecar |
+| `time_window_ns` | timing compatibility window or null | threshold changes require DEC approval |
+| `split_rule_id`, `merge_rule_id` | split/merge policy keys | required for topological and particle-flow methods |
+| `geometry_snapshot_id` | detector geometry version used to build neighbours | copied to closure artifacts |
+| `class_a_input_columns` | explicit input-column allowlist | must exclude `Track_ID`, ancestry, and truth labels |
+| `decision_dec_id` | `DEC-31-CLUSTERER-CHOICE` or draft replacement DEC | draft DEC keeps rows diagnostic |
+| `config_status` | `diagnostic`, `candidate`, `frozen`, or `blocked` | only frozen Class-A configs may feed plans 32/33 |
+
+The config row is rejected if a membership decision can read a column
+outside the allowlist or if the geometry sidecar cannot be resolved.
+
 ## 4. Closure-test specification
 
 1. **Dataset id:** run `cal_singlegamma_v1` from plan 23 at 50,
