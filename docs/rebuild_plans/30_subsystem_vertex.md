@@ -169,30 +169,43 @@ with the geometry constants from plan 16.
    the foil-acceptance gate must use plan 16 geometry constants, not
    truth origin labels.
 
-## 7. Implementation handoff
+## 7. Stage E.1 implementation handoff
 
-The current live vertex hook is `reconstruct_event_vertices`
-(`vertex.py:163-252`). It is sufficient as the reproduction baseline
-because it writes event-level V.4 coordinates and projected/skipped
-track counts, but it still groups by `Track_ID` and does not emit the
-split V.3 projection, V.4 covariance, or V.5 foil-acceptance fixtures
-specified in §1.4.
+The legacy reproduction hook is `reconstruct_event_vertices`
+(`vertex.py:163-252`). It remains useful for comparing against older
+event-level V.4 coordinates, but it groups by `Track_ID` and is no
+longer the preferred plan-30 fixture surface.
+
+The live Stage E.1 fixture hooks are now split in `vertex_reco.py`:
+`project_tracks_to_foil` (`vertex_reco.py:45-87`) writes V.3
+projection rows, `aggregate_event_vertices` (`vertex_reco.py:90-132`)
+writes V.4 event vertices and covariance, and `apply_foil_acceptance`
+(`vertex_reco.py:157-194`) writes the V.5 foil gate from
+`FoilGeometry` (`vertex_reco.py:13-18`). The corresponding regression
+coverage lives in `tests/test_vertex_reco.py`: V.3 schema/projection
+rows at `test_project_tracks_to_foil_emits_plan_30_v3_rows`
+(`tests/test_vertex_reco.py:39-74`), geometry-only V.4/V.5 acceptance
+at `test_aggregate_and_accept_vertices_use_plan_16_geometry_only`
+(`tests/test_vertex_reco.py:77-100`), and a real-sample smoke path at
+`test_vertex_reco_real_sample_consumes_particle_and_tpc_rows`
+(`tests/test_vertex_reco.py:103-118`).
 
 Plan-side gates for the L3 implementation:
 
-1. Consume V.2 fit rows and plan 16 geometry instead of raw
-   `Track_ID` groupings whenever the V.2 fixture exists.
-2. Emit separate V.3, V.4, and V.5 fixtures with the §1.4 fields and
-   hashes of the consumed V.2 fit table and geometry side-car.
-3. Preserve the current mean-of-projections result as a named
-   reproduction mode; any Billoir or adaptive fitter promotion needs a
-   plan 38 V.4 ladder row and a plan 05 decision entry.
+1. Consume V.2 fit rows and plan 16 geometry through the split
+   Stage E.1 hooks instead of reopening raw `Track_ID` groupings.
+2. Keep the separate V.3, V.4, and V.5 fixtures aligned with the §1.4
+   fields and add hashes of the consumed V.2 fit table and geometry
+   side-car before plan 47 consumes them.
+3. Preserve the mean-of-projections result as a named reproduction
+   mode; any Billoir or adaptive fitter promotion needs a plan 38 V.4
+   ladder row and a plan 05 decision entry.
 4. Keep truth vertices and truth origin labels out of production V.3,
    V.4, and V.5 rows. They may appear only in closure artifacts after
    the production fixtures are frozen.
-5. Add or extend tests in the existing L3 vertex-reco test file so
-   dropping `Name`, `Track_ID`, and truth vertex columns cannot change
-   the production V.5 foil-acceptance decision.
+5. Extend `tests/test_vertex_reco.py` so dropping `Name`, `Track_ID`,
+   and truth vertex columns cannot change the production V.5
+   foil-acceptance decision.
 6. Plan 60 consumes `foil_geometry_version`, vertex edge distances,
    and fiducial-profile states once the V.5 fixture is present.
 
@@ -201,10 +214,11 @@ Plan-side gates for the L3 implementation:
 - §3 migration complete.
 - §4 ladder benchmark recorded.
 - §6 closure passes.
-- §7 handoff is actionable for L3: the reproduction hook is cited, the
-  V.3/V.4/V.5 production fixtures are split from closure artifacts, and
-  vertex-reco tests must prove the foil gate is invariant to dropping
-  Class B truth columns.
+- §7 Stage E.1 handoff is actionable for L3: the legacy reproduction
+  hook, split V.3/V.4/V.5 fixture hooks, and vertex-reco regression
+  tests are cited; the fixtures remain split from closure artifacts;
+  and vertex-reco tests must prove the foil gate is invariant to
+  dropping Class B truth columns.
 
 ## 9. Dependencies
 
