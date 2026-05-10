@@ -91,6 +91,19 @@ the cut-config id. That key is the join surface for raw, fitted, and
 fit-failure rows; it must not include truth parentage, generated π⁰
 ids, or row order after filtering.
 
+### 1.4 A+ citation audit for current raw-candidate baseline
+
+Current-source claims in §1 and §4 were re-checked against the L3
+worktree before this plan was committed:
+
+| Cited contract | Verifier evidence | Status |
+|---|---|---|
+| raw π⁰ candidate table and absence of fit columns | `def find_pi0_candidates` resolves at `photon.py:204`, inside the cited `photon.py:204-263` range. | keep citation |
+
+Plan 35 does not specify a runtime CLI command, and it does not cite the
+removed legacy split-study files. Any future fit-study CLI row must pass
+the L3 `--help` verifier before this plan cites it.
+
 ## 2. Mass-constrained π⁰ fit
 
 For each pair from plan 34 satisfying basic cuts:
