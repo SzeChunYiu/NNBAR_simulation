@@ -38,8 +38,8 @@ Every codex lane should read this file at start and at finish to check for new t
 | clustering enhancements | DONE | clustering | Merged |
 | End-to-end pipeline runner + tests | DONE | reco-pipeline | Merged, 3 tests pass |
 | Random Forest Classifier | DONE | rfc-classifier | RFCClassifier + train_rfc.py merged |
-| π⁰ 60% lead glass cut verification | PLANNED | — | Check object_identification.py thresholds vs thesis Table 10.1 |
-| Opening angle threshold (30°) | PLANNED | — | Verify value in object_identification.py |
+| π⁰ lead-glass fraction cut verification | DONE | pi0-verification | Ch.8 has 60% local optimum and 55% final optimized cut; canonical constants/tests added |
+| Opening angle threshold (30°) | DONE | pi0-verification | Ch.8 has 25° local optimum and 30° final optimized cut; canonical constants/tests added |
 | Material budget analysis script | PLANNED | — | Low priority — analysis only |
 
 ---
