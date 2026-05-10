@@ -129,7 +129,20 @@ l1_defence_ci_report:
         review_evidence_link_keys: [package, staleness_summary, ci_report, archive_inventory, archive_drill, note_annex, glossary_audit]
         review_artifact_hash_keys: [package, staleness_summary, ci_report, archive_inventory, archive_drill, note_annex, glossary_audit]
         archive_drill_hash_present: true
-        command_template_verifier_hashes: [sha256:<hash>]
+        command_template_verifier_hashes: [sha256:b3cee4613afed558d4704df3dc5b281271aed768965d79a09603f812496806f0]
+      remediation: null
+    - check_id: l1_command_template_registry
+      status: pass | fail
+      files_checked:
+        - docs/rebuild_plans/52_run_orchestration.md
+      evidence:
+        executable_template_ids: [validate_reco_cutflow_v1, validate_reco_allruns_v1]
+        blocked_template_ids: [blocked_missing_input_v1]
+        verified_command: python -m nnbar_reconstruction.cli validate-reco --help
+        verified_options: [--runs, --all-runs, --json]
+        verifier_exit_status: 0
+        command_template_verifier_hashes: [sha256:b3cee4613afed558d4704df3dc5b281271aed768965d79a09603f812496806f0]
+        immutable_template_policy: true
       remediation: null
 ```
 
