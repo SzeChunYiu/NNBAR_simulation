@@ -44,6 +44,27 @@ charged PID; π⁰ pairing is plan 34), 30 (pairing — sic, plan 34),
 *Numbering correction:* per 00_README §4.7, plan 34 is π⁰ pairing
 and plan 35 is kinematic fit.
 
+Leaf P.1: calorimeter hits → neutral/EM cluster candidates
+  inputs (Class A): LeadGlass and Scintillator hit columns
+                    (Event_ID, x, y, z, t, eDep, photons,
+                    module_ID, vol_name, step_info) plus calorimeter
+                    geometry side-cars
+  forbidden (Class B): Track_ID, Parent_ID, Name, origin_vol_name,
+                       Interaction ancestry, particle_x/y/z truth
+                       origins
+  decision rule: group spatially and temporally adjacent calorimeter
+                 deposits into clusters using detector geometry and
+                 timing only; the plan 08 §3.5 truth-ancestry grouping
+                 is a baseline violation to replace, not an allowed
+                 production rule.
+  output schema: {event_id: int64, cluster_id: int64,
+                  detector_region: string, centroid_xyz: float64[3],
+                  centroid_covariance: float64[3,3], energy_mev:
+                  float64, time_ns: float64, n_hits: int32,
+                  cluster_valid: bool}
+  allowed truth use: validation_only
+  downstream consumers: P.2, P.3, P.4, P.5; plans 31, 32, 33, 34
+
 ### Next measurement (photon / π⁰ branch)
 
 Truth-free clustering closure study on `cal_singlegamma_v1` (plan 23)
