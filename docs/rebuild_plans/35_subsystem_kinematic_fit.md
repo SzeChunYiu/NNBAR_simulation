@@ -207,6 +207,19 @@ failure. The primary robustness requirement is that non-converged or
 missing-covariance candidates remain in denominators rather than being
 silently dropped.
 
+The Wave-6 fit-mode derivation ledger is:
+
+| P.7 mode leaf | Truth-side quantity | Estimator rationale | Dominant uncertainty | Closure assertion |
+|---|---|---|---|---|
+| `fit.raw_only` | unfitted two-photon π⁰ candidate four-vector | raw preservation is the control estimator and Ch 8 reproduction baseline | photon energy/direction bias and wrong-pair combinatorics | every fitted mode keeps the raw row and key for comparison |
+| `fit.mass_constraint` | π⁰ four-vector constrained to the physical π⁰ mass | covariance-weighted Lagrange constraint is optimal only after photon covariance closure | covariance scale and non-Gaussian shower tails | fitted mass width and pull width must improve without hidden row drops |
+| `fit.vertex_constraint` | photon directions/four-vectors consistent with the reconstructed event vertex | vertex covariance can improve angular consistency when vertex closure is calibrated | vertex covariance and fallback-origin bias | mode stays diagnostic until plan-30 covariance rows are approved |
+| `fit.combined` | joint mass-and-vertex constrained π⁰ candidate | combined constraints are justified only after the simpler constraints close separately | constraint correlations and minimizer stability | combined rows remain blocked until mass-only and vertex-only closure pass |
+
+These leaves make P.7 a comparison ladder: no downstream event variable
+or selection may consume fitted values until the selected mode has a
+signed DEC, closure pulls, and failure-denominator accounting.
+
 #### Logic gaps
 
 | Parameter | Status before production | Closure study / target date |
