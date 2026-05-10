@@ -168,6 +168,28 @@ Plan 33 does not specify a runtime CLI command, and it does not cite the
 removed legacy split-study files. Any future photon-object study CLI row
 must pass the L3 `--help` verifier before this plan cites it.
 
+### 4.2 Machine-readable fragment-merge fixture
+
+If a geometry/time merge is evaluated, it writes one decision row for
+each merge candidate before any photon four-vector is replaced:
+
+| Field | Required content | Review rule |
+|---|---|---|
+| `merge_candidate_id` | stable key for the proposed merge | unique within event and method bundle |
+| `event_id` | event containing the candidate fragments | joins to P.1/P.2 fixtures |
+| `input_cluster_ids` | one or more neutral P.1 cluster ids | every id must pass the P.2 neutral gate |
+| `angular_separation_deg`, `centroid_distance_cm`, `time_difference_ns` | truth-blind compatibility metrics | finite for every candidate pair/group |
+| `merge_threshold_id` | threshold tuple used for the decision | changes require `DEC-33-FRAGMENT-MERGE` |
+| `merge_decision` | `merge`, `keep_separate`, or `diagnostic_only` | production rows cannot be diagnostic-only |
+| `output_source_cluster_ids` | clusters copied to the photon fixture | equals input ids only when `merge_decision = merge` |
+| `fragment_merge_flag` | boolean copied to §2.2 photon rows | must match the merge decision |
+| `truth_blind_input_hash` | hash after dropping truth/provenance fields | must preserve all merge decisions |
+| `merge_status` | `pass`, `fail`, or `blocked` | blocked rows cannot feed plan-34 pairing |
+
+The merge fixture is rejected if truth labels or generated photon ids
+affect the candidate grouping, threshold comparison, or output source
+cluster list.
+
 ## 5. Alternative comparison matrix
 
 | Leaf | Candidate | Decision rule | Current/source citation | Class-A status | Comparison metric |
