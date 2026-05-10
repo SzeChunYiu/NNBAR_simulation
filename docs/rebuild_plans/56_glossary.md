@@ -76,6 +76,8 @@ code-level usage; deltas are flagged.
 | **prior sensitivity** | Difference between Bayesian limits under approved priors, reported as a reviewer caveat when it exceeds plan-64 thresholds. |
 | **defence overlay** | Extra plan-50 package block that must be present when a result depends on L1 EM, selection, timing, pile-up, strange-background, or Bayesian-limit evidence. |
 | **rerun transcript** | Plan-52 execution record proving which reviewer-triggered rerun rows actually ran, with input hashes, output hashes, environment identity, and pass/fail/block status. |
+| **command-template id** | Stable plan-52 identifier for the verified rerun command contract used by a transcript row; it records replay semantics without depending on prose. |
+| **blocked template** | Plan-52 command-template row used when no execution command is valid because a required input or artifact is missing. |
 | **package freshness** | Plan-50 state in which the L1 defence package staleness summary is `current` against the latest question registry, rerun manifest, rerun transcript, note annex, and glossary audit. |
 | **stale package** | Archived defence package whose evidence is retained for provenance but is not acceptable as current thesis evidence until the plan-50 staleness summary is regenerated. |
 | **stale-package caveat** | Plan-55 reviewer-note language that explicitly warns when a note cites stale L1 package evidence as historical provenance rather than current numerical support. |
@@ -137,6 +139,7 @@ Audit review rules:
 | `pass_* columns` always lists plan 37 | cut-flow terminology drifts away from the canonical selection plan |
 | L1 terms list owner L1 | another lane accidentally owns EM/selection terminology |
 | freshness and staleness terms cite plans 50, 54, and 55 | package-state language drifts across defence, archive, and note surfaces |
+| command-template terms cite plan 52 | rerun transcript language drifts away from the verified command registry |
 
 The fixture is consumed by the plan-53 L1 CI checks and by the plan-55
 internal note annex. A glossary change that updates prose but not this
@@ -170,6 +173,8 @@ the same caveat text and the plan-50 overlay roll-up is not marked
   marked ready.
 - Package freshness and stale-package caveat terms are covered by the
   glossary audit before any L1 note is promoted.
+- Command-template terms are covered before any L1 rerun transcript is
+  archived or cited by a reviewer-question answer.
 
 ## 5. Dependencies
 
