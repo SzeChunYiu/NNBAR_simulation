@@ -114,20 +114,22 @@ Worked examples:
 | 8 | 4.5 | F-C | expected background is in small-count regime |
 | 8 | 5.5 | asymptotic/CLs allowed | both thresholds are above the handover |
 
-### 3.1 Required decision record
+### 3.1 Machine-readable method-dispatch fixture
 
 Every significance or limit calculation writes a method-dispatch row
 before returning a number:
 
-| Field | Meaning |
-|---|---|
-| `dataset_or_channel` | plan-43 signal row or plan-44 background node |
-| `s_expected`, `b_expected`, `n_obs` | post-selection counts after nuisance weighting |
-| `handover_rule` | literal rule string, initially `n_obs <= 5 or b <= 5` |
-| `method_selected` | one of `Feldman-Cousins`, `Asimov Z0`, or `CLs/pyhf` |
-| `confidence_level` | 0.90 primary, 0.95 cross-check when requested |
-| `nuisance_ids` | plan-45 IDs included in the calculation |
-| `decision_dec_id` | one of the DEC stubs below once signed |
+| Field | Required content | Review rule |
+|---|---|---|
+| `dispatch_id` | stable key for this method decision | referenced by the result and input-bundle rows |
+| `dataset_or_channel` | plan-43 signal row or plan-44 background node | must match the input bundle |
+| `s_expected`, `b_expected`, `n_obs` | post-selection counts after nuisance weighting | copied from a traceable §3.4 input bundle |
+| `handover_rule` | literal rule string, initially `n_obs <= 5 or b <= 5` | cannot be changed without `DEC-46-FC-HANDOVER` |
+| `method_selected` | one of `Feldman-Cousins`, `Asimov Z0`, or `CLs/pyhf` | must follow the handover rule |
+| `confidence_level` | 0.90 primary, 0.95 cross-check when requested | must match the result row |
+| `nuisance_ids` | plan-45 IDs included in the calculation | must match applied throw ids in the input bundle |
+| `unbounded_limitations` | caveat ids inherited from plans 44-45 | non-empty blocks unconditional defence claims |
+| `decision_dec_id` | one of the DEC stubs below once signed | draft DEC keeps result provisional |
 
 The `method_selected` values are ledger labels, not claims that CLI
 subcommands or Python functions with matching names currently exist.
