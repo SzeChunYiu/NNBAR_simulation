@@ -367,6 +367,19 @@ The Ch 8 all-pairs baseline may feed plan 35 only after these checks
 resolve to measured rows. Retuned pair rankings or timing vetoes stay
 shadow-only until their separate DEC and closure evidence pass.
 
+Initial evidence-bundle examples:
+
+| `evidence_bundle_id` | Included rows | Reviewer action |
+|---|---|---|
+| `p34_ch8_allpairs_candidate_v0` | pair fixture, cut-config row, closure rows, accidental-rate rows, truth-drop hash | candidate for plan-35 input once measured/pass and DEC evidence attach |
+| `p34_no_pi0_accidental_bundle_v0` | no-π⁰ control row, selected-candidate count, and interval | required before approving P.6 fake rejection |
+| `p34_prompt_timing_shadow_v0` | timing-veto sidecar and baseline six-cut rows | keep diagnostic until timing calibration and retuned-cut DEC pass |
+| `p34_truth_parent_oracle_blocked_v0` | truth-parent sideband labels and production hash comparison | validation-only upper bound; never production pairing evidence |
+
+Evidence bundles make it explicit which π⁰ rows are production candidates,
+which are accidental-rate studies, and which are validation or shadow
+surfaces.
+
 ## 6. Acceptance criteria
 
 - §2 individual passes_* columns + `passes_selection`.
