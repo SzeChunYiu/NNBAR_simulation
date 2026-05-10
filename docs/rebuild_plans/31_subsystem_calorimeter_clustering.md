@@ -130,7 +130,7 @@ production `cluster_id`, `hit_membership_key`, and
 plan 32/33 can join by truth-blind membership rather than by simulated
 track ancestry.
 
-### 2.3 A+ citation audit for current cluster baseline
+### 2.4 A+ citation audit for current cluster baseline
 
 Current-source claims in §1-§3 were re-checked against the L3 worktree
 before this plan was committed:
