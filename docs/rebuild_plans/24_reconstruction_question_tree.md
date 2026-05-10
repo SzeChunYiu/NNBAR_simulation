@@ -182,7 +182,10 @@ reviewer runs these checks against the current worktrees:
    artifact manifest schema; plans 41-43, 60, and 66 each contain a
    software-handoff manifest schema for their downstream study or
    operations artifacts.
-5. All L0 writable files remain below the 500-line cap and have no
+5. Charged-side Stage E.1 modules in plans 25-28 each contain a fixture
+   matrix that names synthetic, real-output, and unavailable/gated cases
+   before L3 promotes a replacement implementation.
+6. All L0 writable files remain below the 500-line cap and have no
    unresolved work-marker text or fill-in instructions.
 
 The citation-range check in item 2 is machine-auditable with this
@@ -238,6 +241,15 @@ grep -q 'plan60_fiducial_edges@stage-e1' docs/rebuild_plans/60_fiducial_volume_a
 grep -q '66_data_quality_monitoring@stage-e1' docs/rebuild_plans/66_data_quality_monitoring.md || exit 1
 ```
 
+The charged-side fixture-matrix coverage in item 5 is checked with:
+
+```bash
+for p in 25 26 27 28; do
+  f=$(ls docs/rebuild_plans/${p}_*.md)
+  grep -q 'Stage E.1 fixture matrix' "$f" || exit 1
+done
+```
+
 The current L3 regression slice for the L0-owned reconstruction,
 study, fiducial, and DQM handoffs is:
 
@@ -257,7 +269,7 @@ pytest -q \
   tests/test_dqm.py::test_dqm_cli_writes_run_table_and_manifest
 ```
 
-The file-existence and 500-line checks in items 4-5 are run with:
+The file-existence and 500-line checks in items 4-6 are run with:
 
 ```bash
 for f in docs/rebuild_plans/{24,25,26,27,28,29,30,41,42,43,60,66}*.md \
