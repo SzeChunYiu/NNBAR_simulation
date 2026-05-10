@@ -337,6 +337,26 @@ plan 57 split artifact and a plan 05 decision, or if any truth column is
 listed as a production input. Plans 38 and 47 consume this manifest
 before accepting C.5/C.6 ladder or ledger rows.
 
+### 6.6 Stage E.1 fixture matrix
+
+The C.5/C.6 replacement patch must prove that charged-PID decisions are
+rule-versioned, source-hashed, and truth-blind before plan 38 or plan 47
+consumes the PID manifest:
+
+| Fixture case | Required input condition | Required assertion |
+|---|---|---|
+| truth-column drop | C.1/C.2/C.3 rows are run with and without `Name`, `Track_ID`, truth kinetic energy, and interaction labels | C.5/C.6 rows, `rule_version`, `pid_valid`, and rejection reasons are unchanged |
+| invalid C.2 input | a candidate has a failed or non-applicable dE/dx estimator row | PID emits a rejected row with `decision_reason=invalid_candidate_or_dedx` rather than silently dropping the candidate |
+| invalid C.3 input | range row is failed, edge-gated, or unavailable | PID records the configured range-handling reason and does not infer proton/pion class from null `range_cm` |
+| threshold boundary | dE/dx and range values straddle the cut-based threshold values | `classifier_family=cut_based`, threshold hashes, and pass/fail decisions reproduce the frozen `rule_version` |
+| likelihood candidate | a likelihood-ratio artifact is supplied during review | promotion remains blocked unless plan 57 split hashes and a plan 05 decision are present in the manifest |
+| real C.1/C.2/C.3 chain | real paired output flows through plans 25, 27, and 28 before PID production | C.5 consumes frozen upstream hashes and never calls `scan-pid` or reads calibration labels during production scoring |
+
+The review artifact for any PID replacement must map each fixture row to
+the synthetic or real-output selector in §6.4. Rows that depend on plan
+57 likelihood artifacts remain calibration-only until their manifest
+contains both the split hash and the plan 05 decision id.
+
 ## 7. Acceptance criteria
 
 - §2 cut-based baseline reproduced.
@@ -347,7 +367,7 @@ before accepting C.5/C.6 ladder or ledger rows.
 - §6 Stage E.1 handoff is actionable for L3: current production and
   calibration hooks are cited, production C.1/C.5/C.6 inputs and
   outputs are named, promotion invariants, producer/consumer contract,
-  verification command, and artifact manifest schema are explicit,
+  verification command, artifact manifest schema, and fixture matrix are explicit,
   current charged-reco tests are cited, and the remaining tests must
   prove the production scorer is invariant to dropping Class B truth
   columns.
