@@ -224,6 +224,13 @@ explicit remaining gates:
 - §1 truncated-mean cut fractions documented in DEC.
 - §4 saturation limitation noted in plan 47 ledger for any
   high-dE/dx-quoted result.
+- §6 Stage E.1 handoff is actionable for L3: the target public
+  functions, unit-test path, integration-test path, and required C.2
+  fields (`estimator_id`, `dedx_mev_per_cm`, `path_length_cm`,
+  `path_length_source`, `n_steps_used`, truncation fractions,
+  `truncation_applied`, `dedx_quality_state`,
+  `dedx_failure_reason`, `calibration_source`, and contribution
+  sidecar rows) are all named before implementation begins.
 
 ## 8. Dependencies
 
