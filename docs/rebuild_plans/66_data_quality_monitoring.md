@@ -304,6 +304,32 @@ L3/software handoff requirements:
    validation/registry joins remain software requirements, not runnable
    instructions.
 
+### 9.1 DQM promotion manifest schema
+
+The DQM producer or verified wrapper must write a promotion manifest
+that makes registry and ledger consumption explicit:
+
+```yaml
+schema_version: 66_data_quality_monitoring@stage-e1
+dataset_id: <plan-03 dataset id>
+run_quality_hash: <sha256 of run_quality.parquet>
+quality_manifest_hash: <sha256 of quality_manifest.json>
+reco_table_hashes: {runs: <sha256>, events: <sha256>, charged: <sha256>, photons: <sha256>, pi0: <sha256>, vertices: <sha256>}
+validation_json_hash: <sha256|null>
+registry_manifest_hash: <sha256|null>
+quality_status: pass | warn | fail
+status_lattice: fail_over_warn_over_pass
+waiver_ids: []
+registry_writeback_status: pending_plan03_schema | mirrored | not_applicable
+ci_hooks_required: [schema_lint, frozen_sample_refresh, weekly_drift_report]
+producer_help_verified: true
+```
+
+The promotion manifest is invalid if any reconstructed run lacks a row,
+if the dataset status does not follow the `fail > warn > pass` lattice,
+or if registry write-back is marked `mirrored` before plan 03 accepts
+the schema fields in §7.
+
 ## 10. Acceptance criteria
 
 - §3 threshold table has variable, source, threshold, severity, owner,
@@ -318,8 +344,9 @@ L3/software handoff requirements:
 - §8 consumers distinguish DQM status from analysis closure.
 - §9 handoff is complete: current DQM regression tests are cited,
   validation ingestion, registry hash checking, registry write-back,
-  remaining fixture-test coverage, CI smoke coverage, and the
-  no-invented-CLI rule are all specified.
+  remaining fixture-test coverage, CI smoke coverage, a required
+  promotion manifest schema, and the no-invented-CLI rule are all
+  specified.
 
 ## 11. Dependencies
 
