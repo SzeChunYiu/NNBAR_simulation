@@ -95,6 +95,42 @@ l1_note_annex:
   result_id: LIC-CH10-NUM-1
   note_version: v1
   annex_rows:
+    - annex_block: em_object_chain
+      applicability: applies | not_applicable | blocked
+      source_plans: [31, 32, 33, 34, 35]
+      defence_overlay_id: em_cluster_truth_blindness
+      additional_defence_overlay_ids: [pi0_cut_decomposition]
+      reviewer_question_ids: [RQ-L1-EM-P1-CLUSTERING, RQ-L1-EM-P2-DISCRIMINANT, RQ-L1-PI0-CUTS]
+      required_contents:
+        - P.1-P.7 method ids and closure row ids
+        - Class-B drop hash status for production EM decisions
+        - selected DEC stubs for clusterer, discriminator, and pi0 cuts
+      evidence_refs:
+        - p1_p7_closure_rows
+        - photon_pi0_response_summary
+        - DEC-31-CLUSTERER-CHOICE
+        - DEC-32-DISCRIMINANT-CHOICE
+        - DEC-34-PI0-CUT-BASELINE
+      review_evidence_links:
+        package_rollup: <plan50-rollup-id>
+        ci_report: <plan53-l1-report-id>
+        rerun_manifest: plan52:EM chain closure
+        command_template_verifier: plan52:validate_reco_allruns_v1
+        glossary_audit: <plan56-audit-id>
+        staleness_summary: <plan50-staleness-id>
+        archive_inventory: <plan54-inventory-id-or-null>
+        archive_drill: <plan54-drill-id-or-null>
+      artifact_hashes:
+        note_annex: sha256:<hash>
+        defence_package: sha256:<hash-or-null>
+        staleness_summary: sha256:<hash-or-null>
+        ci_report: sha256:<hash-or-null>
+        rerun_manifest: sha256:<hash-or-null>
+        command_template_verifier: sha256:b3cee4613afed558d4704df3dc5b281271aed768965d79a09603f812496806f0
+        glossary_audit: sha256:<hash-or-null>
+        archive_inventory: sha256:<hash-or-null>
+        archive_drill: sha256:<hash-or-null>
+      caveat_text: <required when applicability is blocked>
     - annex_block: event_variable_and_cutflow_identity
       applicability: applies | not_applicable | blocked
       source_plans: [36, 37]
