@@ -94,6 +94,27 @@ Plan 36 does not specify a runtime CLI command, and it does not cite the
 removed legacy split-study files. Any future event-variable study CLI row
 must pass the L3 `--help` verifier before this plan cites it.
 
+### 2.3 Machine-readable E.1-E.9 event-variable fixture
+
+The event-variable fixture stores one row per event after upstream object
+validity gates and before plan-37 selection:
+
+| Field | Required content | Review rule |
+|---|---|---|
+| `event_id` | stable event key | joins to plan-31 through plan-35 fixtures |
+| `calorimeter_edep`, `upper_scintillator_edep`, `lower_scintillator_edep`, `upper_leadglass_edep`, `lower_leadglass_edep` | E.1/E.2 energy sums in MeV | non-negative and recomputable from source rows |
+| `*_longitudinal_energy`, `*_transverse_energy` | E.3/E.4 directional components | finite; uses reconstructed hit positions only |
+| `sphericity`, `event_shape_valid` | E.5 validity-gated shape output | sparse cases must fail explicitly |
+| `fox_wolfram_h0`, `fox_wolfram_h2`, `fox_wolfram_h4`, `thrust` | E.6 optional event-shape features | disabled rows carry sentinel values plus `event_shape_valid = false` |
+| `visible_invariant_mass` | E.7 visible mass in MeV | null/invalid only for explicitly sparse events |
+| `calorimeter_timing_edep`, `calorimeter_out_of_time_edep` | E.8 timing-window sums | derived from timing annotations, not truth time |
+| `n_charged_objects`, `n_photon_like`, `n_pi0`, `pion_multiplicity` | E.9 object counts | must match upstream fixture rows after selection gates |
+| `event_variable_method_id` | source/method tag for the fixture | changes require the relevant DEC in §5.1 |
+
+Fixture review recomputes raw sums, object counts, and validity flags from
+upstream fixtures. Dropping diagnostic truth/provenance columns may remove
+closure labels but must not change any production event variable.
+
 ## 3. Hemisphere convention
 
 The detector is symmetric about z=0 (the foil). "Upper" / "lower"
