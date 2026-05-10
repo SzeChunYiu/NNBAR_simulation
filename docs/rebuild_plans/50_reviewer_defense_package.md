@@ -76,10 +76,12 @@ defence:
     ci_report: <path-or-null>
     note_annex: <path-or-null>
     glossary_audit: <path-or-null>
+    staleness_summary: <plan50-staleness-id-or-path>
     review_artifact_hashes:
       ci_report: sha256:<hash-or-null>
       note_annex: sha256:<hash-or-null>
       glossary_audit: sha256:<hash-or-null>
+      staleness_summary: sha256:<hash-or-null>
     staleness_status: current | stale | blocked
 ```
 
@@ -183,6 +185,7 @@ l1_overlay_rollup:
     ci_report: present | missing
     note_annex: present | missing
     glossary_audit: present | missing
+    staleness_summary: present | missing
     review_artifact_hashes: present | missing
   blocking_overlays:
     - overlay_id: pileup_l11_status
@@ -274,8 +277,8 @@ The generator joins ledger rows × dataset manifests × ladder matrices
 - Ready L1 packages carry a current §2.4 staleness summary.
 - The package schema exposes `l1_review_evidence` links for overlays, owner
   sign-off, rerun artifacts, command templates, verifier hashes, CI reports,
-  note annexes, glossary audits, review-artifact hashes, and staleness
-  status.
+  note annexes, glossary audits, staleness summaries, review-artifact hashes,
+  and staleness status.
 - §3 generation automated.
 
 ## 5. Dependencies
