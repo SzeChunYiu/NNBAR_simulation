@@ -118,6 +118,21 @@ The signal fixture checks the approximately 70% final acceptance target;
 the cosmic fixture checks that zero survivors are reported with the
 plan-04 interval convention rather than as exact zero background.
 
+Baseline cut identity rows, before plan-47 counts are attached:
+
+| `cut_id` | `cli_order` | `input_columns` | `produced_column` | `threshold_expression` | `n_pass_individual` | `n_after_cut` | `decision_dec_id` |
+|---|---:|---|---|---|---:|---:|---|
+| `S1_scintillator_energy` | 1 | [`scintillator_edep`] | `pass_scintillator_energy` | `20 <= scintillator_edep <= 2000 MeV` | null | null | `DEC-37-CH10-CUTFLOW-BASELINE` |
+| `S1_tpc_foil_track` | 2 | [`has_foil_tpc_track`] | `pass_tpc_foil_track` | `has_foil_tpc_track == true` | null | null | `DEC-37-CH10-CUTFLOW-BASELINE` |
+| `S2_pion_count` | 3 | [`pion_multiplicity`] | `pass_pion_count` | `pion_multiplicity >= 1` | null | null | `DEC-37-CH10-CUTFLOW-BASELINE` |
+| `S3_invariant_mass` | 4 | [`visible_invariant_mass`] | `pass_invariant_mass` | `finite visible_invariant_mass >= 500 MeV` | null | null | `DEC-37-CH10-CUTFLOW-BASELINE` |
+| `S4_sphericity` | 5 | [`sphericity`] | `pass_sphericity` | `finite sphericity >= 0.2` | null | null | `DEC-37-CH10-CUTFLOW-BASELINE` |
+| `S5_scintillator_balance` | 6 | [`upper_scintillator_edep`, `lower_scintillator_edep`] | `pass_scintillator_balance` | `upper <= 320 MeV and lower <= 930 MeV` | null | null | `DEC-37-CH10-CUTFLOW-BASELINE` |
+| `S6_preliminary_selection` | null | all six `pass_*` columns above | `passes_preliminary_selection` | logical AND of all six cut booleans | null | null | `DEC-37-CH10-CUTFLOW-BASELINE` |
+
+The count columns are null in the contract row and are populated only by
+dataset-specific plan-47 reproduction rows.
+
 ## 2. Closure-test specification / Ch 10 reproduction
 
 1. **Dataset ids:** `sig_foil_v3` for signal acceptance and
