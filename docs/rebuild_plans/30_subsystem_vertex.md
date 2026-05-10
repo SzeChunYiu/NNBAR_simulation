@@ -69,6 +69,15 @@ seeds. Migration:
 | **Billoir χ² fit** | covariance-weighted χ² minimisation | proper uncertainty per axis; downweights bad tracks |
 | **Adaptive vertex fit (Kalman)** | iterative outlier-aware | robust to mismeasured tracks |
 
+
+### 4.1 Alternative comparison rows
+
+| Alternative | Source paper / codebase | NNBAR-specific adaptation | Expected ladder leaf delta |
+|---|---|---|---|
+| Mean of projections | Existing `reconstruction.py:200-430` | Preserve as reproduction baseline; use V.3 projection validity and no truth-name seed exclusion after migration. | Baseline V.4 result; simple but no covariance weighting. |
+| Billoir χ² fit | Billoir-style covariance-weighted vertex fit | Use V.2/V.3 covariance matrices and plan 16 foil geometry; downweight high-χ² tracks. | Expected to reduce vertex r/z pull width and improve V.5 foil compatibility stability. |
+| Adaptive vertex fit | Kalman/adaptive robust vertex literature | Iterate weights to suppress outlier tracks from secondary interactions or EM conversions. | Potentially best V.4 robustness in shower-rich signal events; higher tuning burden before plan 38 scoring. |
+
 Plan 38 ladder leaf V.4 scores each on signal sample (plan 20).
 
 ## 5. Foil-acceptance gate (V.5)
