@@ -160,6 +160,14 @@ replay definitions rather than broken/retired macros.
 The short-muon cluster is retained for fast feedback and historical
 reproduction, but plan 21 still supersedes it for new cosmic samples.
 
+#### 1.3.7 `macro/cosmic_macro/test_macro/`
+
+| Macro | Purpose | Key commands invoked | Output / sample target | Status |
+|---|---|---|---|---|
+| `macro/cosmic_macro/test_macro/BeamOn.mac` | Helper for the old cosmic smoke-test loop | `/run/beamOn 1000` | Caller-selected `output/test_cosmic_<name>/cosmic_<name>_<i>/*_output_<run>.parquet` | retired |
+| `macro/cosmic_macro/test_macro/cosmic_simulation.mac` | Parameterised old cosmic smoke partition | `/particle_generator/set_folder_name test_cosmic_{name}/cosmic_{name}_{i}`; `/particle_generator/set_mcpl_file ./mcpl_files/cosmic_{name}_{i}.mcpl`; `/particle_generator/set_run_number 0`; `/particle_generator/set_event_number` with no value; `/control/loop ./macro/cosmic_macro/test_macro/BeamOn.mac a 0 9 1` | Intended ten `beamOn 1000` batches, but the empty `set_event_number` command makes the macro unsuitable as the canonical smoke path | retired |
+| `macro/cosmic_macro/test_macro/test_muon.mac` | Old wrapper for six muon smoke partitions | `/run/initialize`; `/physics_engine/neutron/timeLimit 10000 s`; `/control/alias name muon`; `/control/foreach ./macro/cosmic_macro/test_macro/cosmic_simulation.mac i "0 1 2 3 4 5"` | Superseded by `cosmic_muon_short/run_all.mac` for fast feedback | retired |
+
 These per-species macros use Geant4 GPS-style cosmic-like primaries
 *without* a true atmospheric spectrum source. They are the licentiate
 baseline; **plan 21 retires them** and replaces them with a single
