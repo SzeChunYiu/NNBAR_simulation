@@ -181,6 +181,22 @@ uncertainties are upstream object efficiency, energy calibration,
 vertex/direction resolution, sparse-event sentinel policy, timing-window
 calibration, and the convention used for hemisphere splits.
 
+The Wave-6 per-variable derivation ledger is:
+
+| Leaf | Truth-side quantity | Estimator rationale | Dominant uncertainty | Closure assertion |
+|---|---|---|---|---|
+| E.1 | total visible calorimeter energy | calibrated hit-energy sum is the sufficient additive estimator for visible detector energy | scintillator/lead-glass calibration and missing hit efficiency | recompute from raw hit sidecars with non-negative energy checks |
+| E.2 | hemispheric energy balance | y-sign split reproduces the licentiate upper/lower convention and exposes asymmetry | boundary hits and detector-frame convention | boundary sidecar proves no double counting or silent loss |
+| E.3/E.4 | longitudinal/transverse energy flow | hit-position projections summarise whether energy is beam-axis-like or radial | position calibration and low-radius stability | directional-energy helper is recomputed from hit coordinates |
+| E.5/E.6 | event-shape topology of reconstructed objects | sphericity, thrust, and Fox-Wolfram moments are standard momentum-flow summaries | sparse-object sentinels and object-efficiency bias | sparse fixtures must fail selection by validity flags, not tuned numbers |
+| E.7 | visible invariant mass | four-vector sum is the Lorentz-invariant estimator for reconstructed visible mass | photon energy scale, charged momentum, and fit-mode choice | raw and fit-aware modes are compared before S.3 consumes a replacement |
+| E.8 | prompt versus out-of-time calorimeter energy | timing-window sums test whether detector energy is compatible with the prompt signal window | timing calibration and plan-61 resolution terms | timing sums are rerun after TOF/timing nuisance closure |
+| E.9 | reconstructed object multiplicity | counting upstream validated objects is the direct estimator for topology multiplicity | object validity gates and duplicate suppression | counts match upstream fixtures after truth sidecars are dropped |
+
+These leaves share one reducer implementation, but each has a different
+physics observable and closure failure mode. Final plan-37 inputs must
+therefore cite the event-variable method id, not only the event row.
+
 #### Logic gaps
 
 | Parameter | Status before production | Closure study / target date |
