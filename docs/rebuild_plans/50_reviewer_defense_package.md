@@ -238,7 +238,8 @@ l1_staleness:
     plan52_rerun_manifest: <hash>
     plan52_rerun_transcript: <hash>
     plan52_command_templates: <hash>
-    plan52_command_template_verifiers: <hash>
+    plan52_command_template_verifiers:
+      - sha256:b3cee4613afed558d4704df3dc5b281271aed768965d79a09603f812496806f0
     plan53_ci_report: <hash>
     plan54_archive_inventory: <hash>
     plan54_archive_drill: <hash-or-null>
