@@ -169,10 +169,9 @@ has truth-dependent paths tracked by plan 08 §3.7.
 
 ### 3.5 Photon / π⁰ reconstruction
 
-This subsection is being deepened in logical units. The current entry covers
-lead-glass/scintillator shower source resolution, charged/neutral photon-object
-classification, and photon-fragment merging. The π⁰-pairing public function
-`find_pi0_candidates` remains the next §3.5 unit.
+This subsection documents lead-glass/scintillator shower source resolution,
+charged/neutral photon-object classification, photon-fragment merging, and the
+π⁰ candidate pairing/selection surface.
 
 #### 3.5.1 Shower-source and charged-match helpers
 
@@ -265,8 +264,64 @@ fragment merging. The geometric charged/neutral decision itself is angle/timing
 based, but the current source grouping and fragment merge still depend on truth
 provenance, as tracked by plan 08 §3.7.
 
-#### 3.5.3 Pending π⁰-pairing detail
+#### 3.5.3 `find_pi0_candidates(photons, config=DEFAULT_CONFIG)`
 
-`find_pi0_candidates(photons, config=DEFAULT_CONFIG)` (`reconstruction.py:1316–1531`)
-forms photon pairs and applies the π⁰ mass/energy/opening-angle policy. It is the
-next §3.5 unit to document with the same line-level input/output/truth-read detail.
+**Source:** `NNBAR_Detector/nnbar_reconstruction/reconstruction.py:1316–1530`.
+
+**Inputs:** the photon-object table from §3.5.2. Required operational columns
+are `event_id`, `object_id`, `has_tpc_track`, `ux/uy/uz`, `total_energy`,
+`leadglass_edep`, and `scintillator_edep` (`reconstruction.py:1406–1421`).
+Diagnostic/provenance inputs copied into the π⁰ table are `source_track_id`,
+`source_track_ids`, `truth_name`, `truth_charge_match_class`,
+`matched_tpc_track_id`, `charged_match_angle_deg`,
+`charged_match_time_delta_ns`, `cluster_time_ns`, `photon_path_length_cm`, and
+`vertex_time_ns` (`reconstruction.py:1369–1402`, `1438–1512`). Plan 09 §14.4
+classifies source-track aliases and truth charge outputs as photon provenance;
+plan 09 §14.5 records that the π⁰ table carries selection booleans,
+selection-failure reasons, truth charge/pair diagnostics, source aliases, and
+prompt-timing diagnostics (lines 288–303).
+
+**Decision rule:** empty input returns an empty π⁰ table with the declared
+schema (`reconstruction.py:1322–1367`). For each event, only photon rows with
+`has_tpc_track == False` are paired, and each unordered pair is considered once
+using `object_id` ordering (`reconstruction.py:1406–1409`). Pair directions are
+unit vectors from `ux/uy/uz`; zero-vector directions are skipped
+(`reconstruction.py:1410–1413`). Opening angle is `acos(dot(va, vb))`, and
+mass is `sqrt(max(2 * E1 * E2 * (1 - cos(angle)), 0))`
+(`reconstruction.py:1414–1417`). Energy sums are lead-glass plus scintillator,
+with `leadglass_fraction = lead / total` when total > 0 (`reconstruction.py:1418–1421`).
+
+The hardcoded thesis-style selection booleans compare against
+`ReconstructionConfig` defaults: mass window 100–180 MeV, total energy ≤ 720
+MeV, scintillator energy ≤ 250 MeV, lead-glass energy ≤ 980 MeV,
+lead-glass fraction ≥ 0.55, and opening angle ≥ 30° (`reconstruction.py:29–35`,
+`1422–1427`). `passes_selection` is the logical AND of those six cuts;
+`selection_failure_reasons` is a comma-separated list of failed cut names
+(`reconstruction.py:1428–1437`, `1519–1526`). Prompt timing is diagnostic,
+not part of `passes_selection`: each photon residual is
+`cluster_time_ns - vertex_time_ns - photon_path_length_cm / c`, with missing
+vertex time treated as 0; `passes_prompt_timing` requires both finite residuals
+and max absolute residual ≤ `config.pi0_prompt_time_max_abs_residual_ns`
+(default 2 ns; `reconstruction.py:1390–1402`, `1451–1469`, `1508–1512`).
+
+Near-charged diagnostics are also output-only here. `charged_lineage_photons`
+counts pair members whose `truth_charge_match_class` is `charged` or
+`unmatchable_charged`; `near_charged_track_photons` counts pair members whose
+finite `charged_match_angle_deg` is within the charged-cluster cone default
+10.5° (`reconstruction.py:1404`, `1438–1450`, `1481–1507`). Minimum charged
+match angle and time-delta summaries ignore non-finite values.
+
+**Outputs:** DataFrame columns are exactly the schema declared at
+`reconstruction.py:1322–1365`: event id, photon object ids, source track ids and
+alias strings, photon truth names and truth-charge-class pairs,
+charged-lineage/near-track diagnostics, matched TPC ids, charged-match angle and
+time-delta summaries, vertex-time residual summaries, `passes_prompt_timing`,
+π⁰ mass/opening angle/energy sums, per-cut booleans, `passes_selection`, and
+`selection_failure_reasons`.
+
+**Truth reads:** `truth_name`, `truth_charge_match_class`, source-track ids, and
+matched-TPC provenance are Class B/provenance diagnostics inherited from the
+photon table. The actual π⁰ kinematic selection uses reconstructed photon
+neutrality, directions, energies, and configured thresholds; truth fields are
+retained for validation and fake/root-cause studies, not for the six-cut
+`passes_selection` decision.
