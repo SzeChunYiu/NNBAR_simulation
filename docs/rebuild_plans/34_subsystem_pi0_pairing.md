@@ -140,7 +140,27 @@ source-alias diagnostics, or prompt-timing π⁰ diagnostics. Those are
 target outputs for this plan or downstream validation artifacts, and
 must remain diagnostic-only per plan 01.
 
-### 2.2 A+ citation audit for current cut implementation
+### 2.2 Machine-readable cut-config fixture
+
+Each π⁰ candidate row references a cut-config record so Ch 8 baseline
+thresholds are reproducible before retuning:
+
+| Field | Required content | Review rule |
+|---|---|---|
+| `cut_config_id` | stable key for the six-cut tuple | referenced by every P.5/P.6 candidate row |
+| `mass_window_mev` | `[100, 180]` for the Ch 8 baseline | changes require `DEC-34-RETUNED-PI0-CUTS` |
+| `total_energy_max_mev` | 720 | copied from the reviewed baseline |
+| `scintillator_energy_max_mev` | 250 | copied from the reviewed baseline |
+| `leadglass_energy_max_mev` | 980 | copied from the reviewed baseline |
+| `leadglass_fraction_min` | 0.55 | copied from the reviewed baseline |
+| `opening_angle_min_deg` | 30 | copied from the reviewed baseline |
+| `decision_dec_id` | `DEC-34-PI0-CUT-BASELINE` or retune DEC | draft DEC keeps row provisional |
+| `config_status` | `baseline`, `candidate`, or `blocked` | only baseline/promoted rows may feed plan 35 |
+
+Initial config row: `ch8_pi0_baseline_v0` uses the values above with
+`config_status = baseline`.
+
+### 2.3 A+ citation audit for current cut implementation
 
 Current-source claims in §1-§2 were re-checked against the L3 worktree
 before this plan was committed:
