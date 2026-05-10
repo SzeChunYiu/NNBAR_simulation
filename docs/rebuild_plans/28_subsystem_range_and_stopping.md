@@ -328,6 +328,27 @@ hits cannot be joined back to `(event_id, charged_candidate_id,
 range_id)`. Plans 29, 45, 60, and 66 consume this manifest before
 trusting range or Bragg-profile observables.
 
+### 5.7 Stage E.1 fixture matrix
+
+The C.3 replacement patch must prove that range association is
+observable-only and edge-aware before PID, fiducial, or DQM consumers
+read the range manifest:
+
+| Fixture case | Required input condition | Required assertion |
+|---|---|---|
+| truth-column drop | C.1/V.1, V.2, and scintillator rows are run with and without legacy track or truth path labels | `range_cm`, `association_method`, associated-hit sidecar keys, and quality state are unchanged |
+| no forward scintillator hit | candidate has a valid V.2 direction but no scintillator hit in the projected forward cone | a C.3 row is emitted with `range_quality_state=fail` and `range_failure_reason=no_scintillator_hits` |
+| bad fit state | the V.2 row is marked failed, degraded, or covariance-invalid | range production records `range_failure_reason=bad_fit_state` instead of recomputing direction from raw hits |
+| backward-only hits | scintillator hits exist only behind the fitted direction anchor | row records `backward_only_hits` or equivalent failure and no PID feature is inferred from null range |
+| edge-profile case | projected hit lies near the plan-60 scintillator edge/profile boundary | `scintillator_edge_distance_mm`, `scintillator_profile_bin`, and `geometry_profile_hash` are present before fiducial consumers read C.3 |
+| real C.1/V.2 to C.3 chain | real paired output flows through plan 25 candidates and plan 26 fits first | C.3 consumes frozen upstream hashes and does not use exact `Track_ID` association outside validation artifacts |
+
+The review artifact for any range replacement must state which fixture
+rows are covered by synthetic tests, which require the real-output
+selector from §5.5, and which remain gated on the plan-60 geometry
+sidecar. Gated edge rows must still keep a manifest-level failure reason
+so plans 29 and 66 do not infer detector acceptance from missing rows.
+
 ## 6. Acceptance criteria
 
 - §3 closure passes.
@@ -337,7 +358,7 @@ trusting range or Bragg-profile observables.
 - §5 Stage E.1 handoff is actionable for L3: the target public
   function, current unit/integration tests, remaining test obligation,
   promotion invariants, producer/consumer contract, verification
-  command, artifact manifest schema, and required C.3 fields (`range_id`, `association_method`, `range_cm`,
+  command, artifact manifest schema, fixture matrix, and required C.3 fields (`range_id`, `association_method`, `range_cm`,
   `range_edep_mev`, `bragg_peak_position_cm`,
   `range_quality_state`, `range_failure_reason`,
   `scintillator_edge_distance_mm`, `scintillator_profile_bin`, and
