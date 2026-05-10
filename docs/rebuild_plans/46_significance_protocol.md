@@ -45,7 +45,7 @@ Worked examples for implementation tests:
 |---|---:|---:|---:|---|
 | high-background sanity | 50 | 20 | 8.68 | asymptotic path should run |
 | modest-count boundary | 10 | 6 | 3.37 | asymptotic path still allowed |
-| zero-background row | 10 | 0 | n/a | must dispatch to §3 F-C |
+| zero-background row | 10 | 0 | not evaluated | must dispatch to §3 F-C |
 
 ### 1.1 Numerical validation gate
 
