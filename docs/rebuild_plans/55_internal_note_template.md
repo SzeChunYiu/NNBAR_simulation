@@ -128,7 +128,7 @@ Review rules:
 |---|---|
 | annex row names match the §1.1 blocks | note drifts from defence package taxonomy |
 | every `applies` row names a defence overlay id | note has no machine-readable package handoff |
-| every thesis-facing row exposes review-evidence links and artifact hashes | note cannot be reconciled with package, staleness, CI, and glossary evidence |
+| every thesis-facing row exposes review-evidence links and artifact hashes | note cannot be reconciled with package, staleness, CI, archive, and glossary evidence |
 | every `blocked` row carries `caveat_text` | hidden missing evidence in reviewer-facing prose |
 | every low-count note includes the limit-convention row | Bayesian prior sensitivity omitted from sparse-count claims |
 | every L11 note includes the pile-up caveat row | independent-event limitation omitted from acceptance claims |
@@ -152,7 +152,7 @@ is a small matrix, not a prose judgement, so omissions are visible in CI.
 | rerun reproducibility | any note says an artifact was refreshed | plan-52 rerun manifest row id, execution transcript row id, command-template id, command-template verifier hash, and output hash are recorded |
 | CI transcript | any note is promoted after Stage E.3 starts | plan-53 L1 report id is recorded |
 | glossary consistency | any annex introduces shorthand | plan-56 glossary audit row is recorded |
-| review evidence reconciliation | any annex row supports thesis-facing prose | plan-50 roll-up id, staleness id, plan-53 report id, plan-56 audit id, and note/package/staleness/CI/glossary hashes are recorded |
+| review evidence reconciliation | any annex row supports thesis-facing prose | plan-50 roll-up id, staleness id, plan-53 report id, plan-54 archive ids, plan-56 audit id, and note/package/staleness/CI/archive/glossary hashes are recorded |
 
 The note may still be circulated internally with incomplete rows, but it
 cannot be used as thesis evidence until every applicable checklist item
