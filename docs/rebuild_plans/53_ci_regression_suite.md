@@ -212,6 +212,16 @@ l1_defence_ci_report:
         archive_hashes_present: true
         stale_ready_packages: []
       remediation: null
+    - check_id: l1_review_evidence_links
+      status: pass | fail
+      files_checked:
+        - docs/rebuild_plans/50_reviewer_defense_package.md
+      evidence:
+        required_link_keys: [overlay_rollup, owner_signoff_refs, rerun_manifest, rerun_transcript, command_template_ids, command_template_verifier_hashes, ci_report, archive_inventory, archive_drill, note_annex, glossary_audit, staleness_summary]
+        required_hash_keys: [package, ci_report, note_annex, glossary_audit, staleness_summary, archive_inventory, archive_drill]
+        staleness_status_key_present: true
+        command_template_verifier_hashes_present: true
+      remediation: null
 ```
 
 Report review rules:
