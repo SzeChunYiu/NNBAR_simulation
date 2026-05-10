@@ -137,7 +137,7 @@ thesis-facing result.
 | From | To | Required evidence | Forbidden shortcut |
 |---|---|---|---|
 | `open` | `blocked` | missing input named in plan 52 or plan 50 | closing because the artifact is not yet producible |
-| `open` | `answered` | artifact id, ledger row, defence overlay id, and owner sign-off | answering with a plan paragraph only |
+| `open` | `answered` | artifact id, ledger row, defence overlay id, rerun manifest/transcript ids when refreshed, and owner sign-off | answering with a plan paragraph only |
 | `blocked` | `open` | upstream input now exists or owner has a rerun date | leaving stale blocker text in the package |
 | `answered` | `open` | new reviewer challenge or changed input hash | editing the answer without reopening review |
 | `answered` | `clarified` | wording-only update with unchanged artifact hash | hiding a numerical change as prose |
@@ -150,10 +150,13 @@ Status-transition review rules:
 | `answered` rows name the plan-50 overlay id | answer cannot be found in the defence package |
 | `blocked` rows name the missing upstream owner | row becomes an indefinite deferral |
 | changed input hashes reopen affected questions | stale answers survive reruns |
+| refreshed-artifact answers name the rerun transcript id | registry says answered before execution evidence exists |
 | clarified rows preserve artifact hashes | numerical result changes bypass review |
 
 These rules keep the registry append-only in spirit even when the living
-registry file is rendered as current-state YAML.
+registry file is rendered as current-state YAML. A reviewer question that
+requires regenerated EM/selection evidence remains `open` or `blocked` until
+both the plan-52 manifest and execution transcript are linked.
 
 ## 3. Update protocol
 
