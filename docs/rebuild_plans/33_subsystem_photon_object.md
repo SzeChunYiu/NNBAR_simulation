@@ -22,7 +22,38 @@ last_updated: 2026-05-09
 *Charter.* Owns leaves P.3 (direction), P.4 (energy). Builds the
 photon four-vector from clusters classified neutral by plan 32.
 
-## 1. Direction (P.3)
+## 1. Leaf P.3/P.4 input/output schema
+
+Leaf P.3/P.4: neutral clusters → photon four-vector objects
+
+- **Inputs (production, Class A only):** plan-31 cluster row and hit
+  membership, plan-32 `passes_neutral_discriminant` /
+  `neutral_score`, plan-30 vertex row, calorimeter energy calibration
+  constants from plan 18, and detector geometry.
+- **Current implementation evidence:** plan 08 maps photon-object
+  construction to `reconstruct_photon_objects`
+  (`reconstruction.py:783–1101`). It caches reconstructed vertices at
+  `reconstruction.py:829–849`, computes direction/path inside
+  `build_photon_row` (`reconstruction.py:941–989`), emits
+  lead-glass and scintillator-only source groups at
+  `reconstruction.py:1046–1099`, and declares the current photon
+  output schema at `reconstruction.py:793–822`. Fragment merging is
+  `_merge_photon_fragments` (`reconstruction.py:502–629`).
+- **Decision rule (target):** accept only clusters that passed P.2;
+  compute direction from reconstructed vertex to energy-weighted
+  cluster centroid; compute energy from calibrated cluster deposits;
+  merge duplicate neutral fragments only by geometry/time compatibility.
+- **Outputs:** `event_id`, `object_id`, `cluster_id`, `energy_mev`,
+  `leadglass_edep`, `scintillator_edep`, `leadglass_fraction`,
+  `cluster_x/y/z`, `cluster_time_ns`, `vertex_x/y/z`,
+  `vertex_time_ns`, `photon_path_length_cm`, `ux/uy/uz`,
+  `neutral_score`, `source_cluster_ids`, and diagnostic-only closure
+  labels.
+- **Truth-use boundary:** `truth_name`, source-track aliases, and
+  truth charge classes from the current table stay diagnostic; no
+  photon four-vector field may depend on them.
+
+## 2. Direction (P.3)
 
 Direction = `(cluster_centroid - event_vertex) / |…|`.
 
@@ -36,7 +67,7 @@ origin → centroid; this is the historical fallback per
 Truth canonical (plan 38 §3.1): gamma momentum direction at
 production.
 
-## 2. Energy (P.4)
+## 3. Energy (P.4)
 
 Energy = `lead_glass_eDep + scintillator_descendant_eDep`.
 
@@ -48,14 +79,14 @@ Scintillator-only photons (no LG cluster) are emitted with
 `leadglass_fraction = 0` so the thesis Ch 8 selection
 (`leadglass_fraction ≥ 0.55`) does not accept them by construction.
 
-## 3. Photon merging
+## 4. Photon merging
 
 Truth-labelled neutral gamma fragments with nearly identical
 reconstructed directions are merged before pairing
 (`photon_fragment_merge_angle_deg = 2°`). Class B read; migration:
 geometric direction-proximity merging, blind to truth labels.
 
-## 4. Closure
+## 5. Closure
 
 `cal_singlegamma_v1` (plan 23) at energies 50, 100, 200, 500, 1000
 MeV:
@@ -63,13 +94,13 @@ MeV:
 - Direction pull width ∈ [0.9, 1.2]; \|μ\| < 0.05.
 - Energy bias < 1% in linear regime.
 
-## 5. Acceptance criteria
+## 6. Acceptance criteria
 
-- §1, §2 produce photon four-vector with stated semantics.
-- §3 truth-blind merging in place.
-- §4 closure passes.
+- §2, §3 produce photon four-vector with stated semantics.
+- §4 truth-blind merging in place.
+- §5 closure passes.
 
-## 6. Dependencies
+## 7. Dependencies
 
 - **18, 24, 30, 31, 32, 38, 40** — inputs.
 - *Consumed by:* plan 34 (π⁰ pairing), plan 36 (event variables),
