@@ -89,6 +89,35 @@ Rows with nonzero survivors quote the measured fraction with the plan
 §2; no report may collapse a zero-survivor node to exactly zero
 expected background.
 
+### 1.2 Machine-readable node fixture
+
+The tree output must be checkable without prose parsing. Each §1 row
+serialises to one record with this minimum field set:
+
+| Field | Required value / example | Review rule |
+|---|---|---|
+| `node_id` | `cosmic.muon`, `beam_neutron.capture_gamma` | stable dotted key; never re-used for a different source |
+| `source` | `cosmic` or `beam_neutron` | must match the §1 table source column |
+| `sub_channel` | §1 sub-channel token | must be unique within `source` |
+| `sample_id` | registry id from plan 21 or 22 | must not be free text or a file path |
+| `expected_rate_expression` | cosmic or beam-neutron formula from §1.1 | formula is stored until survivor counts exist |
+| `survivor_count_field` | `n_survivors_after_plan37` | every node uses the same post-selection count boundary |
+| `zero_survivor_interval` | `feldman_cousins_90cl` | required when survivor count is zero |
+| `observable_signature` | concise signature from §1 | copied to plan 50 defence tables |
+| `related_leaves` | plan-24 leaf list | at least one reconstruction/selection leaf |
+| `rate_included_in_b` | boolean | false unless the rate convention DEC is signed |
+
+Example records:
+
+| `node_id` | `sample_id` | `expected_rate_expression` | `rate_included_in_b` |
+|---|---|---|---:|
+| `cosmic.muon` | `cosmic_cry_essLund_overburdenA_v1` | `survival_fraction * CRY_muon_flux * exposure` | false |
+| `beam_neutron.capture_gamma` | `beam_neutron_hibeam_captgamma_v1` | `survival_fraction * neutron_yield_per_pulse * pulse_count * capture_gamma_weight` | false |
+
+`rate_included_in_b = false` is the draft default because the rate-source
+DECs in §1 are still unsigned. The flag flips only when the relevant DEC
+and plan-47 reproduction row both exist.
+
 ## 2. Zero-survivor handling
 
 Per plan 04 §5: never quote `0 / N = 0`. Every zero-survivor channel
