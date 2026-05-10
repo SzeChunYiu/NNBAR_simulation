@@ -250,15 +250,34 @@ examiner gate can be replayed without trusting the plan prose. The
 transcript is captured when a template is introduced or changed.
 
 ```yaml
-l1_command_template_verifier:
-  template_id: validate_reco_cutflow_v1
-  verified_command: python -m nnbar_reconstruction.cli validate-reco --help
-  verified_from: /Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3
-  required_options: [--runs, --all-runs, --json]
-  verifier_exit_status: 0
-  help_output_hash: sha256:<hash>
-  verified_at: <timestamp>
+l1_command_template_verifiers:
+  - template_id: validate_reco_cutflow_v1
+    verified_command: python -m nnbar_reconstruction.cli validate-reco --help
+    verified_from: /Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3
+    required_options: [--runs, --json]
+    verifier_exit_status: 0
+    help_output_hash: sha256:b3cee4613afed558d4704df3dc5b281271aed768965d79a09603f812496806f0
+    verified_at: 2026-05-10
+    help_surface:
+      positional: [output_dir]
+      options_present: [--run, --runs, --all-runs, --min-class-count, --min-accuracy, --min-balanced-f1, --json]
+  - template_id: validate_reco_allruns_v1
+    verified_command: python -m nnbar_reconstruction.cli validate-reco --help
+    verified_from: /Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3
+    required_options: [--all-runs, --json]
+    verifier_exit_status: 0
+    help_output_hash: sha256:b3cee4613afed558d4704df3dc5b281271aed768965d79a09603f812496806f0
+    verified_at: 2026-05-10
+    help_surface:
+      positional: [output_dir]
+      options_present: [--run, --runs, --all-runs, --min-class-count, --min-accuracy, --min-balanced-f1, --json]
 ```
+
+A+ verifier evidence (2026-05-10): from the L3 worktree, `python -m
+nnbar_reconstruction.cli validate-reco --help` exited 0 and printed the
+`output_dir` positional plus `--runs`, `--all-runs`, and `--json`. The
+same help transcript validates both executable templates; the blocked
+template intentionally has no command surface.
 
 Verifier review rules:
 
