@@ -126,6 +126,7 @@ rows below in addition to the generic §1 blocks.
 | `strange_v0_contamination` | beam-neutron or EM fake background rows | plan-59 source node, PDG branching snapshot, V0 rejection closure, residual interval | whether K_S/Lambda/Sigma leakage is bounded |
 | `tof_timing_resolution` | timing or cosmic-rejection rows | TOF method id, nonzero resolution budget, cal/cosmic closure rows, E.8 comparison | whether timing rejection survives detector resolution |
 | `bayesian_prior_sensitivity` | low-count limit rows | Jeffreys and flat prior upper limits, ratios to plan-46 primary limit, sensitivity status | whether the limit is prior-sensitive |
+| `unbounded_caveat_status` | any EM/selection claim affected by limitations that lack numeric nuisance bounds | limitation id, affected result ids, caveat text, owner, and condition for reopening | whether unbounded assumptions are visible rather than hidden as zero-width systematics |
 
 The generator must fail closed if an overlay applies but the required
 fields are absent. A package may mark an overlay `not_applicable` only
@@ -160,7 +161,7 @@ Review rules:
 
 | Rule | Failure caught |
 |---|---|
-| every package has all seven §2.1 overlay ids | reviewer asks an L1 question with no routing row |
+| every package has all eight §2.1 overlay ids | reviewer asks an L1 question with no routing row |
 | `applicability = applies` requires at least one artifact key | prose claims that cannot be replayed |
 | `artifact_status = blocked` requires `caveat_text` | hidden missing evidence |
 | `not_applicable` requires a result-specific reason | blanket suppression of difficult checks |
