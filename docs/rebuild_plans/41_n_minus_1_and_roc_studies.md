@@ -16,7 +16,7 @@ acceptance:
 risks:
   - {risk: optimisation overfits to the regenerated sample's statistical fluctuation, mitigation: §3 train/validation/test split per plan 04}
 estimated_effort: M
-last_updated: 2026-05-09
+last_updated: 2026-05-10
 ---
 
 # N-1 plots and ROC studies for selection optimisation
@@ -28,40 +28,45 @@ proposal.
 
 ## 1. N-1 plots
 
+**Verified CLI surface (A+ gate, 2026-05-10).** The live L3
+worktree currently exposes only `summarize`, `scan-pid`, and
+`validate-reco` under `python -m nnbar_reconstruction.cli --help`;
+`summarize --help` supports `--run`, `--json`, and `--tables-dir`.
+N-1, ROC, and cut-search commands below are therefore L3/software
+implementation gates, not runnable invocations, until their `--help`
+surface exists.
+
 For every cut C in plan 37 §1, produce one N-1 artifact set with all
 other cuts applied and C removed from the AND. This is a closure
 procedure, not an optimisation step.
 
 ### 1.1 Runnable procedure
 
-1. Build the reconstruction tables for each registered sample with the
-   canonical event-ID offset (plan 09 §14.6):
+1. Build reconstruction tables for each registered sample one run at a
+   time with the verified plan 09 §14 command:
 
    ```bash
    python -m nnbar_reconstruction.cli summarize \
-       NNBAR_Detector/output/<dataset_id> --all-runs \
-       --table output/reco/<dataset_id>/ --json output/reco/<dataset_id>/summary.json
+       NNBAR_Detector/output/<dataset_id> --run <run> \
+       --tables-dir output/reco/<dataset_id>/run_<run>/ \
+       --json output/reco/<dataset_id>/run_<run>/summary.json
    ```
 
    Required datasets are `sig_foil_v3` (plan 20),
    `cosmic_cry_essLund_overburdenA_v1` (plan 21), and the beam-neutron
-   dataset selected by plan 22.
-2. Run the N-1 producer over the `events.csv` tables only:
-
-   ```bash
-   python -m nnbar_reconstruction.cli n-minus-one \
-       --signal output/reco/sig_foil_v3/events.csv \
-       --background output/reco/cosmic_cry_essLund_overburdenA_v1/events.csv \
-       --background output/reco/<beam_neutron_dataset>/events.csv \
-       --cuts docs/rebuild_plans/37_subsystem_event_selection.md \
-       --bootstrap 200 --out output/studies/n_minus_1/
-   ```
-
+   dataset selected by plan 22. Concatenate run-level `events.csv`
+   only after applying the plan 09 §15 event-id offset, then save
+   `output/reco/<dataset_id>/manifest.json` with input hashes.
+2. **Blocked L3/software implementation gate:** no verified N-1 CLI
+   exists in the live L3 worktree. Before this section is runnable, a
+   help-verified producer must read signal/background `events.csv`,
+   the plan 37 cut definitions, run 200 bootstrap replicas, and write
+   to `output/studies/n_minus_1/`.
 3. For each cut write `<cut>.png`, `<cut>.json`, and a manifest entry
    containing: dataset id, input table hash, applied companion cuts,
    bin edges, weighted counts, signal acceptance, background rejection,
    Wilson interval (plan 04 §4), and ladder leaf.
-4. Assert the command exits non-zero if any plan 37 §1 cut has no JSON
+4. Assert the producer exits non-zero if any plan 37 §1 cut has no JSON
    and PNG artifact. The acceptance gate for this section is artifact
    coverage plus reproducible hashes, not visual inspection alone.
 
@@ -93,17 +98,11 @@ a DEC-signed objective.
 1. Reuse the `output/reco/<dataset_id>/events.csv` tables generated
    by §1.1 and verify their hashes match the N-1 manifest before
    scanning thresholds.
-2. Run the ROC producer with deterministic bootstrap uncertainty:
-
-   ```bash
-   python -m nnbar_reconstruction.cli roc-study \
-       --signal output/reco/sig_foil_v3/events.csv \
-       --background output/reco/cosmic_cry_essLund_overburdenA_v1/events.csv \
-       --background output/reco/<beam_neutron_dataset>/events.csv \
-       --variables docs/rebuild_plans/36_subsystem_event_variables.md \
-       --bootstrap 200 --out output/studies/roc/
-   ```
-
+2. **Blocked L3/software implementation gate:** no verified ROC-study
+   CLI exists in the live L3 worktree. Before this section is runnable,
+   a help-verified producer must read signal/background `events.csv`,
+   the plan 36 variable definitions, run 200 bootstrap replicas, and
+   write to `output/studies/roc/`.
 3. For each `(variable, background)` pair write `<variable>__<background>.png`
    and `.json` with threshold grid, signal efficiency, background
    rejection, AUC, bootstrap 68% interval (plan 04 §2), and the
@@ -145,19 +144,12 @@ and the plan 47 ledger row is updated.
    the same `events.csv` inputs used by §1-§2. The split manifest must
    store dataset id, run id, event id, split label, input-table hash,
    and seed derived with plan 04 §2 conventions.
-2. Run a grid search over the plan 37 §1 threshold tuple:
-
-   ```bash
-   python -m nnbar_reconstruction.cli cut-search \
-       --signal output/reco/sig_foil_v3/events.csv \
-       --background output/reco/cosmic_cry_essLund_overburdenA_v1/events.csv \
-       --background output/reco/<beam_neutron_dataset>/events.csv \
-       --baseline docs/rebuild_plans/37_subsystem_event_selection.md \
-       --objective <DEC-approved-objective> \
-       --split-manifest output/studies/cut_search/splits.json \
-       --out output/studies/cut_search/
-   ```
-
+2. **Blocked L3/software implementation gate:** no verified cut-search
+   CLI exists in the live L3 worktree. Before this section is runnable,
+   a help-verified search command must read signal/background
+   `events.csv`, the plan 37 baseline tuple, a DEC-approved objective,
+   and `output/studies/cut_search/splits.json`, then write to
+   `output/studies/cut_search/`.
 3. Tune only on the validation split. Write
    `validation_grid.parquet`, `best_tuple.validation.json`, and
    `baseline.validation.json`.
