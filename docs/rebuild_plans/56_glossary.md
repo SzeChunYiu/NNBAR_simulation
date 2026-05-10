@@ -165,12 +165,14 @@ l1_glossary_audit:
         - rerun_transcript
         - command_template_ids
         - command_template_verifier_hashes
+        - command_template_verifier_sources
         - staleness_summary
         - ci_report
         - archive_inventory
         - archive_drill
         - note_annex
         - glossary_audit
+        - staleness_status
       thesis_delta: none | flagged
       owner: L1
     - term: review-artifact hashes
