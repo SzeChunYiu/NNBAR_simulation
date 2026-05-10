@@ -74,6 +74,32 @@ Output schema: `{event_id, charged_candidate_id, dedx_mev_per_cm,
 estimator, n_steps_used, path_length_cm, low_truncation_fraction,
 high_truncation_fraction, calibration_source}`.
 
+### 1.3 Machine-readable C.2 dE/dx fixture
+
+The C.2 fixture freezes the per-candidate ionisation estimator before
+PID scoring or Bethe-Bloch closure consumes truth labels. It stores one
+row per charged candidate plus a contribution sidecar for the TPC
+samples used by the estimator:
+
+| Fixture field | Meaning / invariant |
+|---|---|
+| `event_id`, `charged_candidate_id` | join key inherited from C.1/V.1 |
+| `estimator_id` | stable method/version label, such as `truncated_mean_v1` |
+| `dedx_mev_per_cm` | finite estimator value, or null with a failure reason |
+| `path_length_cm`, `path_length_source` | positive normalisation length and its source label |
+| `n_steps_used` | number of Class A TPC samples after quality cuts |
+| `low_truncation_fraction`, `high_truncation_fraction` | signed fractions used by the estimator |
+| `truncation_applied` | whether the configured estimator actually removed samples |
+| `dedx_quality_state`, `dedx_failure_reason` | §5 quality contract in machine-readable form |
+| `calibration_source` | provenance label for the calibration constants used |
+
+The contribution sidecar is keyed by `(event_id, charged_candidate_id,
+estimator_id)` and records the ordered TPC sample ids, raw `eDep`, path
+increment, and whether each sample survived truncation. Dropping
+`Name`, `Track_ID`, `Parent_ID`, and validation-only momentum/species
+fields from production input must not change the C.2 fixture; only
+closure residual artifacts may read those validation labels.
+
 ## 2. Calibration anchor
 
 Plan 17 W-value (23.6 eV in TPCSD; reference 26-27.4 eV). dE/dx
