@@ -144,6 +144,22 @@ replay definitions rather than broken/retired macros.
 | `macro/cosmic_macro/cosmic_proton/run_4.mac` | Proton-cosmic MCPL partition 4 replay | same as `run_0.mac` with `i=4` | `output/cosmic_proton/cosmic_proton_4/*_output_<run>.parquet`; target 1M events from `cosmic_proton_4.mcpl` | legacy |
 | `macro/cosmic_macro/cosmic_proton/run_5.mac` | Proton-cosmic MCPL partition 5 replay | same as `run_0.mac` with `i=5` | `output/cosmic_proton/cosmic_proton_5/*_output_<run>.parquet`; target 1M events from `cosmic_proton_5.mcpl` | legacy |
 
+#### 1.3.6 `macro/cosmic_macro/cosmic_muon_short/`
+
+| Macro | Purpose | Key commands invoked | Output / sample target | Status |
+|---|---|---|---|---|
+| `macro/cosmic_macro/cosmic_muon_short/BeamOn.mac` | Shared short-muon batch primitive | `/run/beamOn 1000` | Caller-selected `output/short_cosmic_muon/cosmic_muon_<i>/*_output_<run>.parquet` | legacy |
+| `macro/cosmic_macro/cosmic_muon_short/run_all.mac` | Convenience runner for all six short-muon partitions | `/control/execute run_muon_0.mac` through `/control/execute run_muon_5.mac` | Runs the six `short_cosmic_muon/cosmic_muon_<i>` targets below | legacy |
+| `macro/cosmic_macro/cosmic_muon_short/run_muon_0.mac` | Short muon-cosmic MCPL partition 0 replay | `/run/initialize`; `/physics_engine/neutron/timeLimit 10000 s`; `/particle_generator/set_folder_name short_cosmic_{name}/cosmic_{name}_{i}`; `/particle_generator/set_mcpl_file ./mcpl_files/cosmic_{name}_{i}.mcpl`; `/particle_generator/set_run_number 0`; `/particle_generator/set_event_number 1`; `/control/loop ./macro/cosmic_macro/cosmic_muon/BeamOn.mac a 0 99 1` | `output/short_cosmic_muon/cosmic_muon_0/*_output_<run>.parquet`; target 100 × `beamOn 1000` from `cosmic_muon_0.mcpl` | legacy |
+| `macro/cosmic_macro/cosmic_muon_short/run_muon_1.mac` | Short muon-cosmic MCPL partition 1 replay | same as `run_muon_0.mac` with `i=1` | `output/short_cosmic_muon/cosmic_muon_1/*_output_<run>.parquet`; target 100k events from `cosmic_muon_1.mcpl` | legacy |
+| `macro/cosmic_macro/cosmic_muon_short/run_muon_2.mac` | Short muon-cosmic MCPL partition 2 replay | same as `run_muon_0.mac` with `i=2` | `output/short_cosmic_muon/cosmic_muon_2/*_output_<run>.parquet`; target 100k events from `cosmic_muon_2.mcpl` | legacy |
+| `macro/cosmic_macro/cosmic_muon_short/run_muon_3.mac` | Short muon-cosmic MCPL partition 3 replay | same as `run_muon_0.mac` with `i=3` | `output/short_cosmic_muon/cosmic_muon_3/*_output_<run>.parquet`; target 100k events from `cosmic_muon_3.mcpl` | legacy |
+| `macro/cosmic_macro/cosmic_muon_short/run_muon_4.mac` | Short muon-cosmic MCPL partition 4 replay | same as `run_muon_0.mac` with `i=4` | `output/short_cosmic_muon/cosmic_muon_4/*_output_<run>.parquet`; target 100k events from `cosmic_muon_4.mcpl` | legacy |
+| `macro/cosmic_macro/cosmic_muon_short/run_muon_5.mac` | Short muon-cosmic MCPL partition 5 replay | same as `run_muon_0.mac` with `i=5` | `output/short_cosmic_muon/cosmic_muon_5/*_output_<run>.parquet`; target 100k events from `cosmic_muon_5.mcpl` | legacy |
+
+The short-muon cluster is retained for fast feedback and historical
+reproduction, but plan 21 still supersedes it for new cosmic samples.
+
 These per-species macros use Geant4 GPS-style cosmic-like primaries
 *without* a true atmospheric spectrum source. They are the licentiate
 baseline; **plan 21 retires them** and replaces them with a single
