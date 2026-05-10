@@ -16,12 +16,12 @@ outputs:
   - {path: data/registry/aging/aging_model_<tag>.yml, schema: planned aging model registry}
 acceptance:
   - {test: every detector subsystem has a dose driver, response observable, and mitigation, method: §2 and §5 tables, pass_when: no blank rows}
-  - {test: literature constants are either backed by a resolving bib key or marked TODO, method: §3 bib audit, pass_when: no unsupported numeric constants}
+  - {test: literature constants are either backed by a resolving bib key or marked OPEN with a target date, method: §3 bib audit, pass_when: no unsupported numeric constants}
   - {test: degradation model feeds plan 63 rather than silently retuning reconstruction, method: §4 review, pass_when: every response shift maps to monitor/systematic action}
   - {test: plan 01 limitation L3 remains visible, method: §6 review, pass_when: noise/threshold/nonlinearity caveat is not hidden}
 risks:
   - {risk: ESS/HIBEAM dose field is unavailable, mitigation: use plan 22 source contract and keep aging constants blocked until flux is source-backed}
-  - {risk: vendor data gives optical constants but not irradiation damage constants, mitigation: separate material identity citations from damage-rate TODOs}
+  - {risk: vendor data gives optical constants but not irradiation damage constants, mitigation: separate material identity citations from damage-rate OPEN items}
 estimated_effort: L
 last_updated: 2026-05-10
 ---
@@ -38,6 +38,77 @@ This is a planning artifact. It does not claim the current simulation
 models radiation damage dynamically. Any response degradation applied
 to samples must be registered as a systematic variation and reflected
 in plan 47 ledger rows.
+
+## 0.1 Wave 6 derivation — dose-to-response drift
+
+### Physics derivation
+
+**What is physically measured.** Detector aging measures the mapping
+from accumulated exposure to a time-dependent response change in each
+subsystem. The ground-truth exposure variables are ionising dose,
+particle fluence, integrated charge/light load, and calendar time; the
+measured response variables are TPC electron yield/noise, scintillator
+photons per MeV and timing, lead-glass transmission/linearity, PMT gain
+and dark counts, and background-rate changes from activated/passive
+materials.
+
+**Estimator rationale.** For thesis reproducibility, aging should be a
+source-backed nuisance model rather than an implicit reconstruction
+retune. The natural first estimator is a dose-response scale factor per
+subsystem: dose is accumulated from plan-21/22 exposure samples and
+material maps, then mapped to response observables monitored by plans
+18 and 63. Material identity references such as BC-408 and SF5 data
+sheets identify detector media `\cite{SaintGobainBC408DataSheet,SchottSF5DataSheet}`,
+while detector context comes from the HIBEAM/NNBAR calorimeter work
+`\cite{Dunne2022CalorimeterPrototype}`; none of these, by themselves,
+is a radiation-damage coefficient.
+
+**Statistical character.** Exposure estimates have finite-sample
+variance from generated cosmic/beam samples, but the dominant
+uncertainty is systematic: missing beam-neutron source provenance,
+missing irradiation-damage coefficients, and unimplemented detector
+response non-linearities. Until a monitor measures response drift, the
+aging forecast is a prior/nuisance with broad uncertainty rather than a
+correction to nominal reconstruction.
+
+### Logic gaps
+
+- **Dose normalisation.** Grounding: §1 schema defines dose and fluence
+  fields but no source-backed values. `OPEN:` populate from sealed
+  plan-21/22 datasets with live-time and beam-pulse provenance; target
+  resolution date 2026-06-22.
+- **Linear response model `1 - k × dose`.** Grounding: §4 is a first
+  nuisance parameterisation. `OPEN:` replace by measured or literature
+  dose-response curves when irradiation constants resolve; target
+  resolution date 2026-06-29.
+- **Subsystem damage coefficients.** Grounding: §3 marks the numerical
+  coefficients absent. `OPEN:` add resolving irradiation-study keys and
+  units for scintillator light-yield loss, lead-glass darkening, PMT
+  gain drift, and electronics tolerance before any quantitative aging
+  forecast is quoted; target resolution date 2026-06-29.
+- **Mitigation cadence (weekly/monthly/quarterly).** Grounding: §5 is
+  operational planning, not measured detector drift. `OPEN:` bind each
+  cadence to plan-63 drift thresholds and DQM status transitions before
+  using it as an operations requirement; target resolution date
+  2026-06-22.
+- **Interaction with plan 01 limitation L3.** Grounding: noise,
+  thresholds, and non-linearity are not simulated. `OPEN:` route any
+  deterministic aging correction through plan 02 digitisation seams and
+  plan 05 governance; target resolution date 2026-06-29.
+
+### Closure test for the derivation
+
+1. For a run period, compute subsystem dose/fluence from source-backed
+   cosmic, beam-neutron, and signal samples and write an
+   `aging_model_<tag>` registry entry.
+2. Apply only source-backed response coefficients; leave missing
+   coefficients null and keep the model `blocked_missing_constants`.
+3. Compare forecast response drift to plan-63 calibration monitors. If
+   the monitor disagrees with the forecast, the monitor supersedes the
+   prior for ledger status and the forecast becomes a plan-45 nuisance.
+4. Propagate any response shift into affected plan-47 rows without
+   editing nominal rows in place. Rows remain blocked if dose provenance
+   or coefficient provenance is missing.
 
 ## 1. Dose model
 
@@ -82,7 +153,7 @@ hashes and plan 22 resolves the beam-neutron source path.
 | TPC gas/readout | ionisation density, gas gain drift, electronics aging | electron count per deposited MeV, dE/dx scale, noise/threshold onset | plan 17 W-value and plan 63 TPC monitors |
 | Scintillator | ionising dose, fiber/paint aging, PMT gain drift | photons-per-MeV equivalent and timing response | plan 18 scintillator-yield reconciliation |
 | Lead glass | optical transmission loss, PMT aging, shower leakage sensitivity | reconstructed energy linearity and per-energy residual | plan 18 lead-glass linearity |
-| PMTs and front-end electronics | total ionising dose and neutron fluence | gain, dark counts, dead/noisy channels | plan 63 drift registry, future DQM TODO |
+| PMTs and front-end electronics | total ionising dose and neutron fluence | gain, dark counts, dead/noisy channels | plan 63 drift registry, future DQM gap |
 | Passive shielding/materials | activation/capture-gamma changes and mechanical drift | background rate and material budget uncertainty | plans 15, 22, and 45 |
 
 The response observables are analysis-level Class C monitors. They do
@@ -92,7 +163,7 @@ plan 01's upgrade criteria.
 ## 3. Aging constants and citation status
 
 The A+ rule is: a numeric damage constant must have a resolving source
-or remain a TODO. Material identity citations are not automatically
+or remain an `OPEN:` item with a target date. Material identity citations are not automatically
 damage constants.
 
 | Constant | Initial value | Citation status | Use |
@@ -100,12 +171,12 @@ damage constants.
 | BC-408 scintillator identity / baseline optical data | source-backed material datasheet | `\cite{SaintGobainBC408DataSheet}` resolves in local `ref.bib` | material identity only; not a radiation-loss coefficient |
 | SF5 lead-glass identity / optical data | source-backed material datasheet | `\cite{SchottSF5DataSheet}` resolves in local `ref.bib` | material identity only; not a radiation-darkening coefficient |
 | HIBEAM/NNBAR calorimeter prototype reference | source-backed detector context | `\cite{Dunne2022CalorimeterPrototype}` resolves in local `ref.bib` | lead-glass/calorimeter context |
-| scintillator light-yield loss per Gy | TODO(L2-bib): add irradiation-study key | no source-backed value yet | blocked systematic coefficient |
-| lead-glass transmission loss per Gy | TODO(L2-bib): add glass irradiation-study key | no source-backed value yet | blocked systematic coefficient |
-| PMT gain drift per integrated charge | TODO(L2-bib): add PMT aging key | no source-backed value yet | blocked systematic coefficient |
-| electronics total-ionising-dose tolerance | TODO(L2-bib): add electronics/rad-hardness key | no source-backed value yet | blocked operational threshold |
+| scintillator light-yield loss per Gy | `OPEN(L2-bib, target 2026-06-29)`: add irradiation-study key | no source-backed value yet | blocked systematic coefficient |
+| lead-glass transmission loss per Gy | `OPEN(L2-bib, target 2026-06-29)`: add glass irradiation-study key | no source-backed value yet | blocked systematic coefficient |
+| PMT gain drift per integrated charge | `OPEN(L2-bib, target 2026-06-29)`: add PMT aging key | no source-backed value yet | blocked systematic coefficient |
+| electronics total-ionising-dose tolerance | `OPEN(L2-bib, target 2026-06-29)`: add electronics/rad-hardness key | no source-backed value yet | blocked operational threshold |
 
-Until the TODO constants resolve, the aging model can report exposure
+Until the OPEN constants resolve, the aging model can report exposure
 and response-monitor drift, but it cannot forecast quantitative
 end-of-run degradation as a source-backed thesis number.
 
@@ -175,7 +246,7 @@ subsystems:
     coefficient:
       value: null
       source_key: null
-      status: TODO
+      status: OPEN
 linked_monitors:
   - drift_monitoring_<tag>
 linked_nuisances:
@@ -201,8 +272,8 @@ grep "^@.*{Dunne2022CalorimeterPrototype," /Users/billy/Desktop/projects/overlea
 ```
 
 Current 2026-05-10 evidence: all referenced local plans exist, and the
-three non-TODO bibliography keys resolve in the local thesis `ref.bib`.
-The irradiation-damage coefficients remain TODOs because no resolving
+three non-OPEN bibliography keys resolve in the local thesis `ref.bib`.
+The irradiation-damage coefficients remain OPEN because no resolving
 keys were found in the local bibliography during this pass.
 
 ## 9. Acceptance criteria
