@@ -184,6 +184,20 @@ a variance term from calorimeter energy resolution. Robustness is driven
 by deterministic membership keys and by rejecting any configuration whose
 membership changes when Class-B columns are dropped.
 
+The Wave-6 clustering derivation ledger is:
+
+| P.1 sub-leaf | Truth-side quantity | Estimator rationale | Dominant uncertainty | Closure assertion |
+|---|---|---|---|---|
+| `cluster.seed` | location of a neutral-shower local energy maximum | a seed threshold suppresses noise while preserving EM shower maxima | threshold bias and low-energy fake clusters | seed scan reports response bias and fake-cluster intervals |
+| `cluster.grow` | set of calorimeter cells belonging to the same shower | geometry adjacency and energy compatibility approximate lateral EM containment using Class-A inputs | neighbour radius/window choice and leakage | membership hash is invariant after Class-B columns are dropped |
+| `cluster.split_merge` | separation of nearby showers versus one broad shower | local maxima and overlap rules control π⁰ over-merge and shower fragmentation | close-shower topology and shared-cell energy | single-gamma and close-π⁰ stress samples both pass split/merge limits |
+| `cluster.centroid_energy` | shower energy and barycentre used by photon direction/energy | energy-weighted sums are the natural calorimeter estimator once membership is fixed | energy scale, leakage, and centroid bias | response, resolution, and centroid residuals are quoted per energy bin |
+
+These sub-leaves keep P.1 reviewable even if several clusterer
+candidates are compared: each candidate must publish the same seed,
+membership, split/merge, and centroid/energy evidence before plan 33 can
+consume its output.
+
 #### Logic gaps
 
 | Parameter | Status before production | Closure study / target date |
