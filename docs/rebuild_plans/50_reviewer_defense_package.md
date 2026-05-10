@@ -114,7 +114,7 @@ questions map:
 
 The L1 slice adds result-specific overlays for EM-object and selection
 questions seeded in plan 51 §2.1. A package for any result that depends
-on plans 31-37, 58, 59, 61, or 64 must include the matching overlay
+on plans 31-37, 45, 58, 59, 61, or 64 must include the matching overlay
 rows below in addition to the generic §1 blocks.
 
 | Overlay id | Applies when result uses | Required package fields | Reviewer question answered |
