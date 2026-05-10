@@ -315,6 +315,15 @@ baseline, so threshold or ranking changes require plan-05 approval:
 | `DEC-34-RETUNED-PI0-CUTS` | Approve any mass, energy, fraction, opening-angle, or prompt-timing retune | N-1/ROC evidence and explicit preservation of the Ch 8 baseline columns |
 | `DEC-34-ACCIDENTAL-LABELING` | Restrict truth-parent labels to validation-only accidental-rate estimates | plan-01 audit and rerun showing pair/cut outputs unchanged without truth columns |
 
+Initial π⁰ approval examples:
+
+| `approval_case_id` | Pair/cut pattern | Allowed use before DEC approval | Promotion guard |
+|---|---|---|---|
+| `all_pairs_ch8_baseline` | all unordered photon pairs plus the six Ch 8 cuts | reproduction baseline and plan-35 input | requires plan-47 pass fractions before final quote |
+| `best_mass_pair_diag` | choose one candidate per event by closest raw π⁰ mass | diagnostic ladder row only | cannot replace P.5 without `DEC-34-PAIRING-RULE` correct-pair evidence |
+| `prompt_timing_veto_diag` | add timing residual veto beside the six Ch 8 cuts | accidental-rate study only | needs timing calibration and `DEC-34-RETUNED-PI0-CUTS` approval |
+| `truth_parent_label_audit` | attach generated-parent labels after pair decisions | validation-only accidental label | plan-01 rerun must show unchanged pair and cut outputs |
+
 Until approval, alternative pair rankings and retuned cuts are plan-38
 ladder rows only; `passes_selection` remains the Ch 8 reproduction
 baseline.
