@@ -192,8 +192,8 @@ l1_defence_ci_report:
         package_staleness_statuses_allowed: [current, stale-with-caveat]
         staleness_id_present: true
         stale_package_caveat_present_when_needed: true
-        review_evidence_link_keys: [package, staleness_summary, ci_report, archive_inventory, archive_drill, note_annex, glossary_audit]
-        review_artifact_hash_keys: [package, staleness_summary, ci_report, archive_inventory, archive_drill, note_annex, glossary_audit]
+        review_evidence_link_keys: [overlay_rollup, rerun_manifest, rerun_transcript, staleness_summary, ci_report, archive_inventory, archive_drill, glossary_audit]
+        review_artifact_hash_keys: [note_annex, defence_package, staleness_summary, ci_report, rerun_manifest, rerun_transcript, archive_inventory, archive_drill, glossary_audit]
       remediation: null
     - check_id: l1_package_staleness_guard
       status: pass | fail
