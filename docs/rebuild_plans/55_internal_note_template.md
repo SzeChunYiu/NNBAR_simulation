@@ -213,6 +213,37 @@ l1_note_annex:
         archive_inventory: sha256:<hash-or-null>
         archive_drill: sha256:<hash-or-null>
       caveat_text: <required unless applicability is not_applicable>
+    - annex_block: limit_convention_cross_check
+      applicability: applies | not_applicable | blocked
+      source_plans: [4, 46, 64]
+      defence_overlay_id: bayesian_prior_sensitivity
+      reviewer_question_ids: [RQ-L1-BAYES-LIMIT]
+      required_contents:
+        - plan-46 primary-method dispatch id
+        - Jeffreys and flat-prior upper limits
+        - prior-sensitivity ratios and status
+      evidence_refs:
+        - DEC-64-BAYES-CROSSCHECK
+        - DEC-64-PRIORS
+        - DEC-64-SENSITIVITY-THRESHOLDS
+      review_evidence_links:
+        package_rollup: <plan50-rollup-id>
+        ci_report: <plan53-l1-report-id>
+        rerun_manifest: <plan52-bayesian-row-id-or-blocker>
+        glossary_audit: <plan56-audit-id>
+        staleness_summary: <plan50-staleness-id>
+        archive_inventory: <plan54-inventory-id-or-null>
+        archive_drill: <plan54-drill-id-or-null>
+      artifact_hashes:
+        note_annex: sha256:<hash>
+        defence_package: sha256:<hash-or-null>
+        staleness_summary: sha256:<hash-or-null>
+        ci_report: sha256:<hash-or-null>
+        rerun_manifest: sha256:<hash-or-null>
+        glossary_audit: sha256:<hash-or-null>
+        archive_inventory: sha256:<hash-or-null>
+        archive_drill: sha256:<hash-or-null>
+      caveat_text: <required unless applicability is not_applicable>
     - annex_block: unbounded_caveat_status
       applicability: applies | not_applicable | blocked
       source_plans: [1, 45, 50]
