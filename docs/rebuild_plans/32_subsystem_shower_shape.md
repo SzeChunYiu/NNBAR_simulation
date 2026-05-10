@@ -98,6 +98,19 @@ exports while still making invalid geometry explicit:
 Any row with `shape_features_valid = false` is excluded from training
 labels for BDT/NN candidates but remains in efficiency denominators.
 
+### 1.3 Current-to-target neutral-decision field map
+
+The current compact source does not emit `neutral_score` or
+`passes_neutral_discriminant`; it emits the charged-match diagnostic
+columns `has_tpc_track`, `matched_tpc_track_id`, and
+`charged_match_angle_deg` from `reconstruct_photon_objects`
+(`photon.py:60-201`). The reproduction bridge may derive a hard-cone
+P.2 baseline as `passes_neutral_discriminant = not has_tpc_track` and
+`neutral_score = 1.0` or `0.0`, but only with
+`discriminant_method = legacy_hard_cone`. Any BDT/NN or shower-shape
+score must be written under a different method id and may not reuse the
+legacy fields as if they were calibrated probabilities.
+
 ## 2. Charged/neutral discriminant candidates
 
 | Candidate | P.2 decision rule | Current/source citation | Class-A status | Comparison metric | Failure mode to inspect |
