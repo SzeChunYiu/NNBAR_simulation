@@ -31,8 +31,7 @@ Leaf P.3/P.4: neutral clusters → photon four-vector objects
   `neutral_score`, plan-30 vertex row, calorimeter energy calibration
   constants from plan 18, and detector geometry.
 - **Current implementation evidence:** the compact current source
-  builds photon-like objects in `reconstruct_photon_objects`
-  (`reconstruction.py:432-573`). That function declares the output
+  builds photon-like objects in `reconstruct_photon_objects` (`reconstruction.py:432-573`). That function declares the output
   columns, caches reconstructed vertices, computes the vertex-to-
   centroid direction and path length, attaches lead-glass plus
   scintillator energy for the same key, and emits diagnostic
@@ -61,8 +60,7 @@ plan 31).
 
 When no event vertex is reconstructed (sparse-table fallback), use
 origin → centroid and set the fallback flag. The current source keeps
-that fallback inside `reconstruct_photon_objects`
-(`reconstruction.py:432-573`).
+that fallback inside `reconstruct_photon_objects` (`reconstruction.py:432-573`).
 
 Truth canonical (plan 38 §3.1): gamma momentum direction at
 production.
