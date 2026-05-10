@@ -36,6 +36,32 @@ on calibration sample). Recorded as DEC entry.
 
 Per plan 24 C.2 schema:
 
+### 1.1 Leaf schema block
+
+Leaf C.2 — dE/dx estimator
+
+- **inputs (Class A):** C.1 charged-candidate rows plus TPC step
+  `Event_ID`, `eDep`, `TrackLength`, `x`, `y`, `z`, `t`,
+  `photons`, `step_info`, and any V.2 path-length/covariance fields
+  used to normalise the step length.
+- **forbidden (Class B):** `Name`, `Track_ID`, `Parent_ID`,
+  `origin_vol_name`, `particle_x`, `particle_y`, `particle_z`.
+- **decision rule:** compute dE/dx from Class A energy deposits and
+  path length only, using the signed estimator and truncation
+  fractions; truth species and truth momentum are excluded until the
+  validation fitter consumes frozen output.
+- **output schema:** `event_id: int`, `charged_candidate_id: int`,
+  `dedx_mev_per_cm: float`, `estimator: str`,
+  `n_steps_used: int`, `path_length_cm: float`,
+  `low_truncation_fraction: float`,
+  `high_truncation_fraction: float`, `calibration_source: str`.
+- **allowed truth use:** `validation_only` for Bethe-Bloch closure,
+  ladder scoring, and calibration residual plots.
+- **downstream consumers:** plans 29, 38, 40, and charged-PID
+  systematics in plan 45.
+
+### 1.2 Column contract
+
 | Class A inputs | Forbidden Class B |
 |---|---|
 | C.1 charged-candidate table; TPC step columns `Event_ID`, `eDep`, `TrackLength`, `x`, `y`, `z`, `t`, `photons`, `step_info` | `Name`, `Track_ID`, `Parent_ID`, `origin_vol_name`, `particle_x`, `particle_y`, `particle_z` |
