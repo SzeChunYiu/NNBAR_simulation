@@ -155,7 +155,27 @@ Leaf V.4: foil-plane projections → event vertex estimate
   allowed truth use: validation_only
   downstream consumers: V.5, P.3, P.7, E.7, S.1; plans 30, 33, 35, 36, 37
 
-Leaf V.5 follows the same pattern (populated by plan 30).
+Leaf V.5: event vertex estimate → foil-compatible vertex flag
+  inputs (Class A): V.4 vertex table
+                    (event_id, vertex_xyz, vertex_covariance,
+                     n_tracks_used, radial_rms_mm, vertex_valid)
+                    plus foil geometry constants from plan 16
+  forbidden (Class B): truth-primary vertices (Vx, Vy, Vz),
+                       interaction-table vertices, Track_ID,
+                       Parent_ID, Name, origin_vol_name
+  decision rule: accept only a valid reconstructed vertex whose
+                 transverse radius and z position fall inside the
+                 plan 16 foil envelope; the current baseline uses the
+                 `z = 0` projection path in plan 08 §3.3, but sign-off
+                 requires explicit geometry-versioned radii and
+                 thickness tolerances instead of truth-origin cuts.
+  output schema: {event_id: int64, foil_compatible: bool,
+                  vertex_valid: bool, vertex_r_mm: float64,
+                  vertex_z_mm: float64,
+                  foil_geometry_version: string,
+                  acceptance_reason: string}
+  allowed truth use: validation_only
+  downstream consumers: S.1; plans 30, 37, 47
 
 ### Next measurement (vertex branch)
 
