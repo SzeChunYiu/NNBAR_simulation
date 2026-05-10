@@ -73,17 +73,18 @@ Leaf P.1: calorimeter hits → neutral-shower cluster candidates
   production P.1 output is invalid if cluster membership changes when
   Class B columns are removed.
 
-## 3. Replacement candidates
+## 3. Replacement candidates and comparison matrix
 
-| Candidate | Method | Source | Notes |
-|---|---|---|---|
-| **Topological clustering** | seed = highest-E hit; grow until eDep / Σ < threshold | ATLAS topo-clusters | well-studied; threshold-tunable |
-| **Sliding-window** | fixed-size windows around local maxima | LHC EM calorimeters | simpler; less robust to overlap |
-| **Particle-flow-style** | hypotheses compete for hits | PandoraPFA / CMS PF | most ambitious; biggest potential gain |
-| **Truth-labelled (current)** | `Parent_ID` chains | legacy | Class B violation |
+| Candidate | P.1 decision rule | Current/source citation | Class-A status | Comparison metric | Failure mode to inspect |
+|---|---|---|---|---|---|
+| **Topological clustering** | Seed highest-energy unassigned hit; grow through adjacent cells while neighbour significance or `eDep / Σ_cluster` exceeds threshold; split shared local maxima. | Replaces `_leadglass_shower_sources` ancestry grouping (`reconstruction.py:407–499`, plan 08 §3.5.1). | Production-eligible: uses `Event_ID`, `eDep`, `x/y/z`, optional `t`, and geometry. | Energy response, centroid residual, split/merge rate on `cal_singlegamma_v1`. | Over-merges close π⁰ daughters; threshold DEC entry required. |
+| **Sliding-window** | Scan fixed geometry windows around local maxima; assign each hit to the highest-window sum and merge overlapping windows. | Replaces current lead-glass/scintillator source groups before emission (`reconstruction.py:1046–1099`, plan 08 §3.5.2). | Production-eligible if window geometry comes only from detector layout. | Same closure metrics plus runtime and edge-cell inefficiency. | Loses irregular or grazing showers; sensitive to window size. |
+| **Particle-flow-style** | Competing charged/neutral hypotheses claim hits using tracks, timing, and energy compatibility. | Interacts with charged-match code in `build_photon_row` (`reconstruction.py:941–989`, plan 08 §3.5.2). | Eligible only if truth labels are excluded and track inputs are reconstructed objects. | Closure metrics plus charged/neutral confusion against plan 32 labels. | Coupled to charged-object performance; too complex for first replacement. |
+| **Truth-labelled (current)** | Group deposits by gamma/e±/π⁰ ancestry from `Parent_ID` and `Interaction`; emit source groups as photon rows. | `_leadglass_shower_sources` and photon source emission (`reconstruction.py:407–499`, `890–896`, `1046–1099`). | Not production-eligible: Class B ancestry decides membership. | Reproduction baseline only; must be beaten or matched by Class-A candidates. | Inflated closure from MC truth; fails plan 01 audit. |
 
-Plan 38 ladder leaf P.1 scores each. Plan 47 ledger reproduces
-licentiate first with the truth-labelled version, then replaces.
+Plan 38 ladder leaf P.1 scores each row with identical closure inputs.
+Plan 47 first records the truth-labelled reproduction baseline, then
+quotes the selected Class-A replacement and the residual difference.
 
 ## 4. Closure on `cal_singlegamma_v1`
 
