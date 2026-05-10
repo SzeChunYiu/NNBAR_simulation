@@ -272,6 +272,15 @@ enter plan 47 or plan 50.
 The dispatch row copies only the final numeric counts; the bundle row is
 the provenance contract that makes those counts reviewable.
 
+Initial input-bundle rejection examples:
+
+| `bundle_rejection_id` | Invalid provenance pattern | Required status | Review guard |
+|---|---|---|---|
+| `missing_signal_source` | `s_expected` is hand-entered but `signal_result_id` is null for a signal quote | `incomplete` | no discovery or expected-limit result may be emitted |
+| `draft_background_rate` | background row lacks `rate_included_in_b = true` or signed rate-source DEC | `incomplete` | plan-44 caveat remains outside central `b_expected` |
+| `draft_nuisance_throw` | plan-45 nuisance throw is draft or missing paired nominal hash | `incomplete` | result carries missing-systematic flag and cannot be final |
+| `unbounded_limitation_hidden` | inherited plan-45 caveat list is non-empty but absent from result row | `blocked` | plan-50 unconditional defence claim is rejected |
+
 ## 4. Acceptance criteria
 
 - §1 Z_0 target implementation lands in the L3-owned
