@@ -387,6 +387,28 @@ l1_glossary_signoff:
       thesis_status: same | translated | flagged_delta
       approved_by: <L1-owner-or-null>
       caveat_text: <required when thesis_status is flagged_delta>
+    - term: package freshness
+      defence_package_refs:
+        - em_cluster_truth_blindness
+        - pi0_cut_decomposition
+        - selection_cutflow_identity
+        - pileup_l11_status
+        - strange_v0_contamination
+        - tof_timing_resolution
+        - bayesian_prior_sensitivity
+        - unbounded_caveat_status
+      note_refs:
+        - em_object_chain
+        - event_variable_and_cutflow_identity
+        - pile_up_caveat
+        - strange_background_caveat
+        - timing_tof_cross_check
+        - limit_convention_cross_check
+        - unbounded_caveat_status
+      audit_row_ref: l1_glossary_audit:package freshness
+      thesis_status: same | translated | flagged_delta
+      approved_by: <L1-owner-or-null>
+      caveat_text: <required when thesis_status is flagged_delta>
 ```
 
 ## 4. Acceptance criteria
