@@ -4,7 +4,7 @@ title: Open-data archival — Zenodo, DOI, RECAST-style preservation
 version: 0.1
 status: draft
 owner: Reproducibility WG
-depends_on: [00_README, 03_dataset_registry, 11_build_and_runtime_environment, 47_reproduction_ledger, 50_reviewer_defense_package, 51_reviewer_question_registry, 52_run_orchestration, 53_ci_regression_suite, 55_internal_note_template, 55_internal_note_template_l1_annex_fixture, 56_glossary]
+depends_on: [00_README, 03_dataset_registry, 11_build_and_runtime_environment, 47_reproduction_ledger, 50_reviewer_defense_package, 51_reviewer_question_registry, 52_run_orchestration, 52_run_orchestration_l1_command_templates, 53_ci_regression_suite, 55_internal_note_template, 55_internal_note_template_l1_annex_fixture, 56_glossary]
 outputs:
   - {path: docs/rebuild_plans/54_open_data_archival.md, schema: this file}
 acceptance:
@@ -55,7 +55,7 @@ selection claims without reconstructing the whole plan tree by hand.
 | TOF timing | plan-61 TOF candidate summaries, resolution budgets, and ROC rows | preserves timing-separation evidence and caveats |
 | Bayesian limits | plan-64 prior-sensitivity table and plan-46 comparison ratios | preserves low-count prior-sensitivity evidence |
 | unbounded caveats | plan-45 caveat-only limitations, plan-50 `unbounded_caveat_status` overlays, and plan-55 note rows | prevents caveat-only assumptions from disappearing from the freeze record |
-| defence routing | plan-50 overlays, plan-51 question seeds, plan-52 rerun manifests, transcripts, and command-template registry, plan-55 annex, plan-56 glossary terms | lets a future reader map artifacts to reviewer questions |
+| defence routing | plan-50 overlays, plan-51 question seeds, plan-52 rerun manifests, transcripts, command-template registry, and command-template companion, plan-55 annex, plan-56 glossary terms | lets a future reader map artifacts to reviewer questions |
 
 If a pack member is blocked at freeze, archive the blocked manifest row,
 the missing input name, and the owning plan instead of dropping the row.
@@ -67,7 +67,7 @@ The archival package includes an `l1_defence_inventory` manifest so the
 Zenodo record can be audited without opening every defence package. The
 manifest is generated at thesis-freeze from plan 50 packages, plan 52
 rerun manifests, execution transcripts, command-template registry rows,
-plan 53 L1 CI reports, plan 55 notes, and plan 56 glossary audits.
+plan-52 command-template companion, plan 53 L1 CI reports, plan 55 notes, and plan 56 glossary audits.
 
 ```yaml
 l1_defence_inventory:
@@ -230,6 +230,7 @@ l1_defence_inventory:
         - docs/rebuild_plans/50_reviewer_defense_package.md
         - docs/rebuild_plans/51_reviewer_question_registry.md
         - docs/rebuild_plans/52_run_orchestration.md
+        - docs/rebuild_plans/52_run_orchestration_l1_command_templates.md
         - docs/rebuild_plans/53_ci_regression_suite.md
         - docs/rebuild_plans/55_internal_note_template.md
         - docs/rebuild_plans/55_internal_note_template_l1_annex_fixture.md
