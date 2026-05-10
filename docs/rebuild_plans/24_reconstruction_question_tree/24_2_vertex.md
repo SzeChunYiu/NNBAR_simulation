@@ -65,7 +65,7 @@ Leaf V.2: track candidates → fitted track directions
   decision rule: fit or estimate a direction from the ordered Class A
                  hit coordinates; the current baseline is the
                  first-to-last-hit unit vector from plan 08 §3.2
-                 (`_track_anchor_and_direction`; `charged.py:61-82`),
+                 (`_track_anchor_and_direction`; `charged.py:62-81`),
                  with covariance and
                  residuals supplied by plan 26 before sign-off.
   output schema: {event_id: int64, candidate_id: int64,
