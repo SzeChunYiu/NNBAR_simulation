@@ -76,16 +76,25 @@ Plan 38 scores all candidates on identical P.1 cluster inputs. Plan 57
 requires the selected BDT/NN feature list, training split, and threshold
 to be frozen before it can replace the hard-cone baseline.
 
-## 3. Closure (plan 40)
+## 3. Closure-test specification
 
-ROC curve on:
-
-- Truth-positive (gamma) sample: `cal_singlegamma_v1`.
-- Truth-negative (charged) sample: `cal_singleelectron_v1` plus
-  charged-pion-induced clusters in `sig_foil_v3` (truth-labelled
-  for closure only).
-
-Acceptance: AUC ≥ 0.95.
+1. **Dataset ids:** positive labels from `cal_singlegamma_v1`;
+   charged negative labels from `cal_singleelectron_v1` plus
+   charged-pion-associated clusters in `sig_foil_v3`. Truth ancestry
+   is used only to assign closure labels, never as a feature.
+2. **Observable:** `neutral_score`, `passes_neutral_discriminant`,
+   per-feature distributions from §1, neutral efficiency, charged
+   fake rate, and receiver-operating-characteristic points.
+3. **Fitter / estimator:** compute ROC AUC with stratified bootstrap
+   confidence intervals; for fixed-threshold candidates, report the
+   single ROC operating point plus Wilson intervals for efficiency and
+   fake rate.
+4. **Pass criterion:** selected production candidate has ROC AUC
+   `≥ 0.95`, neutral efficiency `≥ 0.90` at the frozen threshold,
+   and charged fake rate `≤ 0.05` on every negative sample component.
+5. **Audit hook:** repeat the evaluation with all Class B columns
+   removed from the reconstruction input. Features, score, and
+   production pass/fail must be bitwise identical.
 
 ## 4. Acceptance criteria
 
