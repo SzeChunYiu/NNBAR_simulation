@@ -70,6 +70,7 @@ defence:
     closure_chi2_dof: 1.1
   l1_review_evidence:
     overlay_rollup: <path or package key>
+    defence_routing_crosswalk: <artifact-key-or-null>
     owner_signoff_refs: [RQ-L1-SELECTION-CUTFLOW:<owner-hash>]
     rerun_manifest: <path-or-null>
     rerun_transcript: <path-or-null>
@@ -89,6 +90,7 @@ defence:
       rerun_manifest: sha256:<hash-or-null>
       rerun_transcript: sha256:<hash-or-null>
       command_template_verifier: sha256:<hash-or-null>
+      defence_routing_crosswalk: sha256:<hash-or-null>
       ci_report: sha256:<hash-or-null>
       note_annex: sha256:<hash-or-null>
       glossary_audit: sha256:<hash-or-null>
@@ -210,6 +212,7 @@ l1_overlay_rollup:
     rerun_transcript: present | blocked | missing
     command_template_registry: present | missing
     command_template_verifiers: present | missing
+    defence_routing_crosswalk: present | missing
     ci_report: present | missing
     archive_inventory: present | missing
     archive_drill: present | missing
@@ -241,6 +244,7 @@ Promotion rules:
 | rerun transcript status agrees with plan 52 | package says refreshed artifacts exist without execution evidence |
 | command template registry agrees with plan 52 | package transcript uses unsupported or mutable command semantics |
 | command template verifier hashes and sources agree with plan 52 | package trusts refreshed artifacts without A+ command-surface proof |
+| defence routing crosswalk covers every required overlay | package has an overlay with no rerun, archive, or note route |
 | CI report status agrees with plan 53 | stale package skips the A+ citation gate |
 | note annex and glossary audit links are present for quoted notes | thesis prose diverges from package evidence |
 | review-artifact hashes agree with the plan-54 inventory | package links cannot be proven to match archived review artifacts |
@@ -268,6 +272,7 @@ l1_staleness:
     plan52_command_templates: <hash>
     plan52_command_template_verifiers:
       - sha256:b3cee4613afed558d4704df3dc5b281271aed768965d79a09603f812496806f0
+    defence_routing_crosswalk: <hash>
     plan53_ci_report: <hash>
     plan54_archive_inventory: <hash>
     plan54_archive_drill: <hash-or-null>
@@ -284,6 +289,7 @@ Invalidation rules:
 |---|---|
 | plan-51 question text, route, or status | regenerate affected overlay roll-up and reopen answered rows if artifact hashes changed |
 | plan-52 manifest, transcript, command-template, or verifier hash | mark refreshed-artifact overlays stale until output hashes and command semantics are rechecked |
+| defence-routing crosswalk hash | rerun overlay-to-rerun/archive/note parity before package promotion |
 | plan-53 L1 CI report hash | rerun package audit before thesis-freeze promotion |
 | plan-54 inventory or drill hash | mark archive-facing package status stale until DOI evidence is reconciled |
 | review-artifact hash bundle | mark package stale until package, CI, note, and glossary hashes are reconciled |
@@ -317,6 +323,8 @@ The generator joins ledger rows × dataset manifests × ladder matrices
   command-template registry, and verifier links when refreshed artifacts
   are claimed.
 - Ready L1 packages carry a current §2.4 staleness summary.
+- Ready L1 packages expose the defence-routing crosswalk used by plan 53
+  to prove overlay, rerun, archive, and note parity.
 - The package schema exposes `l1_review_evidence` links for overlays, owner
   sign-off, rerun artifacts, command templates, verifier hashes/sources, CI reports,
   note annexes, glossary audits, staleness summaries, review-artifact hashes,

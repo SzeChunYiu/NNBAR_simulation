@@ -87,7 +87,7 @@ requirements, not claims that the final workflow file already exists.
 | Check id | Trigger | Assertion | Failure semantics |
 |---|---|---|---|
 | `l1_defence_overlay_schema` | changes to plans 50, 51, 55, or 56 | every L1 overlay/question/note/glossary term has a stable id and required artifact field, and Plan 50's `required_l1_overlay_ids` set matches all routed L1 overlays | Tier 1 block |
-| `l1_review_evidence_links` | changes to plan 50 | package schema exposes overlay roll-up, owner sign-off, rerun manifest, rerun transcript, command-template ids, verifier hashes/sources, CI report, archive inventory/drill, note annex, glossary audit, staleness summary, review-artifact hashes, and staleness status | Tier 1 block |
+| `l1_review_evidence_links` | changes to plan 50 | package schema exposes overlay roll-up, defence-routing crosswalk, owner sign-off, rerun manifest, rerun transcript, command-template ids, verifier hashes/sources, CI report, archive inventory/drill, note annex, glossary audit, staleness summary, review-artifact hashes, and staleness status | Tier 1 block |
 | `l1_question_status_transition` | changes to plan 51 | answered L1 reviewer-question rows carry artifact, overlay, owner sign-off, review-evidence links, review-artifact hashes, and rerun manifest/transcript/template ids plus verifier hash/source when refreshed evidence is claimed | Tier 1 block |
 | `l1_wave4_plan_presence` | changes under `docs/rebuild_plans/` | plans 58, 59, 61, and 64 exist and remain between 200 and 300 lines unless a split plan is declared | Tier 1 block |
 | `l1_no_stale_cli_or_code_cites` | changes to L1-owned plans | grep for `*.py:<line>` and nnbar module commands, then require the A+ verifier transcript or remove the claim | Tier 1 block |
@@ -131,8 +131,8 @@ l1_defence_ci_report:
         allowed_line_range: [200, 300]
         stale_citation_matches: 0
         owner_signoff_refs_present: true
-        review_evidence_link_keys: [overlay_rollup, owner_signoff_refs, rerun_manifest, rerun_transcript, command_template_ids, command_template_verifier_hashes, command_template_verifier_sources, staleness_summary, ci_report, archive_inventory, archive_drill, note_annex, glossary_audit]
-        review_artifact_hash_keys: [package, rerun_manifest, rerun_transcript, command_template_verifier, staleness_summary, ci_report, archive_inventory, archive_drill, note_annex, glossary_audit]
+        review_evidence_link_keys: [overlay_rollup, defence_routing_crosswalk, owner_signoff_refs, rerun_manifest, rerun_transcript, command_template_ids, command_template_verifier_hashes, command_template_verifier_sources, staleness_summary, ci_report, archive_inventory, archive_drill, note_annex, glossary_audit]
+        review_artifact_hash_keys: [package, rerun_manifest, rerun_transcript, command_template_verifier, defence_routing_crosswalk, staleness_summary, ci_report, archive_inventory, archive_drill, note_annex, glossary_audit]
         archive_drill_hash_present: true
         command_template_verifier_hashes: [sha256:b3cee4613afed558d4704df3dc5b281271aed768965d79a09603f812496806f0]
       remediation: null
@@ -169,7 +169,7 @@ l1_defence_ci_report:
         blocked_rows_visible: true
         owner_signoff_refs_present: true
         archive_drill_hash_present: true
-        review_artifact_hash_keys: [package, rerun_manifest, rerun_transcript, command_template_verifier, staleness_summary, ci_report, archive_inventory, archive_drill, note_annex, glossary_audit]
+        review_artifact_hash_keys: [package, rerun_manifest, rerun_transcript, command_template_verifier, defence_routing_crosswalk, staleness_summary, ci_report, archive_inventory, archive_drill, note_annex, glossary_audit]
       remediation: null
     - check_id: l1_glossary_signoff
       status: pass | fail
@@ -235,8 +235,8 @@ l1_defence_ci_report:
       files_checked:
         - docs/rebuild_plans/50_reviewer_defense_package.md
       evidence:
-        required_link_keys: [overlay_rollup, owner_signoff_refs, rerun_manifest, rerun_transcript, command_template_ids, command_template_verifier_hashes, command_template_verifier_sources, ci_report, archive_inventory, archive_drill, note_annex, glossary_audit, staleness_summary, staleness_status]
-        required_hash_keys: [package, rerun_manifest, rerun_transcript, command_template_verifier, ci_report, note_annex, glossary_audit, staleness_summary, archive_inventory, archive_drill]
+        required_link_keys: [overlay_rollup, defence_routing_crosswalk, owner_signoff_refs, rerun_manifest, rerun_transcript, command_template_ids, command_template_verifier_hashes, command_template_verifier_sources, ci_report, archive_inventory, archive_drill, note_annex, glossary_audit, staleness_summary, staleness_status]
+        required_hash_keys: [package, rerun_manifest, rerun_transcript, command_template_verifier, defence_routing_crosswalk, ci_report, note_annex, glossary_audit, staleness_summary, archive_inventory, archive_drill]
         staleness_status_key_present: true
         command_template_verifier_hashes_present: true
       remediation: null
@@ -369,7 +369,7 @@ Report review rules:
 | answered-question transition evidence includes review-evidence links | reviewer registry answer cannot be traced to package, CI, note, and glossary artifacts |
 | answered-question transition evidence includes review-artifact hashes | reviewer registry answer links can drift after artifacts are regenerated |
 | staleness guard appears for ready L1 packages and includes archive hashes | stale defence package is promoted as current evidence |
-| review-evidence links include package, staleness, CI, archive, note, glossary artifacts, and hashes | package has L1 evidence in prose but no machine-readable handoff |
+| review-evidence links include package, defence routing, staleness, CI, archive, note, glossary artifacts, and hashes | package has L1 evidence in prose but no machine-readable handoff |
 | note freshness check appears for promoted notes with artifact hashes and staleness id | thesis-facing note quotes stale package or unverifiable note evidence as current evidence |
 | archive drill report lists the eight plan-54 pack members by stable id | freeze CI checks archive presence but not full L1 evidence-class coverage |
 | overlay-to-pack-member parity appears with plan-50, plan-52, plan-54, and plan-55 evidence | a reviewer question has a defence overlay but no rerun, archive, or note route |
