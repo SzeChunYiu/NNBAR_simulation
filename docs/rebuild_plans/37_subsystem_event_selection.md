@@ -103,6 +103,23 @@ Per plan 41:
 The MVA replacement is reported alongside, never overriding, the
 cut-based result for thesis-quoted numbers (plan 06 §6 conservatism).
 
+### 4.1 Decision-log stubs for selection changes
+
+Any change to a cut threshold, cut order, or S.6 replacement is a
+load-bearing analysis decision and needs plan-05 approval before plan
+47 can quote it:
+
+| DEC stub | Decision to freeze | Required evidence before approval |
+|---|---|---|
+| `DEC-37-CH10-CUTFLOW-BASELINE` | Freeze the six Ch 10 cuts, thresholds, and `cli._cutflow` cumulative order as the reproduction baseline | plan-47 row reproducing signal acceptance and cosmic survivors with §1 thresholds |
+| `DEC-37-RETUNED-CUTS` | Approve any retuned rectangular threshold set from plan 41 | N-1/ROC scan, expected-limit comparison, and explicit statement that Ch 10 columns remain unchanged |
+| `DEC-37-MVA-SELECTION` | Permit BDT or NN S.6 replacement to be reported beside the cut-flow baseline | plan-57 feature freeze, plan-38 ladder row, calibration curve, and background-rejection evidence |
+| `DEC-37-TRUTH-BLIND-GATE` | Declare the selection eligible for final quotes after upstream truth leaks are removed | plan-01 audit plus rerun showing all `pass_*` booleans unchanged when truth/provenance columns are dropped |
+
+Until the relevant DEC is approved, alternative S.6 outputs are
+diagnostic/ladder artifacts only and cannot supersede the baseline
+cut-flow.
+
 ## 5. Acceptance criteria
 
 - §1 cuts implemented exactly.
