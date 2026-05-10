@@ -282,6 +282,23 @@ This contract keeps `reconstruct_range_table`
 producer until L3 replaces the projection implementation behind the
 same keys.
 
+### 5.5 Stage E.1 verification command
+
+L3's C.3 patch is promotable only when the range slice exercises the
+projected-hit unit path and the real-output C.1/V.2→C.3 chain:
+
+```bash
+pytest tests/test_charged_reco.py::test_reconstruct_range_table_projects_scintillator_hits \
+       tests/test_charged_reco.py::test_reconstruct_range_table_real_sample_has_plan_28_schema
+```
+
+The review note for that patch must quote the command output and the
+C.3 artifact manifest fields `range_id`, `association_method`,
+`range_quality_state`, `range_failure_reason`,
+`scintillator_edge_distance_mm`, and `scintillator_profile_bin`. If the
+real-output selector skips because scintillator fixtures are missing,
+C.3 cannot feed plan 29 PID promotion or plan 60 fiducial profiles.
+
 ## 6. Acceptance criteria
 
 - §3 closure passes.
@@ -290,8 +307,8 @@ same keys.
   plan 38 C.3/C.5 ladder delta.
 - §5 Stage E.1 handoff is actionable for L3: the target public
   function, current unit/integration tests, remaining test obligation,
-  promotion invariants, producer/consumer contract, and required C.3
-  fields (`range_id`, `association_method`, `range_cm`,
+  promotion invariants, producer/consumer contract, verification
+  command, and required C.3 fields (`range_id`, `association_method`, `range_cm`,
   `range_edep_mev`, `bragg_peak_position_cm`,
   `range_quality_state`, `range_failure_reason`,
   `scintillator_edge_distance_mm`, `scintillator_profile_bin`, and
