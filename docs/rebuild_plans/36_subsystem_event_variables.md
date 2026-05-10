@@ -122,6 +122,23 @@ against the thesis baseline without deleting the reproduced Ch 10 inputs.
    dropped. Event-variable outputs must be unchanged except for
    closure-only comparison columns.
 
+### 5.1 Decision-log stubs for variable use
+
+Plan 36 may add variables, change the source of an existing variable,
+or make an event-shape variable eligible for plan-37 selection. Those
+methodology choices need plan-05 DEC approval before they influence
+quoted efficiencies:
+
+| DEC stub | Decision to freeze | Required evidence before approval |
+|---|---|---|
+| `DEC-36-HEMISPHERE-CONVENTION` | Retain `y > 0` / `y < 0` as the upper/lower convention for all Ch 10 reproductions | plan-47 reproduction row showing the convention matches the licentiate cut-flow |
+| `DEC-36-EVENT-SHAPE-FEATURES` | Permit Fox-Wolfram moments and thrust to enter plan-37 or plan-57 feature sets | plan-38 ladder row plus plan-41 N-1/ROC evidence against sphericity-only |
+| `DEC-36-VISIBLE-MASS-SOURCE` | Choose raw visible mass vs plan-35 fit-aware visible mass as the production S.3 input | §5 closure plus plan-35 approved fit-mode DEC |
+| `DEC-36-SPARSE-SENTINELS` | Freeze sentinel values and validity flags for sparse or underpopulated events | audit table proving sparse sentinels do not pass selection accidentally |
+
+Until approval, new E.6 variables and fit-aware E.7 are recorded for
+ladder studies but do not replace the Ch 10 reproduction inputs.
+
 ## 6. Acceptance criteria
 
 - §2 table complete; every variable produced.
