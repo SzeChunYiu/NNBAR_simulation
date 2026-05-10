@@ -4,7 +4,7 @@ title: Reviewer-question registry — living, append-only
 version: 0.1
 status: draft
 owner: Reproducibility WG
-depends_on: [00_README, 50_reviewer_defense_package, 52_run_orchestration, 53_ci_regression_suite, 54_open_data_archival, 55_internal_note_template, 56_glossary]
+depends_on: [00_README, 50_reviewer_defense_package, 52_run_orchestration, 52_run_orchestration_l1_command_templates, 53_ci_regression_suite, 54_open_data_archival, 55_internal_note_template, 56_glossary]
 outputs:
   - {path: docs/rebuild_plans/51_reviewer_question_registry.md, schema: this file}
   - {path: docs/reviewer_question_registry.md, schema: living registry}
@@ -114,6 +114,7 @@ audit when a seed becomes attached to a concrete ledger result.
   l1_overlay_id: selection_cutflow_identity
   required_artifact_status: missing
   rerun_command_template_id: validate_reco_cutflow_v1
+  rerun_command_template_companion: docs/rebuild_plans/52_run_orchestration_l1_command_templates.md
   rerun_command_template_verifier_hash: sha256:b3cee4613afed558d4704df3dc5b281271aed768965d79a09603f812496806f0
   rerun_command_template_verifier_source: plan52:validate_reco_cutflow_v1
   rerun_manifest_id: plan52:Ch 10 selection cut-flow
@@ -137,6 +138,7 @@ audit when a seed becomes attached to a concrete ledger result.
   l1_overlay_id: em_cluster_truth_blindness
   required_artifact_status: missing
   rerun_command_template_id: validate_reco_allruns_v1
+  rerun_command_template_companion: docs/rebuild_plans/52_run_orchestration_l1_command_templates.md
   rerun_command_template_verifier_hash: sha256:b3cee4613afed558d4704df3dc5b281271aed768965d79a09603f812496806f0
   rerun_command_template_verifier_source: plan52:validate_reco_allruns_v1
   rerun_manifest_id: plan52:EM chain closure
@@ -160,6 +162,7 @@ audit when a seed becomes attached to a concrete ledger result.
   l1_overlay_id: em_cluster_truth_blindness
   required_artifact_status: missing
   rerun_command_template_id: validate_reco_allruns_v1
+  rerun_command_template_companion: docs/rebuild_plans/52_run_orchestration_l1_command_templates.md
   rerun_command_template_verifier_hash: sha256:b3cee4613afed558d4704df3dc5b281271aed768965d79a09603f812496806f0
   rerun_command_template_verifier_source: plan52:validate_reco_allruns_v1
   rerun_manifest_id: plan52:EM chain closure
@@ -183,6 +186,7 @@ audit when a seed becomes attached to a concrete ledger result.
   l1_overlay_id: pi0_cut_decomposition
   required_artifact_status: missing
   rerun_command_template_id: validate_reco_cutflow_v1
+  rerun_command_template_companion: docs/rebuild_plans/52_run_orchestration_l1_command_templates.md
   rerun_command_template_verifier_hash: sha256:b3cee4613afed558d4704df3dc5b281271aed768965d79a09603f812496806f0
   rerun_command_template_verifier_source: plan52:validate_reco_cutflow_v1
   rerun_manifest_id: plan52:EM chain closure
@@ -206,6 +210,7 @@ audit when a seed becomes attached to a concrete ledger result.
   l1_overlay_id: pileup_l11_status
   required_artifact_status: missing
   rerun_command_template_id: blocked_missing_input_v1
+  rerun_command_template_companion: docs/rebuild_plans/52_run_orchestration_l1_command_templates.md
   rerun_command_template_verifier_hash: null
   rerun_command_template_verifier_source: null
   rerun_manifest_id: plan52:Pile-up L11 overlay
@@ -229,6 +234,7 @@ audit when a seed becomes attached to a concrete ledger result.
   l1_overlay_id: strange_v0_contamination
   required_artifact_status: missing
   rerun_command_template_id: blocked_missing_input_v1
+  rerun_command_template_companion: docs/rebuild_plans/52_run_orchestration_l1_command_templates.md
   rerun_command_template_verifier_hash: null
   rerun_command_template_verifier_source: null
   rerun_manifest_id: plan52:Strange V0 contamination
@@ -252,6 +258,7 @@ audit when a seed becomes attached to a concrete ledger result.
   l1_overlay_id: tof_timing_resolution
   required_artifact_status: missing
   rerun_command_template_id: blocked_missing_input_v1
+  rerun_command_template_companion: docs/rebuild_plans/52_run_orchestration_l1_command_templates.md
   rerun_command_template_verifier_hash: null
   rerun_command_template_verifier_source: null
   rerun_manifest_id: plan52:TOF timing closure
@@ -275,6 +282,7 @@ audit when a seed becomes attached to a concrete ledger result.
   l1_overlay_id: bayesian_prior_sensitivity
   required_artifact_status: missing
   rerun_command_template_id: blocked_missing_input_v1
+  rerun_command_template_companion: docs/rebuild_plans/52_run_orchestration_l1_command_templates.md
   rerun_command_template_verifier_hash: null
   rerun_command_template_verifier_source: null
   rerun_manifest_id: plan52:Bayesian limit cross-check
@@ -298,6 +306,7 @@ audit when a seed becomes attached to a concrete ledger result.
   l1_overlay_id: unbounded_caveat_status
   required_artifact_status: missing
   rerun_command_template_id: blocked_missing_input_v1
+  rerun_command_template_companion: docs/rebuild_plans/52_run_orchestration_l1_command_templates.md
   rerun_command_template_verifier_hash: null
   rerun_command_template_verifier_source: null
   rerun_manifest_id: plan52:Unbounded caveat status
@@ -315,8 +324,8 @@ Review rules:
 | `status = answered` requires `answer.owner_signoff` | question closes without accountable reviewer-facing owner |
 | answered rows expose review evidence links | registry answer cannot be traced into package, CI, note, and glossary artifacts |
 | answered rows expose review artifact hashes | answer links can drift to different package/CI/note/glossary evidence |
-| refreshed-artifact rows name a command template id | reviewer answer cannot replay the verified command contract |
-| command-template verifier hash and source are recorded | reviewer answer trusts a command template without A+ verifier evidence |
+| refreshed-artifact rows name a command template id and companion | reviewer answer cannot replay or locate the verified command contract |
+| command-template companion, verifier hash, and source are recorded | reviewer answer trusts a command template without A+ verifier evidence or source file |
 | every row carries a `rerun_manifest_id` matching a plan-52 bundle member | reviewer question cannot be scheduled into the rerun manifest |
 | `rerun_transcript_id` stays null only while the row is open or blocked | answered evidence closes without an execution transcript |
 | `blocked_missing_input_v1` rows keep verifier hash and source null until inputs exist | blocked templates masquerade as verified runnable commands |
@@ -337,7 +346,7 @@ thesis-facing result.
 | From | To | Required evidence | Forbidden shortcut |
 |---|---|---|---|
 | `open` | `blocked` | missing input named in plan 52 or plan 50 | closing because the artifact is not yet producible |
-| `open` | `answered` | artifact id, ledger row, defence overlay id, rerun manifest/transcript/template ids plus verifier hash/source when refreshed, owner sign-off, review-evidence links including staleness/archive evidence, and review-artifact hashes | answering with a plan paragraph only |
+| `open` | `answered` | artifact id, ledger row, defence overlay id, rerun manifest/transcript/template ids, command-template companion plus verifier hash/source when refreshed, owner sign-off, review-evidence links including staleness/archive evidence, and review-artifact hashes | answering with a plan paragraph only |
 | `blocked` | `open` | upstream input now exists or owner has a rerun date | leaving stale blocker text in the package |
 | `answered` | `open` | new reviewer challenge or changed input hash | editing the answer without reopening review |
 | `answered` | `clarified` | wording-only update with unchanged artifact hash | hiding a numerical change as prose |
@@ -352,15 +361,15 @@ Status-transition review rules:
 | changed input hashes reopen affected questions | stale answers survive reruns |
 | changed review-artifact hashes reopen affected questions | answer keeps pointing at superseded package, staleness, CI, archive, note, or glossary evidence |
 | refreshed-artifact answers name the rerun transcript id | registry says answered before execution evidence exists |
-| command-template changes reopen refreshed-artifact answers | answered row keeps old command semantics after plan-52 drift |
+| command-template companion changes reopen refreshed-artifact answers | answered row keeps old command semantics after plan-52 drift |
 | verifier-hash or verifier-source changes reopen refreshed-artifact answers | answered row keeps stale CLI verifier proof |
 | clarified rows preserve artifact hashes | numerical result changes bypass review |
 
 These rules keep the registry append-only in spirit even when the living
 registry file is rendered as current-state YAML. A reviewer question that
 requires regenerated EM/selection evidence remains `open` or `blocked` until
-the plan-52 manifest, execution transcript, command-template id, verifier hash,
-and verifier source are linked.
+the plan-52 manifest, execution transcript, command-template id, command-template
+companion, verifier hash, and verifier source are linked.
 
 ## 3. Update protocol
 
