@@ -43,12 +43,12 @@ comparison in §5. Current source line references come from plan 08
 |---|---|---|---|---|---|
 | E.1 | `calorimeter_edep` | `Σ scintillator eDep + Σ lead-glass eDep` | MeV | `summarize_events` sums raw calorimeter hits (`reconstruction.py:906-1032`) | baseline |
 | E.2 | `upper/lower_scintillator_edep`, `upper/lower_leadglass_edep` | split raw cal energy by `y > 0` / `y < 0` | MeV | hemisphere sums are emitted by `summarize_events` (`reconstruction.py:906-1032`) | baseline |
-| E.3 | `*_longitudinal_energy`, `calorimeter_longitudinal_energy` | `Σ E_i z_i / r_i` | MeV | `_directional_energy` computes the ratio (`reconstruction.py:226-246`); `summarize_events` emits columns (`reconstruction.py:906-1032`) | baseline |
+| E.3 | `*_longitudinal_energy`, `calorimeter_longitudinal_energy` | `Σ E_i z_i / r_i` | MeV | `_directional_energy` computes the ratio (`reconstruction.py:226-246`); event rows emit the columns | baseline |
 | E.4 | `*_transverse_energy`, `calorimeter_transverse_energy` | `Σ E_i sqrt(x_i² + y_i²) / r_i` | MeV | same as E.3 | baseline |
-| E.5 | `sphericity` | `1.5 * (λ₁ + λ₂)` from normalized momentum tensor | dimensionless | `_sphericity` computes the shape (`reconstruction.py:839-850`); `summarize_events` emits it (`reconstruction.py:906-1032`) | baseline |
+| E.5 | `sphericity` | `1.5 * (λ₁ + λ₂)` from normalized momentum tensor | dimensionless | `_sphericity` computes the shape (`reconstruction.py:839-850`); event rows emit it | baseline |
 | E.6 | `fox_wolfram_h0`, `fox_wolfram_h2`, `thrust` | pairwise Legendre moments and thrust axis over reconstructed objects | dimensionless | new variables; no current columns in plan 08 output schema | added |
-| E.7 | `visible_invariant_mass` | `√((Σ E_i)² - |Σ p_i|²)` from charged + photon four-vectors | MeV | `_visible_invariant_mass` computes mass (`reconstruction.py:853-874`); `summarize_events` emits it (`reconstruction.py:906-1032`) | baseline |
-| E.8 | `calorimeter_timing_edep`, `calorimeter_out_of_time_edep` plus detector splits | sum hits inside/outside timing windows | MeV | `annotate_timing_windows` marks hit windows (`reconstruction.py:265-340`); `summarize_events` emits sums (`reconstruction.py:906-1032`) | baseline |
+| E.7 | `visible_invariant_mass` | `√((Σ E_i)² - |Σ p_i|²)` from charged + photon four-vectors | MeV | `_visible_invariant_mass` computes mass (`reconstruction.py:853-874`); event rows emit it | baseline |
+| E.8 | `calorimeter_timing_edep`, `calorimeter_out_of_time_edep` plus detector splits | sum hits inside/outside timing windows | MeV | `annotate_timing_windows` marks hit windows (`reconstruction.py:265-340`); event rows emit sums | baseline |
 | E.9 | `n_charged_objects`, `n_photon_like`, `n_pi0`, `pion_multiplicity` | counts reconstructed objects and selected π⁰ rows | int | object counts are emitted by `summarize_events` (`reconstruction.py:906-1032`) | baseline |
 
 Per-leaf **inputs** are the tables in §1; **outputs** are the listed
