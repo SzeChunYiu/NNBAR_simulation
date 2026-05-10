@@ -97,23 +97,21 @@ from this plan, which describes how to maintain the ledger).
 
 The living ledger now exists at `docs/thesis_reproduction_ledger.md`,
 with the machine-readable mirror at `data/ledger/rows.yml`. Wave 2
-seeding has added **20 rows** from Chapter 5 of the licentiate/PhD
+seeding has added **43 rows** from Chapters 5--6 of the licentiate/PhD
 thesis pair:
 
-- 12 figure rows for TPC segmentation, WLS-fibre fits, lead-glass
-  layout, lead-glass calibration, material-budget plots, and gamma-
-  conversion maps.
-- 6 numeric rows for the PMT/light-guide proxy dimensions, the lead-
-  glass calibration equation/slope/intercept/validity condition, and
-  the gamma-conversion photon count.
-- 2 PhD-only provenance rows for the HIBEAM TPC data-products unit
-  boundary and April 2026 CSV correction decision.
+- 20 Chapter 5 rows for detector-model figures, lead-glass calibration
+  numbers, gamma-conversion maps, and PhD-only data-product provenance.
+- 23 Chapter 6 rows for signal vertex/kinematic figures, CRY event-
+  plane settings, cosmic kinetic/angle figures, the three-year cosmic
+  count table, per-bin cosmic rates, simulated sample count, and the
+  cosmic weighting equation.
 
 All rows are `not-attempted` in Wave 2: they inventory source claims
 and bind each claim to a plan-03 sample id, a plan-10-style command,
-a plan-24 leaf, and any known DEC references. Later iterations add
-rows for Chapters 6--10 until the ledger reaches the lane stop count
-(≥ 30 rows) and then continue toward full coverage.
+a plan-24 leaf, and any known DEC references. The current row count
+satisfies the lane's ≥30-row seed requirement; later iterations still
+add Chapters 7--10 and continue toward full coverage.
 
 ## 6. Acceptance criteria
 
