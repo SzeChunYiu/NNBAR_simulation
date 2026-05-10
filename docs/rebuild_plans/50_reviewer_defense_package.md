@@ -74,6 +74,8 @@ defence:
     command_template_ids: [validate_reco_cutflow_v1]
     command_template_verifier_hashes: [sha256:<hash>]
     ci_report: <path-or-null>
+    archive_inventory: <path-or-null>
+    archive_drill: <path-or-null>
     note_annex: <path-or-null>
     glossary_audit: <path-or-null>
     staleness_summary: <plan50-staleness-id-or-path>
@@ -83,6 +85,8 @@ defence:
       note_annex: sha256:<hash-or-null>
       glossary_audit: sha256:<hash-or-null>
       staleness_summary: sha256:<hash-or-null>
+      archive_inventory: sha256:<hash-or-null>
+      archive_drill: sha256:<hash-or-null>
     staleness_status: current | stale | blocked
 ```
 
@@ -184,6 +188,8 @@ l1_overlay_rollup:
     command_template_registry: present | missing
     command_template_verifiers: present | missing
     ci_report: present | missing
+    archive_inventory: present | missing
+    archive_drill: present | missing
     note_annex: present | missing
     glossary_audit: present | missing
     staleness_summary: present | missing
