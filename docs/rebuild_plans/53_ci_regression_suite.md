@@ -144,6 +144,27 @@ l1_defence_ci_report:
         command_template_verifier_hashes: [sha256:b3cee4613afed558d4704df3dc5b281271aed768965d79a09603f812496806f0]
         immutable_template_policy: true
       remediation: null
+    - check_id: l1_archive_drill_manifest
+      status: pass | fail
+      files_checked:
+        - docs/rebuild_plans/54_open_data_archival.md
+      evidence:
+        expected_pack_members:
+          - em_object_chain
+          - ch10_cutflow
+          - pileup_l11
+          - strange_v0
+          - tof_timing
+          - bayesian_limits
+          - unbounded_caveats
+          - defence_routing
+        inventory_pack_member_count: 8
+        top_level_readme_entry_present: true
+        blocked_rows_visible: true
+        owner_signoff_refs_present: true
+        archive_drill_hash_present: true
+        review_artifact_hash_keys: [package, ci_report, archive_inventory, archive_drill, note_annex, glossary_audit]
+      remediation: null
 ```
 
 Report review rules:
@@ -165,6 +186,7 @@ Report review rules:
 | staleness guard appears for ready L1 packages and includes archive hashes | stale defence package is promoted as current evidence |
 | review-evidence links include package, staleness, CI, archive, note, glossary artifacts, and hashes | package has L1 evidence in prose but no machine-readable handoff |
 | note freshness check appears for promoted notes with artifact hashes and staleness id | thesis-facing note quotes stale package or unverifiable note evidence as current evidence |
+| archive drill report lists the eight plan-54 pack members by stable id | freeze CI checks archive presence but not full L1 evidence-class coverage |
 
 A warning status is allowed only for Tier 3 weekly checks. Tier 1 L1
 checks are pass/fail and block the plan-set edit when they fail.
@@ -182,7 +204,7 @@ checks are pass/fail and block the plan-set edit when they fail.
   review-evidence link checks, note freshness checks, and command-template
   registry/verifier checks.
 - Freeze-mode L1 CI includes archive-drill, archive-evidence hash,
-  owner-signoff, and glossary-signoff checks.
+  owner-signoff, glossary-signoff, and plan-54 pack-member parity checks.
 
 ## 7. Risks
 
