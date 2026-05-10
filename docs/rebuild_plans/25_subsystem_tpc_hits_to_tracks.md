@@ -120,14 +120,59 @@ hits) plus stopping-range information.
    signed limitation documenting the loss mechanism and the ladder
    delta in plan 38.
 
-## 5. Acceptance criteria
+## 5. Candidate-quality and DQM handoff
+
+V.1 must expose candidate-building health before V.2, vertexing, or
+charged PID consumes its rows. The production table extends §1 with
+these diagnostic fields:
+
+| Field | Meaning | Consumer |
+|---|---|---|
+| `candidate_quality_state` | `pass`, `warn`, `fail`, or `not_applicable` for the candidate | plans 26, 66 |
+| `candidate_failure_reason` | first blocking reason, if any | plan 47 caveats |
+| `cluster_method` | `legacy_track_id_diagnostic`, `geometric_cluster`, `hough_seed`, or future label | plan 38 ladder rows |
+| `class_a_hit_count` | number of Class A TPC hits used by the candidate | plans 26, 40 |
+| `truth_grouping_used` | true only in validation/reproduction mode | plan 01 realism audit |
+
+Quality semantics:
+
+- `pass` means the candidate uses Class A hit grouping, has at least two
+  finite coordinates, and exposes a stable hit-index list for V.2.
+- `warn` means the candidate is finite but sparse, near a plan 60 TPC
+  edge, or produced by a degraded geometric seed.
+- `fail` means the candidate is non-finite, empty, or would require
+  production use of `Track_ID` to exist.
+- `not_applicable` is reserved for event categories that contain no TPC
+  hit rows after plan 09 schema loading.
+
+Plan 66 aggregates candidate-quality fractions per run. A jump in
+`warn` or `fail` rows is a DQM issue and must not silently retune V.2
+or PID thresholds.
+
+## 6. Stage E.1 implementation handoff
+
+For L3's charged-side redesign, V.1 should become the first typed
+charged-side module:
+
+1. Input is the event-scoped TPC Class A hit table with no required
+   truth/provenance columns.
+2. Production grouping starts with geometric clustering in `(x, y, z, t)`
+   and records the method label in `cluster_method`.
+3. The legacy `Track_ID` grouping remains available only as
+   `legacy_track_id_diagnostic` for reproduction and validation.
+4. Output one V.1 row per candidate with hit indices, anchor, seed
+   direction, hit count, quality fields, and no Class B columns.
+5. Freeze the V.1 table before V.2 pull scoring or plan 38 truth
+   substitution reads validation labels.
+
+## 7. Acceptance criteria
 
 - §1 inputs match plan 09 (no Class B in production path).
 - §2 current implementation noted; migration item logged.
 - §3 alternatives each list source, NNBAR adaptation, and plan 38
   V.1 expected-delta observables for plan 49 to consume.
 
-## 6. Dependencies
+## 8. Dependencies
 
 - **08** — current implementation.
 - **24** — leaf identity.
