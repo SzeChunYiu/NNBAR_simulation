@@ -14,7 +14,7 @@ acceptance:
 risks:
   - {risk: thesis edits change a term; glossary lags, mitigation: §3 review on every thesis-freeze}
 estimated_effort: S
-last_updated: 2026-05-09
+last_updated: 2026-05-10
 ---
 
 # Glossary
@@ -130,6 +130,19 @@ l1_glossary_audit:
       required_contexts:
         - cutflow_identity_guard
         - reviewer_question_registry
+      thesis_delta: none | flagged
+      owner: L1
+    - term: command-template verifier hash
+      defined_in_section: "1.1"
+      source_plans: [51, 52, 53, 54, 55]
+      required_contexts:
+        - reviewer_question_registry
+        - rerun_command_template_registry
+        - defence_ci_report
+        - archive_inventory
+        - note_annex
+      canonical_hashes:
+        - sha256:b3cee4613afed558d4704df3dc5b281271aed768965d79a09603f812496806f0
       thesis_delta: none | flagged
       owner: L1
 ```
