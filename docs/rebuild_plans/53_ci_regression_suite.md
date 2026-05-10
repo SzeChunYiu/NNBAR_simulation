@@ -167,7 +167,7 @@ l1_defence_ci_report:
         blocked_rows_visible: true
         owner_signoff_refs_present: true
         archive_drill_hash_present: true
-        review_artifact_hash_keys: [package, ci_report, archive_inventory, archive_drill, note_annex, glossary_audit]
+        review_artifact_hash_keys: [package, rerun_manifest, rerun_transcript, command_template_verifier, staleness_summary, ci_report, archive_inventory, archive_drill, note_annex, glossary_audit]
       remediation: null
     - check_id: l1_glossary_signoff
       status: pass | fail
