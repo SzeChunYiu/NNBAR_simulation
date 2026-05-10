@@ -259,6 +259,15 @@ The inventory names the minimum closure components. It does not promote
 a discriminator until measured §3.1 metrics and the Class-B drop hash are
 attached for every required positive and negative component.
 
+Initial discriminator-closure failure examples:
+
+| `closure_case_id` | Failing pattern | Required status | Review guard |
+|---|---|---|---|
+| `missing_negative_component` | no closure row for `cal_singleelectron_v1` or charged-pion clusters | `fail` | AUC on photons alone cannot approve a neutral discriminator |
+| `fake_rate_component_fail` | aggregate fake rate passes but one negative component exceeds `0.05` | `fail` | component-wise guard is stronger than pooled ROC |
+| `class_b_score_drift` | score or pass/fail hash changes after dropping provenance columns | `fail` | blocks production even when ROC metrics pass |
+| `legacy_fixed_point_only` | hard-cone row has no AUC because it is a single operating point | `diagnostic_only` unless intervals and Class-B hash are present | cannot be used as a promoted learned threshold |
+
 ### 3.2 Decision-log stubs for the P.2 discriminator
 
 Changing the charged/neutral discriminator changes photon-object
