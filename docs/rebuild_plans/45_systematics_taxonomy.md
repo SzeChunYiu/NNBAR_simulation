@@ -333,6 +333,20 @@ A plan-46 input bundle may mark systematics complete only when these
 checks are traceable. Draft throws or M0 correlations without flags keep
 the result provisional.
 
+Initial evidence-bundle examples:
+
+| `evidence_bundle_id` | Included rows | Reviewer action |
+|---|---|---|
+| `p45_frozen_covariance_bundle_v0` | N1-N10 registry rows, measured throw pairs, correlation-pair rows, and frozen covariance hash | approve as plan-46 covariance input only when every consumed nuisance is bounded |
+| `p45_draft_throw_incomplete_bundle_v0` | nominal-linked plus/minus throws missing one hash or affected-observable row | keep provisional and exclude from quoted uncertainty until completed |
+| `p45_m0_flagged_bundle_v0` | zero-correlation placeholders, rationale flags, and reviewer signoff rows | allow temporary diagonal covariance only with explicit M0 limitation text |
+| `p45_unbounded_limitation_bundle_v0` | caveat-only limitations, no numeric ±1σ, defence-package prose, and affected observables | carry to plan 50 rather than assigning a zero-width nuisance |
+
+Evidence bundles separate measured covariance inputs from draft throws,
+temporary correlation assumptions, and unbounded limitations. Plan 46
+should consume only frozen bundles for numeric propagation and should
+quote caveat bundles separately.
+
 ## 4. Acceptance criteria
 
 - §1 registry complete; ≥ 10 nuisances.
