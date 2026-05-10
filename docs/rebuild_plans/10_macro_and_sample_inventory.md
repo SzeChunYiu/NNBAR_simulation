@@ -132,6 +132,18 @@ The neutron partition macros call the `cosmic_gamma/BeamOn.mac` helper;
 that helper is still only `/run/beamOn 1000`, so the macros are legacy
 replay definitions rather than broken/retired macros.
 
+#### 1.3.5 `macro/cosmic_macro/cosmic_proton/`
+
+| Macro | Purpose | Key commands invoked | Output / sample target | Status |
+|---|---|---|---|---|
+| `macro/cosmic_macro/cosmic_proton/BeamOn.mac` | Shared proton-cosmic batch primitive | `/run/beamOn 1000` | Caller-selected `output/cosmic_proton/cosmic_proton_<i>/*_output_<run>.parquet` | legacy |
+| `macro/cosmic_macro/cosmic_proton/run_0.mac` | Proton-cosmic MCPL partition 0 replay | `/run/initialize`; `/physics_engine/neutron/timeLimit 10000 s`; `/particle_generator/set_folder_name cosmic_{name}/cosmic_{name}_{i}`; `/particle_generator/set_mcpl_file ./mcpl_files/cosmic_{name}_{i}.mcpl`; `/particle_generator/set_run_number 0`; `/particle_generator/set_event_number 1`; `/control/loop ./macro/cosmic_macro/cosmic_proton/BeamOn.mac a 0 999 1` | `output/cosmic_proton/cosmic_proton_0/*_output_<run>.parquet`; target 1000 × `beamOn 1000` from `cosmic_proton_0.mcpl` | legacy |
+| `macro/cosmic_macro/cosmic_proton/run_1.mac` | Proton-cosmic MCPL partition 1 replay | same as `run_0.mac` with `i=1` | `output/cosmic_proton/cosmic_proton_1/*_output_<run>.parquet`; target 1M events from `cosmic_proton_1.mcpl` | legacy |
+| `macro/cosmic_macro/cosmic_proton/run_2.mac` | Proton-cosmic MCPL partition 2 replay | same as `run_0.mac` with `i=2` | `output/cosmic_proton/cosmic_proton_2/*_output_<run>.parquet`; target 1M events from `cosmic_proton_2.mcpl` | legacy |
+| `macro/cosmic_macro/cosmic_proton/run_3.mac` | Proton-cosmic MCPL partition 3 replay | same as `run_0.mac` with `i=3` | `output/cosmic_proton/cosmic_proton_3/*_output_<run>.parquet`; target 1M events from `cosmic_proton_3.mcpl` | legacy |
+| `macro/cosmic_macro/cosmic_proton/run_4.mac` | Proton-cosmic MCPL partition 4 replay | same as `run_0.mac` with `i=4` | `output/cosmic_proton/cosmic_proton_4/*_output_<run>.parquet`; target 1M events from `cosmic_proton_4.mcpl` | legacy |
+| `macro/cosmic_macro/cosmic_proton/run_5.mac` | Proton-cosmic MCPL partition 5 replay | same as `run_0.mac` with `i=5` | `output/cosmic_proton/cosmic_proton_5/*_output_<run>.parquet`; target 1M events from `cosmic_proton_5.mcpl` | legacy |
+
 These per-species macros use Geant4 GPS-style cosmic-like primaries
 *without* a true atmospheric spectrum source. They are the licentiate
 baseline; **plan 21 retires them** and replaces them with a single
