@@ -197,8 +197,8 @@ reproduce a numeric claim by:
 - §4 a sample reviewer pull-and-reproduce drill is executed once
   before final freeze.
 - L1 archive drill in §1.3 passes for at least one EM/selection member
-  and records any blocked rows, owner sign-off refs, and verifier hashes
-  for refreshed rows.
+  and records any blocked rows, owner sign-off refs, review-artifact
+  hashes, and verifier hashes for refreshed rows.
 
 ## 6. Dependencies
 
