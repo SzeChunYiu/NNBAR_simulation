@@ -6,7 +6,10 @@
 set -euo pipefail
 
 HERE="$(cd "$(dirname "$0")" && pwd)"
-SUPERVISOR="${CODEX_SUPERVISOR:-$HOME/Desktop/projects/codex-supervisor/codex-supervisor.sh}"
+# Use a renamed local copy of the supervisor so its command line does NOT
+# contain "codex-supervisor", which would otherwise be caught by another
+# instance's reap_stale_daemons grep and killed.
+SUPERVISOR="${CODEX_SUPERVISOR:-$HERE/nnbar-supervisor.sh}"
 
 if [[ ! -x "$SUPERVISOR" ]]; then
     echo "error: codex-supervisor not found at $SUPERVISOR" >&2
