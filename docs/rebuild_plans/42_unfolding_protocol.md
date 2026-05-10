@@ -230,6 +230,19 @@ regularisation, closure, and signal-model systematic producers in
 their own `--help` surfaces exist. Do not replace those gates with
 hand-edited notebooks or invented command names.
 
+Current response-command regression coverage is also live:
+`test_response_matrix_cli_writes_plan_42_artifacts`
+(`tests/test_cli_response_matrix.py:61-101`) verifies parquet,
+covariance, and metadata outputs;
+`test_response_matrix_accepts_plan_42_runnable_procedure_flags`
+(`tests/test_cli_response_matrix.py:104-139`) verifies the explicit
+truth/reco file flags in §2.1; and
+`test_response_matrix_help_lists_plan_42_flags`
+(`tests/test_cli_response_matrix.py:142-158`) verifies the registered
+help surface. Future post-response producers need the same pattern:
+help-verified CLI plus artifact-writing tests before this plan may cite
+them as runnable commands.
+
 L3/software handoff requirements:
 
 1. The tuning producer reads frozen response matrices and metadata from
@@ -262,7 +275,8 @@ L3/software handoff requirements:
 - §5 systematic is propagated into plan 45.
 - §6 software handoff is complete: each blocked post-response producer
   has explicit inputs, outputs, failure assertions, provenance fields,
-  and a no-invented-CLI rule.
+  current response-command regression coverage is cited, and a
+  no-invented-CLI rule is in force.
 
 ## 8. Dependencies
 
