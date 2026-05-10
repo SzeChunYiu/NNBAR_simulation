@@ -113,6 +113,19 @@ Plan 36/37 consumers must prefer fitted quantities only when
 `fit_converged = true` and the relevant DEC is approved; otherwise
 they consume the raw plan-34 candidate fields.
 
+Initial fit-failure examples:
+
+| `fit_failure_case_id` | Trigger condition | Required row values | Closure/accounting rule |
+|---|---|---|---|
+| `missing_one_photon_covariance` | either photon lacks finite `energy_sigma_mev`, `theta_sigma_rad`, or `phi_sigma_rad` | `fit_converged = false`, `fit_failure_reason = missing_covariance`, fitted columns null | counts in `missing_covariance_rate`; raw candidate remains available |
+| `singular_covariance_matrix` | covariance matrix is non-invertible or has non-positive variance | `fit_converged = false`, `fit_failure_reason = invalid_constraint`, fitted columns null | blocks covariance-model promotion until plan-40 pull row explains it |
+| `minimizer_iteration_limit` | numerical minimizer exceeds iteration or tolerance budget | `fit_converged = false`, `fit_failure_reason = minimizer_failed`, fitted columns null | counts against convergence-rate threshold in §5 |
+| `combined_fit_not_authorised` | combined mode requested before mass-only and vertex-only DECs pass | `fit_converged = false`, `fit_failure_reason = not_run`, raw values preserved | diagnostic row only; cannot feed plan-36/37 fitted fields |
+
+Failure rows are first-class denominator rows. They are not dropped from
+closure tables, and no downstream plan may fill missing fitted columns
+from truth or from the raw candidate under the fitted-column names.
+
 ### 1.3 Machine-readable P.7 fit fixture
 
 The P.7 fixture stores one row per raw plan-34 candidate and preserves
