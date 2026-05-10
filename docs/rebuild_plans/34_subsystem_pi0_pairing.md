@@ -14,7 +14,7 @@ acceptance:
 risks:
   - {risk: combinatorial pairing scales O(N²) and may pick wrong partner in high-multiplicity events, mitigation: §3 best-mass-match heuristic + kinematic-fit χ² (plan 35)}
 estimated_effort: M
-last_updated: 2026-05-09
+last_updated: 2026-05-10
 ---
 
 # Subsystem — π⁰ pairing
@@ -35,7 +35,7 @@ Leaf P.5/P.6: photon objects → π⁰ candidates and accidental tags
 - **Current implementation evidence:** the compact current source
   implements π⁰ pairing and the strict six-cut AND inside
   `find_pi0_candidates` (`photon.py:204-263`). The configured
-  thresholds live in `ReconstructionConfig`.
+  thresholds live in `ReconstructionConfig` (`reconstruction.py:14-41`).
   The current output emits only
   `passes_selection`, so the individual `passes_*` cut columns below
   are a required plan-34 remediation target rather than a current
@@ -55,16 +55,16 @@ Leaf P.5/P.6: photon objects → π⁰ candidates and accidental tags
   a production candidate.
 
 ## 2. Selection per candidate (thesis Ch 8 defaults from
-`reconstruction.py` `ReconstructionConfig`):
+`ReconstructionConfig` in `reconstruction.py:14-41`):
 
 | Cut column | Default | Thesis source | Code citation |
 |---|---|---|---|
-| `passes_mass_window` | 100 ≤ M ≤ 180 MeV | thesis Ch 8 | threshold configured by `ReconstructionConfig`; current strict AND in `find_pi0_candidates` (`photon.py:204-263`) |
-| `passes_total_energy` | E ≤ 720 MeV | thesis Ch 8 | threshold configured by `ReconstructionConfig`; current strict AND in `find_pi0_candidates` (`photon.py:204-263`) |
-| `passes_scintillator_energy` | Σ_scint ≤ 250 MeV | thesis Ch 8 | threshold configured by `ReconstructionConfig`; current strict AND in `find_pi0_candidates` (`photon.py:204-263`) |
-| `passes_leadglass_energy` | Σ_LG ≤ 980 MeV | thesis Ch 8 | threshold configured by `ReconstructionConfig`; current strict AND in `find_pi0_candidates` (`photon.py:204-263`) |
-| `passes_leadglass_fraction` | LG_fraction ≥ 0.55 | thesis Ch 8 | threshold configured by `ReconstructionConfig`; current strict AND in `find_pi0_candidates` (`photon.py:204-263`) |
-| `passes_opening_angle` | α ≥ 30° | thesis Ch 8 | threshold configured by `ReconstructionConfig`; current strict AND in `find_pi0_candidates` (`photon.py:204-263`) |
+| `passes_mass_window` | 100 ≤ M ≤ 180 MeV | thesis Ch 8 | threshold configured by `ReconstructionConfig` (`reconstruction.py:14-41`); current strict AND in `find_pi0_candidates` (`photon.py:204-263`) |
+| `passes_total_energy` | E ≤ 720 MeV | thesis Ch 8 | threshold configured by `ReconstructionConfig` (`reconstruction.py:14-41`); current strict AND in `find_pi0_candidates` (`photon.py:204-263`) |
+| `passes_scintillator_energy` | Σ_scint ≤ 250 MeV | thesis Ch 8 | threshold configured by `ReconstructionConfig` (`reconstruction.py:14-41`); current strict AND in `find_pi0_candidates` (`photon.py:204-263`) |
+| `passes_leadglass_energy` | Σ_LG ≤ 980 MeV | thesis Ch 8 | threshold configured by `ReconstructionConfig` (`reconstruction.py:14-41`); current strict AND in `find_pi0_candidates` (`photon.py:204-263`) |
+| `passes_leadglass_fraction` | LG_fraction ≥ 0.55 | thesis Ch 8 | threshold configured by `ReconstructionConfig` (`reconstruction.py:14-41`); current strict AND in `find_pi0_candidates` (`photon.py:204-263`) |
+| `passes_opening_angle` | α ≥ 30° | thesis Ch 8 | threshold configured by `ReconstructionConfig` (`reconstruction.py:14-41`); current strict AND in `find_pi0_candidates` (`photon.py:204-263`) |
 
 Strict `passes_selection` = AND of all six.
 
@@ -96,7 +96,7 @@ Plan 47 ledger quotes both.
 | P.5 | **All unordered pairs (current)** | Pair every neutral photon pair once by object-id ordering. | Current implementation is `find_pi0_candidates` (`photon.py:204-263`). | Production-eligible; O(N²). | π⁰ efficiency, candidate multiplicity, runtime. |
 | P.5 | **Best mass match per photon** | Build all pairs, then greedily keep pairs closest to `m_π⁰` without reusing photons. | Replacement after raw pair enumeration. | Eligible; mass threshold DEC required. | Correct-pair efficiency and high-multiplicity fake rate. |
 | P.5 | **Kinematic-fit ranked pairing** | Rank raw pairs by plan-35 χ² and mass pull. | Consumes plan-35 fit outputs after raw pair construction. | Eligible once fit covariance is validated. | Mass resolution and accidental rejection at fixed efficiency. |
-| P.6 | **Six-cut selection (current)** | Apply mass, total-energy, scintillator-energy, lead-glass-energy, LG-fraction, and opening-angle cuts. | Thresholds live in `ReconstructionConfig`; the compact strict AND lives in `find_pi0_candidates` (`photon.py:204-263`). | Production-eligible; thresholds must be thesis-cited or DEC-logged. | Signal efficiency, fake rate, N-1 sensitivity. |
+| P.6 | **Six-cut selection (current)** | Apply mass, total-energy, scintillator-energy, lead-glass-energy, LG-fraction, and opening-angle cuts. | Thresholds live in `ReconstructionConfig` (`reconstruction.py:14-41`); the compact strict AND lives in `find_pi0_candidates` (`photon.py:204-263`). | Production-eligible; thresholds must be thesis-cited or DEC-logged. | Signal efficiency, fake rate, N-1 sensitivity. |
 | P.6 | **Prompt-timing veto** | Require photon time residuals near zero before accepting prompt π⁰s. | New veto would consume timing annotations from `annotate_timing_windows` (`vertex.py:86-160`) after photon construction. | Eligible after timing calibration and DEC. | Accidental-rate reduction vs efficiency loss. |
 | P.6 | **Truth-parent label** | Reject pairs whose photons do not share a truth π⁰ parent. | Validation-only diagnostic inherited from source aliases. | Not production-eligible. | Upper-bound accidental rejection only. |
 
