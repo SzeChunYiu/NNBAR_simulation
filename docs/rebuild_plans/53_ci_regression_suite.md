@@ -93,7 +93,7 @@ requirements, not claims that the final workflow file already exists.
 | `l1_no_stale_cli_or_code_cites` | changes to L1-owned plans | grep for `*.py:<line>` and nnbar module commands, then require the A+ verifier transcript or remove the claim | Tier 1 block |
 | `l1_cutflow_identity_guard` | changes to plans 37, 50, 51, or 55 | canonical singular `pass_*` selection columns remain named in defence overlays and note annexes | Tier 1 block |
 | `l1_defence_rerun_manifest` | Tier 3 weekly | plan-52 defence rerun bundle has rows for EM chain, selection, pile-up, strange, TOF, Bayesian cross-checks, and unbounded-caveat status | Tier 3 tracking issue if incomplete |
-| `l1_overlay_pack_member_parity` | changes to plans 50, 51, 52, 54, 55, or 56 | every plan-50 L1 overlay id maps through a plan-51 question id and to a plan-52 rerun bundle member, a plan-54 archive pack member, a plan-55 note-annex block, and at least one plan-56 glossary term; the defence-routing member covers the full set | Tier 1 block |
+| `l1_overlay_pack_member_parity` | changes to plans 50, 51, 52, 54, 55, or 56 | every plan-50 L1 overlay id maps through a plan-51 question id and to a plan-52 rerun bundle member, a plan-54 archive pack member, a plan-55 parent or fixture note-annex block, and at least one plan-56 glossary term; the defence-routing member covers the full set | Tier 1 block |
 | `l1_rerun_transcript_link` | changes to plans 50 or 52 | any ready plan-50 L1 roll-up links both the plan-52 rerun manifest and execution transcript, and plan-52 rows carry review-evidence links plus rerun/verifier review-artifact hashes | Tier 1 block |
 | `l1_command_template_registry` | changes to plan 52 | transcript command-template ids are registered, immutable, limited to verified CLI help output or explicit blocked templates, and carry verifier transcripts, hashes, and sources | Tier 1 block |
 | `l1_package_staleness_guard` | changes to plans 50-56 | ready plan-50 L1 packages carry `l1_staleness.status: current` against the latest L1 hashes, including plan-54 archive inventory/drill hashes | Tier 1 block |
@@ -292,6 +292,7 @@ l1_defence_ci_report:
         - docs/rebuild_plans/53_ci_regression_suite.md
         - docs/rebuild_plans/54_open_data_archival.md
         - docs/rebuild_plans/55_internal_note_template.md
+        - docs/rebuild_plans/55_internal_note_template_l1_annex_fixture.md
         - docs/rebuild_plans/56_glossary.md
         - docs/rebuild_plans/58_pileup_at_ess_intensity.md
         - docs/rebuild_plans/59_strange_baryon_contamination.md
@@ -337,6 +338,7 @@ l1_defence_ci_report:
         - docs/rebuild_plans/52_run_orchestration.md
         - docs/rebuild_plans/54_open_data_archival.md
         - docs/rebuild_plans/55_internal_note_template.md
+        - docs/rebuild_plans/55_internal_note_template_l1_annex_fixture.md
         - docs/rebuild_plans/56_glossary.md
       evidence:
         overlay_ids_checked: [em_cluster_truth_blindness, pi0_cut_decomposition, selection_cutflow_identity, pileup_l11_status, strange_v0_contamination, tof_timing_resolution, bayesian_prior_sensitivity, unbounded_caveat_status]
