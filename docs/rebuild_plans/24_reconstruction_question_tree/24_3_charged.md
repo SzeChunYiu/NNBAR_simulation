@@ -83,6 +83,29 @@ Leaf C.2: charged-track candidates → dE/dx estimator
   allowed truth use: validation_only
   downstream consumers: C.5, C.6; plans 27, 29
 
+Leaf C.3: charged-track candidates + scintillator hits → stopping range
+  inputs (Class A): C.1 charged-candidate table, V.2 direction table,
+                    matched-scintillator columns (Event_ID, x, y, z,
+                    t, eDep, photons, module_ID, vol_name, step_info),
+                    and `Scintillator_Module_Position.txt`
+                    geometry side-car
+  forbidden (Class B): Name, Track_ID, Parent_ID, origin_vol_name,
+                       particle_x, particle_y, particle_z
+  decision rule: after C.4 supplies geometrically associated
+                 scintillator hits, project each hit onto the track
+                 direction and report the maximum positive projected
+                 distance from the TPC entry/anchor; plan 28 keeps the
+                 current plan 08 §3.4 range estimator and adds a
+                 Bragg-peak closure before using it as a PID input.
+  output schema: {event_id: int64, charged_candidate_id: int64,
+                  range_cm: float64, range_edep_mev: float64,
+                  n_scintillator_hits: int32,
+                  last_hit_module_id: int32,
+                  bragg_peak_position_cm: float64,
+                  range_valid: bool}
+  allowed truth use: validation_only
+  downstream consumers: C.5, C.6; plans 28, 29
+
 ### Next measurement (charged branch)
 
 Per-species reconstructed efficiency on `cal_singlepion*` and
