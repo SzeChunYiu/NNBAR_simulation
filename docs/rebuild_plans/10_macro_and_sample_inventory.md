@@ -46,6 +46,12 @@ existing artifact to consume or replace.
 | `macro/test_signal_quick.mac` | Quick signal smoke test | active |
 | `macro/opticks_test.mac` | Opticks GPU optical-photon path test | active when `WITH_OPTICKS=ON` |
 
+#### 1.1.1 `macro/test.mac`
+
+| Macro | Purpose | Key commands invoked | Output / sample target | Status |
+|---|---|---|---|---|
+| `macro/test.mac` | Minimal simulation smoke driver | `/run/beamOn 1000` repeated three times; commented MCPL selector for `cosmic_muon_0.mcpl` | Caller-selected default output folder; three 1000-event batches with current generator configuration | active |
+
 ### 1.2 Signal macros (macro/signal/)
 
 | Macro | Purpose | Key commands invoked | Output / sample target | Status |
