@@ -89,6 +89,94 @@ stuck for > 120 seconds.
 If `git push` ever appears in a script, ignore it for now — there is
 no remote configured for the orchestration repo.
 
+## Atomic scientific derivation (Wave 6 — academic-grade understanding)
+
+The user's standard goes beyond "decompose + cite the current
+implementation" to "every reconstruction decision must follow from
+physics first principles, every numerical parameter must be either
+derived or empirically optimised in a closure study, and every code
+function must reflect the derivation".
+
+### Per-leaf required content (plans 24, 25–37 + new physics plans)
+
+For every leaf identifier (V.1–V.5, C.1–C.6, P.1–P.7, E.1–E.9,
+S.1–S.6) the owning subsystem plan must contain a **Physics
+derivation** subsection covering:
+
+1. **What is physically measured**: the ground-truth quantity the
+   leaf estimates (e.g. "primary annihilation vertex coordinate",
+   "specific ionisation per unit length", "charged-particle range
+   in the scintillator stack"). State the truth-side definition
+   without reference to the reconstruction.
+2. **Estimator rationale**: why the chosen algorithm is the
+   optimal-or-near-optimal estimator under the available Class A
+   inputs. Cite the textbook or review paper that establishes this
+   (e.g. Bethe-Bloch + Landau distribution + truncation theory for
+   dE/dx; covariance-weighted vertex fit for V.4; isolation cone
+   theory for photon ID).
+3. **Statistical character**: bias, variance, robustness against
+   outliers / pile-up / detector imperfections. State which of
+   these dominate the leaf's uncertainty budget.
+4. **Citation**: at least one textbook chapter or review paper
+   reference, resolved via `\cite{key}` against
+   `overleaf-hibeam-thesis/ref.bib`.
+
+Plus a **Logic gaps** subsection enumerating *every numerical
+parameter in the algorithm*: angular cuts, distance windows, bin
+widths, isolation radii, fit ranges, window thresholds, weighting
+constants. For each parameter: either
+
+- a citation / first-principles derivation in one sentence, or
+- a `OPEN:` marker plus a proposed closure study (which sample, which
+  observable, what figure of merit) to fix the value empirically.
+
+Plus a **Closure test for the derivation** subsection: one numbered
+procedure that empirically validates the estimator behaves as the
+derivation predicts (typical pattern: run on a Class A truth-clean
+sample, compute the estimator + its theoretical uncertainty, assert
+the residual distribution matches the derived bias and width within
+the closure tolerance).
+
+### Per-function code requirement (L3)
+
+Every reconstruction function in `nnbar_reconstruction/<subsystem>.py`
+gets a docstring section:
+
+```python
+def estimator(...):
+    """One-line summary.
+
+    Physics derivation:
+        See `docs/rebuild_plans/<plan>.md` §<N> for the first-
+        principles derivation. The estimator implemented here is
+        <X> on Class A inputs <Y>; expected bias ≈ <Z>, variance
+        ≈ <W>.
+
+    Numerical parameters:
+        - <param>: <value>, source: DEC-YYYY-MM-DD-N or
+          `<plan>.md` §<N> closure study.
+        - ...
+    """
+```
+
+A function whose docstring lacks the Physics derivation block fails
+review. A function whose Numerical parameters list contains an
+`OPEN:` marker with no resolution date fails review.
+
+### Verification (Wave 6 stop conditions per lane)
+
+A lane finishes Wave 6 when:
+1. Every leaf in its writable plans has the three required
+   subsections (Physics derivation, Logic gaps, Closure test for
+   derivation).
+2. Every numerical parameter is either cited / derived or carries
+   an `OPEN:` marker with a named closure study and a target
+   resolution date.
+3. Every cite resolves via `scripts/verify_citations.py` and
+   `ref.bib` lookup.
+4. (L3 only) Every per-leaf code function has the required
+   docstring section.
+
 ## A+ examiner gate (mandatory before declaring "Goal achieved")
 
 The user is grading this rebuild at A+ standard. An examiner pass on
