@@ -118,14 +118,62 @@ calibration becomes available.
 For now, the simulation produces *unsaturated* dE/dx; this is
 limitation L3 (plan 01 §6) and propagates to plan 45 systematics.
 
-## 5. Acceptance criteria
+## 5. Calibration-quality and DQM handoff
+
+C.2 must expose estimator health separately from the PID decision. The
+quality fields below are written with the dE/dx row and aggregated by
+plan 66 per run:
+
+| Field | Meaning | Consumer |
+|---|---|---|
+| `dedx_quality_state` | `pass`, `warn`, `fail`, or `not_applicable` for the estimator | plans 29, 66 |
+| `dedx_failure_reason` | first blocking reason, if any | plan 47 caveats |
+| `path_length_source` | `v2_covariance`, `class_a_track_length`, or `legacy_span` | plans 26, 38 |
+| `truncation_applied` | whether the signed low/high fractions were used | plan 05 DEC audit |
+| `calibration_residual_fraction` | validation-only Bethe-Bloch residual once closure runs | plan 45 systematics |
+
+Quality semantics:
+
+- `pass` means the dE/dx value is finite, uses a finite positive path
+  length, and records the estimator and truncation fractions.
+- `warn` means the value is finite but uses a degraded path-length source,
+  too few samples for the preferred truncation, or a calibration residual
+  outside the advisory band.
+- `fail` means the estimator is non-finite, has non-positive path length,
+  or depends on a production-forbidden truth species/name gate.
+- `not_applicable` is reserved for candidates rejected before C.2 is
+  attempted.
+
+Plan 29 may consume `dedx_mev_per_cm` only when `dedx_quality_state` is
+`pass` or an explicitly accepted `warn`. A hard PID veto based on these
+quality fields requires a plan 05 decision and a plan 38 C.2/C.5 ladder
+comparison.
+
+## 6. Stage E.1 implementation handoff
+
+For L3's charged-side redesign, C.2 should be a typed estimator module:
+
+1. Input rows come from C.1 candidates, V.2 path-length/covariance
+   outputs, and Class A TPC energy-deposit samples.
+2. The arithmetic-mean baseline is preserved as a named reproduction
+   mode; the default production mode is the signed truncated mean once
+   the DEC records its low/high fractions.
+3. The module writes §1 physics fields and §5 quality fields in one row
+   per charged candidate, with nulls plus reasons when C.2 is not
+   applicable.
+4. Bethe-Bloch residuals and truth momentum live only in the closure
+   artifact namespace after the production C.2 table is frozen.
+5. Plan 45 receives a calibration nuisance input from the closure
+   residual, not from hand-edited PID thresholds.
+
+## 7. Acceptance criteria
 
 - §3 closure within 5% across the charged calibration set.
 - §1 truncated-mean cut fractions documented in DEC.
 - §4 saturation limitation noted in plan 47 ledger for any
   high-dE/dx-quoted result.
 
-## 6. Dependencies
+## 8. Dependencies
 
 - **17, 23, 25, 26** — inputs.
 - *Consumed by:* plan 29 (charged PID), plan 38 (ladder leaf C.2).
