@@ -73,6 +73,26 @@ plan 53 L1 CI reports, plan 55 notes, and plan 56 glossary audits.
 l1_defence_inventory:
   freeze_id: thesis-freeze-<date>
   members:
+    - pack_member: em_object_chain
+      source_plans: [31, 32, 33, 34, 35, 50, 51, 52, 55]
+      artifact_paths:
+        - output/defense/<row_id>.yml
+        - output/reconstruction/em_chain_closure/<bundle_id>.yml
+      artifact_hashes:
+        - sha256:<hash-or-null>
+      status: present | blocked | stale
+      caveat: <required until P.1-P.7 closure rows are present>
+      staleness_summary_hash: sha256:<hash-or-null>
+      owner_signoff_refs: [RQ-L1-EM-P1-CLUSTERING:<owner-hash-or-null>]
+      command_template_ids: [validate_reco_allruns_v1]
+      command_template_verifier_hashes:
+        - sha256:b3cee4613afed558d4704df3dc5b281271aed768965d79a09603f812496806f0
+      command_template_verifier_sources:
+        - plan52:validate_reco_allruns_v1
+      ci_report_hash: sha256:<hash-or-null>
+      note_annex_hash: sha256:<hash-or-null>
+      glossary_audit_hash: sha256:<hash-or-null>
+      archive_drill_hash: sha256:<hash-or-null>
     - pack_member: ch10_cutflow
       source_plans: [37, 47, 50, 55]
       artifact_paths:
