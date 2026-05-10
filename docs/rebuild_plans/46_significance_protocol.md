@@ -242,6 +242,20 @@ and nuisance records:
 | `unbounded_limitations` | caveats inherited from plans 44-45 | non-empty list blocks unconditional defence claims |
 | `bundle_status` | `validation`, `complete`, or `incomplete` | only complete bundles may feed final quotes |
 
+Initial input-bundle examples linked to the validation cases:
+
+| `input_bundle_id` | `validation_case_id` | `dispatch_id` | `result_id` | `signal_result_id` | `background_rate_result_ids` | Count sources | `bundle_status` |
+|---|---|---|---|---|---|---|---|
+| `bundle_asimov_high_b_validation` | `asimov_high_b` | `dispatch_asimov_high_b` | `result_asimov_high_b` | `validation_signal_s50` | [`validation_background_b20`] | `s=50`, `b=20`, `n_obs=70` from validation constants | `validation` |
+| `bundle_asimov_modest_boundary_validation` | `asimov_modest_boundary` | `dispatch_asimov_modest_boundary` | `result_asimov_modest_boundary` | `validation_signal_s10` | [`validation_background_b6`] | `s=10`, `b=6`, `n_obs=16` from validation constants | `validation` |
+| `bundle_zero_background_dispatch_validation` | `zero_background_dispatch` | `dispatch_zero_background` | `result_zero_background_fc` | `validation_signal_s10` | [`validation_background_b0`] | `s=10`, `b=0`, `n_obs=10`; asymptotic Z forbidden | `validation` |
+| `bundle_zero_survivor_ul_validation` | `zero_survivor_background_ul` | `dispatch_zero_survivor_ul` | `result_zero_survivor_ul` | null | [`validation_zero_survivor_rate_244k`] | denominator `244000`, survivors `0`, F-C upper limit only | `validation` |
+
+The `validation_*` ids are calculation fixtures, not plan-44 background
+rates for final analysis. A production bundle must replace them with
+complete plan-43, plan-44, and plan-45 ledger rows before any quote can
+enter plan 47 or plan 50.
+
 The dispatch row copies only the final numeric counts; the bundle row is
 the provenance contract that makes those counts reviewable.
 
