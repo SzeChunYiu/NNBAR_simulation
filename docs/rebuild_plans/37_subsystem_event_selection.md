@@ -72,6 +72,24 @@ future table adds plural aliases for external consumers, those aliases
 must be generated from the canonical `pass_*` columns and must not
 replace them in the plan-47 ledger.
 
+### 1.3 A+ citation and CLI-surface audit
+
+This plan's source citations were re-checked against the current L3
+source on 2026-05-10 before the cut-flow table above was frozen:
+
+| Cited contract | Verifier evidence | Status |
+|---|---|---|
+| Numeric cut defaults | `class ReconstructionConfig` resolves at `reconstruction.py:14`, inside the cited `reconstruction.py:14-41` range. | keep citation |
+| Individual cut booleans and final AND | `def _selection_flags` resolves at `vertex.py:293`, inside the cited `vertex.py:293-319` range. | keep citation |
+| Event-row columns consumed by the cuts | `def summarize_events` resolves at `vertex.py:322`, inside the cited `vertex.py:322-447` range. | keep citation |
+| Cumulative CLI order | `def _cutflow` resolves at `cli.py:29`, inside the cited `cli.py:29-47` range. | keep citation |
+
+Plan 37 does not specify a runtime CLI command; it only cites the
+internal `_cutflow` helper for column ordering. The L3 module help was
+smoke-tested and returned non-error help, so no unimplemented CLI
+surface is introduced here. No legacy split-study files are cited by
+this plan.
+
 ## 2. Closure-test specification / Ch 10 reproduction
 
 1. **Dataset ids:** `sig_foil_v3` for signal acceptance and
