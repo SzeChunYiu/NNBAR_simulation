@@ -279,6 +279,7 @@ l1_defence_ci_report:
         - docs/rebuild_plans/31_subsystem_calorimeter_clustering.md
         - docs/rebuild_plans/32_subsystem_shower_shape.md
         - docs/rebuild_plans/33_subsystem_photon_object.md
+        - docs/rebuild_plans/33_subsystem_photon_object_promotion_examples.md
         - docs/rebuild_plans/34_subsystem_pi0_pairing.md
         - docs/rebuild_plans/34_subsystem_pi0_pairing_handoff_examples.md
         - docs/rebuild_plans/35_subsystem_kinematic_fit.md
