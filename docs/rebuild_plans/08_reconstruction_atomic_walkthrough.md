@@ -253,12 +253,30 @@ The cut-flow constants in `_cutflow` (lines 37–44) are:
 pass_pion_count → pass_invariant_mass → pass_sphericity →
 pass_scintillator_balance`. Cumulative AND chain.
 
-### 4.2 `scan-pid` (lines 172–201)
+### 4.2 `scan_pid(args)` / `scan-pid` subcommand (lines 172–201)
 
-Loads merged TPC + scintillator across runs, calls
-`scan_charged_pid_thresholds` (calibration.py §5), prints top-N
-configurations and the `calibration_usable` flag (true iff sample
-contains both protons and pions in truth).
+**Inputs:** CLI args for `output_dir`, run selection, scan grids,
+optional CSV table path, optional JSON path, and top-N display.  Run
+selection comes from `_resolve_runs`: `--all-runs` discovers all runs;
+otherwise explicit `--runs` wins over single `--run`
+(`cli.py:125-128`).  `_load_pid_scan_tables` loads each run's TPC and
+Scintillator tables, applies `EVENT_ID_OFFSET = 1_000_000_000` per run,
+and concatenates both detector tables (`cli.py:27`, `152-169`).
+
+**Decision rule:** call `scan_charged_pid_thresholds` with merged TPC
+and scintillator and the requested proton dE/dx, short-range, and
+short-range-proton-dE/dx grids (`cli.py:172-181`).  If `--table` is
+provided, write the full scan CSV (`cli.py:182-184`).  The JSON payload
+reports run/runs, scanned configuration count, labeled track count,
+`calibration_usable` (true iff the best row has both proton and pion
+classes), best row, and top rows (`cli.py:186-200`).
+
+**Outputs:** always prints the JSON payload and returns 0; optionally
+writes `--json` and/or `--table` (`cli.py:196-201`).
+
+**Truth reads:** indirect through `scan_charged_pid_thresholds`, which
+uses detector `Name` labels to score PID calibration; the CLI layer
+does not add extra Class B reads.
 
 ### 4.3 `validate-reco` (lines 239–294)
 
