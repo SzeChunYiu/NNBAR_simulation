@@ -271,6 +271,24 @@ patch. They keep plan 29 PID and plan 45 calibration nuisances from
 learning hidden truth labels or silently changing the dE/dx estimator
 between calibration and signal samples.
 
+### 6.4 Stage E.1 producer/consumer contract
+
+The L3 C.2 patch must expose enough provenance for PID, closure, and
+calibration-nuisance consumers to reproduce the exact estimator inputs:
+
+| Contract item | Required behavior | Downstream check |
+|---|---|---|
+| input key | consume C.1/V.1 candidates by `(event_id, charged_candidate_id)` plus the V.1 `hit_membership_key` when available | dE/dx rows can be joined back to the frozen candidate and hit sidecar without using truth labels |
+| output key | emit one C.2 row keyed by `(event_id, charged_candidate_id, estimator_id)` | plan 29 can join PID features without guessing which estimator was active |
+| contribution sidecar | write one contribution row per selected or rejected TPC step with truncation state | plan 40/45 closure can audit selected samples without re-running truncation |
+| source hashes | record V.1 candidate hash, TPC input hash, truncation fractions, and calibration source in the manifest | plan 47 can prove the same C.2 inputs fed PID and systematics artifacts |
+| path handoff | set `path_length_source` to distinguish Class-A step length, coordinate span, or future V.2 covariance path length | plan 38 separates estimator skill from degraded path-length availability |
+| failure taxonomy | emit `dedx_quality_state` and `dedx_failure_reason` for empty, non-positive, or non-finite rows | plan 66 DQM and plan 29 PID do not infer failures from NaN `dedx_mev_per_cm` |
+
+This contract keeps `reconstruct_dedx_table`
+(`nnbar_reconstruction/dedx.py:91-119`) as the Stage E.1 C.2 producer
+until L3 swaps in an implementation that preserves the same keys.
+
 ## 7. Acceptance criteria
 
 - §3 closure within 5% across the charged calibration set.
@@ -279,7 +297,8 @@ between calibration and signal samples.
   high-dE/dx-quoted result.
 - §6 Stage E.1 handoff is actionable for L3: the target public
   functions, current unit/integration tests, remaining test obligation,
-  promotion invariants, and required C.2 fields (`estimator_id`, `dedx_mev_per_cm`,
+  promotion invariants, producer/consumer contract, and required C.2
+  fields (`estimator_id`, `dedx_mev_per_cm`,
   `path_length_cm`, `path_length_source`, `n_steps_used`, truncation
   fractions, `truncation_applied`, `dedx_quality_state`,
   `dedx_failure_reason`, `calibration_source`, and contribution sidecar
