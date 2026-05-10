@@ -61,6 +61,32 @@ RQ-2026-05-09-3: Why W-value 23.6 eV when reference is 26-27.4 eV?
   → routed to plan 17 §3. Answered pending DEC.
 ```
 
+
+### 2.1 L1 EM/selection A+ seed entries
+
+Wave-4 L1 adds the following anticipated examiner questions so the
+defence package can route EM-object, event-selection, pile-up, strange,
+TOF, and Bayesian-limit challenges before a reviewer asks them. These
+entries are seed rows for the living registry; each one must become a
+full YAML row under `docs/reviewer_question_registry.md` when a concrete
+ledger result cites the affected plan.
+
+| Seed id | Anticipated question | Category | Routes to gate | Required answer artifact | Initial status |
+|---|---|---|---|---|---|
+| `RQ-L1-EM-P1-CLUSTERING` | How do we know the neutral-shower clusterer is not using truth Track_ID grouping? | realism | plans 31, 38, 57 | Class-B drop hash plus P.1 closure rows | open until measured |
+| `RQ-L1-EM-P2-DISCRIMINANT` | Is the charged/neutral discriminator calibrated, or just a hard-cone reproduction rule? | method | plans 32, 38, 57 | ROC/AUC bundle, threshold DEC, and calibration artifact | open until closure |
+| `RQ-L1-PI0-CUTS` | Are the six pi0 selection cuts decomposed into individual pass columns? | reproducibility | plans 34, 37, 47 | per-cut fixture and Ch 8/Ch 10 ledger row | answered by plan schema, pending data |
+| `RQ-L1-SELECTION-CUTFLOW` | Does the Ch 10 cut-flow use the current canonical singular `pass_*` columns? | reproducibility | plans 37, 47 | cut-flow identity table and cumulative-count artifact | answered by plan 37, pending ledger |
+| `RQ-L1-PILEUP-L11` | Can signal plus cosmic or beam pile-up change the quoted acceptance? | systematics | plans 01, 58, 44, 45 | paired overlay closure and L11 caveat status | open until plan 58 closure |
+| `RQ-L1-STRANGE-BARYON` | Could K_S, Lambda, or Sigma production in beam-neutron material fake the signal? | physics | plans 14, 22, 44, 59 | Lambda-enriched V0 rejection closure and residual interval | open until enriched slice exists |
+| `RQ-L1-TOF` | Does timing add real cosmic rejection once detector resolution is included? | method | plans 36, 41, 45, 61 | TOF ROC, nonzero resolution budget, and signal-loss interval | open until closure |
+| `RQ-L1-BAYES-LIMIT` | Are low-count limits stable under Jeffreys vs flat Bayesian priors? | method | plans 04, 46, 64 | prior-sensitivity table and plan-46 comparison ratios | open until statistics code lands |
+| `RQ-L1-UNBOUNDED-CAVEATS` | Which EM/selection claims still depend on unbounded limitations rather than numeric nuisances? | systematics | plans 01, 45, 50 | defence-package caveat block per affected result | open until plan 50 packages exist |
+
+A seed row is not considered answered merely because a plan mentions it.
+It is answered only when the required artifact exists, cites the relevant
+ledger row, and the defence package records the same status.
+
 ## 3. Update protocol
 
 1. New question logged.
