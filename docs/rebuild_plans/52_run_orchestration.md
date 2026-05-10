@@ -140,6 +140,26 @@ l1_defence_rerun_manifest:
         note_annex: <plan55-annex-id-or-null>
         glossary_audit: <plan56-audit-id>
       blocker: null
+    - bundle_member: Unbounded caveat status
+      status: blocked
+      owner_signoff_ref: RQ-L1-UNBOUNDED-CAVEATS:<owner-hash-or-null>
+      required_inputs:
+        - artifact_id: plan45_numeric_bound_or_caveat_row
+          source_hash: null
+      refreshes:
+        - artifact_id: unbounded_caveat_status_overlay
+          output_hash: null
+      defence_overlay_ids:
+        - unbounded_caveat_status
+      review_evidence_links:
+        package_rollup: <plan50-rollup-id>
+        staleness_summary: <plan50-staleness-id>
+        ci_report: <plan53-l1-report-id>
+        archive_inventory: <plan54-inventory-id-or-null>
+        archive_drill: <plan54-drill-id-or-null>
+        note_annex: <plan55-annex-id-or-null>
+        glossary_audit: <plan56-audit-id>
+      blocker: numeric nuisance bound or caveat row not attached to a concrete result yet
 ```
 
 Manifest review rules:
