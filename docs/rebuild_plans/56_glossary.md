@@ -192,6 +192,8 @@ l1_glossary_audit:
         - note_annex
         - glossary_audit
         - rerun_manifest
+        - rerun_transcript
+        - command_template_verifier
       thesis_delta: none | flagged
       owner: L1
     - term: owner sign-off
