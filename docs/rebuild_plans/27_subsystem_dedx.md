@@ -67,7 +67,7 @@ Leaf C.2 — dE/dx estimator
 | C.1 charged-candidate table; TPC step columns `Event_ID`, `eDep`, `TrackLength`, `x`, `y`, `z`, `t`, `photons`, `step_info` | `Name`, `Track_ID`, `Parent_ID`, `origin_vol_name`, `particle_x`, `particle_y`, `particle_z` |
 
 Legacy implementation citation: `reconstruct_charged_objects`
-(`charged.py:149-228`, plan 08 §3.4) already emits `dedx`,
+(`charged.py:151-228`, plan 08 §3.4) already emits `dedx`,
 but the value is downstream of the current truth-name candidate gate.
 The live Stage E.1 hook is `reconstruct_dedx_table`
 (`dedx.py:91-119`), which consumes V.1 candidate `hit_indices`, calls
@@ -120,7 +120,7 @@ Closure: simulator output should match within 5%.
 
 | Alternative | Source paper / codebase | NNBAR-specific adaptation | Expected ladder leaf delta |
 |---|---|---|---|
-| Arithmetic mean baseline | Existing `reconstruct_charged_objects` (`charged.py:149-228`) | Preserve current `dedx` computation as a reproducibility reference after removing any C.1 truth-name candidate gate. | No intended C.2 gain; establishes the current tail-sensitive baseline for plan 38. |
+| Arithmetic mean baseline | Existing `reconstruct_charged_objects` (`charged.py:151-228`) | Preserve current `dedx` computation as a reproducibility reference after removing any C.1 truth-name candidate gate. | No intended C.2 gain; establishes the current tail-sensitive baseline for plan 38. |
 | Truncated mean | Standard TPC PID / ALICE-style charged-particle dE/dx | Sort per-step `eDep / step_length`, drop bottom 10% and top 30%, and record the chosen cut fractions in the C.2 schema. | Expected to improve C.2 stability against Landau tails and reduce C.5 PID confusion. |
 | Landau/MPV fit | TPC cluster-charge Landau-Gaussian fit literature | Use only when a track has enough Class A TPC samples; report fit status and fall back to truncated mean for sparse tracks. | Better high-tail control for long tracks, but limited gain for short NNBAR TPC segments. |
 | Bethe-Bloch residual template | Plan 23 calibration samples plus Bethe-Bloch closure in §3 | Convert dE/dx to species-agnostic residuals versus βγ bins only in calibration/validation; production C.2 remains truth-free. | Improves calibration diagnostics for C.2 but does not by itself replace plan 29 PID scoring. |
