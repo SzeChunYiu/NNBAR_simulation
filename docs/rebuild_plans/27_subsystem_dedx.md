@@ -205,6 +205,19 @@ explicit remaining gates:
 6. Plan 66 consumes dE/dx quality and path-length-source fractions once
    the §5 fields are present.
 
+### 6.1 L3 target module, functions, and tests
+
+- **Target module:** add/extend `nnbar_reconstruction/dedx.py`.
+- **Public functions:** `truncated_mean_dedx(steps)` and
+  `reconstruct_dedx_table(candidates, tpc)`.
+- **Unit-test target:** add a `tests/test_charged_reco.py` case that
+  checks 10%/30% truncation on synthetic TPC steps, verifies fallback
+  path-length derivation from coordinates, and asserts NaN/null output
+  for missing or non-positive step lengths.
+- **Integration-test target:** add a real-output schema row that chains
+  plan-25 candidates into `reconstruct_dedx_table` on a registered TPC
+  fixture and verifies the plan 09 Class A columns are sufficient.
+
 ## 7. Acceptance criteria
 
 - §3 closure within 5% across the charged calibration set.
