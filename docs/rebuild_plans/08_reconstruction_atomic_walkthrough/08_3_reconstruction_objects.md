@@ -88,35 +88,84 @@ for the current output names.
 `Track_ID` for grouping are Class B in plan 09. The geometric projection
 itself uses Class A `x/y/z` and optional `t`.
 
-### 3.4 Charged-object reconstruction (lines ≈ 430–700)
+### 3.4 Charged-object reconstruction
 
-`reconstruct_charged_objects(tpc, scintillator, config)` is called by
-`reconstruct_run` and by `calibration.py`'s
-`scan_charged_pid_thresholds`.
+#### 3.4.1 Helper map for charged objects
 
-Behaviour per `reconstruction.md`:
+- `_track_anchor_and_direction(group)` (`reconstruction.py:165–184`)
+  orders TPC hits by `t` when present, otherwise by input order, and
+  returns the first valid `x/y/z` point plus the unit vector from first to
+  last valid point. It uses Class A positions/timing from plan 09 §8
+  lines 151–159.
+- `_track_direction_from_hits(group)` (`reconstruction.py:153–162`) uses
+  `_track_anchor_and_direction`; if that fails, it falls back to mean
+  `px/py/pz` momentum direction (Class A direction in plan 09 §8 line
+  162), else a zero vector.
+- `_select_scintillator_hits_for_track(...)` (`reconstruction.py:199–241`)
+  first restricts to matching `Event_ID` when available, then geometrically
+  matches scintillator positions to the TPC track ray. The hardcoded
+  default limits come from `ReconstructionConfig`: distance ≤ 15.0 cm and
+  angle ≤ 10.0° (`reconstruction.py:40–41`, `225–234`). If geometry is not
+  available, it falls back to exact `(Event_ID, Track_ID)` matching
+  (`reconstruction.py:236–240`), a Class B fallback because `Track_ID` is a
+  Geant4 truth identifier in plan 09.
+- `_span(points)` (`reconstruction.py:143–150`) computes the maximum pairwise
+  distance across `particle_x/y/z`. Plan 09 classifies TPC `particle_x/y/z`
+  as Class B truth (line 168); scintillator uses the same NNbarHit-derived
+  schema (plan 09 §9 lines 182–195). Because charged PID uses this span as
+  `scintillator_range`, the short-range PID branch currently carries a Class
+  B dependency.
+- `_has_foil_origin(group)` (`reconstruction.py:361–367`) returns true when
+  missing `Origin` (legacy permissive path) or when `Origin` contains
+  `Carbon`, `Target`, or `Foil`. `Origin` is truth/provenance-like metadata;
+  it is emitted only as `has_foil_origin` diagnostic output here.
 
-- Builds candidates only from TPC tracks whose simulation truth name
-  is `pi+`, `pi-`, `proton`, or `antiproton`. Other truth labels are
-  not assigned PID. **This is a Class B read in the current code path
-  — flagged by the realism audit (plan 01 §4) and tracked as a
-  required cleanup; see §3.7 for the migration plan.**
-- Direction is reconstructed from the ordered TPC hit positions
-  (`_track_anchor_and_direction`) when ≥ 2 valid coords are present;
-  falls back to mean momentum direction otherwise.
-- Scintillator hits are matched to a track by either
-  (i) angular-and-distance match (track-ray vs hit position) when
-  detector coordinates are available, or (ii) exact `Track_ID`
-  matching for sparse legacy tables. Constants from
-  `ReconstructionConfig`.
-- PID rules:
-  - `dedx >= proton_dedx_min` ⇒ proton, *or*
-  - `0 < scintillator_range <= short_range_cm AND dedx >=
-    short_range_proton_dedx_min` ⇒ proton.
-  - Else: charged pion.
-- Output columns include `pid` ∈ {proton, charged_pion}, `dedx`,
-  `scintillator_range`, `track_anchor`, `track_direction`,
-  `truth_name` (Class B, retained for validation).
+#### 3.4.2 `reconstruct_charged_objects(tpc, scintillator=None, config=DEFAULT_CONFIG)`
+
+**Source:** `NNBAR_Detector/nnbar_reconstruction/reconstruction.py:701–780`.
+
+**Inputs:** TPC and optional scintillator hit tables. TPC grouping requires
+`Event_ID` (Class A event id) and `Track_ID` (Class B Geant4 identifier;
+plan 09 §8 lines 151–153). The charged-object calculation reads TPC
+`Name` (Class B truth label), `eDep` (Class A energy deposit), lowercase
+`trackl` for path length as implemented, `x/y/z`, optional `t`, optional
+`px/py/pz`, and optional `Origin` (`reconstruction.py:735–776`).
+Scintillator matching reads `Event_ID`, `Track_ID` fallback, `eDep`, and
+position columns (`particle_x/y/z` preferred, else `x/y/z`) through the
+helpers above (`reconstruction.py:187–241`, `744–746`; plan 09 §9 lines
+182–195).
+
+**Decision rule:** empty or `None` TPC returns an empty charged table with
+the declared columns (`reconstruction.py:712–730`). For each
+`(Event_ID, Track_ID)` TPC group, `_is_pion_proton_candidate_track` first
+drops truth-labelled non-π/p tracks (`reconstruction.py:735–738`; see
+§3.3.1). TPC path is the sum of `trackl`, TPC energy is the sum of `eDep`,
+and `dedx = edep / path` when path > 0 else `NaN` (`reconstruction.py:739–742`).
+Direction is reconstructed from hit geometry or momentum fallback. Matching
+scintillator hits are selected by geometry or exact truth-id fallback;
+`scintillator_edep` sums their `eDep`, and `scintillator_range` is the
+`_span` of matched scintillator positions (`reconstruction.py:744–746`).
+
+PID is a two-branch threshold rule. A candidate is labelled proton when
+`dedx >= config.proton_dedx_min` (default 8.0), or when
+`0 < scintillator_range <= config.short_range_cm` (default 20.0 cm) and
+`dedx >= config.short_range_proton_dedx_min` (default 4.5); otherwise it
+is labelled `charged_pion` (`reconstruction.py:748–758`). These defaults
+come from `ReconstructionConfig` (`reconstruction.py:25–27`).
+
+**Outputs:** DataFrame columns `event_id`, `track_id`, `truth_name`,
+`n_tpc_hits`, `tpc_edep`, `tpc_path`, `dedx`, `scintillator_edep`,
+`n_scintillator_hits`, `scintillator_range`, `px`, `py`, `pz`,
+`pid_guess`, and `has_foil_origin` (`reconstruction.py:712–728`,
+`760–780`). Plan 09 §14.2 records the charged table concept and flags
+`truth_name` as diagnostic truth (`docs/rebuild_plans/09_io_schema_data_dictionary.md:274–280`).
+
+**Truth reads:** `Name` gates which TPC tracks get charged PID;
+`Track_ID` is used for grouping and as the sparse scintillator fallback;
+`particle_x/y/z` drives scintillator range when present; and `Origin`
+feeds `has_foil_origin`. Under plan 09 these are Class B or
+truth/provenance-like fields, so the current charged-object baseline still
+has truth-dependent paths tracked by plan 08 §3.7.
 
 ### 3.5 Photon / π⁰ reconstruction (lines ≈ 700–1300)
 
