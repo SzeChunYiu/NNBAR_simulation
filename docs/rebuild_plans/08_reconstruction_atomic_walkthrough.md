@@ -10,6 +10,7 @@ inputs:
   - {path: NNBAR_Detector/output/*.parquet, schema: simulation outputs (plan 09)}
 outputs:
   - {path: docs/rebuild_plans/08_reconstruction_atomic_walkthrough.md, schema: this file}
+  - {path: docs/rebuild_plans/08_reconstruction_atomic_walkthrough/, schema: split section files}
 acceptance:
   - {test: every public function in nnbar_reconstruction/*.py has a § entry, method: source ↔ doc cross-reference, pass_when: zero unmatched public symbols}
   - {test: every CLI command in cli.py is documented in §11, method: subcommand audit, pass_when: full coverage}
@@ -168,96 +169,20 @@ recorded by the SD as a sensor-derived quantity, currently equal to
 truth — limitation L1) or Class B if interpreted strictly as
 production point. Plan 09 freezes the classification.
 
-### 3.3 Vertex reconstruction (located by section heading near reconstruction.py:200–~430)
+### 3.3 Vertex reconstruction (split)
 
-The current vertex function, per `reconstruction.md`:
+Detailed forensic entries for vertex reconstruction live in
+[`08_3_reconstruction_objects.md`](08_reconstruction_atomic_walkthrough/08_3_reconstruction_objects.md#33-vertex-reconstruction-located-by-section-heading-near-reconstructionpy200430).
 
-- Builds candidate charged tracks from TPC hits (per plan 07 §6.1,
-  TPCSD writes only first/last steps in volume).
-- For each candidate track with valid TPC entry/exit points,
-  computes the projection to the foil plane `z = 0`.
-- The reported event vertex is the *mean of valid track projections*
-  (cf. licentiate Ch 7 description).
-- Reports the RMS radial spread and the count of "skipped" tracks
-  that could not project (parallel to foil, missing endpoints).
-- Truth-labelled EM, neutral, neutrino, and nuclear-fragment tracks
-  are excluded from vertex seeding (this is a Class B *exclusion*
-  — see §3.7 for the policy).
-- Sparse legacy tables without truth labels fall back to using all
-  geometrically valid tracks.
+### 3.4 Charged-object reconstruction (split)
 
-Plan 25 takes this as the baseline; alternatives (Billoir χ², iterative
-weighted projection) are evaluated against it.
+Detailed forensic entries for `reconstruct_charged_objects` and helpers live in
+[`08_3_reconstruction_objects.md`](08_reconstruction_atomic_walkthrough/08_3_reconstruction_objects.md#34-charged-object-reconstruction-lines--430700).
 
-### 3.4 Charged-object reconstruction (lines ≈ 430–700)
+### 3.5 Photon / π⁰ reconstruction (split)
 
-`reconstruct_charged_objects(tpc, scintillator, config)` is called by
-`reconstruct_run` and by `calibration.py`'s
-`scan_charged_pid_thresholds`.
-
-Behaviour per `reconstruction.md`:
-
-- Builds candidates only from TPC tracks whose simulation truth name
-  is `pi+`, `pi-`, `proton`, or `antiproton`. Other truth labels are
-  not assigned PID. **This is a Class B read in the current code path
-  — flagged by the realism audit (plan 01 §4) and tracked as a
-  required cleanup; see §3.7 for the migration plan.**
-- Direction is reconstructed from the ordered TPC hit positions
-  (`_track_anchor_and_direction`) when ≥ 2 valid coords are present;
-  falls back to mean momentum direction otherwise.
-- Scintillator hits are matched to a track by either
-  (i) angular-and-distance match (track-ray vs hit position) when
-  detector coordinates are available, or (ii) exact `Track_ID`
-  matching for sparse legacy tables. Constants from
-  `ReconstructionConfig`.
-- PID rules:
-  - `dedx >= proton_dedx_min` ⇒ proton, *or*
-  - `0 < scintillator_range <= short_range_cm AND dedx >=
-    short_range_proton_dedx_min` ⇒ proton.
-  - Else: charged pion.
-- Output columns include `pid` ∈ {proton, charged_pion}, `dedx`,
-  `scintillator_range`, `track_anchor`, `track_direction`,
-  `truth_name` (Class B, retained for validation).
-
-### 3.5 Photon / π⁰ reconstruction (lines ≈ 700–1300)
-
-The photon-object pipeline is documented at length in
-`reconstruction.md` lines 88–155. Atomic steps:
-
-1. *Lead-glass cluster grouping by truth ancestry.* Currently uses
-   `Parent_ID` chains and the optional `Interaction` truth table to
-   resolve descendant shower particles back to their gamma ancestor
-   (`reconstruction.md` line 142–144). This is a heavy Class B read
-   path that plan 26 (calorimeter clustering) must replace with a
-   geometric/topological clustering algorithm.
-2. *Charged/neutral discriminant.* TPC tracks are grouped into
-   reconstructed candidates whose direction is taken from the event
-   vertex toward the farthest TPC hit. A lead-glass cluster is
-   tagged charged when its vertex-to-centroid direction falls inside
-   `charged_cluster_match_angle_deg` (default 10.5°). Charged
-   matches must also satisfy `charged_cluster_match_time_tolerance_ns`
-   when timing is available. Class A path; the truth `Track_ID` is
-   only stored as `source_track_id` for provenance.
-3. *Photon merging.* Truth-labelled neutral gamma fragments with
-   nearly identical reconstructed directions are merged before π⁰
-   pairing (`photon_fragment_merge_angle_deg`, default 2°). The
-   truth labels here are Class B; plan 26 audits whether merging
-   can be moved to a geometric-only criterion.
-4. *Photon four-vector.* Direction = vertex → shower centroid (when
-   a vertex exists; else origin → centroid as legacy fallback).
-   Energy = lead-glass eDep + scintillator eDep from gamma-shower
-   descendants (resolved through ancestry). Plan 28 owns the per-leaf
-   improvements.
-5. *π⁰ pairing.* All photon pairs are formed; per pair the invariant
-   mass, opening angle, and total energy are computed. The
-   `passes_*` columns capture the thesis Ch 8 selection windows
-   individually plus the strict `passes_selection`.
-6. *π⁰ provenance columns.* Each π⁰ candidate carries
-   `source_track_ids` (alias list), `truth_charge_match_class`,
-   `selection_failure_reasons`, and pi0 timing diagnostics. These are
-   *diagnostic / validation* columns marked with the
-   `@diagnostic_only` decorator under plan 01.
-
+Detailed forensic entries for photon objects, π⁰ pairing, and related helpers
+live in [`08_3_reconstruction_objects.md`](08_reconstruction_atomic_walkthrough/08_3_reconstruction_objects.md#35-photon--π⁰-reconstruction-lines--7001300).
 ### 3.6 Event variables (lines ≈ 1300–1600)
 
 Per `reconstruction.md` §"event variables" (lines 35–80):
@@ -430,95 +355,20 @@ pipeline.
 
 ## 6. Validation (validation.py, 509 lines)
 
-### 6.1 Public entry points (inferred from `cli.py` imports)
-
-- `evaluate_reconstruction_truth(result_dict) → dict`
-  — runs one report against a single reconstructed result dict
-  augmented with the `Particle` truth table.
-- `aggregate_reconstruction_truth(list_of_results) → dict`
-  — combines per-run reports.
-- `assess_validation_readiness(report, **floors) → dict`
-  — applies user-supplied floors and returns a `passed` flag plus
-  per-metric pass/fail.
-
-### 6.2 What is reported (per `reconstruction.md` §"validate-reco" doc)
-
-- Charged π/proton PID metrics with floors.
-- Lead-glass charged/neutral matching metrics.
-- Electron-pair candidate purity (recomputed from carried truth
-  names on the candidate table).
-- Pi0 selection metrics under multiple selectors:
-  - `pi0_selection` (strict thesis selection)
-  - `pi0_mass_window_selection` (looser mass-window-only)
-  - `pi0_mass_window_neutral_event_selection` (mass-window + no
-    charged π/p in event)
-  - `pi0_mass_window_track_isolated_selection` (mass-window +
-    `near_charged_track_photons == 0`)
-  - `pi0_mass_window_isolated_neutral_event_selection` (both)
-  - `pi0_mass_window_high_energy_selection` (mass-window +
-    `total_energy ≥ 400 MeV`)
-  - `pi0_mass_window_prompt_timing_selection` (mass-window +
-    photon timing within 2 ns of the vertex flight time)
-- `non_truth_events`, `false_positive_event_rate` per pi0 selector.
-
-Each metric carries a `usable` flag — single-class samples or
-unlabelled samples never satisfy the gate.
-
-### 6.3 Truth use
-
-`validation.py` is the canonical home for `@validation_only`-decorated
-code. Its read accesses to `Track_ID`, `Parent_ID`, `Name`, and primary
-truth columns are *expected* and not flagged by the realism audit.
-
+Detailed forensic entries for the validation public surface live in
+[`08_6_validation.md`](08_reconstruction_atomic_walkthrough/08_6_validation.md).
 ## 7. π⁰ study (pi0_study.py, 1974 lines)
 
-The 2 KLOC file is the most analytically dense module. It implements
-the truth-vs-reco mass ladder used in the licentiate Ch 8 to motivate
-the thesis π⁰ selection. Public surface:
-
-- `evaluate_pi0_mass_ladder(output_dir, run, reconstruction)`
-- `event_rows(report)`
-
-Per-event rows are emitted at multiple ladder rungs (truth-only,
-truth-direction + reco-energy, reco-direction + truth-energy, full
-reco), so this is already a partial precursor to plan 38
-(truth-substitution ladder). Plan 38 generalises the rung schema and
-adds the canonical truth definition per leaf.
-
-Plan 14 (validation suite) and plan 34 (fast-MC sanity) take ownership
-of expanding this module's structure documentation; for v0.1, the
-internal function map is recorded as a stub that codex-supervisor
-deepens.
-
+Detailed forensic entries for the π⁰ mass-ladder study live in
+[`08_7_pi0_study.md`](08_reconstruction_atomic_walkthrough/08_7_pi0_study.md).
 ## 8. Charged study (charged_study.py, 2241 lines)
 
-The largest module. Public surface:
-
-- `evaluate_charged_stress(output_dir, runs)`
-- `event_rows(report)`
-
-Per `reconstruction.md` lines 270–319, the study enumerates every
-`pi+`, `pi-`, and `proton` primary in `Particle`, checks whether a
-same-event/same-truth-name charged object was reconstructed from TPC
-hits, and reports per-species tracking efficiency, PID accuracy, and
-detector hit coverage.
-
-Plan 24 (question tree) records the per-species charged-object leaf
-identity; plan 29 (charged PID) consumes the per-primary breakdown.
-Like pi0_study, the structural section here is a v0.1 stub.
-
+Detailed forensic entries for the charged stress-sample study live in
+[`08_8_charged_study.md`](08_reconstruction_atomic_walkthrough/08_8_charged_study.md).
 ## 9. π⁰ fake study (pi0_fake_study.py, 325 lines)
 
-Public surface:
-
-- `evaluate_pi0_fake_background(output_dir, runs, config,
-  track_isolated, prompt_timing)`
-- `pi0_fake_rows(report)`
-
-Classifies π⁰-like candidates in samples that contain *no truth π⁰*
-(charged stress samples, beam-neutron samples) by truth lineage.
-Used to bound the fake-pi0 rate from charged backgrounds.
-
+Detailed forensic entries for the fake-π⁰ background study live in
+[`08_9_pi0_fake_study.md`](08_reconstruction_atomic_walkthrough/08_9_pi0_fake_study.md).
 ## 10. Geometry audit (geometry_audit.py, 419 lines)
 
 Cross-checks the active `src/detector/*.cc` against
