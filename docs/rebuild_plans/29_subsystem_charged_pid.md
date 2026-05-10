@@ -90,10 +90,13 @@ Per plan 24 C.1 / C.5 / C.6 schemas:
 - **downstream consumers:** plans 32, 38, 43, 45, and 47.
 
 Current implementation citation: `reconstruct_charged_objects`
-(`nnbar_reconstruction/charged.py:151-228`, plan 08 §3.4) owns the current C.1/C.5
-path and emits `pid`, `dedx`, `scintillator_range`, `track_anchor`,
-and `track_direction`, with `truth_name` retained for validation only
-after the migration.
+(`nnbar_reconstruction/charged.py:151-228`, plan 08 §3.4) owns the
+legacy charged-object reproduction path. It emits `pid_guess`, `dedx`,
+`scintillator_range`, direction components `px`, `py`, and `pz`, plus
+`truth_name` for validation/calibration only. It does **not** emit the
+Stage E.1 C.5 `pid` field or candidate anchor fields, so plan 29 treats
+that function as a reproduction bridge rather than the production C.5
+fixture boundary.
 
 ### 1.4 Machine-readable charged-PID fixtures
 
