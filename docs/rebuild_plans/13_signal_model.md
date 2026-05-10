@@ -225,9 +225,9 @@ plan 13 records "limited reference" and bumps the systematic.
 
 ## 6. Acceptance criteria
 
-- §3 citation chain is complete: every non-TODO reference resolves to a
-  paper in `bibliography/` or `ref.bib`, and TODO rows are not used as
-  factual sources.
+- §3 citation chain is complete: every factual reference resolves to a
+  paper in `bibliography/` or `ref.bib`; unresolved sources must remain
+  dated `OPEN:` items and are not used as factual sources.
 - §4 alternative-model registry has ≥ 2 enabled entries with resolving
   bibliography keys.
 - §5 closure plot has been produced for the current `nominal_geant4`
