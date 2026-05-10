@@ -83,8 +83,8 @@ code-level usage; deltas are flagged.
 | **command-template verifier hash** | Stable digest of the plan-52 CLI verifier transcript proving the command-template surface was checked before a refreshed L1 artifact was trusted. |
 | **CLI verifier transcript** | Plan-52 evidence record containing the checked help command, exit status, supported flags, and digest for an executable command template. |
 | **blocked template** | Plan-52 command-template row used when no execution command is valid because a required input or artifact is missing. |
-| **package freshness** | Plan-50 state in which the L1 defence package staleness summary is `current` against the latest question registry, rerun manifest, rerun transcript, CI report, note annex, glossary audit, and review-artifact hashes. |
-| **stale package** | Archived defence package whose evidence is retained for provenance but is not acceptable as current thesis evidence until the plan-50 staleness summary and review-artifact hashes are regenerated. |
+| **package freshness** | Plan-50 state in which the L1 defence package staleness summary is `current` against the latest question registry, rerun manifest, rerun transcript, CI report, archive inventory/drill, note annex, glossary audit, and review-artifact hashes. |
+| **stale package** | Archived defence package whose evidence is retained for provenance but is not acceptable as current thesis evidence until the plan-50 staleness summary, archive inventory/drill links, and review-artifact hashes are regenerated. |
 | **stale-package caveat** | Plan-55 reviewer-note language that explicitly warns when a note cites stale L1 package evidence as historical provenance rather than current numerical support. |
 
 ## 2. Geant4 / Hep terms
