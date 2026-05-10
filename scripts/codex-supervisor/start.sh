@@ -21,6 +21,11 @@ fi
 # codex-supervisor session already running (e.g. "codex-supervisor").
 export CODEX_SUPERVISOR_SESSION="${CODEX_SUPERVISOR_SESSION:-nnbar-rebuild}"
 
-# Run from this directory so codex-supervisor finds ./codex-prompts.txt.
-cd "$HERE"
+# Launch from the simulation repo root so codex panes' working directory
+# resolves docs/parallel-sessions.md and docs/parallel-sessions/L*.md as
+# relative paths. Pass the prompts file explicitly via env var.
+REPO_ROOT="$(cd "$HERE/../.." && pwd)"
+export CODEX_SUPERVISOR_PROMPTS="$HERE/codex-prompts.txt"
+
+cd "$REPO_ROOT"
 exec "$SUPERVISOR" "$@"
