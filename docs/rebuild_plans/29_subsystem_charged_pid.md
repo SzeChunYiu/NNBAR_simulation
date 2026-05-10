@@ -97,7 +97,8 @@ after the migration.
 
 ## 2. Cut-based baseline (current code)
 
-`charged.py` `reconstruct_charged_objects` (plan 08 §3.4):
+`/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/charged.py`
+`reconstruct_charged_objects` (plan 08 §3.4):
 
 ```
 proton if  dedx >= proton_dedx_min                       # default 8.0
