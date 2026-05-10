@@ -48,7 +48,7 @@ selection claims without reconstructing the whole plan tree by hand.
 
 | Pack member | Minimum archived artifact | Why it is retained |
 |---|---|---|
-| EM-object chain | plan-31 through plan-35 closure rows, method ids, and Class-B drop-hash summaries | proves photon/pi0 evidence is truth-blind and replayable |
+| EM-object chain | plan-31 through plan-35 closure rows, method ids, plan-34 handoff companion, and Class-B drop-hash summaries | proves photon/pi0 evidence is truth-blind and replayable |
 | Ch 10 cut-flow | plan-37 independent `pass_*` counts and cumulative cut-flow rows | preserves the exact selection identity used by ledger rows |
 | pile-up L11 | plan-58 overlay manifests, occupancy tables, and L11 status rows | shows whether independent-event assumptions are still caveated |
 | strange V0 | plan-59 branching snapshot, V0 candidate summary, and residual intervals | preserves K_S/Lambda/Sigma contamination evidence |
