@@ -137,11 +137,32 @@ The fixture is consumed by the plan-53 L1 CI checks and by the plan-55
 internal note annex. A glossary change that updates prose but not this
 fixture is treated as an incomplete defence-package edit.
 
+
+### 3.2 L1 thesis-freeze term sign-off
+
+At thesis freeze, L1 terms receive an explicit sign-off row so reviewer
+language, internal-note language, and defence-package language stay
+synchronized.
+
+| Sign-off field | Meaning |
+|---|---|
+| `term` | exact glossary spelling used in §1.1 |
+| `defence_package_refs` | plan-50 overlay ids that use the term |
+| `note_refs` | plan-55 annex rows that expose the term to readers |
+| `thesis_status` | `same`, `translated`, or `flagged_delta` |
+| `approved_by` | L1 owner or Methodology Council delegate |
+
+A `flagged_delta` is acceptable only when the plan-55 note annex carries
+the same caveat text and the plan-50 overlay roll-up is not marked
+`ready` without that caveat.
+
 ## 4. Acceptance criteria
 
 - Every shorthand or acronym in the active plan set is defined, including
   L1 additions 58, 59, 61, and 64.
 - §3 reconciliation with thesis glossary done at thesis-freeze.
+- L1 terms receive the §3.2 sign-off row before a defence package is
+  marked ready.
 
 ## 5. Dependencies
 
