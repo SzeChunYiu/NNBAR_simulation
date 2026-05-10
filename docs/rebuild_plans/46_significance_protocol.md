@@ -142,8 +142,9 @@ Status: draft, pending Methodology Council sign-off.
 
 ## 4. Acceptance criteria
 
-- §1 Z_0 implemented as a function in
-  `nnbar_reconstruction.statistics`.
+- §1 Z_0 target implementation lands in the L3-owned
+  `nnbar_reconstruction/statistics/` package; until then, plan 46
+  specifies the formula and validation examples only.
 - §2 limit convention chosen and signed.
 - §3 handover implemented and tested.
 
