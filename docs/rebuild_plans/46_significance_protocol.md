@@ -102,6 +102,25 @@ Worked examples:
 | 8 | 4.5 | F-C | expected background is in small-count regime |
 | 8 | 5.5 | asymptotic/CLs allowed | both thresholds are above the handover |
 
+### 3.1 Required decision record
+
+Every significance or limit calculation writes a method-dispatch row
+before returning a number:
+
+| Field | Meaning |
+|---|---|
+| `dataset_or_channel` | plan-43 signal row or plan-44 background node |
+| `s_expected`, `b_expected`, `n_obs` | post-selection counts after nuisance weighting |
+| `handover_rule` | literal rule string, initially `n_obs <= 5 or b <= 5` |
+| `method_selected` | `feldman_cousins`, `asimov_z0`, or `cls_pyhf` |
+| `confidence_level` | 0.90 primary, 0.95 cross-check when requested |
+| `nuisance_ids` | plan-45 IDs included in the calculation |
+| `decision_dec_id` | one of the DEC stubs below once signed |
+
+This row is what plan 47 and plan 50 cite. A result without the
+dispatch row is incomplete even if the numeric Z or limit can be
+computed.
+
 DEC stub: `DEC-46-FC-HANDOVER` — freeze the handover at
 `n_obs ≤ 5 or b ≤ 5`, with no data-driven retuning after unblinding.
 Status: draft, pending Methodology Council sign-off.
