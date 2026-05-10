@@ -1,0 +1,13 @@
+dbscan:
+  alpha: 1.5
+  min_samples: 3
+  k: 6
+  phi_weight: 5.0
+  z_weight: 1.0
+hdbscan:
+  min_cluster_size: 5
+  min_samples: 3
+refinement:
+  gap_threshold: 5.0
+  d_thresh: 2.0
+  angle_thresh_deg: 20.0
