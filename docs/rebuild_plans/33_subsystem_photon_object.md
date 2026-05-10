@@ -322,6 +322,15 @@ Until approval, alternative direction/energy/merge outputs remain
 plan-38 ladder rows; the Ch 10 reproduction keeps the current
 baseline semantics.
 
+Initial downstream-handoff examples:
+
+| `handoff_case_id` | Photon output pattern | Consumer expectation | Review guard |
+|---|---|---|---|
+| `photon_fourvector_pass_to_p34` | frozen P.3/P.4 four-vector with stable `source_cluster_ids` | plan 34 may build π⁰ pairs | requires §6 closure pass and Class-B drop hash equality |
+| `origin_fallback_diag_to_p36` | rows using origin fallback are explicitly flagged | plan 36 may report separate event-variable diagnostics | cannot be mixed into primary direction closure without category split |
+| `fragment_merge_shadow` | merged-photon rows written beside no-merge baseline | plan 34/38 may compare pair multiplicity and over-merge rates | baseline photon ids and source clusters remain reviewable |
+| `scint_only_selection_guard` | scintillator-only photons carry `leadglass_fraction = 0` | plan 34/37 must reject them from Ch 8 π⁰ selection | impact table must show zero accidental accepted candidates |
+
 ## 7. Acceptance criteria
 
 - §2, §3 produce photon four-vector with stated semantics.
