@@ -285,6 +285,22 @@ grep -nEi "$marker_re" \
   docs/rebuild_plans/24_reconstruction_question_tree/*.md && exit 1 || true
 ```
 
+### 9.2 Current verifier evidence (2026-05-10)
+
+A fresh L0 audit on this branch recorded the following evidence before
+continuing the lane handoff:
+
+- stale monolithic citation grep for plans 24-30: no matches.
+- strict citation-range script: `checked=131`, exit 0.
+- CLI help surfaces: root help plus `summarize`, `response-matrix`,
+  `cutflow`, `validate-reco`, `dqm`, and `scan-pid` each exited 0.
+- Stage E.1 coverage greps: every plan 25-30 has a verification
+  command, artifact manifest schema, and fixture matrix; plans 41, 42,
+  43, 60, and 66 expose their software-handoff manifest signatures.
+- file-size and work-marker gate: every L0 writable Markdown file is
+  below 500 lines, and the marker grep returned no matches.
+- L3 regression slice named above: `Pytest: 11 passed`.
+
 Acceptance rule: before any plan-47 ledger row cites a plan-24 leaf,
 that leaf's family must have either an implementation handoff
 subsystem plan or a software handoff study/operations plan, and the
