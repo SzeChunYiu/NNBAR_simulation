@@ -101,6 +101,18 @@ consistency from upstream P.1/P.2 rows. Dropping truth/provenance columns
 may remove diagnostic labels but must not change photon four-vector
 fields or merge decisions.
 
+Initial photon-method bundle examples:
+
+| `photon_method_id` | Direction method | Energy method | Merge method | Required upstream ids | Method status |
+|---|---|---|---|---|---|
+| `legacy_current_repro` | vertex→centroid with origin fallback from current row builder | legacy `total_energy` alias | no fragment merge | `legacy_track_key_repro`, `legacy_hard_cone_v0` | diagnostic |
+| `cluster_sum_vertex_v0` | plan-30 vertex→P.1 centroid, origin fallback flagged | calibrated `cluster_sum` | no fragment merge | `topological_seed_v0`, `legacy_hard_cone_v0` or approved P.2 candidate | candidate |
+| `cluster_sum_vertex_merge_v0` | plan-30 vertex→merged centroid, origin fallback flagged | calibrated `cluster_sum` | geometry/time fragment merge | approved P.1/P.2 rows plus `DEC-33-FRAGMENT-MERGE` evidence | candidate |
+
+The legacy bundle cannot be promoted because its energy and cluster
+membership depend on current reproduction aliases rather than the
+truth-blind P.1/P.2 contracts.
+
 ### 2.3 Current-to-target photon identity map
 
 The current `object_id` from `reconstruct_photon_objects`
