@@ -34,6 +34,31 @@ Outputs: `range_cm`, `range_eDep` (energy in matched hits).
 
 Per plan 24 C.3 schema:
 
+### 1.1 Leaf schema block
+
+Leaf C.3 — range and stopping observables
+
+- **inputs (Class A):** C.1 charged-candidate rows, V.2 direction
+  rows, C.4 matched scintillator hit `Event_ID`, `x`, `y`, `z`, `t`,
+  `eDep`, `photons`, `module_ID`, `vol_name`, `step_info`, and the
+  scintillator geometry side-car.
+- **forbidden (Class B):** `Name`, `Track_ID`, `Parent_ID`,
+  `origin_vol_name`, `particle_x`, `particle_y`, `particle_z`.
+- **decision rule:** estimate range by projecting Class A
+  scintillator hits along the reconstructed track direction; exact
+  `Track_ID` matching is allowed only as a reproduction diagnostic, not
+  as the production C.3 association rule.
+- **output schema:** `event_id: int`, `charged_candidate_id: int`,
+  `range_cm: float`, `range_edep_mev: float`,
+  `n_scintillator_hits: int`, `last_hit_module_id: int | null`,
+  `bragg_peak_position_cm: float | null`, `range_valid: bool`.
+- **allowed truth use:** `validation_only` for PSTAR/range closure and
+  stopping-proton slices after C.3 output is frozen.
+- **downstream consumers:** plans 29, 38, 40, and range/stopping
+  systematics in plan 45.
+
+### 1.2 Column contract
+
 | Class A inputs | Forbidden Class B |
 |---|---|
 | C.1 charged-candidate table; V.2 direction table; C.4 matched scintillator hit columns `Event_ID`, `x`, `y`, `z`, `t`, `eDep`, `photons`, `module_ID`, `vol_name`, `step_info`; scintillator geometry side-car | `Name`, `Track_ID`, `Parent_ID`, `origin_vol_name`, `particle_x`, `particle_y`, `particle_z` |
