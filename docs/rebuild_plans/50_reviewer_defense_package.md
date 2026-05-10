@@ -226,6 +226,8 @@ l1_staleness:
     plan52_rerun_transcript: <hash>
     plan52_command_templates: <hash>
     plan52_command_template_verifiers: <hash>
+    plan53_ci_report: <hash>
+    review_artifact_hashes: <hash>
     plan55_note_annex: <hash>
     plan56_glossary_audit: <hash>
   status: current | stale | blocked
@@ -239,6 +241,7 @@ Invalidation rules:
 | plan-51 question text, route, or status | regenerate affected overlay roll-up and reopen answered rows if artifact hashes changed |
 | plan-52 manifest, transcript, command-template, or verifier hash | mark refreshed-artifact overlays stale until output hashes and command semantics are rechecked |
 | plan-53 L1 CI report hash | rerun package audit before thesis-freeze promotion |
+| review-artifact hash bundle | mark package stale until package, CI, note, and glossary hashes are reconciled |
 | plan-55 annex row | compare note-facing caveat text with package caveat text |
 | plan-56 term sign-off | recheck every overlay that uses the changed term |
 
