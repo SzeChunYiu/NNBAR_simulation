@@ -113,6 +113,7 @@ l1_note_annex:
         - DEC-34-PI0-CUT-BASELINE
       review_evidence_links:
         overlay_rollup: <plan50-rollup-id>
+        owner_signoff_refs: [RQ-L1-EM-P1-CLUSTERING:<owner-hash-or-null>, RQ-L1-EM-P2-DISCRIMINANT:<owner-hash-or-null>, RQ-L1-PI0-CUTS:<owner-hash-or-null>]
         ci_report: <plan53-l1-report-id>
         rerun_manifest: plan52:EM chain closure
         rerun_transcript: plan52:em_object_chain:transcript-or-null
@@ -146,6 +147,7 @@ l1_note_annex:
         - <defence package path or ledger key>
       review_evidence_links:
         overlay_rollup: <plan50-rollup-id>
+        owner_signoff_refs: [RQ-L1-SELECTION-CUTFLOW:<owner-hash-or-null>]
         ci_report: <plan53-l1-report-id>
         rerun_manifest: plan52:Ch 10 selection cut-flow
         rerun_transcript: plan52:ch10_cutflow:transcript-or-null
@@ -181,6 +183,7 @@ l1_note_annex:
         - DEC-58-PILEUP-NUISANCE
       review_evidence_links:
         overlay_rollup: <plan50-rollup-id>
+        owner_signoff_refs: [RQ-L1-PILEUP-L11:<owner-hash-or-null>]
         ci_report: <plan53-l1-report-id>
         rerun_manifest: plan52:Pile-up L11 overlay
         rerun_transcript: plan52:pileup_l11:transcript-or-null
@@ -216,6 +219,7 @@ l1_note_annex:
         - DEC-59-V0-REJECTION
       review_evidence_links:
         overlay_rollup: <plan50-rollup-id>
+        owner_signoff_refs: [RQ-L1-STRANGE-BARYON:<owner-hash-or-null>]
         ci_report: <plan53-l1-report-id>
         rerun_manifest: plan52:Strange V0 contamination
         rerun_transcript: plan52:strange_v0:transcript-or-null
@@ -251,6 +255,7 @@ l1_note_annex:
         - DEC-61-RESOLUTION-BUDGET
       review_evidence_links:
         overlay_rollup: <plan50-rollup-id>
+        owner_signoff_refs: [RQ-L1-TOF:<owner-hash-or-null>]
         ci_report: <plan53-l1-report-id>
         rerun_manifest: plan52:TOF timing closure
         rerun_transcript: plan52:tof_timing:transcript-or-null
@@ -287,6 +292,7 @@ l1_note_annex:
         - DEC-64-SENSITIVITY-THRESHOLDS
       review_evidence_links:
         overlay_rollup: <plan50-rollup-id>
+        owner_signoff_refs: [RQ-L1-BAYES-LIMIT:<owner-hash-or-null>]
         ci_report: <plan53-l1-report-id>
         rerun_manifest: plan52:Bayesian limit cross-check
         rerun_transcript: plan52:bayesian_limits:transcript-or-null
@@ -322,6 +328,7 @@ l1_note_annex:
         - plan50_unbounded_caveat_overlay
       review_evidence_links:
         overlay_rollup: <plan50-rollup-id>
+        owner_signoff_refs: [RQ-L1-UNBOUNDED-CAVEATS:<owner-hash-or-null>]
         ci_report: <plan53-l1-report-id>
         rerun_manifest: plan52:Unbounded caveat status
         rerun_transcript: plan52:unbounded_caveats:transcript-or-null
