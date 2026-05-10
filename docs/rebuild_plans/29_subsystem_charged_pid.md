@@ -289,6 +289,35 @@ C.2/C.3 row hashes. A likelihood-ratio replacement also needs the plan
 57 train/validation/test artifact and a plan 05 decision before it can
 replace the cut-based baseline.
 
+### 6.4 Stage E.1 artifact manifest schema
+
+The C.5/C.6 producer must write a manifest that freezes rule identity,
+thresholds, consumed C.2/C.3 rows, and rejection taxonomy before plan 38
+or plan 47 consumes charged-PID decisions:
+
+```yaml
+schema_version: plan29_c5_c6_pid@stage-e1
+dataset_id: <plan-03 dataset id>
+producer: classify_charged_candidates
+rule_version: plan29_cut_pid_v0 | <plan-05-approved successor>
+classifier_family: cut_based | likelihood_ratio
+thresholds_hash: <sha256 of threshold payload>
+input_c1_hash: <sha256 of C.1/V.1 candidate table>
+input_c2_hash: <sha256 of C.2 dE/dx table>
+input_c3_hash: <sha256 of C.3 range table>
+input_c4_hash: <sha256 of scintillator-association sidecar or null>
+output_pid_hash: <sha256 of C.5 PID table>
+output_rejection_hash: <sha256 of C.6 rejection table>
+rejection_reasons_allowed: [none, invalid_candidate_or_dedx, em_like_observable, neutral_like_observable, conversion_like_observable, geometry_outside_acceptance]
+truth_columns_absent: [Name, Track_ID, truth_kinetic_energy, Interaction]
+calibration_artifact: scan-pid | plan57_locked_split | null
+```
+
+The manifest is invalid if `classifier_family=likelihood_ratio` lacks a
+plan 57 split artifact and a plan 05 decision, or if any truth column is
+listed as a production input. Plans 38 and 47 consume this manifest
+before accepting C.5/C.6 ladder or ledger rows.
+
 ## 7. Acceptance criteria
 
 - §2 cut-based baseline reproduced.
@@ -298,8 +327,8 @@ replace the cut-based baseline.
   reproduced.
 - §6 Stage E.1 handoff is actionable for L3: current production and
   calibration hooks are cited, production C.1/C.5/C.6 inputs and
-  outputs are named, promotion invariants and verification command are explicit, current
-  charged-reco tests are cited, and the remaining tests must prove the
+  outputs are named, promotion invariants, verification command, and artifact manifest
+  schema are explicit, current charged-reco tests are cited, and the remaining tests must prove the
   production scorer is invariant to dropping Class B truth columns.
 
 ## 8. Risks

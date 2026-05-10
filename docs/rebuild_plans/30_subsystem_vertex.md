@@ -256,14 +256,34 @@ These invariants keep the vertex fixture chain independent from closure
 truth and from the legacy `reconstruct_event_vertices`
 (`nnbar_reconstruction/vertex.py:163-254`) reproduction hook.
 
+### 7.3 Stage E.1 verification command
+
+L3's V.3/V.4/V.5 patch is promotable only when the vertex-reco slice
+exercises projection rows, geometry-only foil acceptance, and the
+real-output smoke chain:
+
+```bash
+pytest tests/test_vertex_reco.py::test_project_tracks_to_foil_emits_plan_30_v3_rows \
+       tests/test_vertex_reco.py::test_aggregate_and_accept_vertices_use_plan_16_geometry_only \
+       tests/test_vertex_reco.py::test_vertex_reco_real_sample_consumes_particle_and_tpc_rows
+```
+
+The review note for that patch must quote the command output and the
+V.3/V.4/V.5 artifact manifest fields `projection_valid`,
+`aggregation_method`, `vertex_valid`, `foil_compatible`,
+`foil_geometry_version`, and source hashes for the consumed V.2 and
+geometry side-car inputs. If the real-output selector skips, the split
+fixture remains a synthetic-only bridge and cannot feed plan 43 or plan
+60 promotion.
+
 ## 8. Acceptance criteria
 
 - §3 migration complete.
 - §4 ladder benchmark recorded.
 - §6 closure passes.
 - §7 Stage E.1 handoff is actionable for L3: the legacy reproduction
-  hook, split V.3/V.4/V.5 fixture hooks, promotion invariants, and
-  vertex-reco regression tests are cited; the fixtures remain split
+  hook, split V.3/V.4/V.5 fixture hooks, promotion invariants,
+  verification command, and vertex-reco regression tests are cited; the fixtures remain split
   from closure artifacts; and vertex-reco tests must prove the foil
   gate is invariant to dropping Class B truth columns.
 
