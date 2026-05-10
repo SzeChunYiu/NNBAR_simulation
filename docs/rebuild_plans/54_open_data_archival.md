@@ -94,11 +94,50 @@ Inventory review rules:
 This inventory is small enough to archive even when the underlying sample
 parquet is retired under the plan-03 Tier C policy.
 
+
+### 1.3 L1 archive pull-and-reproduce drill
+
+Before freeze, the L1 archive inventory is tested with a reviewer-style
+pull-and-reproduce drill. The drill does not require full-statistics
+regeneration; it proves that the archived package points to the exact
+L1 defence evidence and that blocked rows remain visible.
+
+```yaml
+l1_archive_drill:
+  freeze_id: thesis-freeze-<date>
+  reviewer_role: external_examiner
+  selected_member: ch10_cutflow
+  expected_steps:
+    - open_top_level_readme
+    - locate_l1_defence_inventory
+    - verify_inventory_hash
+    - open_plan50_defence_package
+    - follow_plan52_rerun_manifest
+    - compare_plan55_note_annex
+  result: pass | fail
+  failure_reason: null
+```
+
+Drill review rules:
+
+| Rule | Failure caught |
+|---|---|
+| drill starts from the top-level README | archive is only navigable by insiders |
+| selected member changes across freezes | only the easiest L1 artifact is ever tested |
+| blocked rows are included in the drill | archive hides unresolved L1 caveats |
+| inventory and package hashes are compared | DOI package and local freeze diverge |
+| note annex is checked against package overlay | thesis prose cannot be traced to evidence |
+
+The drill transcript is archived beside the inventory manifest and is
+referenced by the plan-50 overlay roll-up when a quoted result depends on
+L1 EM or selection evidence.
+
 ## 2. Reproducibility container
 
 The container builds from a clean base, fetches pinned dependencies
 (Geant4, Arrow, etc.), and runs a smoke sample to confirm the build
-works. Recipe in `containers/Dockerfile`.
+works. Recipe target: `containers/Dockerfile`; the file is created before
+thesis-freeze.
 
 The container is *not* expected to scale to full statistics on a
 single machine; it demonstrates reproducibility, not throughput.
@@ -132,8 +171,10 @@ reproduce a numeric claim by:
 - §2 container builds and runs smoke.
 - §3 retention policy enforced; manifests retained for retired
   samples.
-- §4 a sampler reviewer pull-and-reproduce drill is executed once
+- §4 a sample reviewer pull-and-reproduce drill is executed once
   before final freeze.
+- L1 archive drill in §1.3 passes for at least one EM/selection member
+  and records any blocked rows.
 
 ## 6. Dependencies
 
