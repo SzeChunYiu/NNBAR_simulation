@@ -284,6 +284,15 @@ quoted efficiencies:
 | `DEC-36-VISIBLE-MASS-SOURCE` | Choose raw visible mass vs plan-35 fit-aware visible mass as the production S.3 input | §5 closure plus plan-35 approved fit-mode DEC |
 | `DEC-36-SPARSE-SENTINELS` | Freeze sentinel values and validity flags for sparse or underpopulated events | audit table proving sparse sentinels do not pass selection accidentally |
 
+Initial variable-source examples:
+
+| `variable_case_id` | Event-variable pattern | Allowed use before DEC approval | Promotion guard |
+|---|---|---|---|
+| `raw_visible_mass_control` | E.7 from raw charged and photon four-vectors | Ch 10 reproduction and plan-37 baseline selection | control row for fit-aware comparisons |
+| `fit_visible_mass_diag` | E.7 recomputed after a successful plan-35 fit | diagnostic ladder column only | requires approved `DEC-35-FIT-MODE` plus `DEC-36-VISIBLE-MASS-SOURCE` |
+| `sphericity_only_control` | E.5 current sphericity, no E.6 alternatives | Ch 10 reproduction and baseline N-1 studies | control row for event-shape alternatives |
+| `fox_wolfram_diag` | E.6 Fox-Wolfram moments or thrust added beside sphericity | plan-38/41 comparison only | cannot enter plan-37 until `DEC-36-EVENT-SHAPE-FEATURES` is approved |
+
 Until approval, new E.6 variables and fit-aware E.7 are recorded for
 ladder studies but do not replace the Ch 10 reproduction inputs.
 
