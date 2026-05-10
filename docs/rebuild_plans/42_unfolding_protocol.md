@@ -35,14 +35,15 @@ level).
 
 ## 2. Response matrix
 
-
 **Verified CLI surface (A+ gate, 2026-05-10).** The live L3
-worktree currently exposes only `summarize`, `scan-pid`, and
-`validate-reco` under `python -m nnbar_reconstruction.cli --help`;
-`summarize --help` supports `--run`, `--json`, and `--tables-dir`.
-Unfolding-specific commands below are therefore documented as L3-owned
-implementation gates, not as runnable invocations, until their `--help`
-surface exists.
+worktree exposes `summarize` and `response-matrix` under
+`python -m nnbar_reconstruction.cli --help`. `summarize --help`
+supports `--run`, `--json`, and `--tables-dir`;
+`response-matrix --help` supports `--all-runs`, `--tables-dir`,
+`--out-dir`, `--observables`, `--bootstrap`, `--min-truth-count`,
+and `--json`.
+Later unfolding-tuning, closure, and systematic commands remain
+L3-owned implementation gates until their `--help` surface exists.
 
 For every observable that may be published at particle level, build an
 explicit truth-to-reconstruction response matrix and save the exact
@@ -53,7 +54,8 @@ production reconstruction decisions.
 ### 2.1 Runnable procedure
 
 1. Produce reconstruction tables with the verified plan 09 §14 schema
-   command, one run at a time until L3 adds a multi-run wrapper:
+   command, one run at a time until a multi-run summarize wrapper
+   exists:
 
    ```bash
    python -m nnbar_reconstruction.cli summarize \
@@ -65,13 +67,18 @@ production reconstruction decisions.
 2. Concatenate the run-level `events.csv` and `pi0.csv` tables only
    after applying the plan 09 §15 event-id offset, and write input
    hashes to `output/reco/sig_foil_v3/manifest.json`.
-3. **Blocked L3 implementation gate:** no verified response-matrix CLI
-   exists in the live L3 worktree. L3 must expose a help-verified
-   response-matrix command before this step becomes runnable. The
-   command must read `Particle_output_*.parquet`,
-   `Interaction_output_*.parquet`, `events.csv`, and `pi0.csv`; scan
-   `visible_mass`, `pi0_mass`, and `sphericity`; save 200-bootstrap
-   covariance; and write to `output/unfolding/response/sig_foil_v3/`.
+3. Build the response matrices with the verified response-matrix CLI:
+
+   ```bash
+   python -m nnbar_reconstruction.cli response-matrix \
+       NNBAR_Detector/output/sig_foil_v3 --all-runs \
+       --tables-dir output/reco/sig_foil_v3/ \
+       --out-dir output/unfolding/response/sig_foil_v3/ \
+       --observables visible_mass,pi0_mass,sphericity \
+       --bootstrap 200 --min-truth-count 20 \
+       --json output/unfolding/response/sig_foil_v3/summary.json
+   ```
+
 4. For each observable write `response_<observable>.parquet`,
    `response_<observable>_covariance.npz`, and
    `response_<observable>_metadata.json` containing truth/reco bin
