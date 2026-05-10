@@ -197,6 +197,53 @@ Leaf V.3: fitted track directions → foil-plane projections
   allowed truth use: validation_only
   downstream consumers: V.4, V.5; plan 30
 
+#### V.3 Physics derivation
+
+- **What is physically measured:** V.3 estimates where a reconstructed charged
+  track intersects the annihilation foil plane; the truth-side validation
+  quantity is the generated interaction/primary vertex coordinate, not an input
+  to the projection.
+- **Estimator rationale:** for the no-curvature baseline, the track state is a
+  straight ray `anchor + lambda * direction`; intersecting that ray with the
+  plan-16 foil plane is the deterministic geometric estimator. Its covariance
+  follows standard linear error propagation from the V.2 direction/anchor
+  covariance, with multiple-scattering terms bounded by PDG tracking guidance
+  and the foil geometry anchored to the NNBAR design references
+  \cite{ParticleDataGroup:2024RPP,HIBEAM_NNBAR_at_ESS,Santoro2024NNBARCDR}.
+- **Statistical character:** bias is dominated by foil-plane misalignment,
+  direction-z degeneracy, and unmodelled scattering before the foil; variance
+  comes from V.2 direction covariance and the lever arm between anchor and
+  foil. Robustness requires explicit `projection_valid` and `skipped_reason`
+  fields rather than truth-coordinate substitution.
+- **Citation:** `ParticleDataGroup:2024RPP`, `HIBEAM_NNBAR_at_ESS`, and
+  `Santoro2024NNBARCDR` are resolved in the thesis bibliography.
+
+#### V.3 Logic gaps
+
+1. **Foil plane `z = 0`:** keep as the current derived coordinate convention
+   until plan 16 publishes a geometry-versioned plane constant.
+2. **Parallel-track threshold on `direction_z`:** OPEN: scan the numerical
+   non-parallel threshold on `sig_foil_v3` using projection residual bias and
+   skipped-track fraction as the figure of merit; target resolution date
+   2026-05-24.
+3. **Projection covariance propagation:** OPEN: propagate the full V.2 anchor
+   and direction covariance through the plane-intersection Jacobian once plan
+   26 emits `covariance_valid`; target resolution date 2026-05-31.
+4. **Foil planarity/alignment uncertainty:** OPEN: source the plane normal,
+   offset, and alignment covariance from plan 16 and record the geometry tag in
+   every V.3 row; target resolution date 2026-05-31.
+
+#### V.3 Closure test for the derivation
+
+1. Build V.3 projection rows from frozen V.2 fits and the plan-16 foil geometry
+   on `sig_foil_v3`; do not read truth vertices during projection.
+2. In a `validation_only` scorer, compare `projection_xyz` with generated
+   vertex coordinates and bin residuals by `direction_z`, lever arm, and
+   geometry version.
+3. Pass when valid projections have residual means consistent with zero under
+   the plan-40 V.3 tolerance and skipped/parallel tracks are accounted for by
+   explicit `skipped_reason` values.
+
 Leaf V.4: foil-plane projections → event vertex estimate
   inputs (Class A): V.3 projection table
                     (event_id, candidate_id, projection_xyz,
