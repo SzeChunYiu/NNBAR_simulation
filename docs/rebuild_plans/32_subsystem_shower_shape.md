@@ -328,6 +328,15 @@ Evidence bundles let the reviewer separate reproduction rows, production
 candidates, and blocked feature contracts before plan 33 consumes a
 neutral-discriminator output.
 
+Initial reviewer audit cases:
+
+| `audit_case_id` | Reviewer question | Required evidence before accept | Reject condition |
+|---|---|---|---|
+| `p32_feature_contract_audit` | Are all scoring inputs registered, finite, and provenance-safe? | feature fixture, sentinel policy, and Class-B drop hash | any score input is unregistered or truth/provenance bearing |
+| `p32_label_coverage_audit` | Do closure rows cover photon efficiency and charged fake rates? | photon, electron, and charged-pion interval rows | only positive-photon efficiency is reported |
+| `p32_threshold_audit` | Is the pass/fail threshold frozen independently from shadows? | baseline threshold id, shadow ids, and DEC status | a retuned threshold overwrites the baseline column |
+| `p32_handoff_audit` | Can plan 33 reproduce the neutral decision? | bundle id, score column, pass column, and feature schema version | handoff names only an aggregate ROC score |
+
 ## 4. Acceptance criteria
 
 - §1 observables produced for every cluster.
