@@ -99,11 +99,26 @@ beam line's optics, choppers, and shielding.
 
 The simulation consumes either:
 
-- An MCPL file produced by ESS beam-line simulation (preferred).
-- A parameterised flux + spectrum sampled directly by
-  `G4MCPLGenerator` or by GPS commands (`/source/...`).
+| Path | Status | Inputs | Consequence |
+|---|---|---|---|
+| MCPL from ESS HIBEAM beam-line simulation | **Preferred, pending user/team file availability** | MCPL file, upstream simulation tag, file hash, source plane definition | Preserves correlations from beam-line optics, shielding, and choppers; every manifest records file provenance. |
+| Parameterised flux + spectrum | **Fallback, pending user approval** | HIBEAM technical-design spectrum, GPS `/source/...` commands, normalisation convention | Reproducible without external file access, but correlations and tails become model assumptions and plan-45 systematics. |
 
-Plan 22 chooses between these two paths and records the choice.
+`G4MCPLGenerator` is used only for the MCPL path. The parameterised
+path uses direct GPS/source sampling; both paths feed the same plan 22
+sub-channel split.
+
+**DEC-2026-05-10-2 stub — beam-neutron source path.** Context:
+beam-induced backgrounds need a neutron source after HIBEAM beam-line
+optics and shielding. Decision status: **pending user input**. Provisional
+recommendation: choose the ESS/HIBEAM MCPL file when a provenance-sealed
+file is available; otherwise use the parameterised flux/spectrum as a
+fallback and mark the resulting rows as model-limited. Rationale: MCPL
+preserves beam-line correlations that a sampled spectrum cannot encode.
+Alternatives: parameterised-only first pass, or dual-run MCPL vs
+parameterised comparison. Consequence: plan 22 cannot freeze
+`beam_neutron_hibeam_*_v1` manifests until this DEC is promoted into
+plan 05 with the selected path and input hashes.
 
 ### 2.2 Sub-channels
 
