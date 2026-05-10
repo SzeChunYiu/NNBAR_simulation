@@ -284,7 +284,7 @@ Drill review rules:
 |---|---|
 | drill starts from the top-level README | archive is only navigable by insiders |
 | selected member changes across freezes | only the easiest L1 artifact is ever tested |
-| blocked rows are included in the drill | archive hides unresolved L1 caveats |
+| blocked rows are included in the drill | archive hides open L1 caveats |
 | inventory and package hashes are compared | DOI package and local freeze diverge |
 | rerun transcript is inspected after the manifest | archive proves planned reruns but not executed reruns |
 | command-template verifier is inspected after the transcript | archive preserves execution output but not the verified command contract |
