@@ -67,12 +67,12 @@ Leaf C.2 — dE/dx estimator
 | C.1 charged-candidate table; TPC step columns `Event_ID`, `eDep`, `TrackLength`, `x`, `y`, `z`, `t`, `photons`, `step_info` | `Name`, `Track_ID`, `Parent_ID`, `origin_vol_name`, `particle_x`, `particle_y`, `particle_z` |
 
 Legacy implementation citation: `reconstruct_charged_objects`
-(`charged.py:151-228`, plan 08 §3.4) already emits `dedx`,
+(`nnbar_reconstruction/charged.py:151-228`, plan 08 §3.4) already emits `dedx`,
 but the value is downstream of the current truth-name candidate gate.
 The live Stage E.1 hook is `reconstruct_dedx_table`
-(`dedx.py:91-119`), which consumes V.1 candidate `hit_indices`, calls
-`truncated_mean_dedx` (`dedx.py:41-70`), and obtains path increments
-from `_step_lengths` (`dedx.py:28-38`) without reading truth labels.
+(`nnbar_reconstruction/dedx.py:91-119`), which consumes V.1 candidate `hit_indices`, calls
+`truncated_mean_dedx` (`nnbar_reconstruction/dedx.py:41-70`), and obtains path increments
+from `_step_lengths` (`nnbar_reconstruction/dedx.py:28-38`) without reading truth labels.
 
 Output schema: `{event_id, charged_candidate_id, dedx_mev_per_cm,
 estimator, n_steps_used, path_length_cm, low_truncation_fraction,
@@ -120,7 +120,7 @@ Closure: simulator output should match within 5%.
 
 | Alternative | Source paper / codebase | NNBAR-specific adaptation | Expected ladder leaf delta |
 |---|---|---|---|
-| Arithmetic mean baseline | Existing `reconstruct_charged_objects` (`charged.py:151-228`) | Preserve current `dedx` computation as a reproducibility reference after removing any C.1 truth-name candidate gate. | No intended C.2 gain; establishes the current tail-sensitive baseline for plan 38. |
+| Arithmetic mean baseline | Existing `reconstruct_charged_objects` (`nnbar_reconstruction/charged.py:151-228`) | Preserve current `dedx` computation as a reproducibility reference after removing any C.1 truth-name candidate gate. | No intended C.2 gain; establishes the current tail-sensitive baseline for plan 38. |
 | Truncated mean | Standard TPC PID / ALICE-style charged-particle dE/dx | Sort per-step `eDep / step_length`, drop bottom 10% and top 30%, and record the chosen cut fractions in the C.2 schema. | Expected to improve C.2 stability against Landau tails and reduce C.5 PID confusion. |
 | Landau/MPV fit | TPC cluster-charge Landau-Gaussian fit literature | Use only when a track has enough Class A TPC samples; report fit status and fall back to truncated mean for sparse tracks. | Better high-tail control for long tracks, but limited gain for short NNBAR TPC segments. |
 | Bethe-Bloch residual template | Plan 23 calibration samples plus Bethe-Bloch closure in §3 | Convert dE/dx to species-agnostic residuals versus βγ bins only in calibration/validation; production C.2 remains truth-free. | Improves calibration diagnostics for C.2 but does not by itself replace plan 29 PID scoring. |
@@ -208,8 +208,8 @@ explicit remaining gates:
 ### 6.1 L3 target module, functions, and tests
 
 - **Target module:** extend `nnbar_reconstruction/dedx.py`.
-- **Public functions:** `truncated_mean_dedx(steps)` (`dedx.py:41-70`)
-  and `reconstruct_dedx_table(candidates, tpc)` (`dedx.py:91-119`).
+- **Public functions:** `truncated_mean_dedx(steps)` (`nnbar_reconstruction/dedx.py:41-70`)
+  and `reconstruct_dedx_table(candidates, tpc)` (`nnbar_reconstruction/dedx.py:91-119`).
 - **Current unit coverage:** `tests/test_charged_reco.py` already
   checks the signed truncation behavior in
   `test_truncated_mean_dedx_drops_plan_27_tails`
@@ -230,8 +230,8 @@ explicit remaining gates:
 The live L3 hook already proves that C.2 can be reconstructed without
 truth labels, but the promoted fixture still needs the explicit quality
 and provenance fields from §1.3/§5. L3 can promote C.2 only after these
-gaps close in `reconstruct_dedx_table` (`dedx.py:91-119`) and
-`truncated_mean_dedx` (`dedx.py:41-70`):
+gaps close in `reconstruct_dedx_table` (`nnbar_reconstruction/dedx.py:91-119`) and
+`truncated_mean_dedx` (`nnbar_reconstruction/dedx.py:41-70`):
 
 | Gap | Current live behavior | Required promotion behavior |
 |---|---|---|
@@ -259,8 +259,8 @@ in the production table and in the plan-27 tests:
 
 | Invariant | Current live behavior | Replacement requirement |
 |---|---|---|
-| truth blindness | `reconstruct_dedx_table` (`dedx.py:91-119`) joins V.1 hit membership to Class A TPC energy-deposit rows | output must be unchanged when particle species, truth momentum, parentage, and legacy track ids are absent |
-| estimator identity | `truncated_mean_dedx` (`dedx.py:41-70`) emits `estimator=truncated_mean` and `calibration_source=plan27_truncated_mean_v0` | promoted rows must add a stable `estimator_id` that keys truncation fractions, calibration constants, and DEC history |
+| truth blindness | `reconstruct_dedx_table` (`nnbar_reconstruction/dedx.py:91-119`) joins V.1 hit membership to Class A TPC energy-deposit rows | output must be unchanged when particle species, truth momentum, parentage, and legacy track ids are absent |
+| estimator identity | `truncated_mean_dedx` (`nnbar_reconstruction/dedx.py:41-70`) emits `estimator=truncated_mean` and `calibration_source=plan27_truncated_mean_v0` | promoted rows must add a stable `estimator_id` that keys truncation fractions, calibration constants, and DEC history |
 | path provenance | `path_length_cm` is derived from Class A length-like fields or coordinate deltas | promoted rows must add `path_length_source` and must not substitute validation-only truth path length into production C.2 |
 | truncation audit | current rows preserve low/high fractions but not selected sample ids | replacement must emit `truncation_applied` and a contribution sidecar keyed by `(event_id, charged_candidate_id, estimator_id)` |
 | quality-state semantics | missing or non-positive path support currently yields null physics values without a machine-readable reason | promoted rows must set `dedx_quality_state` and `dedx_failure_reason` with the §5 `pass`/`warn`/`fail`/`not_applicable` meanings |
