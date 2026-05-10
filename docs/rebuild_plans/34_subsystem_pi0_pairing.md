@@ -224,6 +224,18 @@ separate from the production pair fixture:
 The row is rejected if truth parentage changes any production kinematic,
 cut, or `passes_selection` output.
 
+Initial accidental-rate examples:
+
+| `accidental_metric_id` | `dataset_id` | Numerator definition | Denominator convention | Required guard |
+|---|---|---|---|---|
+| `sig_wrong_parent_selected_v0` | `sig_foil_v3:wrong_parent_pairs` | selected pairs whose photons fail the evaluator-only shared-parent test | `n_selected_pairs` after Ch 8 cuts | production hash unchanged after truth/provenance drop |
+| `no_pi0_selected_rate_v0` | `cal_singlepion_mip_v1` | selected candidates in a no-π⁰ control sample | `n_events` and `n_raw_pairs` both reported | finite interval even if numerator is zero |
+| `fit_ranked_accidental_diag_v0` | `sig_foil_v3` | wrong-parent selected pairs after plan-35 fit ranking | selected pairs before fit ranking | diagnostic until fit covariance DEC is signed |
+
+These rows measure fake/accidental behavior only. They cannot reject
+production pairs by truth ancestry, and they cannot promote retuned cuts
+without the §5 closure rows and DEC evidence.
+
 ## 4. Alternative comparison matrix
 
 | Leaf | Candidate | Decision rule | Current/source citation | Class-A status | Comparison metric |
