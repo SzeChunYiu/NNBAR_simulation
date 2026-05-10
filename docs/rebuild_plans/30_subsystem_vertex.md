@@ -33,7 +33,7 @@ Per plan 24 V.3 / V.4 / V.5 schemas:
 | V.5 foil acceptance | V.4 vertex table and plan 16 foil radius / half-thickness | truth primary or interaction vertices; `Track_ID`, `Parent_ID`, `Name` | `{event_id, foil_compatible, vertex_valid, vertex_r_mm, vertex_z_mm, foil_geometry_version, acceptance_reason}` |
 
 Current implementation citation: the vertex path is implemented by
-`reconstruct_event_vertices` (`reconstruction.py:684-776`; plan 08 §3.3).
+`reconstruct_event_vertices` (`vertex.py:163-254`; plan 08 §3.3).
 It projects valid tracks to `z=0`, averages projections,
 reports radial RMS / skipped counts, and currently excludes some seeds
 with truth `Name`.
@@ -74,7 +74,7 @@ seeds. Migration:
 
 | Alternative | Source paper / codebase | NNBAR-specific adaptation | Expected ladder leaf delta |
 |---|---|---|---|
-| Mean of projections | Existing `reconstruct_event_vertices` (`reconstruction.py:684-776`) | Preserve as reproduction baseline; use V.3 projection validity and no truth-name seed exclusion after migration. | Baseline V.4 result; simple but no covariance weighting. |
+| Mean of projections | Existing `reconstruct_event_vertices` (`vertex.py:163-254`) | Preserve as reproduction baseline; use V.3 projection validity and no truth-name seed exclusion after migration. | Baseline V.4 result; simple but no covariance weighting. |
 | Billoir χ² fit | Billoir-style covariance-weighted vertex fit | Use V.2/V.3 covariance matrices and plan 16 foil geometry; downweight high-χ² tracks. | Expected to reduce vertex r/z pull width and improve V.5 foil compatibility stability. |
 | Adaptive vertex fit | Kalman/adaptive robust vertex literature | Iterate weights to suppress outlier tracks from secondary interactions or EM conversions. | Potentially best V.4 robustness in shower-rich signal events; higher tuning burden before plan 38 scoring. |
 
