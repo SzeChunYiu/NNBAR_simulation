@@ -235,6 +235,27 @@ audit when a seed becomes attached to a concrete ledger result.
   rerun_command_template_id: blocked_missing_input_v1
   rerun_command_template_verifier_hash: null
   rerun_command_template_verifier_source: null
+- id: RQ-L1-TOF
+  asked_by: anticipated_examiner
+  asked_on: 2026-05-10
+  question: Does timing add real cosmic rejection once detector resolution is included?
+  category: method
+  affects_results: []
+  routes_to_gate: [36, 41, 45, 50, 61]
+  status: open
+  answer:
+    summary: null
+    artifact: null
+    owner_signoff: null
+    review_evidence_links: null
+    review_artifact_hashes: null
+  defense_package_updated: []
+  resolved_on: null
+  l1_overlay_id: tof_timing_resolution
+  required_artifact_status: missing
+  rerun_command_template_id: blocked_missing_input_v1
+  rerun_command_template_verifier_hash: null
+  rerun_command_template_verifier_source: null
 ```
 
 Review rules:
