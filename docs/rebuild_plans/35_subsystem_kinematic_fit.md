@@ -86,12 +86,26 @@ Plan 38 records raw, mass-only, vertex-only, and combined-fit ladder
 rows so event-variable and selection consumers can choose the simplest
 validated fit.
 
-## 5. Closure
+## 5. Closure-test specification
 
-`cal_singlegamma_v1` paired into synthetic π⁰s — verify σ(M_γγ)
-improves by ≥ 20% after the constraint vs raw photon four-vectors.
-On `sig_foil_v3` π⁰ candidates, the fitted-four-vector pulls follow
-plan 40 §2 tolerances.
+1. **Dataset ids:** pair independent photons from `cal_singlegamma_v1`
+   into synthetic π⁰ events for controlled mass closure, and run the
+   selected fit on `sig_foil_v3` plan-34 candidates for in-sample
+   pull and χ² validation.
+2. **Observable:** raw and fitted `M_γγ`, fitted photon and π⁰
+   four-vector pulls, `fit_chi2`, `fit_ndf`, `fit_probability`,
+   convergence rate, and candidate ranking changes relative to raw
+   mass.
+3. **Fitter / estimator:** use the production constrained least-squares
+   fitter; compare raw vs fitted mass widths with bootstrap paired
+   uncertainty; test χ² against the expected ndf distribution with a
+   K-S test.
+4. **Pass criterion:** fitted mass width improves by `≥ 20%`, pull
+   means are compatible with zero, pull widths are in plan-40 tolerance
+   `[0.8, 1.2]`, convergence rate is `≥ 0.98`, and χ² K-S p-value
+   is `> 0.01`.
+5. **Audit hook:** rerun with truth labels removed from photon and π⁰
+   inputs. Fitted values, convergence flags, and χ² must be unchanged.
 
 ## 6. Acceptance criteria
 
