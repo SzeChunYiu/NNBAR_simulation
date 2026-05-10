@@ -22,20 +22,30 @@ last_updated: 2026-05-09
 *Charter.* Owns leaves S.1–S.6. The thesis Ch 10 cut-based selection
 plus its multivariate replacement.
 
-## 1. Cuts (thesis Ch 9 defaults from `reconstruction.py`)
+## 1. Leaf S.1–S.6 cut-flow schema
 
-| Leaf | Cut | Threshold | Source |
-|---|---|---|---|
-| S.1 | `pass_scintillator_energy` | `selection_scintillator_energy_min ≤ Σ scint ≤ max` (20–2000 MeV) | thesis Ch 9 |
-| S.1 | `pass_tpc_foil_track` | ≥ 1 TPC track foil-projecting | thesis Ch 9 |
-| S.2 | `pass_pion_count` | π multiplicity ≥ 1 | thesis Ch 9 |
-| S.3 | `pass_invariant_mass` | visible mass ≥ 500 MeV | thesis Ch 9 |
-| S.4 | `pass_sphericity` | sphericity ≥ 0.2 | thesis Ch 9 |
-| S.5 | `pass_scintillator_balance` | upper ≤ 320 MeV AND lower ≤ 930 MeV | thesis Ch 9 |
-| S.6 | `passes_preliminary_selection` | AND of S.1–S.5 | thesis Ch 9 |
+Inputs are the plan-36 `events.csv` variables. Outputs are the
+`pass_*` booleans below plus `passes_preliminary_selection`. Plan 08
+identifies `_selection_flags` as the producer
+(`reconstruction.py:1573–1600`) and `summarize_events` as the writer
+(`reconstruction.py:1730–1733`). The CLI cumulative order is fixed by
+`cli._cutflow` (`cli.py:37–44`, plan 08 §4.1):
+`pass_scintillator_energy → pass_tpc_foil_track → pass_pion_count →
+pass_invariant_mass → pass_sphericity → pass_scintillator_balance`.
 
-Cumulative cut-flow is reported by `cli.summarize`'s `_cutflow`
-helper (plan 08 §4.1).
+| Leaf | CLI order | Input variable(s) | Produced column | Threshold / rule | Thesis source | Code citation |
+|---|---:|---|---|---|---|---|
+| S.1 | 1 | `scintillator_edep` | `pass_scintillator_energy` | `20 ≤ Σ scintillator eDep ≤ 2000 MeV` | licentiate Ch 10 cut-flow, defaults documented as Ch 9 in plan v0.1 | config `selection_scintillator_energy_min/max` (`reconstruction.py:42–43`); flag at `1573–1582` |
+| S.1 | 2 | `has_foil_tpc_track` | `pass_tpc_foil_track` | at least one reconstructed TPC track projected to the foil | licentiate Ch 10 cut-flow | flag at `reconstruction.py:1583`; upstream `has_foil_tpc_track` row at `1723–1724` |
+| S.2 | 3 | `pion_multiplicity` | `pass_pion_count` | `pion_multiplicity ≥ 1` | licentiate Ch 10 cut-flow | flag at `reconstruction.py:1584`; multiplicity at `1721–1722` |
+| S.3 | 4 | `visible_invariant_mass` | `pass_invariant_mass` | finite visible mass `≥ 500 MeV` | licentiate Ch 10 cut-flow | config `selection_invariant_mass_min` (`reconstruction.py:44`); flag at `1585–1586` |
+| S.4 | 5 | `sphericity` | `pass_sphericity` | finite sphericity `≥ 0.2` | licentiate Ch 10 cut-flow | config `selection_sphericity_min` (`reconstruction.py:45`); flag at `1587–1588` |
+| S.5 | 6 | `upper_scintillator_edep`, `lower_scintillator_edep` | `pass_scintillator_balance` | upper `≤ 320 MeV` and lower `≤ 930 MeV` | licentiate Ch 10 cut-flow | config `selection_upper/lower_scintillator_max` (`reconstruction.py:46–47`); flag at `1589–1592` |
+| S.6 | — | all S.1–S.5 booleans | `passes_preliminary_selection` | logical AND of the six cut booleans | licentiate Ch 10 final preselection | AND at `reconstruction.py:1593–1600`; cumulative report in `cli._cutflow` |
+
+Truth-use boundary: S.1–S.6 consume only event-variable columns. Any
+truth/provenance dependence must be resolved upstream before the row is
+eligible for the reproduction ledger.
 
 ## 2. Reproduction
 
