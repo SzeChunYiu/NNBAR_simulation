@@ -44,6 +44,37 @@ frozen; otherwise they default to independent.
 | N9 | Optical-photon yield | plan 18 §4 | optical-on/off paired residual after Cerenkov/eDep conversion; absolute residual is the ±1σ range | lead-glass response in optical builds, photon energy | `detector_calibration`, `optical`, `calorimeter_energy` |
 | N10 | Material budget | plan 15 §§2,6 | ±5% per-region radiation-length envelope until measured composition is cited; recompute conversion and scattering observables | photon conversion rate, multiple scattering, vertex and π⁰ resolutions | `geometry`, `material_budget`, `background_shape` |
 
+### 1.1 Machine-readable nuisance fixture
+
+The registry output serialises each §1 row into a throw-ready record.
+A quoted result may consume only records with this minimum field set:
+
+| Field | Required content | Review rule |
+|---|---|---|
+| `nuisance_id` | `N1`–`N10` | exactly matches the §1 table and §2 matrix labels |
+| `name` | human-readable nuisance name | stable enough for plan-47 and plan-50 references |
+| `source_plan` | plan id and section anchor | no free-form citation without a plan owner |
+| `variation_kind` | `continuous`, `discrete_envelope`, or `scenario_envelope` | determines how up/down throws are generated |
+| `minus_1sigma`, `plus_1sigma` | numeric scale, named scenario, or envelope endpoint | both directions required even for symmetric throws |
+| `nominal_ref` | constant, model tag, or scenario id used by the baseline | must resolve before a result can be frozen |
+| `affected_observables` | list copied from §1 | used to decide which result requires the nuisance |
+| `correlation_flags` | list copied from §1 | must match at least one §2 row/column policy |
+| `unbounded_limitations` | plan-01 limitation ids not covered by this nuisance | empty list only after §3.1 review |
+| `status` | `draft`, `measured`, or `frozen` | `frozen` requires signed DEC plus paired variation evidence |
+
+Example draft records:
+
+| `nuisance_id` | `variation_kind` | `minus_1sigma` / `plus_1sigma` | `status` |
+|---|---|---|---|
+| `N2` | `continuous` | `-1136` / `+1136` photons per MeV around nominal scintillator yield | `draft` |
+| `N4` | `discrete_envelope` | lowest/highest physics-list response within the listed model set | `draft` |
+| `N8` | `scenario_envelope` | `perfect` / `worst_case_construction` geometry scenarios around `nominal_survey` | `draft` |
+
+The fixture is deliberately stricter than the prose registry: a result
+with missing `nominal_ref`, empty `affected_observables`, or an
+unreviewed `unbounded_limitations` list is incomplete rather than a
+zero-systematic result.
+
 ## 2. Correlation matrix
 
 A nuisance is fully correlated with itself. The up/down throws of a
