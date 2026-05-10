@@ -877,14 +877,6 @@ def cluster_with_hdbscan(
     Raises:
         ImportError: If the optional ``hdbscan`` package is unavailable.
     """
-    try:
-        import hdbscan as hdbscan_lib
-    except ImportError as exc:
-        raise ImportError(
-            "hdbscan package is required for cluster_with_hdbscan; "
-            "install it with `pip install hdbscan`."
-        ) from exc
-
     if len(xyz) < min_cluster_size:
         logger.debug(
             "cluster_with_hdbscan: %d points < min_cluster_size=%d; all noise.",
@@ -892,6 +884,14 @@ def cluster_with_hdbscan(
             min_cluster_size,
         )
         return np.full(len(xyz), -1, dtype=np.int32)
+
+    try:
+        import hdbscan as hdbscan_lib
+    except ImportError as exc:
+        raise ImportError(
+            "hdbscan package is required for cluster_with_hdbscan; "
+            "install it with `pip install hdbscan`."
+        ) from exc
 
     clusterer = hdbscan_lib.HDBSCAN(
         min_cluster_size=min_cluster_size,
