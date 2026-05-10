@@ -127,7 +127,7 @@ l1_defence_ci_report:
         stale_citation_matches: 0
         owner_signoff_refs_present: true
         review_evidence_link_keys: [package, ci_report, note_annex, glossary_audit]
-        review_artifact_hash_keys: [ci_report, note_annex, glossary_audit]
+        review_artifact_hash_keys: [package, ci_report, note_annex, glossary_audit]
         command_template_verifier_hashes: [sha256:<hash>]
       remediation: null
 ```
@@ -149,7 +149,7 @@ Report review rules:
 | answered-question transition evidence includes review-evidence links | reviewer registry answer cannot be traced to package, CI, note, and glossary artifacts |
 | answered-question transition evidence includes review-artifact hashes | reviewer registry answer links can drift after artifacts are regenerated |
 | staleness guard appears for ready L1 packages | stale defence package is promoted as current evidence |
-| review-evidence links include CI, note, glossary artifacts, and hashes | package has L1 evidence in prose but no machine-readable handoff |
+| review-evidence links include package, CI, note, glossary artifacts, and hashes | package has L1 evidence in prose but no machine-readable handoff |
 | note freshness check appears for promoted notes with artifact hashes and staleness id | thesis-facing note quotes stale package or unverifiable note evidence as current evidence |
 
 A warning status is allowed only for Tier 3 weekly checks. Tier 1 L1
