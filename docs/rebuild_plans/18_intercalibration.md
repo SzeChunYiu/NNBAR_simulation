@@ -212,8 +212,8 @@ Numbered closure procedure:
    source-backed macro for that scan. The historical target path
    `macro/calibration/leadglass/calib_electron_validation.mac` is
    verified absent in the L3 worktree on 2026-05-10 (plan 23 §5), so
-   this plan treats it as `TODO(L2/L3)` rather than an existing input
-   file.
+   this plan treats it as `OPEN(L2/L3, target 2026-06-15)` rather than
+   an existing input file.
 2. For each energy point, aggregate lead-glass `eDep`, PMT photon
    count when optical photons are enabled, leakage energy, and event
    containment flags.
