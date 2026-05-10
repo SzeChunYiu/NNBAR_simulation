@@ -188,6 +188,19 @@ l1_glossary_audit:
         - rerun_manifest
       thesis_delta: none | flagged
       owner: L1
+    - term: owner sign-off
+      defined_in_section: "1.1"
+      source_plans: [50, 51, 55]
+      required_contexts:
+        - defence_overlay
+        - reviewer_question_registry
+        - note_annex
+      required_fields:
+        - owner_signoff_ref
+        - owner_signoff
+        - defense_package_updated
+      thesis_delta: none | flagged
+      owner: L1
     - term: unbounded caveat status
       defined_in_section: "1.1"
       source_plans: [45, 50, 51, 55]
