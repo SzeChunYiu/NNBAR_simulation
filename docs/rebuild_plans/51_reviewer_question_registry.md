@@ -109,11 +109,13 @@ audit when a seed becomes attached to a concrete ledger result.
     owner_signoff: <owner-or-null>
     review_evidence_links:
       package: <plan-50 package key>
+      staleness_summary: <plan-50 staleness key>
       ci_report: <plan-53 report key>
       note_annex: <plan-55 annex key-or-null>
       glossary_audit: <plan-56 audit key>
     review_artifact_hashes:
       package: sha256:<hash>
+      staleness_summary: sha256:<hash>
       ci_report: sha256:<hash>
       note_annex: sha256:<hash-or-null>
       glossary_audit: sha256:<hash>
@@ -155,7 +157,7 @@ thesis-facing result.
 | From | To | Required evidence | Forbidden shortcut |
 |---|---|---|---|
 | `open` | `blocked` | missing input named in plan 52 or plan 50 | closing because the artifact is not yet producible |
-| `open` | `answered` | artifact id, ledger row, defence overlay id, rerun manifest/transcript/template ids plus verifier hash when refreshed, owner sign-off, review-evidence links, and review-artifact hashes | answering with a plan paragraph only |
+| `open` | `answered` | artifact id, ledger row, defence overlay id, rerun manifest/transcript/template ids plus verifier hash when refreshed, owner sign-off, review-evidence links including staleness summary, and review-artifact hashes | answering with a plan paragraph only |
 | `blocked` | `open` | upstream input now exists or owner has a rerun date | leaving stale blocker text in the package |
 | `answered` | `open` | new reviewer challenge or changed input hash | editing the answer without reopening review |
 | `answered` | `clarified` | wording-only update with unchanged artifact hash | hiding a numerical change as prose |
@@ -168,7 +170,7 @@ Status-transition review rules:
 | `answered` rows name the plan-50 overlay id | answer cannot be found in the defence package |
 | `blocked` rows name the missing upstream owner | row becomes an indefinite deferral |
 | changed input hashes reopen affected questions | stale answers survive reruns |
-| changed review-artifact hashes reopen affected questions | answer keeps pointing at superseded package, CI, note, or glossary evidence |
+| changed review-artifact hashes reopen affected questions | answer keeps pointing at superseded package, staleness, CI, note, or glossary evidence |
 | refreshed-artifact answers name the rerun transcript id | registry says answered before execution evidence exists |
 | command-template changes reopen refreshed-artifact answers | answered row keeps old command semantics after plan-52 drift |
 | verifier-hash changes reopen refreshed-artifact answers | answered row keeps stale CLI verifier proof |
