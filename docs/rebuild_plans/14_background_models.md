@@ -293,11 +293,12 @@ appear in plan 01 §6 limitations registry.
 
 ## 8. References
 
-- LLNL CRY library: <https://nuclear.llnl.gov/simulation/>
+- LLNL CRY library: <https://nuclear.llnl.gov/simulation/>.
 - ESS Beam Line technical design (HIBEAM project documents).
 - Geant4 G4NDL data documentation.
-
-2026-05-10 bib audit: this plan has no BibTeX citation commands and no
-author-year paper prose requiring conversion to `ref.bib`. The references
-above are external software/project documentation entries, not unresolved
-thesis bibliography keys.
+- 2026-05-10 bib audit: the Wave 6 citation keys used above resolve in
+  `/Users/billy/Desktop/projects/overleaf-hibeam-thesis/ref.bib`:
+  `4437209`, `hagmann2012cosmic`, `Garoby2018ESS`,
+  `HIBEAM_NNBAR_at_ESS`, `Agostinelli2003`, `Allison2016`, and
+  `Wright2015`. The URL/project-documentation bullets remain external
+  documentation anchors, not unresolved thesis bibliography claims.
