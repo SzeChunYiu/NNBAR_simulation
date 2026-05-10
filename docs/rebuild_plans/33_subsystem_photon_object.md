@@ -205,7 +205,28 @@ four-vector independently.
    direction, energy, merge membership, and selected neutral status
    must be unchanged.
 
-### 6.1 Decision-log stubs for photon-object choices
+### 6.1 Machine-readable photon closure fixture
+
+Each P.3/P.4 candidate configuration writes one closure-result row per
+single-γ energy bin and direction-source category:
+
+| Field | Required content | Review rule |
+|---|---|---|
+| `photon_method_id` | direction, energy, and merge method bundle | must match §5 candidate choices |
+| `dataset_id`, `energy_bin_mev` | `cal_singlegamma_v1` setting | every §6 energy point gets a row |
+| `direction_source` | reconstructed vertex or origin fallback | fallback rows are reported separately |
+| `n_truth_photons`, `n_reco_photons` | efficiency denominator and numerator | zero denominators fail closure |
+| `angular_pull_mean`, `angular_pull_width` | P.3 closure metrics | compared to §6 pass criterion |
+| `energy_bias`, `energy_response_interval_68` | P.4 response and bootstrap interval | bias must stay below the §6 bound |
+| `fallback_origin_fraction` | fraction using origin fallback | required before direction DEC approval |
+| `fragment_duplicate_rate`, `fragment_overmerge_rate` | Wilson-interval rates | over-merge must stay within §6 budget |
+| `class_b_drop_hash` | rerun artifact without truth/provenance columns | photon four-vector and merge hashes must match |
+| `closure_status` | `pass`, `fail`, or `diagnostic_only` | only `pass` rows may support production choices |
+
+Diagnostic rows may compare legacy energy aliases, but production rows
+must tie their method id to plan-31/32 cluster and neutral-score inputs.
+
+### 6.2 Decision-log stubs for photon-object choices
 
 P.3/P.4 choices feed π⁰ mass, visible mass, and event selection, so
 they need explicit methodology approval before replacing the
