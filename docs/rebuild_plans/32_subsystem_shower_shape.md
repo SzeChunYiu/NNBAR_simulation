@@ -62,6 +62,26 @@ Observable definitions, all derived from Class A production inputs:
 - **Distance / angle to nearest TPC-extrapolated track impact** —
   geometric matching to reconstructed charged tracks.
 
+### 1.1 Feature formulas
+
+Let `r_i` be the hit position relative to the cluster centroid,
+`E_i` the hit energy, `t_i` the hit time, and `u` the cluster axis
+from the reconstructed vertex to the centroid (or the declared
+origin fallback from plan 33 when no vertex exists).
+
+- `lateral_rms_cm = sqrt(Σ E_i |r_i - (r_i·u)u|² / Σ E_i)`.
+- `longitudinal_depth_cm = Σ E_i (r_i·u) / Σ E_i`.
+- `longitudinal_rms_cm = sqrt(Σ E_i ((r_i·u) - depth)² / Σ E_i)`.
+- `max_cell_fraction = max(E_i) / Σ E_i`.
+- `cluster_time_rms_ns = sqrt(Σ E_i (t_i - t̄)² / Σ E_i)`.
+- `nearest_track_distance_cm` is the shortest distance between the
+  centroid and any reconstructed TPC-track extrapolation; the angle
+  column is the angle between `u` and that track direction.
+
+If `Σ E_i = 0` or no valid axis exists, emit finite sentinel values
+and `passes_neutral_discriminant = false`; never substitute truth
+direction or truth charge labels.
+
 ## 2. Charged/neutral discriminant candidates
 
 | Candidate | P.2 decision rule | Current/source citation | Class-A status | Comparison metric | Failure mode to inspect |
