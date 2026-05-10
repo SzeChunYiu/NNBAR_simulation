@@ -106,6 +106,61 @@ increment, and whether each sample survived truncation. Dropping
 fields from production input must not change the C.2 fixture; only
 closure residual artifacts may read those validation labels.
 
+### 1.4 Physics derivation
+
+- **What is physically measured:** C.2 measures the TPC specific ionisation
+  estimator, `dE/dx`, for each charged candidate. The truth-side reference is
+  the Bethe-Bloch expectation as a function of βγ and species, used only for
+  validation after production rows are frozen.
+- **Estimator rationale:** per-step ionisation samples have a long high tail,
+  so the arithmetic mean is inefficient for PID. A truncated mean removes the
+  largest Landau-tail deposits while retaining enough central samples to follow
+  the Bethe-Bloch curve; PDG passage-of-particles material and ALICE TPC PID
+  practice justify this estimator family
+  \cite{ParticleDataGroup:2024RPP,alice2014performance}.
+- **Statistical character:** the estimator variance is dominated by straggling
+  and short track length. Bias enters through truncation fractions,
+  path-length normalisation, threshold losses, and gas/W-value calibration.
+  Robustness requires persisting the selected/rejected sample sidecar and the
+  calibration source instead of changing PID thresholds in response to closure
+  residuals.
+- **Citation:** the cited keys above were checked against
+  `/Users/billy/Desktop/projects/overleaf-hibeam-thesis/ref.bib` on
+  2026-05-10.
+
+### 1.5 Logic gaps
+
+1. **Low truncation fraction = 0.10 and high fraction = 0.30:** OPEN: scan low
+   fractions 0-20% and high fractions 10-50% on pion/proton calibration
+   samples; optimise Bethe-Bloch residual and downstream C.5 separation;
+   target resolution date 2026-05-17.
+2. **Minimum sample count after truncation:** OPEN: determine the smallest
+   `n_steps_used` whose residual bias remains within 5%; target resolution date
+   2026-05-17.
+3. **Path-length estimator:** OPEN: compare `TrackLength`, per-hit coordinate
+   differences, and V.2 geometry-derived path length; figure of merit is dE/dx
+   residual by angle and candidate length; target resolution date 2026-05-24.
+4. **Calibration scale / W-value:** OPEN: propagate plan-17 gas W-value and
+   electron-yield calibration into a versioned `calibration_source`; target
+   resolution date 2026-05-24.
+5. **Closure βγ window `[0.5, 5]` and residual band 5%:** keep as the current
+   plan-27 validation gate until the calibration scan records a plan-05
+   decision to tighten or widen it.
+
+### 1.6 Closure test for the derivation
+
+1. Run `reconstruct_dedx_table` on frozen C.1/V.1 candidates for
+   `cal_singlepion_50to600MeV_v2` and `cal_singleproton_50to500MeV_v2` using
+   only Class-A TPC energy deposits and path-length fields.
+2. Persist the C.2 row plus contribution sidecar before joining truth species
+   or momentum.
+3. In a `validation_only` closure fitter, compute Bethe-Bloch residuals versus
+   βγ for pions and protons, binned by `n_steps_used`, path-length source, and
+   truncation fractions.
+4. The derivation passes when residuals stay within the 5% band or the
+   calibration limitation is signed in plan 17/45 without silently changing the
+   C.5 production PID threshold.
+
 ## 2. Calibration anchor
 
 Plan 17 W-value (23.6 eV in TPCSD; reference 26-27.4 eV). dE/dx
