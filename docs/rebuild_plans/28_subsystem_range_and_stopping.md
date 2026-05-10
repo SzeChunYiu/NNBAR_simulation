@@ -54,8 +54,12 @@ For stopping protons, the energy-vs-position profile peaks near the
 end of the range. The Bragg-peak position is the inflection in
 cumulative eDep as a function of distance along the track.
 
-Currently not used in PID. Plan 28 v0.2 evaluates whether
-Bragg-peak position adds discrimination beyond {range, dE/dx}.
+The Wave 2 baseline keeps Bragg information as a diagnostic feature:
+`bragg_peak_position_cm` is written when at least three matched
+scintillator hits define an ordered profile, and is null otherwise.
+Promotion into PID requires a plan 29 / plan 57 comparison showing
+incremental C.5 discrimination beyond `{range_cm, dedx_mev_per_cm}`
+without consuming truth labels in the production decision path.
 
 ### 2.1 Alternative comparison rows
 
@@ -83,7 +87,9 @@ Bragg-peak position adds discrimination beyond {range, dE/dx}.
 ## 4. Acceptance criteria
 
 - §3 closure passes.
-- §2 Bragg-peak evaluation completed in v0.2.
+- §2 Bragg-peak diagnostic is either written with a valid fit-status
+  flag or explicitly null with a reason; any PID promotion cites a
+  plan 38 C.3/C.5 ladder delta.
 
 ## 5. Dependencies
 
