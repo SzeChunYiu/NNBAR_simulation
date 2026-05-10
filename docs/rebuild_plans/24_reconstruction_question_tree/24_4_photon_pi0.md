@@ -121,6 +121,27 @@ Leaf P.4: photon-like clusters → photon energy estimate
   allowed truth use: validation_only
   downstream consumers: P.5, P.7, E.1, E.7; plans 33, 34, 35, 36
 
+Leaf P.5: photon candidates → π0 pair candidates
+  inputs (Class A): P.3 photon directions, P.4 photon energies,
+                    photon timing, and V.4 vertex covariance
+  forbidden (Class B): source_track_ids, truth gamma pairing,
+                       truth pi0 labels, Track_ID, Parent_ID, Name,
+                       Interaction ancestry
+  decision rule: enumerate photon pairs and compute invariant mass,
+                 opening angle, and total energy from reconstructed
+                 four-vectors; apply the Ch 8 mass/opening/energy
+                 windows as explicit cut fields rather than using truth
+                 ancestry to choose pairs.
+  output schema: {event_id: int64, pi0_candidate_id: int64,
+                  photon_id_1: int64, photon_id_2: int64,
+                  invariant_mass_mev: float64,
+                  opening_angle_deg: float64,
+                  total_energy_mev: float64,
+                  passes_mass_window: bool,
+                  passes_selection: bool}
+  allowed truth use: validation_only
+  downstream consumers: P.6, P.7, E.9, S.2; plans 34, 35, 36, 37
+
 ### Next measurement (photon / π⁰ branch)
 
 Truth-free clustering closure study on `cal_singlegamma_v1` (plan 23)
