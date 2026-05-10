@@ -118,7 +118,7 @@ l1_defence_rerun_manifest:
   seed_formula: sha256(dataset_id || run_index || "simulation")[:8]
   bundle_member_ids: {EM chain closure: em_object_chain, Ch 10 selection cut-flow: ch10_cutflow, Pile-up L11 overlay: pileup_l11, Strange V0 contamination: strange_v0, TOF timing closure: tof_timing, Bayesian limit cross-check: bayesian_limits, Unbounded caveat status: unbounded_caveats}
   review_evidence_links: &l1_review_evidence_links
-    package_rollup: <plan50-rollup-id>
+    overlay_rollup: <plan50-rollup-id>
     staleness_summary: <plan50-staleness-id>
     ci_report: <plan53-l1-report-id>
     archive_inventory: <plan54-inventory-id-or-null>
