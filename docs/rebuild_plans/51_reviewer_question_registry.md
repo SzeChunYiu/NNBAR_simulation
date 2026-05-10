@@ -126,6 +126,35 @@ When a result first cites one of these questions, `affects_results` and
 `defense_package_updated` become non-empty in the same commit that adds
 or refreshes the defence package.
 
+
+### 2.3 L1 answer-status transition checklist
+
+L1 seed questions move from `open` to `answered` only through an explicit
+status transition. The transition is recorded alongside the defence
+package update so a reviewer can see why a row stopped blocking the
+thesis-facing result.
+
+| From | To | Required evidence | Forbidden shortcut |
+|---|---|---|---|
+| `open` | `blocked` | missing input named in plan 52 or plan 50 | closing because the artifact is not yet producible |
+| `open` | `answered` | artifact id, ledger row, defence overlay id, and owner sign-off | answering with a plan paragraph only |
+| `blocked` | `open` | upstream input now exists or owner has a rerun date | leaving stale blocker text in the package |
+| `answered` | `open` | new reviewer challenge or changed input hash | editing the answer without reopening review |
+| `answered` | `clarified` | wording-only update with unchanged artifact hash | hiding a numerical change as prose |
+
+Status-transition review rules:
+
+| Rule | Failure caught |
+|---|---|
+| every transition records old and new status | registry history cannot be audited |
+| `answered` rows name the plan-50 overlay id | answer cannot be found in the defence package |
+| `blocked` rows name the missing upstream owner | row becomes an indefinite deferral |
+| changed input hashes reopen affected questions | stale answers survive reruns |
+| clarified rows preserve artifact hashes | numerical result changes bypass review |
+
+These rules keep the registry append-only in spirit even when the living
+registry file is rendered as current-state YAML.
+
 ## 3. Update protocol
 
 1. New question logged.
@@ -149,6 +178,8 @@ an owner.
 - §2 seed entries (or licentiate-feedback verbatim if available).
 - §3 update protocol implemented; plan 53 CI regenerates affected
   defence packages on registry edit.
+- L1 seed questions use the §2.3 transition checklist before any
+  `answered` or `clarified` status is accepted.
 - §4 escalation tracked in plan 06 meeting log.
 
 ## 6. Risks
