@@ -142,6 +142,26 @@ Leaf P.5: photon candidates → π0 pair candidates
   allowed truth use: validation_only
   downstream consumers: P.6, P.7, E.9, S.2; plans 34, 35, 36, 37
 
+Leaf P.6: π0 pair candidates → accidental-compatibility veto
+  inputs (Class A): P.5 pair table, P.1/P.2 cluster isolation,
+                    photon timing residuals, charged-veto flags, and
+                    per-event photon multiplicity
+  forbidden (Class B): truth_charge_match_class, source_track_ids,
+                       truth pi0 labels, Track_ID, Parent_ID, Name,
+                       Interaction ancestry
+  decision rule: mark a pair as accidental when observable evidence
+                 indicates shared/overlapping clusters, out-of-time
+                 photons, charged contamination, poor isolation, or
+                 combinatorial sideband compatibility; validation may
+                 quote truth-pair purity but cannot choose the pair.
+  output schema: {event_id: int64, pi0_candidate_id: int64,
+                  accidental_veto: bool, accidental_score: float64,
+                  veto_flags: string[], isolation_min: float64,
+                  timing_consistent: bool,
+                  accidental_rule_version: string}
+  allowed truth use: validation_only
+  downstream consumers: P.7, E.9, S.2; plans 34, 35, 36, 37
+
 ### Next measurement (photon / π⁰ branch)
 
 Truth-free clustering closure study on `cal_singlegamma_v1` (plan 23)
