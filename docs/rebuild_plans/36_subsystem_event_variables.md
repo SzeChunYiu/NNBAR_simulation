@@ -77,6 +77,22 @@ labels.
   zero total momentum norm is available, emit finite sentinel values
   plus `event_shape_valid = false`; do not substitute truth objects.
 
+#### 2.1.1 Sparse-sentinel examples
+
+Sparse cases must be visible in the event-variable fixture and must fail
+selection by validity flags rather than by accidental numeric tuning:
+
+| `sparse_case_id` | Trigger condition | Event-shape sentinels | Visible-mass rule | Selection-safety guard |
+|---|---|---|---|---|
+| `no_reco_objects` | no valid charged, photon, or π⁰ objects after upstream gates | `sphericity = -1`, `H0/H2/H4 = 0`, `thrust = -1`, `event_shape_valid = false` | `visible_invariant_mass = null` | S.3 and S.4 both fail because the values are invalid |
+| `single_reco_object` | exactly one valid reconstructed object | same finite shape sentinels; object count remains one | compute mass only if the object has a valid four-vector, otherwise null | S.4 fails; S.3 may pass only if independently valid |
+| `zero_momentum_norm` | two or more objects but `Σ |p| = 0` | same finite shape sentinels plus a `sparse_reason` tag | keep the raw E.7 rule; do not inject truth momentum | S.4 fails before any E.6 discriminator is considered |
+| `fit_requested_but_failed` | plan-35 fit-aware mode requested but `fit_converged = false` | shape fields use raw objects, not failed fit output | fall back to raw visible mass with `event_variable_method_id` marking the fallback | fit-aware E.7 is diagnostic until `DEC-36-VISIBLE-MASS-SOURCE` |
+
+The `DEC-36-SPARSE-SENTINELS` evidence package must tabulate these
+cases against the plan-37 cut booleans and show zero events where a
+sparse sentinel is the reason an event passes a selection cut.
+
 ### 2.2 A+ citation audit for current event-variable baseline
 
 Current-source claims in §2 and §4 were re-checked against the L3
