@@ -207,6 +207,25 @@ follow this rule:
    or a DEC entry that proves the limitation is irrelevant for the
    quoted observable.
 
+### 3.3 Machine-readable unbounded-limitation fixture
+
+Every unbounded or partially bounded plan-01 limitation emits a caveat
+record so plan 46, plan 47, and plan 50 can reject unconditional quotes:
+
+| Field | Required content | Review rule |
+|---|---|---|
+| `limitation_id` | `L1`-`L12` from §3.1 | must resolve to exactly one coverage row |
+| `coverage_status` | `bounded`, `partially_bounded`, `unbounded`, or `out_of_scope` | no implicit numeric nuisance for unbounded rows |
+| `nuisance_ids` | matching §1 nuisance ids or empty list | empty requires `coverage_status != bounded` |
+| `affected_observables` | observables/results that must carry the caveat | non-empty unless out of current scope |
+| `ledger_flag` | plan-47 field name, e.g. `unbounded_limitations` | required for all non-bounded rows |
+| `defence_caveat_text` | plan-50 sentence stub | required before a quoted result can ship |
+| `closure_path` | bounded scenario, calibration study, or DEC proof needed to close | prevents silent caveat disappearance |
+| `conditional_quote_required` | boolean | true for acceptance, fake-rate, or live-rate impacts |
+
+A result row with a touched non-bounded limitation is incomplete unless
+it carries the matching `ledger_flag` and caveat text.
+
 ## 4. Acceptance criteria
 
 - §1 registry complete; ≥ 10 nuisances.
