@@ -60,6 +60,40 @@ If a pack member is blocked at freeze, archive the blocked manifest row,
 the missing input name, and the owning plan instead of dropping the row.
 That rule keeps open caveats visible in the DOI record.
 
+### 1.2 Machine-readable L1 archive inventory
+
+The archival package includes an `l1_defence_inventory` manifest so the
+Zenodo record can be audited without opening every defence package. The
+manifest is generated at thesis-freeze from plan 50 packages, plan 52
+rerun manifests, and plan 55 notes.
+
+```yaml
+l1_defence_inventory:
+  freeze_id: thesis-freeze-<date>
+  members:
+    - pack_member: ch10_cutflow
+      source_plans: [37, 47, 50, 55]
+      artifact_paths:
+        - output/defense/<row_id>.yml
+      artifact_hashes:
+        - sha256:<hash>
+      status: present | blocked | retired
+      caveat: null
+```
+
+Inventory review rules:
+
+| Rule | Failure caught |
+|---|---|
+| every §1.1 pack member appears exactly once | DOI omits a reviewer-critical evidence class |
+| `present` rows have at least one hash | archived artifact cannot be integrity-checked |
+| `blocked` rows carry a caveat and owning plan | open limitations disappear at freeze |
+| retired parquet rows keep manifests | retention policy removes replay provenance |
+| inventory hash is listed in the top-level README | reviewer cannot discover the L1 defence pack |
+
+This inventory is small enough to archive even when the underlying sample
+parquet is retired under the plan-03 Tier C policy.
+
 ## 2. Reproducibility container
 
 The container builds from a clean base, fetches pinned dependencies
