@@ -240,20 +240,20 @@ entry with `supersedes: <old-id>` and preserve the old artifact hash.
 Re-run before changing path claims in this plan:
 
 ```bash
-ls docs/rebuild_plans/17_field_calibration.md \
+rtk ls docs/rebuild_plans/17_field_calibration.md \
    docs/rebuild_plans/18_intercalibration.md \
    docs/rebuild_plans/19_simulation_validation_suite.md \
    docs/rebuild_plans/47_reproduction_ledger.md \
    docs/rebuild_plans/53_ci_regression_suite.md \
    docs/rebuild_plans/66_data_quality_monitoring.md
-test ! -e docs/rebuild_plans/66_dqm_and_online_monitoring.md
+rtk proxy test ! -e docs/rebuild_plans/66_dqm_and_online_monitoring.md
 ```
 
-Current 2026-05-10 evidence: plans 17, 18, 19, 47, 53, and
-`66_data_quality_monitoring.md` exist in the local plan set after the
-L0 DQM handoff landed. The old placeholder
-`66_dqm_and_online_monitoring.md` path does not exist and must not be
-cited.
+Current 2026-05-10 evidence: `rtk ls` resolves plans 17, 18, 19, 47,
+53, and `66_data_quality_monitoring.md` in the local plan set after
+the L0 DQM handoff landed. The explicit `rtk proxy test ! -e`
+absence check exits 0 for the old placeholder
+`66_dqm_and_online_monitoring.md`, so that path must not be cited.
 
 ## 8. Acceptance criteria
 
