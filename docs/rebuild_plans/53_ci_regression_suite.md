@@ -91,6 +91,8 @@ requirements, not claims that the final workflow file already exists.
 | `l1_no_stale_cli_or_code_cites` | changes to L1-owned plans | grep for `*.py:<line>` and nnbar module commands, then require the A+ verifier transcript or remove the claim | Tier 1 block |
 | `l1_cutflow_identity_guard` | changes to plans 37, 50, 51, or 55 | canonical singular `pass_*` selection columns remain named in defence overlays and note annexes | Tier 1 block |
 | `l1_defence_rerun_manifest` | Tier 3 weekly | plan-52 defence rerun bundle has rows for EM chain, selection, pile-up, strange, TOF, and Bayesian cross-checks | Tier 3 tracking issue if incomplete |
+| `l1_archive_drill_manifest` | thesis-freeze package build | plan-54 L1 archive drill exists, starts from the top-level README, and records blocked rows | Tier 1 block for freeze packages |
+| `l1_glossary_signoff` | changes to plans 50, 55, or 56 | plan-56 sign-off rows cover every L1 term used by defence overlays and note annexes | Tier 1 block |
 
 The checks are deliberately text-and-manifest based so they can run
 before L3 has implemented every statistics or reconstruction producer. A
@@ -129,6 +131,7 @@ Report review rules:
 | line-count evidence is numeric, not prose | 500-line and Wave-4 depth gates become auditable |
 | stale-citation evidence includes match count | A+ examiner gate is not reduced to a checkbox |
 | report git rev matches package git rev | archived defence artifacts and CI evidence diverge |
+| archive and glossary checks are present when freeze mode runs | freeze package omits L1 drill or term sign-off evidence |
 
 A warning status is allowed only for Tier 3 weekly checks. Tier 1 L1
 checks are pass/fail and block the plan-set edit when they fail.
@@ -140,6 +143,7 @@ checks are pass/fail and block the plan-set edit when they fail.
 - §3 failure semantics documented and enforced.
 - §4 coverage targets met on `main`.
 - §5 L1 defence-package CI checks implemented for Stage E.3 plan edits.
+- Freeze-mode L1 CI includes archive-drill and glossary-signoff checks.
 
 ## 7. Risks
 
