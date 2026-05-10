@@ -7,6 +7,7 @@ owner: Software Quality
 depends_on: [00_README, 03_dataset_registry, 11_build_and_runtime_environment, 50_reviewer_defense_package, 51_reviewer_question_registry, 53_ci_regression_suite, 54_open_data_archival, 55_internal_note_template, 56_glossary]
 outputs:
   - {path: docs/rebuild_plans/52_run_orchestration.md, schema: this file}
+  - {path: docs/rebuild_plans/52_run_orchestration_l1_command_templates.md, schema: L1 command-template registry}
   - {path: scripts/orchestrate/, schema: SLURM submission scripts}
 acceptance:
   - {test: every registered sample has a SLURM job script that reproduces it, method: per-sample script presence, pass_when: full coverage}
