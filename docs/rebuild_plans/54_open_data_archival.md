@@ -54,7 +54,7 @@ selection claims without reconstructing the whole plan tree by hand.
 | strange V0 | plan-59 branching snapshot, V0 candidate summary, and residual intervals | preserves K_S/Lambda/Sigma contamination evidence |
 | TOF timing | plan-61 TOF candidate summaries, resolution budgets, and ROC rows | preserves timing-separation evidence and caveats |
 | Bayesian limits | plan-64 prior-sensitivity table and plan-46 comparison ratios | preserves low-count prior-sensitivity evidence |
-| defence routing | plan-50 overlays, plan-51 question seeds, plan-55 annex, plan-56 glossary terms | lets a future reader map artifacts to reviewer questions |
+| defence routing | plan-50 overlays, plan-51 question seeds, plan-52 rerun manifests and transcripts, plan-55 annex, plan-56 glossary terms | lets a future reader map artifacts to reviewer questions |
 
 If a pack member is blocked at freeze, archive the blocked manifest row,
 the missing input name, and the owning plan instead of dropping the row.
@@ -65,7 +65,7 @@ That rule keeps open caveats visible in the DOI record.
 The archival package includes an `l1_defence_inventory` manifest so the
 Zenodo record can be audited without opening every defence package. The
 manifest is generated at thesis-freeze from plan 50 packages, plan 52
-rerun manifests, and plan 55 notes.
+rerun manifests and execution transcripts, and plan 55 notes.
 
 ```yaml
 l1_defence_inventory:
@@ -113,6 +113,7 @@ l1_archive_drill:
     - verify_inventory_hash
     - open_plan50_defence_package
     - follow_plan52_rerun_manifest
+    - inspect_plan52_execution_transcript
     - compare_plan55_note_annex
   result: pass | fail
   failure_reason: null
@@ -126,11 +127,14 @@ Drill review rules:
 | selected member changes across freezes | only the easiest L1 artifact is ever tested |
 | blocked rows are included in the drill | archive hides unresolved L1 caveats |
 | inventory and package hashes are compared | DOI package and local freeze diverge |
+| rerun transcript is inspected after the manifest | archive proves planned reruns but not executed reruns |
 | note annex is checked against package overlay | thesis prose cannot be traced to evidence |
 
 The drill transcript is archived beside the inventory manifest and is
 referenced by the plan-50 overlay roll-up when a quoted result depends on
-L1 EM or selection evidence.
+L1 EM or selection evidence. If the selected member claims refreshed
+artifacts, the drill fails unless the plan-52 execution transcript is
+archived with matching hashes.
 
 ## 2. Reproducibility container
 
