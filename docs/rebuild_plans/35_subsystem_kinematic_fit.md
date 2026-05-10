@@ -183,7 +183,28 @@ validated fit.
 5. **Audit hook:** rerun with truth labels removed from photon and π⁰
    inputs. Fitted values, convergence flags, and χ² must be unchanged.
 
-### 5.1 Decision-log stubs for fit use
+### 5.1 Machine-readable fit closure fixture
+
+Each fit mode writes one closure-result row per dataset and covariance
+configuration:
+
+| Field | Required content | Review rule |
+|---|---|---|
+| `fit_mode_id`, `covariance_model_id` | mass-only, vertex-only, combined, or raw baseline plus covariance tag | must match §1 fixture fields |
+| `dataset_id` | synthetic π⁰ closure or `sig_foil_v3` | both controlled and in-sample rows required before DEC approval |
+| `n_candidates`, `n_converged` | denominator and converged count | convergence rate must be computable |
+| `raw_mass_width_mev`, `fit_mass_width_mev` | paired width comparison | verifies the §5 improvement threshold |
+| `pull_mean`, `pull_width` | vector or summary pull metrics | compared to plan-40 tolerance |
+| `chi2_ks_pvalue` | χ² goodness-of-fit check | must exceed the §5 threshold for production use |
+| `ranking_change_rate` | fraction whose candidate ordering changes | required before plan-37 can consume fit quality |
+| `missing_covariance_rate` | sparse-covariance fallback fraction | must match §1.1/§1.2 failure accounting |
+| `class_b_drop_hash` | rerun artifact without truth labels | fit output and convergence hashes must match |
+| `closure_status` | `pass`, `fail`, or `diagnostic_only` | only `pass` rows may support fitted production values |
+
+Diagnostic rows may compare raw and fitted values, but raw π⁰ candidates
+remain the baseline until the corresponding DEC is approved.
+
+### 5.2 Decision-log stubs for fit use
 
 Kinematic fitting changes a downstream four-vector and may add a
 selection/ranking variable, so plan-05 DEC approval is required before
