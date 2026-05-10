@@ -202,6 +202,18 @@ The merge fixture is rejected if truth labels or generated photon ids
 affect the candidate grouping, threshold comparison, or output source
 cluster list.
 
+Initial fragment-merge decision examples:
+
+| `merge_candidate_id` | Input pattern | `merge_threshold_id` | Expected decision | Review guard |
+|---|---|---|---|---|
+| `single_cluster_passthrough` | one accepted neutral P.1 cluster | `no_merge_baseline_v0` | `keep_separate` | preserves the current one-cluster photon baseline |
+| `nearby_same_shower_fragments` | two neutral clusters with small angular, centroid, and timing separation | `geom_time_merge_diag_v0` | `merge` only in diagnostic rows until DEC approval | truth-blind hash must match after provenance drop |
+| `pi0_two_daughter_guard` | two energetic neutral clusters with π⁰-like opening angle | `geom_time_merge_diag_v0` | `keep_separate` | over-merge rate is counted in §6.1 before promotion |
+| `truth_parent_merge_oracle` | merge proposed from generated photon ancestry | `truth_oracle_blocked` | `blocked` | validation upper bound only; never writes photon rows |
+
+The examples define review cases for the merge fixture. They do not
+create executable merge algorithms or alter the current photon baseline.
+
 ## 5. Alternative comparison matrix
 
 | Leaf | Candidate | Decision rule | Current/source citation | Class-A status | Comparison metric |
