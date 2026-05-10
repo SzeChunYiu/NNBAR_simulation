@@ -153,6 +153,29 @@ Leaf C.5: dE/dx + range + scintillator energy → π/p PID decision
   allowed truth use: validation_only
   downstream consumers: C.6, E.9, S.2; plans 29, 36, 37
 
+Leaf C.6: PID candidates + topology → rejected-candidate mask
+  inputs (Class A): C.1-C.5 charged outputs, lead-glass / shower
+                    shape observables from P.1/P.2 when available,
+                    TPC pair topology, hit timing, and geometry
+                    side-cars for beampipe/silicon material regions
+  forbidden (Class B): Name, Track_ID, Parent_ID, origin_vol_name,
+                       Interaction ancestry, particle_x/y/z truth
+                       origins, truth PID labels
+  decision rule: reject a charged candidate only with observable
+                 evidence (EM-like lead-glass match, conversion-pair
+                 topology, invalid C.1-C.5 quality gates, or geometry
+                 inconsistency); the plan 29 §3 replacement for the
+                 current truth-name filter must keep every rejection
+                 reason auditable and Class A.
+  output schema: {event_id: int64, charged_candidate_id: int64,
+                  rejected: bool, rejection_flags: string[],
+                  rejection_primary_reason: string,
+                  pid_before_rejection: string,
+                  pid_after_rejection: string,
+                  rejection_rule_version: string}
+  allowed truth use: validation_only
+  downstream consumers: E.9, S.2; plans 29, 32, 36, 37
+
 ### Next measurement (charged branch)
 
 Per-species reconstructed efficiency on `cal_singlepion*` and
