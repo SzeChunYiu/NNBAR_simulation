@@ -58,6 +58,29 @@ Open questions; foreseeable counter-arguments.
 ## 9. References
 ```
 
+
+### 1.1 L1 EM/selection annex for reviewer-facing notes
+
+Any internal note that quotes an EM-object, event-selection, or low-count
+limit result must include the following annex after §8. The annex keeps
+Stage E.3 aligned with the plan-50 defence overlays and the plan-51 L1
+reviewer-question seeds. Rows may be marked `not_applicable`, but only
+with a result-specific reason and a pointer to the affected plan-24
+leaf or plan-44 background node.
+
+| Annex block | Applies to | Required contents | Source plans |
+|---|---|---|---|
+| EM object chain | photon, pi0, or calorimeter result | P.1-P.7 method ids, Class-B drop hash status, closure row ids, selected DEC stubs | 31, 32, 33, 34, 35 |
+| Event-variable and cut-flow identity | Ch 10 selection or event-shape result | E.1-E.9 event-variable method id, canonical `pass_*` columns, independent and cumulative cut counts | 36, 37 |
+| Pile-up caveat | any result carrying L11 or rate/occupancy language | plan-58 study id, ESS time-model id, paired cosmic overlay status, occupancy-tail interval | 01, 44, 58 |
+| Strange-background caveat | beam-neutron or EM-fake background result | K_S/Lambda/Sigma branch snapshot, V0 rejection closure, residual survivor interval | 14, 44, 59 |
+| Timing/TOF cross-check | cosmic rejection or timing-result note | TOF method id, nonzero resolution budget, cal/cosmic closure slices, comparison to E.8 | 36, 45, 61 |
+| Limit-convention cross-check | low-count limit or zero-survivor row | plan-46 primary method, Jeffreys and flat prior limits, prior-sensitivity status | 04, 46, 64 |
+
+The annex is not a substitute for the defence package. It is the note
+reader's compact route map to the exact package fields that answer the
+foreseeable EM/selection examiner questions.
+
 ## 2. Plan vs note separation
 
 - A *plan* describes intent, gates, ownership, acceptance criteria.
