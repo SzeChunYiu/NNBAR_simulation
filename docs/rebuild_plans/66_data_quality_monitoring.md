@@ -110,6 +110,12 @@ Thresholds are intentionally simple and auditable. They are not final
 physics calibration constants; they are run-health sentinels that decide
 whether a run is `pass`, `warn`, or `fail` before promotion.
 
+The mandatory per-run DQM variable families are **TPC gain**,
+**scintillator yield**, **lead-glass linearity**, and **vertex
+residual**. The table below implements them as explicit proxy columns
+because the current offline reconstruction tables do not yet carry
+dedicated calibration-channel products for every run.
+
 | Variable | Source | Threshold | Severity | Owner | Rationale |
 |---|---|---|---|---|---|
 | `event_count` | `runs.csv` | run has at least one reconstructed event and matches manifest count | fail | registry owner | empty or count-mismatched runs cannot be frozen |
