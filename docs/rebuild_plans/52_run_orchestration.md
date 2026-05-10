@@ -97,7 +97,7 @@ formula version, source hashes, produced artifact hashes, and the plan-50
 overlay ids refreshed by the rerun. It also carries the plan-51 owner
 sign-off reference when a rerun is used to answer or close a reviewer
 question and the review-evidence links that will be reconciled by plans
-50, 51, 53, 55, and 56. If one member is not yet implementable (for
+50, 51, 52, 53, 54, 55, and 56. If one member is not yet implementable (for
 example, no Lambda-enriched slice exists), the manifest keeps a blocked
 row with the missing input named rather than silently omitting the question.
 
@@ -225,7 +225,7 @@ Manifest review rules:
 | every ready row records source and output hashes | refreshed artifacts cannot be tied to frozen inputs |
 | every blocked row names the missing input | unavailable samples are hidden as silent skips |
 | overlay ids point back to plan 50 | rerun evidence is disconnected from the defence package |
-| review-evidence links point to package, staleness, CI, archive, note, and glossary artifacts | rerun evidence cannot be reconciled with reviewer-facing artifacts |
+| review-evidence links point to overlay roll-up, rerun transcript, staleness, CI, archive, note, and glossary artifacts | rerun evidence cannot be reconciled with reviewer-facing artifacts |
 | seed formula matches §2 exactly | reviewer rerun is not bitwise reproducible |
 | answered or closed reviewer questions carry an owner sign-off ref | rerun evidence closes a question without accountable approval |
 
