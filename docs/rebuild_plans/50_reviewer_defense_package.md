@@ -214,6 +214,8 @@ l1_overlay_rollup:
       blocker: no paired overlay closure yet
     - overlay_id: strange_v0_contamination
       blocker: no Lambda-enriched V0 closure yet
+    - overlay_id: tof_timing_resolution
+      blocker: no nonzero-resolution TOF closure yet
 ```
 
 Promotion rules:
