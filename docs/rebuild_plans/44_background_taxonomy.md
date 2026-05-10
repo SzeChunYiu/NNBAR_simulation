@@ -44,6 +44,14 @@ reported upper limit rather than a literal zero rate.
 Unmodelled nodes are listed separately in §3 because they have no
 registered simulated sample in the first rebuild cycle.
 
+Decision-log stubs for freezing the rate conventions:
+
+| DEC id | Convention to sign | Default in this plan |
+|---|---|---|
+| `DEC-44-COSMIC-RATE-SOURCE` | Cosmic total-rate source and overburden baseline | CRY ESS Lund `overburdenA_v1` is the conservative baseline; `overburdenB_v1` is the systematic cross-check. |
+| `DEC-44-BEAM-RATE-SOURCE` | Beam-neutron source and per-pulse conversion | Prefer ESS HIBEAM MCPL; fallback is plan-22 parameterised spectrum; per-event survivors are folded with per-pulse yield. |
+| `DEC-44-ZERO-SURVIVOR-REPORTING` | Zero-survivor reporting convention for all background nodes | Report Feldman-Cousins 90% C.L. upper limits per plan 04 §5; never quote `0 / N = 0`. |
+
 Each node carries:
 
 | Field | Source |
