@@ -185,7 +185,7 @@ can be accepted.
 
 The verified live CLI can build the frozen reconstruction inputs with
 `summarize` and can compute the supporting cumulative cut-flow with
-`cutflow` (`cli.py:254-263`). The cut-flow support surface is regression
+`cutflow` (`nnbar_reconstruction/cli.py:254-263`). The cut-flow support surface is regression
 covered by `test_cutflow_counts_are_cumulative_in_plan_37_order`
 (`tests/test_selection.py:79-100`) and `test_cutflow_cli_reads_events_csv`
 (`tests/test_selection.py:103-119`). It is not a full N-1, ROC, or
