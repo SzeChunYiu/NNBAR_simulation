@@ -28,8 +28,7 @@ replacement is Class A topological / particle-flow-style clustering.
 
 The current L3 reconstruction code has no separate source-resolver
 helper and no separate photon-row-builder helper. Plan 31 therefore
-treats `reconstruct_photon_objects`
-(`reconstruction.py:432-573`) as the current clustering surface. It
+treats `reconstruct_photon_objects` (`reconstruction.py:432-573`) as the current clustering surface. It
 groups lead-glass rows by `(Event_ID, Track_ID)`, attaches same-key
 scintillator energy, computes an energy-weighted centroid with
 `_weighted_centroid` (`reconstruction.py:93-113`), and emits one
@@ -58,8 +57,7 @@ Leaf P.1: calorimeter hits → neutral-shower cluster candidates
   combines clustering and photon-row emission inside
   `reconstruct_photon_objects` (`reconstruction.py:432-573`).
   The emitted photon-like table schema in that function currently
-  doubles as the cluster surface. The helper `_weighted_centroid`
-  (`reconstruction.py:93-113`) supplies the energy-weighted position.
+  doubles as the cluster surface. The helper `_weighted_centroid` (`reconstruction.py:93-113`) supplies the energy-weighted position.
 - **Decision rule (target):** seed clusters from local calorimeter
   energy maxima, grow by detector adjacency / spatial proximity, and
   split or merge clusters using only hit energy, hit position, timing,
