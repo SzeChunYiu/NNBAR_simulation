@@ -86,6 +86,7 @@ code-level usage; deltas are flagged.
 | **owner sign-off** | Plan-51 accountable approval recorded before an L1 reviewer-question answer can stop blocking a thesis-facing result. |
 | **rerun transcript** | Plan-52 execution record proving which reviewer-triggered rerun rows actually ran, with input hashes, output hashes, environment identity, and pass/fail/block status. |
 | **command-template id** | Stable plan-52 identifier for the verified rerun command contract used by a transcript row; it records replay semantics without depending on prose. |
+| **command-template companion** | Split plan-52 registry file that preserves executable and blocked command-template rows plus verifier transcripts while the parent orchestration plan stays below the line cap. |
 | **command-template verifier hash** | Stable digest of the plan-52 CLI verifier transcript proving the command-template surface was checked before a refreshed L1 artifact was trusted. |
 | **command-template verifier source** | Stable plan-52 verifier row id that produced the command-template verifier hash, such as `plan52:validate_reco_cutflow_v1`, so hashes can be traced back to the checked command surface. |
 | **CLI verifier transcript** | Plan-52 evidence record containing the checked help command, exit status, supported flags, and digest for an executable command template. |
@@ -286,7 +287,7 @@ l1_glossary_audit:
       owner: L1
     - term_group: defence-workflow shorthand
       defined_in_section: "1.1"
-      terms: [defence overlay, overlay roll-up, rerun transcript, command-template id, command-template verifier source, CLI verifier transcript, blocked template, stale package, defence routing]
+      terms: [defence overlay, overlay roll-up, rerun transcript, command-template id, command-template companion, command-template verifier source, CLI verifier transcript, blocked template, stale package, defence routing]
       source_plans: [50, 51, 52, 53, 54, 55]
       required_contexts: [l1_overlay_rollup, reviewer_question_registry, rerun_transcript, command_template_registry, archive_inventory, note_annex]
       thesis_delta: none | flagged
@@ -349,6 +350,7 @@ l1_glossary_signoff:
     - {term: plan-34 handoff companion, defence_package_refs: [pi0_cut_decomposition], note_refs: [em_object_chain], audit_row_ref: l1_glossary_audit:plan-34 handoff companion, thesis_status: same | translated | flagged_delta, approved_by: <L1-owner-or-null>, caveat_text: <required when thesis_status is flagged_delta>}
     - {term: rerun transcript, defence_package_refs: *l1_defence_refs, note_refs: *l1_note_refs, audit_row_ref: l1_glossary_audit:rerun transcript, thesis_status: same | translated | flagged_delta, approved_by: <L1-owner-or-null>, caveat_text: <required when thesis_status is flagged_delta>}
     - {term: command-template id, defence_package_refs: [em_cluster_truth_blindness, selection_cutflow_identity], note_refs: [em_object_chain, event_variable_and_cutflow_identity], audit_row_ref: l1_glossary_audit:command-template id, thesis_status: same | translated | flagged_delta, approved_by: <L1-owner-or-null>, caveat_text: <required when thesis_status is flagged_delta>}
+    - {term: command-template companion, defence_package_refs: [em_cluster_truth_blindness, selection_cutflow_identity], note_refs: [em_object_chain, event_variable_and_cutflow_identity], audit_row_ref: l1_glossary_audit:command-template companion, thesis_status: same | translated | flagged_delta, approved_by: <L1-owner-or-null>, caveat_text: <required when thesis_status is flagged_delta>}
     - {term: command-template verifier hash, defence_package_refs: [em_cluster_truth_blindness, selection_cutflow_identity], note_refs: [em_object_chain, event_variable_and_cutflow_identity], audit_row_ref: l1_glossary_audit:command-template verifier hash, thesis_status: same | translated | flagged_delta, approved_by: <L1-owner-or-null>, caveat_text: <required when thesis_status is flagged_delta>}
     - {term: command-template verifier source, defence_package_refs: [em_cluster_truth_blindness, selection_cutflow_identity], note_refs: [em_object_chain, event_variable_and_cutflow_identity], audit_row_ref: l1_glossary_audit:command-template verifier source, thesis_status: same | translated | flagged_delta, approved_by: <L1-owner-or-null>, caveat_text: <required when thesis_status is flagged_delta>}
     - {term: CLI verifier transcript, defence_package_refs: [em_cluster_truth_blindness, selection_cutflow_identity], note_refs: [em_object_chain, event_variable_and_cutflow_identity], audit_row_ref: l1_glossary_audit:CLI verifier transcript, thesis_status: same | translated | flagged_delta, approved_by: <L1-owner-or-null>, caveat_text: <required when thesis_status is flagged_delta>}

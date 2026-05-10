@@ -4,7 +4,7 @@ title: Internal-note template — ATLAS INT-style format
 version: 0.1
 status: draft
 owner: Software Quality
-depends_on: [00_README, 50_reviewer_defense_package, 51_reviewer_question_registry, 52_run_orchestration, 53_ci_regression_suite, 54_open_data_archival, 56_glossary]
+depends_on: [00_README, 50_reviewer_defense_package, 51_reviewer_question_registry, 52_run_orchestration, 52_run_orchestration_l1_command_templates, 53_ci_regression_suite, 54_open_data_archival, 56_glossary]
 outputs:
   - {path: docs/rebuild_plans/55_internal_note_template.md, schema: this file}
   - {path: docs/rebuild_plans/55_internal_note_template_l1_annex_fixture.md, schema: split L1 annex fixture}
@@ -104,7 +104,7 @@ is a small matrix, not a prose judgement, so omissions are visible in CI.
 | reviewer question coverage | any annex row has `applicability: applies` | at least one plan-51 question id is listed |
 | defence package handoff | any note quotes a final EM/selection number | plan-50 overlay id, package revision, and owner sign-off status are recorded |
 | package freshness | any note quotes a final EM/selection number | plan-50 staleness status is `current` or the note carries the stale-package caveat |
-| rerun reproducibility | any note says an artifact was refreshed | plan-52 rerun manifest row id, execution transcript row id, command-template id, command-template verifier hash, and output hash are recorded |
+| rerun reproducibility | any note says an artifact was refreshed | plan-52 rerun manifest row id, execution transcript row id, command-template companion id, command-template verifier hash, and output hash are recorded |
 | CI transcript | any note is promoted after Stage E.3 starts | plan-53 L1 report id is recorded |
 | glossary consistency | any annex introduces shorthand | plan-56 glossary audit row is recorded |
 | review evidence reconciliation | any annex row supports thesis-facing prose | plan-50 roll-up id, defence-routing crosswalk, staleness id, plan-53 report id, plan-54 archive ids, plan-56 audit id, and note/package/staleness/CI/archive/glossary hashes are recorded |
@@ -114,7 +114,7 @@ cannot be used as thesis evidence until every applicable checklist item
 is either satisfied or explicitly blocked with the same blocker text used
 in the plan-50 defence package. When a note says an artifact was refreshed,
 the annex must point to the intended rerun manifest, the execution
-transcript, command-template id, and command-template verifier hash so
+transcript, command-template companion id, and command-template verifier hash so
 readers can distinguish planned coverage, completed work, and the verified
 command contract used for replay.
 A note may cite a stale package only as historical provenance; thesis-facing
@@ -140,7 +140,7 @@ cite plans by ID.
 - Stage E.3 notes that quote L1 EM, selection, timing, pile-up,
   strange-background, or Bayesian-limit evidence satisfy the §1.3
   checklist and the split §1.2 fixture, including rerun transcript,
-  command-template links, verifier hashes for refreshed artifacts,
+  command-template companion links, verifier hashes for refreshed artifacts,
   owner sign-off, and package freshness evidence for quoted numbers.
 - Thesis-facing L1 annex rows expose review-evidence links and artifact
   hashes so plan 53 can reconcile notes against the package, staleness,
