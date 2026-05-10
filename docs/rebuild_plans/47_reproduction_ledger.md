@@ -95,23 +95,25 @@ from this plan, which describes how to maintain the ledger).
 
 ## 5. Initial coverage list
 
-Codex-supervisor produces the row list by scanning every chapter
-and PhD-only addition. v0.1 stub list (≈ 10 rows for codex-
-supervisor to expand to ≈ 100):
+The living ledger now exists at `docs/thesis_reproduction_ledger.md`,
+with the machine-readable mirror at `data/ledger/rows.yml`. Wave 2
+seeding has added **20 rows** from Chapter 5 of the licentiate/PhD
+thesis pair:
 
-- LIC-CH05-NUM-1: foil thickness 100 µm.
-- LIC-CH06-FIG-3: per-event scint energy distribution.
-- LIC-CH06-FIG-4: per-event lead-glass energy distribution.
-- LIC-CH07-FIG-1: vertex-z residual.
-- LIC-CH08-NUM-1: π⁰ mass peak position.
-- LIC-CH08-NUM-2: π⁰ mass-window selection acceptance.
-- LIC-CH09-FIG-X: sphericity distribution signal vs cosmic.
-- LIC-CH10-NUM-1: ≈ 70% signal acceptance.
-- LIC-CH10-NUM-2: 0 cosmic survivors → F-C upper limit.
-- PHD-CH13-NUM-1: HIBEAM evidence-ledger snapshot hash (cross-
-  reference to HIBEAM repo decision log).
+- 12 figure rows for TPC segmentation, WLS-fibre fits, lead-glass
+  layout, lead-glass calibration, material-budget plots, and gamma-
+  conversion maps.
+- 6 numeric rows for the PMT/light-guide proxy dimensions, the lead-
+  glass calibration equation/slope/intercept/validity condition, and
+  the gamma-conversion photon count.
+- 2 PhD-only provenance rows for the HIBEAM TPC data-products unit
+  boundary and April 2026 CSV correction decision.
 
-Plan 47 v0.2 expands to full coverage.
+All rows are `not-attempted` in Wave 2: they inventory source claims
+and bind each claim to a plan-03 sample id, a plan-10-style command,
+a plan-24 leaf, and any known DEC references. Later iterations add
+rows for Chapters 6--10 until the ledger reaches the lane stop count
+(≥ 30 rows) and then continue toward full coverage.
 
 ## 6. Acceptance criteria
 
