@@ -216,6 +216,8 @@ l1_overlay_rollup:
       blocker: no Lambda-enriched V0 closure yet
     - overlay_id: tof_timing_resolution
       blocker: no nonzero-resolution TOF closure yet
+    - overlay_id: bayesian_prior_sensitivity
+      blocker: no Bayesian prior-sensitivity table yet
 ```
 
 Promotion rules:
