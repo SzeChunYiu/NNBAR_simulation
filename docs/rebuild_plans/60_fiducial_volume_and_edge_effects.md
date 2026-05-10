@@ -239,6 +239,7 @@ parent plan stays below the 500-line cap. Current children:
 - `docs/rebuild_plans/60_fiducial_volume_and_edge_effects/60_c3_range_stopping_fiducial.md`
 - `docs/rebuild_plans/60_fiducial_volume_and_edge_effects/60_c4_scintillator_association_fiducial.md`
 - `docs/rebuild_plans/60_fiducial_volume_and_edge_effects/60_c5_pid_score_fiducial.md`
+- `docs/rebuild_plans/60_fiducial_volume_and_edge_effects/60_c6_rejection_fiducial.md`
 
 ## 8. Systematics and ledger integration
 
