@@ -90,6 +90,27 @@ smoke-tested and returned non-error help, so no unimplemented CLI
 surface is introduced here. No legacy split-study files are cited by
 this plan.
 
+### 1.4 Machine-readable cut-flow fixture
+
+The Ch 10 reproduction output serialises each cut into one row so plan
+47 can compare independent and cumulative counts without parsing prose:
+
+| Field | Required content | Review rule |
+|---|---|---|
+| `cut_id` | `S1_scintillator_energy` through `S6_preliminary_selection` | stable key matching §1 order |
+| `cli_order` | integer 1-6 or null for the final AND row | must match `_cutflow` order for the six individual cuts |
+| `input_columns` | list of event-table variables from §1 | every name must exist in plan-36 output schema |
+| `produced_column` | canonical singular `pass_*` column or `passes_preliminary_selection` | no plural alias may replace the canonical name |
+| `threshold_expression` | literal threshold/rule from §1 | preserves Ch 10 baseline before retuning |
+| `n_pass_individual` | count passing this cut alone | computed before cumulative masking |
+| `n_after_cut` | count after applying all cuts through `cli_order` | null only for the final AND row if it duplicates S.6 |
+| `decision_dec_id` | `DEC-37-CH10-CUTFLOW-BASELINE` until retuned | retuned cuts need a separate DEC and new columns |
+
+Review fixtures must include one signal row set and one cosmic row set.
+The signal fixture checks the approximately 70% final acceptance target;
+the cosmic fixture checks that zero survivors are reported with the
+plan-04 interval convention rather than as exact zero background.
+
 ## 2. Closure-test specification / Ch 10 reproduction
 
 1. **Dataset ids:** `sig_foil_v3` for signal acceptance and
