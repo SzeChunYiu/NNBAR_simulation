@@ -20,7 +20,7 @@ Living ledger instantiated from plan 47 §1. Wave 2 status is `not-attempted`: r
 
 ## Rows seeded in Wave 2
 
-Current row count: **98** (Chapters 5-9 seed).
+Current row count: **100** (Chapters 5-10 seed).
 
 | id | source | thesis_value | sample | reproducing.command | status | leaf | decision_log | notes |
 |---|---|---|---|---|---|---|---|---|
@@ -126,6 +126,9 @@ Current row count: **98** (Chapters 5-9 seed).
 | LIC-CH09-EQ-1 | licentiate+phd Ch9 Invariant Mass — inv_mass_formula — final-state invariant mass | W = sqrt((Σ_i E_i)^2 - (Σ_i p_i)^2); free nbar-nucleon scale about 1.88 GeV; signal peak near 1.3 GeV | sig_foil_v3 | `python3 -m nnbar_reconstruction.cli summarize NNBAR_Detector/output/sig_foil_v3 --run 0 --tables-dir output/ledger/LIC-CH09-EQ-1` | not-attempted | E.7 |  | Formula and scale appear in both thesis versions; row binds the visible-mass observable. |
 | LIC-CH09-TAB-1 | licentiate+phd Ch9 Preliminary Event Selection / Selection Criteria and Event Cut Flow — tab:cut_flow_table — post-cut survival fractions | final listed cut retains 0.68 signal; 0 simulated non-muon and muon cosmic backgrounds survive; thresholds include scintillator [20,2000] MeV, W>=0.5 GeV, sphericity>=0.2 | sig_foil_v3 | `python3 -m nnbar_reconstruction.cli summarize NNBAR_Detector/output/sig_foil_v3 --run 0 --tables-dir output/ledger/LIC-CH09-TAB-1` | not-attempted | S.6 |  | Cut-flow values are sample-specific finite-MC evidence, not proof of zero physical background. |
 
+| PHD-CH10-NUM-1 | phd Ch10 Disabled legacy draft header — active Ch10 selection text is commented out and redirected to Ch9 | background-rejection statements must be finite-sample evidence with no surviving simulated cosmic-ray events, not proof of exactly zero physical background | sig_foil_v3 | `python3 -m nnbar_reconstruction.cli validate-reco NNBAR_Detector/output/sig_foil_v3 --run 0 --json output/ledger/PHD-CH10-NUM-1.json` | not-attempted | S.6 |  | PhD Ch10 is a disabled draft; this row records the correction boundary that prevents quoting obsolete zero-background language. |
+| LIC-CH10-NUM-1 | licentiate Ch10 Preliminary Event Selection / Summary — legacy selection-efficiency and ML claims | linear cutflow: 73% signal acceptance with 100% background rejection; RFC: 71% signal efficiency with 100% background rejection | sig_foil_v3 | `python3 -m nnbar_reconstruction.cli summarize NNBAR_Detector/output/sig_foil_v3 --run 0 --tables-dir output/ledger/LIC-CH10-NUM-1` | not-attempted | S.6 |  | Licentiate Ch10 contains the legacy claim; PhD Ch10 comments it out and points to finite-sample language. |
+
 ## Source scan notes
 
 - Chapter 5 rows were scanned from both `/Users/billy/Desktop/projects/overleaf-hibeam-thesis/5_Detector_simulation.tex` and `/Volumes/MyDrive/nnbar/phd thesis/thesis_extracted/5_Detector_simulation.tex`.
@@ -134,4 +137,5 @@ Current row count: **98** (Chapters 5-9 seed).
 - Chapter 7 rows were scanned from both `/Users/billy/Desktop/projects/overleaf-hibeam-thesis/7_Reconstruction.tex` and `/Volumes/MyDrive/nnbar/phd thesis/thesis_extracted/7_Reconstruction.tex`; the PhD-only HIBEAM TPC ML boundary row is marked with a `PHD-` id.
 - Chapter 8 rows were scanned from both `/Users/billy/Desktop/projects/overleaf-hibeam-thesis/8_Object_Definition.tex` and `/Volumes/MyDrive/nnbar/phd thesis/thesis_extracted/8_Object_Definition.tex`.
 - Chapter 9 rows were scanned from both `/Users/billy/Desktop/projects/overleaf-hibeam-thesis/9_Event_Variables.tex` and `/Volumes/MyDrive/nnbar/phd thesis/thesis_extracted/9_Event_Variables.tex`.
+- Chapter 10 rows were scanned from both `/Users/billy/Desktop/projects/overleaf-hibeam-thesis/10_Event_selection.tex` and `/Volumes/MyDrive/nnbar/phd thesis/thesis_extracted/10_Event_selection.tex`; the PhD version is a disabled/commented legacy draft that redirects active selection text to Chapter 9.
 - Figure rows intentionally keep `thesis_value: figure`; future execution applies the plan 47 §3 visual/bin/K-S comparison protocol.

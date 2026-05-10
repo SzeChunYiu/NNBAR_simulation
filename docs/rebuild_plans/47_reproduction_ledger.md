@@ -97,7 +97,7 @@ from this plan, which describes how to maintain the ledger).
 
 The living ledger now exists at `docs/thesis_reproduction_ledger.md`,
 with the machine-readable mirror at `data/ledger/rows.yml`. Seeding has
-added **98 rows** from Chapters 5--9 of the licentiate/PhD
+added **100 rows** from Chapters 5--10 of the licentiate/PhD
 thesis pair:
 
 - 20 Chapter 5 rows for detector-model figures, lead-glass calibration
@@ -116,13 +116,15 @@ thesis pair:
   composition, and the local pi0 significance metric.
 - 2 Chapter 9 rows for visible invariant mass and the preliminary event
   selection cut-flow survival table.
+- 2 Chapter 10 rows for the disabled PhD selection-draft boundary and
+  the licentiate legacy selection/ML efficiency claims.
 
 All rows are `not-attempted`: they inventory source claims and bind
 each claim to a plan-03/plan-20--23 sample id or stub, a plan-10-style
 command, a plan-24 leaf, and any known DEC references. The current row
 count satisfies both the Wave 2 ≥30-row seed requirement and the Wave 3
-≥60-row ledger-count target; later iterations still add Chapter 10
-and continue toward full coverage.
+≥60-row ledger-count/span target across Chapters 5--10; later iterations
+still fill sparse Chapter 8--10 coverage toward full row-level coverage.
 
 ## 6. Acceptance criteria
 
