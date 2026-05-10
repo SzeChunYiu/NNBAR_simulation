@@ -4,16 +4,17 @@ title: Subsystem — track fit, residuals, pulls (leaf V.2)
 version: 0.1
 status: draft
 owner: Tracking POG
-depends_on: [00_README, 04_statistical_uncertainty, 24_reconstruction_question_tree, 25_subsystem_tpc_hits_to_tracks, 40_closure_and_pulls]
+depends_on: [00_README, 04_statistical_uncertainty, 24_reconstruction_question_tree, 25_subsystem_tpc_hits_to_tracks, 38_truth_substitution_ladder, 40_closure_and_pulls]
 outputs:
   - {path: docs/rebuild_plans/26_subsystem_track_fit_and_pulls.md, schema: this file}
 acceptance:
   - {test: pull distribution mean / width within plan 40 §2 tolerance for V.2, method: closure plot, pass_when: pass}
   - {test: per-coordinate covariance reported by every fitter, method: code review, pass_when: covariance present}
+  - {test: V.2 alternatives scored in the plan 38 ladder matrix, method: ladder IV(V.2) row, pass_when: visible-mass and vertex-residual deltas recorded}
 risks:
   - {risk: current direction estimator has no covariance → vertex aggregation in V.4 cannot weight tracks, mitigation: §2 Kalman path provides Σ}
 estimated_effort: M
-last_updated: 2026-05-09
+last_updated: 2026-05-10
 ---
 
 # Subsystem — track fit and pull distributions
@@ -65,8 +66,8 @@ pulls_theta_phi
 | Alternative | Source paper / codebase | NNBAR-specific adaptation | Expected ladder leaf delta |
 |---|---|---|---|
 | Current first-last direction | Existing `reconstruction.py:165-184` | Preserve as reproducibility baseline and degraded fallback when too few hits exist for a covariance fit. | No V.2 improvement; documents current truth-free but covariance-free baseline. |
-| Linear least-squares / PCA | Standard straight-line total least squares | Fit straight tracks in `(x, y, z)` because plan 17 has no B-field curvature; derive covariance from residuals. | Expected to improve V.2 pull width and enable V.4 weighted vertexing with low implementation cost. |
-| Kalman fit | ACTS Kalman track-fitting codebase | Seed from V.1/PCA state and run straight-track process model until magnetic-field scenarios exist. | Best covariance model for V.2 but likely similar central value to PCA in no-B-field data. |
+| Linear least-squares / PCA | Standard straight-line total least squares | Fit straight tracks in `(x, y, z)` because plan 17 has no B-field curvature; derive covariance from residuals. | Expected to improve plan 38 IV(V.2) pull width and enable V.4 weighted vertexing with low implementation cost. |
+| Kalman fit | ACTS Kalman track-fitting codebase | Seed from V.1/PCA state and run straight-track process model until magnetic-field scenarios exist. | Best covariance model for plan 38 IV(V.2); likely similar central value to PCA in no-B-field data, but cleaner covariance propagation to V.4. |
 
 The rebuild's recommended path: Linear LS → Kalman when momentum
 measurement (curvature in B-field) becomes relevant. Currently no
@@ -85,7 +86,8 @@ B-field, so Linear LS suffices.
    closure function after the reconstruction output is frozen.
 4. **Pass criterion:** `|mu| < 0.05` and width in `[0.9, 1.1]` for
    both pull coordinates, with covariance fields present for every
-   non-degraded fitted candidate.
+   non-degraded fitted candidate and a plan 38 IV(V.2) row recorded
+   for the fitted direction choice.
 
 ## 4. Acceptance criteria
 
@@ -94,6 +96,6 @@ B-field, so Linear LS suffices.
 
 ## 5. Dependencies
 
-- **04, 25, 40** — closure machinery and inputs.
+- **04, 25, 38, 40** — closure machinery, ladder scoring, and inputs.
 - *Consumed by:* plans 27 (dE/dx normalised by track length), 30
   (vertex aggregation weighted by Σ), 38 (ladder).
