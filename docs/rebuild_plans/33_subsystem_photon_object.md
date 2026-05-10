@@ -69,15 +69,22 @@ production.
 
 ## 3. Energy (P.4)
 
-Energy = `lead_glass_eDep + scintillator_descendant_eDep`.
+Target production energy is the calibrated P.1 cluster sum:
+`energy_mev = leadglass_edep + scintillator_edep`, with both terms in
+MeV and both terms derived from Class A cluster membership.
 
-The scintillator contribution comes from gamma-shower descendants
-via the same ancestry currently used in plan 31 step 1 — this needs
-to migrate to topological grouping when plan 31 lands.
+The current reproduction baseline obtains the scintillator
+contribution from gamma-shower descendants via the same ancestry used
+in plan 31 step 1. That value is kept only as the plan-47 baseline
+and closure label; once plan 31 lands, P.4 must consume the
+truth-blind P.1 cluster components instead.
 
 Scintillator-only photons (no LG cluster) are emitted with
 `leadglass_fraction = 0` so the thesis Ch 8 selection
 (`leadglass_fraction ≥ 0.55`) does not accept them by construction.
+Rows also carry `energy_method` (`cluster_sum`, `leadglass_only`,
+`regression_calibration`, or `legacy_truth_descendant`) so plan 38 can
+compare energy choices without changing the photon-object schema.
 
 ## 4. Photon merging
 
