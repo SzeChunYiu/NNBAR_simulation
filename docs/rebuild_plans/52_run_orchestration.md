@@ -163,6 +163,7 @@ l1_defence_rerun_transcript:
   executed_rows:
     - bundle_member: Ch 10 selection cut-flow
       command_template_id: validate_reco_cutflow_v1
+      command_template_verifier_hash: sha256:<hash>
       input_hashes: [sha256:<hash>]
       output_hashes: [sha256:<hash>]
       started_at: <timestamp>
@@ -176,6 +177,7 @@ Transcript review rules:
 | Rule | Failure caught |
 |---|---|
 | transcript manifest hash matches §4.1 | rerun evidence belongs to a different request |
+| transcript row names the command-template verifier hash | rerun output is trusted without A+ command-surface evidence |
 | each executed row has input and output hashes | outputs cannot be tied to frozen inputs |
 | failed rows keep verifier summaries | rerun failures are hidden as missing artifacts |
 | blocked rows preserve the upstream owner | reviewer-triggered rerun becomes an unowned deferral |
@@ -262,8 +264,8 @@ is consumed by plan 53's command-template CI check.
   production orchestration is promoted.
 - L1 reviewer-triggered reruns produce the §4.2 transcript and link it
   from the plan-50 overlay roll-up.
-- Transcript rows use a §4.3 command template with verified CLI surface or
-  an explicit blocked template.
+- Transcript rows use a §4.3 command template with verifier hash evidence
+  for verified CLI surface or an explicit blocked template.
 - Executable L1 command templates carry the §4.4 verifier transcript.
 
 ## 7. Dependencies
