@@ -116,6 +116,22 @@ cosmic MCPL replays with a CRY-driven active sample path.
 | `macro/cosmic_macro/cosmic_muon/run_4.mac` | Muon-cosmic MCPL partition 4 replay | same as `run_0.mac` with `i=4` | `output/cosmic_muon/cosmic_muon_4/*_output_<run>.parquet`; target 1M events from `cosmic_muon_4.mcpl` | legacy |
 | `macro/cosmic_macro/cosmic_muon/run_5.mac` | Muon-cosmic MCPL partition 5 replay | same as `run_0.mac` with `i=5` | `output/cosmic_muon/cosmic_muon_5/*_output_<run>.parquet`; target 1M events from `cosmic_muon_5.mcpl` | legacy |
 
+#### 1.3.4 `macro/cosmic_macro/cosmic_neutron/`
+
+| Macro | Purpose | Key commands invoked | Output / sample target | Status |
+|---|---|---|---|---|
+| `macro/cosmic_macro/cosmic_neutron/BeamOn.mac` | Shared neutron-cosmic batch primitive | `/run/beamOn 1000` | Caller-selected `output/cosmic_neutron/cosmic_neutron_<i>/*_output_<run>.parquet` | legacy |
+| `macro/cosmic_macro/cosmic_neutron/run_0.mac` | Neutron-cosmic MCPL partition 0 replay | `/run/initialize`; `/physics_engine/neutron/timeLimit 10000 s`; `/particle_generator/set_folder_name cosmic_{name}/cosmic_{name}_{i}`; `/particle_generator/set_mcpl_file ./mcpl_files/cosmic_{name}_{i}.mcpl`; `/particle_generator/set_run_number 0`; `/particle_generator/set_event_number 1`; `/control/loop ./macro/cosmic_macro/cosmic_gamma/BeamOn.mac a 0 999 1` | `output/cosmic_neutron/cosmic_neutron_0/*_output_<run>.parquet`; target 1000 × `beamOn 1000` from `cosmic_neutron_0.mcpl` | legacy |
+| `macro/cosmic_macro/cosmic_neutron/run_1.mac` | Neutron-cosmic MCPL partition 1 replay | same as `run_0.mac` with `i=1` | `output/cosmic_neutron/cosmic_neutron_1/*_output_<run>.parquet`; target 1M events from `cosmic_neutron_1.mcpl` | legacy |
+| `macro/cosmic_macro/cosmic_neutron/run_2.mac` | Neutron-cosmic MCPL partition 2 replay | same as `run_0.mac` with `i=2` | `output/cosmic_neutron/cosmic_neutron_2/*_output_<run>.parquet`; target 1M events from `cosmic_neutron_2.mcpl` | legacy |
+| `macro/cosmic_macro/cosmic_neutron/run_3.mac` | Neutron-cosmic MCPL partition 3 replay | same as `run_0.mac` with `i=3` | `output/cosmic_neutron/cosmic_neutron_3/*_output_<run>.parquet`; target 1M events from `cosmic_neutron_3.mcpl` | legacy |
+| `macro/cosmic_macro/cosmic_neutron/run_4.mac` | Neutron-cosmic MCPL partition 4 replay | same as `run_0.mac` with `i=4` | `output/cosmic_neutron/cosmic_neutron_4/*_output_<run>.parquet`; target 1M events from `cosmic_neutron_4.mcpl` | legacy |
+| `macro/cosmic_macro/cosmic_neutron/run_5.mac` | Neutron-cosmic MCPL partition 5 replay | same as `run_0.mac` with `i=5` | `output/cosmic_neutron/cosmic_neutron_5/*_output_<run>.parquet`; target 1M events from `cosmic_neutron_5.mcpl` | legacy |
+
+The neutron partition macros call the `cosmic_gamma/BeamOn.mac` helper;
+that helper is still only `/run/beamOn 1000`, so the macros are legacy
+replay definitions rather than broken/retired macros.
+
 These per-species macros use Geant4 GPS-style cosmic-like primaries
 *without* a true atmospheric spectrum source. They are the licentiate
 baseline; **plan 21 retires them** and replaces them with a single
