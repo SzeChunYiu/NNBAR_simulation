@@ -344,6 +344,19 @@ it becomes impossible to tell baseline reproduction from an optimisation
 proposal. Plan 37 owns the canonical selection contract; downstream
 plans may aggregate its rows but may not rename or silently retune them.
 
+Initial production-promotion checklist:
+
+| `promotion_check_id` | Evidence required | Blocks promotion when missing |
+|---|---|---|
+| `p37_baseline_identity_frozen` | cut identity rows preserve thresholds, canonical columns, and `CUT_ORDER` | plan 47 cannot reproduce Ch 10 semantics |
+| `p37_cutflow_counts_complete` | signal, cosmic, and diagnostic beam rows include independent and cumulative counts | acceptance and zero-survivor claims are not reviewable |
+| `p37_truth_blind_audit_pass` | before/after hashes and changed-event list prove truth-blind stability | final quotes remain vulnerable to upstream leakage |
+| `p37_alternatives_shadowed` | retuned and MVA outputs keep separate config ids and columns | optimisation candidates could overwrite the baseline |
+
+The baseline selection can feed plan 44/46 only when these checks are
+complete. Any failed truth-blind audit or missing interval handoff keeps
+the result out of final reproduction and defence tables.
+
 ## 5. Acceptance criteria
 
 - §1 cuts implemented exactly.
