@@ -5,12 +5,13 @@ version: 0.1
 status: draft
 owner: Sim Production
 depends_on: [00_README, 03_dataset_registry, 07_simulation_atomic_walkthrough, 12_physics_list_audit]
-inputs: []
+inputs:
+  - {path: NNBAR_Detector/CMakeLists.txt, schema: source-observed build knobs}
 outputs:
   - {path: NNBAR_Detector/tests/, schema: pytest test suite}
   - {path: docs/rebuild_plans/19_simulation_validation_suite.md, schema: this file}
 acceptance:
-  - {test: every WITH_* CMake option has a paired smoke build + run, method: CI matrix, pass_when: every option green}
+  - {test: every source-observed CMake build knob has a paired smoke build + run, method: CI matrix, pass_when: every option green}
   - {test: per-SD sanity plots produced for nominal signal sample, method: §2 plots, pass_when: plots in plan 47 ledger}
   - {test: regression budget defined for events/sec, MB/event, hits/event, method: §3 thresholds, pass_when: no regressions on main}
 risks:
@@ -95,15 +96,48 @@ Plan 53 owns the matrix; this plan supplies the dimensions:
   `reco-pid`, `realism-audit`, `registry`, `statistics`,
   `truth-ladder-core`, `truth-ladder-cli`, `fast-mc`, and
   `reco-closure`.
-- `WITH_SCINTILLATION` ∈ {OFF, ON}
-- `MCPL_BUILD` ∈ {OFF, ON}
-- `WITH_CELERITAS` ∈ {OFF} on CPU-only CI; {ON} on GPU CI when
-  available
-- `WITH_OPTICKS` similarly conditional
-- `WITH_GARFIELD_GPU` similarly conditional
+- Source-observed CMake build knobs from `NNBAR_Detector/CMakeLists.txt`:
+  `WITH_GEANT4_UIVIS` ∈ {OFF, ON} and `MCPL_BUILD` ∈ {0, 1}.
+- Negative A+ check: the current L3 CMake tree has no
+  `WITH_SCINTILLATION`, `WITH_CELERITAS`, `WITH_OPTICKS`, or
+  `WITH_GARFIELD_GPU` knobs. Do not add these to CI until a source
+  grep shows an actual option or cache variable.
+- `WITH_GEANT4_UIVIS=OFF, MCPL_BUILD=0` is the default headless smoke
+  build and should run on every PR.
+- `WITH_GEANT4_UIVIS=ON, MCPL_BUILD=0` is an optional visualization
+  build smoke; it may skip the run step on headless CI if Geant4 UI/Vis
+  drivers are unavailable, but the configure step must fail loudly.
+- `WITH_GEANT4_UIVIS=OFF, MCPL_BUILD=1` is the MCPL-input smoke build;
+  it must use a tiny checked sample or fixture path from plan 03 before
+  it becomes required.
 
 Each combination runs at least the smoke tests; a small
 `run_signal_quick` sample with ≤ 100 events.
+
+### 4.1 Build-knob verifier transcript
+
+The source-observed build-knob inventory is intentionally small because
+the A+ examiner rejected invented CLI/build surface. Before changing the
+matrix, re-run these checks from the L3 worktree:
+
+```bash
+grep -R "option\\|WITH_\\|MCPL_BUILD" -n CMakeLists.txt
+find tests -maxdepth 1 -type f -name 'test_*.py' | sort
+wc -l tests/test_reconstruction_smoke.py
+ls pytest.ini CMakeLists.txt tests
+```
+
+Current 2026-05-10 verifier evidence:
+
+- `find tests -maxdepth 1 -type f -name 'test_*.py'` returns 17 files,
+  matching §1.
+- `wc -l tests/test_reconstruction_smoke.py` returns 533 lines, so the
+  file is grandfathered and future edits must split it first.
+- `grep -R "option\\|WITH_\\|MCPL_BUILD" -n CMakeLists.txt` returns
+  only `WITH_GEANT4_UIVIS` and `MCPL_BUILD`; no separate `cmake/`
+  directory is present in the L3 worktree.
+- `ls pytest.ini CMakeLists.txt tests` resolves the CI config, build
+  config, and test directory paths.
 
 ## 5. Acceptance criteria
 
