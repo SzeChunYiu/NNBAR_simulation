@@ -13,7 +13,7 @@ acceptance:
 risks:
   - {risk: TPC W-value mismatch (plan 17) shifts dE/dx scale, mitigation: §3 paired audit with W=23.6 vs reference}
 estimated_effort: M
-last_updated: 2026-05-09
+last_updated: 2026-05-10
 ---
 
 # Subsystem — dE/dx
@@ -57,6 +57,15 @@ electron count downstream.
 Calibration anchor: MIP π+ from `cal_singlepion_mip_v1` (plan 23).
 Mean dE/dx at MIP = ~1.6 keV/cm in Ar/CO₂ 90/10 (literature).
 Closure: simulator output should match within 5%.
+
+### 2.1 Alternative comparison rows
+
+| Alternative | Source paper / codebase | NNBAR-specific adaptation | Expected ladder leaf delta |
+|---|---|---|---|
+| Arithmetic mean baseline | Existing `reconstruct_charged_objects` (`reconstruction.py:430-700`) | Preserve current `dedx` computation as a reproducibility reference after removing any C.1 truth-name candidate gate. | No intended C.2 gain; establishes the current tail-sensitive baseline for plan 38. |
+| Truncated mean | Standard TPC PID / ALICE-style charged-particle dE/dx | Sort per-step `eDep / step_length`, drop bottom 10% and top 30%, and record the chosen cut fractions in the C.2 schema. | Expected to improve C.2 stability against Landau tails and reduce C.5 PID confusion. |
+| Landau/MPV fit | TPC cluster-charge Landau-Gaussian fit literature | Use only when a track has enough Class A TPC samples; report fit status and fall back to truncated mean for sparse tracks. | Better high-tail control for long tracks, but limited gain for short NNBAR TPC segments. |
+| Bethe-Bloch residual template | Plan 23 calibration samples plus Bethe-Bloch closure in §3 | Convert dE/dx to species-agnostic residuals versus βγ bins only in calibration/validation; production C.2 remains truth-free. | Improves calibration diagnostics for C.2 but does not by itself replace plan 29 PID scoring. |
 
 ## 3. Closure-test specification
 

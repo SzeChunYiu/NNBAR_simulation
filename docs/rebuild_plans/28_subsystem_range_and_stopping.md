@@ -13,7 +13,7 @@ acceptance:
 risks:
   - {risk: scintillator hit pitch limits range resolution, mitigation: §3 documented hardware floor}
 estimated_effort: S
-last_updated: 2026-05-09
+last_updated: 2026-05-10
 ---
 
 # Subsystem — range and stopping
@@ -56,6 +56,15 @@ cumulative eDep as a function of distance along the track.
 
 Currently not used in PID. Plan 28 v0.2 evaluates whether
 Bragg-peak position adds discrimination beyond {range, dE/dx}.
+
+### 2.1 Alternative comparison rows
+
+| Alternative | Source paper / codebase | NNBAR-specific adaptation | Expected ladder leaf delta |
+|---|---|---|---|
+| Farthest matched scintillator hit | Existing `reconstruct_charged_objects` (`reconstruction.py:430-700`) | Preserve the angular/distance match as the reproduction baseline; disable the exact `Track_ID` fallback for production C.3. | Baseline C.3 range with known granularity floor from scintillator pitch. |
+| Projected path-length integration | Range-stack / sampling-calorimeter reconstruction practice | Project V.2 track direction through ordered scintillator modules and accumulate Class A hit distances until the last in-time module. | Expected to reduce range bias when hits skip modules or the farthest-hit point is noisy. |
+| Bragg-profile endpoint fit | Stopping-proton Bragg-curve reconstruction | Fit cumulative eDep versus projected distance and report `bragg_peak_position_cm` plus fit quality. | Improves stopping-proton discrimination for C.5 when enough scintillator hits exist. |
+| PSTAR-constrained range check | NIST PSTAR proton ranges used only in validation | Compare reconstructed range to kinetic-energy bins inside closure; do not use truth KE or species in production. | Adds calibration/systematics leverage for C.3 without loosening Class A production rules. |
 
 ## 3. Closure-test specification
 
