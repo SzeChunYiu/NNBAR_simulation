@@ -38,6 +38,71 @@ The monitoring model is intentionally conservative. A calibration drift
 can downgrade a sample or ledger row, but it cannot silently retune a
 physics selection.
 
+## 0.1 Wave 6 derivation — drift detection as control problem
+
+### Physics derivation
+
+**What is physically measured.** Drift monitoring measures time-series
+changes in Class C calibration constants relative to a baseline tag:
+field uniformity, W-value/electron-count scale, TPC/scintillator MIP
+closure, scintillator yield, lead-glass linearity, and per-SD DQM
+distributions. The ground-truth target is not a new physics observable;
+it is stability of the detector-response map used by already-defined
+physics observables.
+
+**Estimator rationale.** A drift monitor is a statistical process-control
+estimator over calibration artifacts. Each cadence compares a new
+summary against the baseline and maps the result to green/warning/fail.
+TPC drift velocity and gain are known to depend on gas and operating
+conditions `\cite{Andronic:2004sv}`, while the rebuild's W-value,
+scintillator-yield, and lead-glass constants are Class C contracts from
+plans 17 and 18. The correct response to drift is therefore to flag,
+widen a nuisance, regenerate a sample, or block a ledger claim; it is
+not to silently retune cuts.
+
+**Statistical character.** Daily smoke checks have high variance but
+good latency; monthly/full ledger refreshes have lower variance but
+higher cost. Warning bands are designed to catch plausible drift before
+it becomes a thesis-row failure, while failure bands are hard gates.
+Because calibration artifacts are correlated across rows, a single
+drift failure can downgrade many plan-47 rows and must be tracked as an
+artifact with provenance.
+
+### Logic gaps
+
+- **Green/warning/failure bands.** Grounding: §3 provides v0.1
+  operational bands. `OPEN:` derive each band from plan-04 uncertainty
+  and the downstream row sensitivity before final defence use; target
+  resolution date 2026-06-22.
+- **Cadence schedule.** Grounding: §2 covers pre-run, PR, daily,
+  weekly, monthly, and post-run checks. `OPEN:` bind the cadences to
+  actual compute budget and data-taking operations once production
+  run plans exist; target resolution date 2026-06-29.
+- **Artifact freshness.** Grounding: §5 requires monitor outputs to
+  feed CI/DQM and plan 47. `OPEN:` add explicit stale-artifact expiry
+  rules and hashes to the registry schema; target resolution date
+  2026-06-22.
+- **Yellow/red ledger semantics.** Grounding: §4 trigger map names
+  actions but plan 47 still owns status. `OPEN:` formalise how monitor
+  warning/fail states map onto row statuses and reviewer-defence
+  wording; target resolution date 2026-06-22.
+- **Online-vs-offline boundary.** Grounding: §5 keeps online paging out
+  of scope. `OPEN:` when online DQM exists, require offline validated
+  artifacts before any plan-47 status change; target resolution date
+  2026-06-29.
+
+### Closure test for the derivation
+
+1. Generate a baseline monitor artifact and one synthetic drifted
+   artifact for each Class C constant group in §1.
+2. Verify the registry assigns green, warning, and failure statuses
+   according to §3, and that missing artifacts produce `unknown` rather
+   than fabricated green.
+3. Propagate a warning and a failure through plan 53 CI semantics,
+   plan 66 DQM status, and a selected plan-47 row.
+4. Confirm that no trigger edits physics thresholds directly; any
+   threshold or algorithm change must produce a DEC-linked action.
+
 ## 1. Scope and constants
 
 The first drift-monitoring registry covers constants already named in
