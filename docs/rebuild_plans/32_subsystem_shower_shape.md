@@ -181,7 +181,26 @@ to be frozen before it can replace the hard-cone baseline.
    removed from the reconstruction input. Features, score, and
    production pass/fail must be bitwise identical.
 
-### 3.1 Decision-log stubs for the P.2 discriminator
+### 3.1 Machine-readable discriminator closure fixture
+
+Each candidate discriminator writes one closure-result record before it
+can be compared in plan 38 or frozen by DEC:
+
+| Field | Required content | Review rule |
+|---|---|---|
+| `discriminant_method_id` | hard-cone, rectangular, BDT, NN, or diagnostic method id | must match §2 candidate row |
+| `dataset_id` | `cal_singlegamma_v1`, `cal_singleelectron_v1`, or `sig_foil_v3` component | every positive and negative component gets a row |
+| `feature_contract_id` | frozen §1 feature set | no unlisted feature may enter the score |
+| `threshold_id` | frozen operating-point key | required for `passes_neutral_discriminant` |
+| `roc_auc`, `roc_auc_interval_68` | AUC and bootstrap interval | null only for fixed-threshold legacy rows with documented reason |
+| `neutral_efficiency`, `charged_fake_rate` | operating-point rates with Wilson intervals | compared to §3 pass criteria |
+| `class_b_drop_hash` | rerun artifact after dropping Class B columns | must match the production-feature/pass-fail hash |
+| `closure_status` | `pass`, `fail`, or `diagnostic_only` | only `pass` rows can support production selection |
+
+Rows labelled `diagnostic_only` may inform plan 38, but they cannot
+promote a discriminator or feed photon-object production rows.
+
+### 3.2 Decision-log stubs for the P.2 discriminator
 
 Changing the charged/neutral discriminator changes photon-object
 eligibility downstream. Freeze these choices through plan 05 before
