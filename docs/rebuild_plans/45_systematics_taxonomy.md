@@ -75,6 +75,29 @@ with missing `nominal_ref`, empty `affected_observables`, or an
 unreviewed `unbounded_limitations` list is incomplete rather than a
 zero-systematic result.
 
+### 1.2 Machine-readable nuisance throw fixture
+
+Each nuisance application emits one nominal-linked throw record. This is
+the audit surface used to build the §2 covariance and to prove that a
+quoted result really included the claimed nuisance set:
+
+| Field | Required content | Review rule |
+|---|---|---|
+| `throw_id` | stable key, e.g. `N2.minus.sig_foil_v3` | unique within the dataset/result scope |
+| `nuisance_id` | one of `N1`-`N10` | must resolve to a §1 registry row |
+| `direction` | `minus`, `plus`, `nominal`, or named scenario endpoint | both non-nominal directions required unless the DEC defines a discrete envelope |
+| `variation_payload` | numeric shift, model tag, or scenario id | matches `variation_kind` and the §1 ±1σ definition |
+| `dataset_or_channel` | sample id, background node, or signal-efficiency row | joins to plan 44/47 result rows |
+| `affected_observables` | list actually recomputed by the throw | non-empty subset of the registry row |
+| `paired_nominal_result_id` | baseline result key | every throw is compared to a frozen nominal row |
+| `paired_opposite_throw_id` | plus/minus mate or null for envelopes | required for continuous nuisances |
+| `correlation_flags` | copied registry flags | used to select §2 matrix entries |
+| `throw_status` | `draft`, `measured`, `frozen`, or `incomplete` | incomplete throws cannot enter final covariance |
+
+A covariance row may consume only `measured` or `frozen` throw pairs.
+Draft or incomplete throws are still listed in plan 47, but their
+result rows carry the relevant missing-systematic flag.
+
 ## 2. Correlation matrix
 
 A nuisance is fully correlated with itself. The up/down throws of a
