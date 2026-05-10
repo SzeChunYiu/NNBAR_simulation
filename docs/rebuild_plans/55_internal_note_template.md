@@ -153,6 +153,36 @@ l1_note_annex:
         archive_inventory: sha256:<hash-or-null>
         archive_drill: sha256:<hash-or-null>
       caveat_text: <required unless applicability is not_applicable>
+    - annex_block: strange_background_caveat
+      applicability: applies | not_applicable | blocked
+      source_plans: [14, 44, 59]
+      defence_overlay_id: strange_v0_contamination
+      reviewer_question_ids: [RQ-L1-STRANGE-BARYON]
+      required_contents:
+        - K_S/Lambda/Sigma branching snapshot
+        - V0 rejection closure status
+        - residual survivor interval and signal-loss interval
+      evidence_refs:
+        - plan59_lambda_enriched_v0_closure
+        - DEC-59-V0-REJECTION
+      review_evidence_links:
+        package_rollup: <plan50-rollup-id>
+        ci_report: <plan53-l1-report-id>
+        rerun_manifest: plan52:Strange V0 contamination
+        glossary_audit: <plan56-audit-id>
+        staleness_summary: <plan50-staleness-id>
+        archive_inventory: <plan54-inventory-id-or-null>
+        archive_drill: <plan54-drill-id-or-null>
+      artifact_hashes:
+        note_annex: sha256:<hash>
+        defence_package: sha256:<hash-or-null>
+        staleness_summary: sha256:<hash-or-null>
+        ci_report: sha256:<hash-or-null>
+        rerun_manifest: sha256:<hash-or-null>
+        glossary_audit: sha256:<hash-or-null>
+        archive_inventory: sha256:<hash-or-null>
+        archive_drill: sha256:<hash-or-null>
+      caveat_text: <required unless applicability is not_applicable>
     - annex_block: unbounded_caveat_status
       applicability: applies | not_applicable | blocked
       source_plans: [1, 45, 50]
