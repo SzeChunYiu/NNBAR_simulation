@@ -18,7 +18,7 @@ risks:
   - {risk: optical-on / optical-off inconsistency in lead-glass response, mitigation: §4 paired sample with WITH_SCINTILLATION on / off}
   - {risk: scintillator yield drift between SD constant (11136) and optical table (10000), mitigation: §3 explicit reconciliation}
 estimated_effort: M
-last_updated: 2026-05-09
+last_updated: 2026-05-10
 ---
 
 # TPC ↔ Scintillator ↔ LeadGlass intercalibration
@@ -50,16 +50,28 @@ consistent with `eDep`:
 
 ## 2. TPC ↔ Scintillator MIP closure
 
-Cross-calibration via minimum-ionising pions:
+Numbered closure procedure:
 
-1. Run `cal_singlepion_mip_v1` (plan 23) — π+ at fixed momentum,
-   crossing TPC and scintillator.
-2. Compute mean dE/dx in the TPC.
-3. Compute mean scintillator response per cm of plastic.
-4. Verify both agree with the Bethe–Bloch prediction within 5%.
-
-Closure metric: relative residual of (measured / Bethe–Bloch). > 5%
-escalates to plan 27 (dE/dx).
+1. Run `cal_singlepion_mip_v1` (plan 23) using
+   `macro/calibration/scintillator/calib_pion_mip.mac`, with the pion
+   momentum fixed in the MIP region and the origin at the foil center.
+2. Build a per-track table with TPC path length, TPC `eDep`, TPC
+   electron count recomputed with the plan 17 production W-value
+   (23.6 eV), scintillator path length, and scintillator `eDep`.
+3. Compute two observables for each track: `tpc_dedx_mev_per_cm` and
+   `scint_dedx_mev_per_cm`. Store means, bootstrap errors, and pulls
+   using plan 04 §2.
+4. Compare both detector estimates against the same Bethe–Bloch MIP
+   reference for the configured pion momentum. The reference value and
+   material density used in the calculation are written to the output
+   provenance block.
+5. Produce `output/calibration/mip_closure/summary.json`,
+   `output/calibration/mip_closure/rows.csv`, and a pull plot with TPC
+   and scintillator points on the same axis.
+6. Pass if both detector residuals are < 5% and their difference is
+   consistent within the bootstrap uncertainty. A residual > 5%
+   escalates to plan 27 (dE/dx) or plan 28 (range/stopping), depending
+   on which side fails.
 
 ## 3. Scintillator yield reconciliation
 
@@ -68,34 +80,67 @@ in the SD per `reconstruction.md` line 105, but the material optical
 properties table uses **10000 photons/MeV** when
 `WITH_SCINTILLATION=ON`.
 
-Plan 18 must:
+**DEC-2026-05-10-6 stub — scintillator yield mode policy.**
+Context: fast-mode `ScintillatorSD` stores a photon-equivalent count
+using 11136 photons/MeV, while optical-mode material properties use
+10000 photons/MeV. Decision: keep **11136 photons/MeV** as the
+production value for fast-mode photon-equivalent rows because existing
+reconstruction code consumes that column. Keep **10000 photons/MeV** as
+the optical material-table value in optical-on samples, but mode-tag
+those samples and apply a `11136/10000 = 1.1136` comparison scale when
+checking against fast-mode photon-equivalent quantities. Follow-up:
+promote this stub to the decision log after the first paired optical
+on/off closure run.
 
-1. Identify the source of each value (BC-408 spec sheet vs. legacy
-   constant).
-2. Pick one as the production value with a DEC entry.
-3. Document which value is consumed in fast-mode (no optical) and
-   optical-mode runs.
-4. Propagate the difference into plan 45 as a "scintillator yield"
-   systematic with the absolute delta as the range.
+Numbered closure procedure:
+
+1. Source inventory: cite `ScintillatorSD` for 11136 photons/MeV and
+   `Scintillator_geometry.cc` optical properties for 10000 photons/MeV.
+2. Run the same scintillator calibration macro twice:
+   `WITH_SCINTILLATION=OFF` for fast-mode photon-equivalent output and
+   `WITH_SCINTILLATION=ON` for optical-photon transport.
+3. For each run, compute `scint_yield_observed = photons / eDep_MeV`
+   per hit and aggregate by scintillator layer and stave.
+4. Convert optical-mode photon counts onto the fast-mode convention via
+   the scale factor 1.1136 before comparing yields.
+5. Record `yield_fast = 11136`, `yield_optical_table = 10000`, the
+   scale factor, and the observed residuals in
+   `output/calibration/scint_yield_reconciliation/summary.json`.
+6. Pass if the scaled optical-mode yield and fast-mode yield agree
+   within 5% after bootstrap uncertainty. Otherwise, plan 45 receives a
+   scintillator-yield nuisance with a ±11.4% prior until a vendor/spec
+   citation or data calibration narrows it.
 
 ## 4. Lead-glass calibration vs electron beam
 
-Run `cal_singleelectron_v1` (plan 23) at {50, 100, 200, 500, 1000}
-MeV.
+Numbered closure procedure:
 
-Closure: per-energy mean lead-glass response should follow a linear
-calibration up to ~1 GeV with a saturation onset at higher energy.
-Residual to a linear fit < 5% is the pass.
-
-Optical-on / optical-off paired closure: the same sample run with
-`WITH_SCINTILLATION=ON` and `OFF` should yield the same calorimetric
-energy after applying the appropriate Cerenkov / eDep conversion.
-Disagreement quantifies the optical-photon-tracking systematic.
+1. Run `cal_singleelectron_v1` (plan 23) with
+   `macro/calibration/leadglass/calib_electron_validation.mac` at
+   {50, 100, 200, 500, 1000} MeV.
+2. For each energy point, aggregate lead-glass `eDep`, PMT photon
+   count when optical photons are enabled, leakage energy, and event
+   containment flags.
+3. Fit `E_reco = a + b E_true` over the five points using bootstrap
+   uncertainties from plan 04 §2. Store the fit covariance and
+   per-point residuals.
+4. Pass the fast-mode linearity check if every point has
+   `abs(E_reco - E_fit) / E_true < 5%`.
+5. Repeat the run with `WITH_SCINTILLATION=ON` and `OFF`. Apply the
+   appropriate Cerenkov / eDep conversion before comparing the two
+   modes.
+6. Pass the optical on/off closure if the mode-pair residual at each
+   energy point is < 5%. Otherwise, record the maximum residual as the
+   lead-glass optical-tracking systematic in plan 45.
+7. Produce `output/calibration/leadglass_linearity/summary.json`,
+   `output/calibration/leadglass_linearity/rows.csv`, and a residual
+   plot used by plan 47 rows that quote lead-glass calibration numbers.
 
 ## 5. Acceptance criteria
 
 - §2 MIP closure passes.
-- §3 yield reconciliation has a DEC entry and a propagated systematic.
+- §3 yield reconciliation has DEC-2026-05-10-6 promoted or explicitly
+  kept as a stub, and a propagated systematic.
 - §4 linearity closure passes for each energy point.
 - §4 optical on/off closure passes within stated tolerance.
 
