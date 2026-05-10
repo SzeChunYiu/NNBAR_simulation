@@ -17,7 +17,7 @@ risks:
   - {risk: optional GPU paths fail silently when no GPU is available on CI, mitigation: §4 GPU-conditional CI matrix}
   - {risk: validation suite drift, mitigation: §5 ownership rotation in plan 06}
 estimated_effort: M
-last_updated: 2026-05-09
+last_updated: 2026-05-10
 ---
 
 # Simulation validation suite
@@ -29,21 +29,30 @@ Plan 53 (CI) runs the suite on every PR.
 
 ## 1. Existing tests
 
-`NNBAR_Detector/tests/`:
+Current `NNBAR_Detector/tests/` inventory, read from the L3 worktree on
+2026-05-10:
 
-- `test_cmake_configuration.py` — CMake option permutations.
-- `test_cpp_static_safety.py` — static checks on C++ source.
-- `test_geometry_audit.py` — wraps the `geometry-audit` CLI.
-- `test_reconstruction_smoke.py` — end-to-end reconstruction smoke.
-- `test_reconstruction_validation.py` — validation report shape.
-- `test_pid_calibration.py` — PID-threshold scan.
-- `test_pi0_mass_study.py` — π⁰ mass-ladder.
-- `test_charged_stress_study.py` — charged-stress evaluation.
-- `test_pi0_fake_study.py` — π⁰ fake background.
-- `test_study_macros.py` — macro-syntax validity.
+| Test file | Primary validation surface | Sanity plot / artifact | Regression budget | CI matrix dimension |
+|---|---|---|---|---|
+| `test_closure.py` | vertex closure and K-S bias detection | `output/validation/closure/vertex_pull.png` plus JSON summary | unbiased fixture green; biased fixture red; deterministic fixed inputs | `reco-closure` on Python versions |
+| `test_fast_mc.py` | fast-MC smearing and closure fixtures | `output/validation/fast_mc/closure_pull.png` plus seed manifest | fixed-seed deterministic; deliberate bias detected | `fast-mc` on Python versions |
+| `test_ladder_cli.py` | plan 38 CLI report writers | ladder run/factorise JSON reports | report schema stable; `python -m` entrypoint exits 0 | `truth-ladder-cli` |
+| `test_ladder_factorise.py` | additive truth-gap factorisation | factorisation residual table | residual closes truth gap; missing rungs rejected | `truth-ladder-core` |
+| `test_ladder_leaves.py` | plan 24 leaf registry coverage | leaf-registry JSON dump | every leaf present in fixed order; unknown leaves fail | `truth-ladder-core` |
+| `test_ladder_run.py` | truth-substitution ladder execution | ladder metric report JSON | fixed sample/seed deterministic; cumulative rung order stable | `truth-ladder-core` |
+| `test_ladder_substitute.py` | synthetic truth substitution per leaf | substituted event table | explicit leaf outputs preferred; unavailable leaves rejected | `truth-ladder-core` |
+| `test_pid_calibration.py` | charged PID threshold scan | `output/validation/pid/pid_scan.csv` and ROC/score plot | truth-separating config ranks first; single-class samples unusable | `reco-pid` |
+| `test_realism_audit.py` | plan 01/09 truth-read audit | audit JSON with violation list | undecorated Class B reads fail; validation-only reads pass | `realism-audit` |
+| `test_reconstruction_smoke.py` | end-to-end reconstruction smoke and thesis cuts | `output/sanity/{edep,hits,vertex_z,timing}.png` plus reco tables | expected tables written; thesis cutflow/object rules stable; file split required before edits because current file is >500 lines | `reco-smoke` across small samples |
+| `test_reconstruction_validation.py` | validation report and readiness gates | validation JSON plus class-support table | readiness thresholds enforced; all-run aggregation stable | `reco-validation` |
+| `test_registry_integrity.py` | plan 03 dataset manifests and state machine | registry round-trip JSON / manifest hash report | illegal states/transitions rejected; hash repair deterministic | `registry` |
+| `test_statistics.py` | plan 04 bootstrap, jackknife, Wilson, F-C | statistical interval JSON / pull table | seed binding deterministic; reference intervals reproduced | `statistics` |
 
-Plan 53 runs these via pytest on every PR. Codex-supervisor extends
-as new artifacts land.
+Plan 53 runs these via pytest on every PR. The older simulation-source
+tests (`test_cmake_configuration.py`, `test_cpp_static_safety.py`,
+`test_geometry_audit.py`, and macro syntax tests) are no longer present
+in the current L3 test tree; if they return, this table must be updated
+in the same commit.
 
 ## 2. Sanity plots per SD
 
@@ -74,6 +83,10 @@ Codex-supervisor records baselines on the first frozen sample (plan
 
 Plan 53 owns the matrix; this plan supplies the dimensions:
 
+- Python reconstruction dimensions: `reco-smoke`, `reco-validation`,
+  `reco-pid`, `realism-audit`, `registry`, `statistics`,
+  `truth-ladder-core`, `truth-ladder-cli`, `fast-mc`, and
+  `reco-closure`.
 - `WITH_SCINTILLATION` ∈ {OFF, ON}
 - `MCPL_BUILD` ∈ {OFF, ON}
 - `WITH_CELERITAS` ∈ {OFF} on CPU-only CI; {ON} on GPU CI when
