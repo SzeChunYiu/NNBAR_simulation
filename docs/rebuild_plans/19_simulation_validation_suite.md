@@ -31,37 +31,49 @@ Plan 53 (CI) runs the suite on every PR.
 ## 1. Existing tests
 
 Current `NNBAR_Detector/tests/` inventory, read from the L3 worktree on
-2026-05-10:
+2026-05-10 after the Stage E expansion:
 
 | Test file | Primary validation surface | Sanity plot / artifact | Regression budget | CI matrix dimension |
 |---|---|---|---|---|
-| `test_closure.py` | vertex closure and K-S bias detection | `output/validation/closure/vertex_pull.png` plus JSON summary | unbiased fixture green; biased fixture red; deterministic fixed inputs | `reco-closure` on Python versions |
-| `test_cli_response_matrix.py` | plan 42 response-matrix CLI and artifact writers | response parquet, covariance NPZ, and metadata JSON per observable | registered flags present; artifacts schema-stable | `response-matrix-cli` |
-| `test_cli_summarize_flags.py` | plan 42 summarize `--all-runs` and output flags | offset tables manifest plus summary table | event-offset concatenation stable; help lists remediation flags | `summarize-cli` |
-| `test_fast_mc.py` | fast-MC smearing and closure fixtures | `output/validation/fast_mc/closure_pull.png` plus seed manifest | fixed-seed deterministic; deliberate bias detected | `fast-mc` on Python versions |
-| `test_integration_real_sample.py` | real Geant4-output reconstruction schema integration | plan-09 section-14 table set from checked-in real sample fixture | real sample reconstructs to expected tables and columns | `real-sample-integration` |
-| `test_ladder_cli.py` | plan 38 CLI report writers | ladder run/factorise JSON reports | report schema stable; `python -m` entrypoint exits 0 | `truth-ladder-cli` |
-| `test_ladder_factorise.py` | additive truth-gap factorisation | factorisation residual table | residual closes truth gap; missing rungs rejected | `truth-ladder-core` |
-| `test_ladder_leaves.py` | plan 24 leaf registry coverage | leaf-registry JSON dump | every leaf present in fixed order; unknown leaves fail | `truth-ladder-core` |
-| `test_ladder_run.py` | truth-substitution ladder execution | ladder metric report JSON | fixed sample/seed deterministic; cumulative rung order stable | `truth-ladder-core` |
-| `test_ladder_substitute.py` | synthetic truth substitution per leaf | substituted event table | explicit leaf outputs preferred; unavailable leaves rejected | `truth-ladder-core` |
-| `test_pid_calibration.py` | charged PID threshold scan | `output/validation/pid/pid_scan.csv` and ROC/score plot | truth-separating config ranks first; single-class samples unusable | `reco-pid` |
-| `test_realism_audit.py` | plan 01/09 truth-read audit | audit JSON with violation list | undecorated Class B reads fail; validation-only reads pass | `realism-audit` |
-| `test_reconstruction_smoke.py` | end-to-end reconstruction smoke and thesis cuts | `output/sanity/{edep,hits,vertex_z,timing}.png` plus reco tables | expected tables written; thesis cutflow/object rules stable; file split required before edits because current file is >500 lines | `reco-smoke` across small samples |
-| `test_reconstruction_validation.py` | validation report and readiness gates | validation JSON plus class-support table | readiness thresholds enforced; all-run aggregation stable | `reco-validation` |
-| `test_registry_integrity.py` | plan 03 dataset manifests and state machine | registry round-trip JSON / manifest hash report | illegal states/transitions rejected; hash repair deterministic | `registry` |
-| `test_statistics.py` | plan 04 bootstrap, jackknife, Wilson, F-C | statistical interval JSON / pull table | seed binding deterministic; reference intervals reproduced | `statistics` |
-| `test_verify_citations.py` | A+ citation verifier for Python/C++ function and class references | verifier pass/fail fixtures and temporary source snippets | in-range citations pass; out-of-range or wrong identifier citations fail | `citation-verifier` |
+| `test_charged_reco.py` | plan-25 charged-track candidates and plan-26 direction/PID helpers | charged track-candidate tables and direction rows | truth columns forbidden; real sample schema stable | `reco-charged` |
+| `test_ci_workflow.py` | plan-53 GitHub Actions contract | workflow YAML path/trigger audit | required fast checks listed for touched paths | `ci-contract` |
+| `test_cli_response_matrix.py` | plan 42 response-matrix CLI and artifact writers | response parquet, covariance NPZ, metadata JSON | flags and output schemas stable | `response-matrix-cli` |
+| `test_cli_summarize_flags.py` | plan 42 summarize `--all-runs` and output flags | offset-table manifest and summary table | event-offset concatenation stable | `summarize-cli` |
+| `test_closure.py` | plan 40 per-leaf closure runner | closure JSON and K-S bias report | unbiased fixture green; biased fixture red | `reco-closure` |
+| `test_dqm.py` | plan-66 offline DQM status lattice | run-quality table and manifest | fail/warn/pass semantics stable | `dqm-offline` |
+| `test_electron_reco.py` | electron-pair candidate reconstruction | electron-pair candidate rows | configured entry cut enforced; missing TPC columns produce empty schema | `reco-electron` |
+| `test_event_variables.py` | plan-36 event-shape variables | event-variable rows from charged/photon vectors | sparse inputs emit finite invalid sentinels | `event-variables` |
+| `test_fast_mc.py` | plan 39 fast-MC smearing and closure fixtures | fast-MC closure report | fixed-seed deterministic; bias detected | `fast-mc` |
+| `test_file_size_cap.py` | `CODING_STANDARDS.md` §1 file-size guard | scoped file-size report | modified source/test files stay <500 lines | `style-size-cap` |
+| `test_golden_contract_matrix.py` | plan-53 synthetic/real output schema contract | golden schema matrix | reconstruction outputs match contract | `golden-contract` |
+| `test_golden_regression.py` | plan-53 golden-output regression fixtures | golden reconstruction snapshot | snapshot stable unless fixture intentionally updated | `golden-regression` |
+| `test_integration_real_sample.py` | real Geant4-output reconstruction schema integration | plan-09 §14 table set from checked real fixture | real sample reconstructs to expected columns | `real-sample-integration` |
+| `test_kfit.py` | plan-35 π⁰ kinematic-fit rows | fit-status and covariance rows | missing covariance preserves raw row | `pi0-kfit` |
+| `test_ladder_cli.py` | plan 38 truth-ladder CLI report writers | ladder run/factorise JSON reports | `python -m` entrypoints exit 0 | `truth-ladder-cli` |
+| `test_ladder_factorise.py` | additive truth-gap factorisation | factorisation residual table | residual closes truth gap | `truth-ladder-core` |
+| `test_ladder_leaves.py` | plan 24 leaf registry coverage | leaf-registry JSON dump | every leaf present in fixed order | `truth-ladder-core` |
+| `test_ladder_run.py` | truth-substitution ladder execution | ladder metric report JSON | fixed sample/seed deterministic | `truth-ladder-core` |
+| `test_ladder_substitute.py` | per-leaf truth substitution | substituted event table | explicit leaf outputs preferred | `truth-ladder-core` |
+| `test_ledger_reproduction.py` | plan-47 ledger reproduction command smoke | golden subset command manifest | command strings remain runnable/schema-stable | `ledger-reproduction` |
+| `test_photon_reco.py` | plan-31 photon/calorimeter reconstruction and plan-32 shower features | calorimeter cluster, photon, and shower-shape rows | truth columns forbidden; real sample schema stable | `reco-photon` |
+| `test_pid_calibration.py` | charged PID threshold scan | PID scan CSV and ROC/score outputs | truth-separating config ranks first | `reco-pid` |
+| `test_realism_audit.py` | plan 01/09 truth-read audit | audit JSON with violation list | undecorated Class B reads fail | `realism-audit` |
+| `test_reconstruction_run_summary.py` | reconstruction run tables and thesis cut variables | summary tables and cut-variable rows | thesis calorimeter-direction variables present | `reco-summary` |
+| `test_reconstruction_smoke.py` | end-to-end reconstruction smoke and thesis cutflow/object rules | `output/sanity/{edep,hits,vertex_z,timing}.png` plus reco tables | expected tables written; 395 lines on 2026-05-10, below the 500-line cap | `reco-smoke` |
+| `test_reconstruction_validation.py` | validation report and readiness gates | validation JSON plus class-support table | readiness thresholds and all-run aggregation stable | `reco-validation` |
+| `test_registry_integrity.py` | plan 03 dataset manifests and state machine | registry round-trip JSON / manifest hash report | illegal states/transitions rejected | `registry` |
+| `test_selection.py` | plan-37 event selection and cut-flow accounting | cut-flow table and independent cut flags | cumulative counts follow plan-37 order | `selection-cutflow` |
+| `test_statistics.py` | plan 04 bootstrap, jackknife, Wilson, F-C | statistical interval JSON / pull table | seed binding deterministic | `statistics` |
+| `test_verify_citations.py` | A+ source-citation verifier | verifier pass/fail fixtures and temporary source snippets | out-of-range or wrong identifiers fail | `citation-verifier` |
+| `test_vertex_reco.py` | plan-30 vertex projection, aggregation, and foil acceptance | vertex projection and aggregate rows | geometry-only acceptance uses plan-16 contract | `vertex-reco` |
 
 Plan 53 runs these via pytest on every PR. The current inventory was
-verified against 17 `test_*.py` files in the L3 `tests/` directory on
-2026-05-10. The older simulation-source tests
-(`test_cmake_configuration.py`, `test_cpp_static_safety.py`,
-`test_geometry_audit.py`, and macro syntax tests) are no longer present
-in that directory; if they return, this table must be updated in the
-same commit. `test_reconstruction_smoke.py` was measured at 533 lines
-during this inventory pass, so future edits to that test need a split
-before growth.
+verified against 31 `test_*.py` files in the L3 `tests/` directory on
+2026-05-10. The largest listed tests are below the 500-line cap in this
+worktree (`test_reconstruction_smoke.py` 395 lines,
+`test_photon_reco.py` 388 lines, `test_charged_reco.py` 351 lines), and
+`test_file_size_cap.py` is now the explicit regression guard for
+`CODING_STANDARDS.md` §1.
 
 ## 2. Sanity plots per SD
 
@@ -123,16 +135,17 @@ matrix, re-run these checks from the L3 worktree:
 ```bash
 grep -R "option\\|WITH_\\|MCPL_BUILD" -n CMakeLists.txt
 find tests -maxdepth 1 -type f -name 'test_*.py' | sort
+find tests -maxdepth 1 -type f -name 'test_*.py' | wc -l
 wc -l tests/test_reconstruction_smoke.py
 ls pytest.ini CMakeLists.txt tests
 ```
 
 Current 2026-05-10 verifier evidence:
 
-- `find tests -maxdepth 1 -type f -name 'test_*.py'` returns 17 files,
+- `find tests -maxdepth 1 -type f -name 'test_*.py' | wc -l` returns 31 files,
   matching §1.
-- `wc -l tests/test_reconstruction_smoke.py` returns 533 lines, so the
-  file is grandfathered and future edits must split it first.
+- `wc -l tests/test_reconstruction_smoke.py` returns 395 lines, so the
+  file is below the 500-line cap in this L3 worktree.
 - `grep -R "option\\|WITH_\\|MCPL_BUILD" -n CMakeLists.txt` returns
   only `WITH_GEANT4_UIVIS` and `MCPL_BUILD`; no separate `cmake/`
   directory is present in the L3 worktree.
