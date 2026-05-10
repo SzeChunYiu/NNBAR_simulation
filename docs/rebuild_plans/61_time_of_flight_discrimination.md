@@ -121,6 +121,21 @@ window assumptions for cosmics, and ideal-timing bias from current
 simulation. A zero-resolution TOF score is invalid because it would treat
 perfect simulation timestamps as detector performance.
 
+The Wave-6 resolution-term derivation ledger is:
+
+| Term leaf | Truth-side quantity | Estimator rationale | Dominant uncertainty | Closure assertion |
+|---|---|---|---|---|
+| `tof.tpc_anchor` | charged-track time at the TPC reference surface | TPC hit-time aggregation supplies the start anchor for reconstructed charged paths | drift calibration, hit-time jitter, and field-map dependence | cal_* prompt tracks must yield a nonzero `sigma_tpc_anchor_ns` nuisance row |
+| `tof.scint_hit` | scintillator interaction time for the matched outgoing particle | scintillator timestamp supplies the stop time and carries the dominant prompt-timing measurement | light transport, electronics response, and ideal-timing caveat L2 | scintillator residual width must remain nonzero after smearing/model import |
+| `tof.vertex_time_path` | production time and path from reconstructed vertex to scintillator | vertex/path covariance converts spatial uncertainty into timing residual variance | vertex time fit failures and path-length covariance | invalid vertex/path rows stay in denominators with explicit reasons |
+| `tof.clock_sync` | common time-base alignment between TPC and scintillator systems | a clock-offset nuisance is required before combining two timing subsystems | external synchronisation and run-dependent offsets | every approved score names a clock nuisance or blocks promotion |
+| `tof.pid_beta` | expected beta for the charged PID hypothesis | relativistic `path/(beta c)` expectation turns PID/range information into a timing residual prediction | PID misassignment and mass-hypothesis ambiguity | PID-disabled and PID-enabled score modes are both included in ROC/N-1 closure |
+
+These term leaves make TOF a resolution-budget calculation rather than a
+hidden cut on ideal timestamps. The TOF sidecar can be promoted only
+when every nonzero residual term is traceable to a calibration or
+smearing artifact and every missing term is represented as a blocker.
+
 #### Logic gaps
 
 | Parameter | Status before production | Closure study / target date |
