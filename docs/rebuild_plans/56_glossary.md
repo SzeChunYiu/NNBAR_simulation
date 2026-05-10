@@ -201,6 +201,21 @@ l1_glossary_audit:
         - defense_package_updated
       thesis_delta: none | flagged
       owner: L1
+    - term: package freshness
+      defined_in_section: "1.1"
+      source_plans: [50, 53, 54, 55]
+      required_contexts:
+        - staleness_summary
+        - defence_ci_report
+        - archive_inventory
+        - archive_drill
+        - note_annex
+      required_status_values:
+        - current
+        - stale
+        - blocked
+      thesis_delta: none | flagged
+      owner: L1
     - term: unbounded caveat status
       defined_in_section: "1.1"
       source_plans: [45, 50, 51, 55]
