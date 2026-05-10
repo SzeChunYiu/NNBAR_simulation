@@ -267,6 +267,23 @@ numeric background sum until simulated samples are registered, but
 require them as plan-50 caveats for every quoted total-background
 result.
 
+### 3.2 Initial downstream-handoff examples
+
+Background-taxonomy handoffs must keep registered rate rows, zero-survivor
+limits, and unmodelled caveats distinct:
+
+| `handoff_case_id` | Downstream consumer | Required payload | Required guard |
+|---|---|---|---|
+| `authorised_rate_to_p46` | plan 46 significance protocol | rate-result ids, expected rates, intervals, selection config, and rate-source DEC ids | every included row has `rate_included_in_b = true` |
+| `zero_survivor_limit_to_p46` | plan 46 upper-limit bundle | survivor denominator, F-C interval id, and `epsilon90` | passed as a limit constraint, not as central `b = 0` |
+| `caveat_to_p50` | plan 50 defence package | unmodelled node id, limitation flags, missing sample sentinel, and required prose caveat | never folded into numeric background sums |
+| `systematic_rate_panel_to_p45` | plan 45 nuisance registry | node ids, rate conventions, exposure labels, and affected nuisance ids | nuisance throws may perturb only registered/authorised rate rows |
+
+A total-background handoff is blocked if it drops a caveat, includes an
+unsigned rate as numeric `b`, or loses the plan-37 selection-config id.
+This keeps plan 46 from confusing absence of survivors with absence of
+background risk.
+
 ## 4. Acceptance criteria
 
 - §1 tree complete.
