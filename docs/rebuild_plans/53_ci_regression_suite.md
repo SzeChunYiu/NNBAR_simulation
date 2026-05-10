@@ -93,7 +93,7 @@ requirements, not claims that the final workflow file already exists.
 | `l1_no_stale_cli_or_code_cites` | changes to L1-owned plans | grep for `*.py:<line>` and nnbar module commands, then require the A+ verifier transcript or remove the claim | Tier 1 block |
 | `l1_cutflow_identity_guard` | changes to plans 37, 50, 51, or 55 | canonical singular `pass_*` selection columns remain named in defence overlays and note annexes | Tier 1 block |
 | `l1_defence_rerun_manifest` | Tier 3 weekly | plan-52 defence rerun bundle has rows for EM chain, selection, pile-up, strange, TOF, Bayesian cross-checks, and unbounded-caveat status | Tier 3 tracking issue if incomplete |
-| `l1_overlay_pack_member_parity` | changes to plans 50, 52, 54, 55, or 56 | every plan-50 L1 overlay id maps to a plan-52 rerun bundle member, a plan-54 archive pack member, a plan-55 note-annex block, and at least one plan-56 glossary term; the defence-routing member covers the full set | Tier 1 block |
+| `l1_overlay_pack_member_parity` | changes to plans 50, 51, 52, 54, 55, or 56 | every plan-50 L1 overlay id maps through a plan-51 question id and to a plan-52 rerun bundle member, a plan-54 archive pack member, a plan-55 note-annex block, and at least one plan-56 glossary term; the defence-routing member covers the full set | Tier 1 block |
 | `l1_rerun_transcript_link` | changes to plans 50 or 52 | any ready plan-50 L1 roll-up links both the plan-52 rerun manifest and execution transcript, and plan-52 rows carry review-evidence links plus rerun/verifier review-artifact hashes | Tier 1 block |
 | `l1_command_template_registry` | changes to plan 52 | transcript command-template ids are registered, immutable, limited to verified CLI help output or explicit blocked templates, and carry verifier transcripts, hashes, and sources | Tier 1 block |
 | `l1_package_staleness_guard` | changes to plans 50-56 | ready plan-50 L1 packages carry `l1_staleness.status: current` against the latest L1 hashes, including plan-54 archive inventory/drill hashes | Tier 1 block |
@@ -330,12 +330,14 @@ l1_defence_ci_report:
       status: pass | fail
       files_checked:
         - docs/rebuild_plans/50_reviewer_defense_package.md
+        - docs/rebuild_plans/51_reviewer_question_registry.md
         - docs/rebuild_plans/52_run_orchestration.md
         - docs/rebuild_plans/54_open_data_archival.md
         - docs/rebuild_plans/55_internal_note_template.md
         - docs/rebuild_plans/56_glossary.md
       evidence:
         overlay_ids_checked: [em_cluster_truth_blindness, pi0_cut_decomposition, selection_cutflow_identity, pileup_l11_status, strange_v0_contamination, tof_timing_resolution, bayesian_prior_sensitivity, unbounded_caveat_status]
+        question_ids_checked: [RQ-L1-EM-P1-CLUSTERING, RQ-L1-EM-P2-DISCRIMINANT, RQ-L1-PI0-CUTS, RQ-L1-SELECTION-CUTFLOW, RQ-L1-PILEUP-L11, RQ-L1-STRANGE-BARYON, RQ-L1-TOF, RQ-L1-BAYES-LIMIT, RQ-L1-UNBOUNDED-CAVEATS]
         pack_members_checked: [em_object_chain, ch10_cutflow, pileup_l11, strange_v0, tof_timing, bayesian_limits, unbounded_caveats, defence_routing]
         overlay_to_pack_member_map:
           em_cluster_truth_blindness: em_object_chain
@@ -374,7 +376,7 @@ Report review rules:
 | review-evidence links include package, defence routing, staleness, CI, archive, note, glossary artifacts, and hashes | package has L1 evidence in prose but no machine-readable handoff |
 | note freshness check appears for promoted notes with artifact hashes and staleness id | thesis-facing note quotes stale package or unverifiable note evidence as current evidence |
 | archive drill report lists the eight plan-54 pack members by stable id | freeze CI checks archive presence but not full L1 evidence-class coverage |
-| overlay-to-pack-member parity appears with plan-50, plan-52, plan-54, plan-55, and plan-56 evidence | a reviewer question has a defence overlay but no rerun, archive, note, or glossary route |
+| overlay-to-pack-member parity appears with plan-50, plan-51, plan-52, plan-54, plan-55, and plan-56 evidence | a reviewer question has a defence overlay but no rerun, archive, note, or glossary route |
 
 A warning status is allowed only for Tier 3 weekly checks. Tier 1 L1
 checks are pass/fail and block the plan-set edit when they fail.
