@@ -194,6 +194,15 @@ background rates.
 Per plan 04 §5: never quote `0 / N = 0`. Every zero-survivor channel
 reports a Feldman-Cousins 90% C.L. upper limit on the survival rate.
 
+Initial zero-survivor reporting examples:
+
+| `zero_case_id` | Survivor pattern | Required reported quantity | Review guard |
+|---|---|---|---|
+| `zero_small_denominator` | `n_survivors_after_plan37 = 0` with low generated statistics | F-C 90% upper survival limit and low-statistics caveat | cannot enter plan-46 `b` as a central zero |
+| `zero_large_denominator` | `n_survivors_after_plan37 = 0` with approved denominator | F-C 90% upper survival limit plus exposure fold only after rate-source DEC | plan-46 receives the limit separately from central `expected_rate` |
+| `nonzero_validation` | at least one survivor after plan 37 | central survival fraction with interval, not `epsilon90` | reviewed with the same selection boundary as zero rows |
+| `zero_unregistered_source` | no registered sample for the background node | caveat row only | cannot be converted to `0/N` or included as a numeric zero |
+
 ## 3. Unmodelled sources
 
 These nodes are not simulated in the first rebuild cycle. They must
