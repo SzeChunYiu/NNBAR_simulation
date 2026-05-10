@@ -34,18 +34,18 @@ inheriting the default.
 Source: `NNBAR_Detector/src/core/PhysicsList.cc` (plan 07 §4). Verbatim
 constructor list (lines 71–93):
 
-| Constructor | Purpose | Justification |
+| Constructor | Purpose | Justification + citation |
 |---|---|---|
-| `G4EmStandardPhysics_option4` (or `G4EmStandardPhysics` if Celeritas active) | EM (e±, γ, ions) | option4 is the highest-accuracy EM list shipped by Geant4; switched to base `G4EmStandardPhysics` only because Celeritas does not handle option4's processes (line 75). |
-| `G4DecayPhysics` | Particle decays | mandatory for π⁰, π±, K, etc. |
-| `G4HadronElasticPhysics` | Elastic hadronic scattering | required separately because hadron physics list omits elastic |
-| `G4HadronPhysicsFTFP_BERT` (line 86) | Hadronic inelastic | FTFP (Fritiof) at high E, BERT (Bertini cascade) at low E. The `_HP` variant is **disabled** with comment "_HP will slow down a lot". §4 audits this trade-off. |
-| `G4StoppingPhysics` | Stopped-particle absorption | required for stopped π-, K- |
-| `G4IonPhysics` | Light-ion processes | needed for nuclear fragments |
-| `G4NeutronTrackingCut` | Tracking cut for thermal neutrons | timing/energy cut to bound CPU |
-| `G4RadioactiveDecayPhysics` | Decays of radioactive isotopes | needed for downstream activation in shielding |
-| `G4StepLimiterPhysics` | User step-limiter support | enables `G4UserLimits` via macros / detector code |
-| `G4OpticalPhysics` (gated by `WITH_SCINTILLATION` and not Celeritas) | Optical photons | drives lead-glass Cerenkov + scintillator photon yield (plan 18) |
+| `G4EmStandardPhysics_option4` (or `G4EmStandardPhysics` if Celeritas active) | EM transport for e±, γ, and charged ions | `option4` is the precision EM configuration used when CPU Geant4 owns EM showers; it is appropriate for lead-glass/scintillator energy response because it enables the more detailed EM model choices documented by the Geant4 EM manual and LHC EM-validation updates (`bagulya2017recent`). The fallback to base `G4EmStandardPhysics` is only the Celeritas-compatibility path and must be covered by §5 closure. |
+| `G4DecayPhysics` | Decays of unstable particles | Required because signal final states contain π⁰/π±, kaons, eta/omega/rho daughters, and muons. The Geant4 Physics Reference Manual decay chapter defines the standard decay-process registration used here. |
+| `G4HadronElasticPhysics` | Elastic hadron scattering | Needed as a separate constructor so low-energy pions, protons, neutrons, and nuclear fragments scatter elastically in material before depositing energy; Geant4's hadronic manual treats elastic and inelastic processes as distinct components. |
+| `G4HadronPhysicsFTFP_BERT` (line 86) | Hadronic inelastic interactions | Provides FTFP string fragmentation at high energy and Bertini intranuclear cascade at lower energy. This matches the signal's multi-hadron annihilation/transport needs and the cosmic/beam hadronic tail; cite Fritiof/Lund model papers (`Andersson:1986gw`, `Nilsson-Almqvist:1986ast`), QGS/string context (`Kaidalov:1983ew`), and Bertini validation (`Wright:2015xia`). The `_HP` variant is discussed in §2. |
+| `G4StoppingPhysics` | Stopped-particle absorption/annihilation | Required for stopped negative hadrons and antinucleons, including the antineutron-at-rest signal topology. The Geant4 hadronic/stopping manual covers capture and annihilation at rest, while plan 13 supplies the signal-model bibliography. |
+| `G4IonPhysics` | Ion and light-fragment interactions | Needed because antineutron annihilation and neutron captures can create deuterons, alphas, and heavier nuclear fragments that transport through the detector; Geant4's ion physics manual defines the light-ion process set. |
+| `G4NeutronTrackingCut` | Time/energy control for neutrons | Bounds CPU cost from long-lived thermal neutrons while preserving explicit tracking until the configured cut; this constructor is documented in the Geant4 hadronic neutron-transport guidance. Any cut value becomes a plan-03/12 build parameter for neutron-background samples. |
+| `G4RadioactiveDecayPhysics` | Decays of radioactive isotopes | Needed for activation/capture products in shielding and material studies even if not part of the first thesis-rate quote. The Geant4 Radioactive Decay manual is the governing citation. |
+| `G4StepLimiterPhysics` | User step-limiter support | Enables `G4UserLimits` on logical volumes, which is required for reproducible tracking granularity near thin targets, TPC segmentation, and detector boundaries. The Geant4 tracking/user-limits manual is the governing citation. |
+| `G4OpticalPhysics` (gated by `WITH_SCINTILLATION` and not Celeritas) | Optical photons from Cerenkov/scintillation/WLS | Required for optical-mode intercalibration and for Ch5 lead-glass/scintillator photon-yield figures. The Geant4 optical-photon manual covers Cerenkov, scintillation, WLS, and boundary processes; Celeritas-off runs must be used because optical photons are not registered in the active Celeritas path. |
 
 PAI ionisation model is *available* but not invoked (lines 196–235);
 plan 27 dE/dx audit decides whether to enable it for the TPC region.
@@ -166,7 +166,13 @@ thesis-quoted samples until reconciled.
 
 ## 9. References
 
-- Geant4 Physics Reference Manual (current release).
+- Geant4 Physics Reference Manual (current release): EM, decay,
+  hadronic elastic/inelastic, stopping, ion, neutron tracking-cut,
+  radioactive-decay, optical-photon, and user-limits chapters.
 - `G4HadronPhysicsFTFP_BERT[_HP]` source headers.
-- KEK / Brookhaven n̄p cross-section measurements (cited verbatim in
-  plan 13).
+- `Andersson:1986gw`; `Nilsson-Almqvist:1986ast`; `Kaidalov:1983ew`
+  for the Fritiof/string-model side of FTFP.
+- `Wright:2015xia` / `wright2015geant4` for Bertini-cascade validation.
+- `bagulya2017recent` for Geant4 EM physics validation updates.
+- KEK / Brookhaven n̄p cross-section measurements and antineutron
+  model papers cited verbatim in plan 13.
