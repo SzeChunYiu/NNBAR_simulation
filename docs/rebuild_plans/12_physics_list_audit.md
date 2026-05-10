@@ -32,8 +32,9 @@ inheriting the default.
 ## 1. Current configuration
 
 Source: `NNBAR_Detector/src/PhysicsList.cc` (plan 07 §4), verified in
-the L3 worktree at `src/PhysicsList.cc`. Verbatim constructor list
-from `PhysicsList::PhysicsList()` lines 59–79:
+the L3 worktree at `src/PhysicsList.cc`. `PhysicsList::PhysicsList()`
+is defined at line 48; the verbatim constructor-registration block is
+lines 59–79:
 
 | Constructor | Purpose | Justification + citation |
 |---|---|---|
@@ -97,6 +98,93 @@ can drift from licentiate signal reproduction). Consequence: plan 03
 must register separate build IDs, plan 47 rows must cite the physics
 list tag, and plan 45 treats signal non-HP vs HP deltas as a model
 systematic only where neutron-capture observables enter.
+
+## 2.1 Wave 6 derivation — FTFP/BERT and HP neutron transport
+
+### Physics derivation
+
+**What is physically measured.** The physics-list choice is not a
+reconstruction estimator; it is the generative transport model that
+maps a truth primary and detector material stack into final-state
+particles, energy deposits, optical photons, delayed capture products,
+and activation daughters. For signal rows the load-bearing measured
+quantities are prompt multi-hadron multiplicities, momentum/energy
+spectra, and detector deposits after an antineutron annihilates at or
+near rest. For cosmic and beam-neutron rows the load-bearing measured
+quantities are neutron moderation, scattering, capture-gamma
+production, and the downstream detector deposits.
+
+**Estimator rationale.** `G4HadronPhysicsFTFP_BERT` combines a
+string/fragmentation description for higher-energy hadronic secondaries
+with the Bertini intranuclear cascade for the lower-energy cascade
+where the detector response is built from reinteractions in material.
+The Fritiof/string part is the correct regime-bridging model for
+multi-hadron final states because it preserves hadronic fragmentation
+kinematics rather than replacing the event with a single inclusive
+response `\cite{Andersson:1986gw,Nilsson-Almqvist:1986ast,Kaidalov:1983ew}`.
+The Bertini cascade is the near-optimal Geant4 default for hadrons
+rescattering inside nuclei and detector materials at the energies that
+set pion/proton ranges, secondary neutron production, and residual
+energy deposits `\cite{Wright:2015xia,wright2015geant4}`. The `_HP`
+variant is selected when the physical measurement is explicitly
+neutron moderation/capture, because the tabulated low-energy neutron
+cross sections preserve resonance and thermal-capture structure that a
+CPU-saving non-HP cascade smooths away.
+
+**Statistical character.** The dominant uncertainty is model bias, not
+per-event counting variance. FTFP-vs-QGSP and BERT-vs-BIC variations
+probe fragmentation/cascade model bias; HP-vs-non-HP probes
+low-energy-neutron transport bias. Finite-sample variance is estimated
+by paired-seed or bootstrap comparisons under plan 04, but a statistically
+precise paired sample can still be wrong if the selected physics list
+omits the physical process being measured. That is why signal rows keep
+the legacy non-HP baseline for comparability while cosmic/beam-neutron
+rows fail closed to `_HP`.
+
+### Logic gaps
+
+- **`FTFP_BERT` vs `FTFP_BERT_HP` switch.** Source: local
+  `PhysicsList.cc` registers `G4HadronPhysicsFTFP_BERT()` and imports
+  the `_HP` header but does not instantiate it. Grounding: the split
+  policy is DEC-2026-05-10-3 in §2; closure uses paired `nominal` vs
+  `nominal_hp` samples. No unresolved numerical threshold is introduced
+  by this switch beyond the Geant4 HP neutron-data domain.
+- **Low-energy neutron domain (<20 MeV).** Grounding: this is a
+  physics-list model boundary, not a tuned analysis cut. It remains an
+  implementation-facing parameter because the thesis conclusions depend
+  on whether capture-gamma rows use HP data. `OPEN:` run the plan-22
+  beam-neutron HP/non-HP closure on `beam_neutron_hibeam_v1`, comparing
+  capture-gamma multiplicity, capture time, and deposited-energy
+  distributions; target resolution date 2026-06-15.
+- **Alternative-list tags (`qgsp_bert`, `qgsp_bic`, `em_opt0`).**
+  Grounding: §3 defines these as systematics, not production defaults.
+  `OPEN:` once plan 03 has concrete build manifests, record the exact
+  Geant4 version, data-set hashes, and random-seed policy for each tag;
+  target resolution date 2026-06-15.
+- **Production cuts (1 keV--10 TeV and 1 mm default range cut).**
+  Grounding: inherited from plan 07's source audit and preserved here
+  so physics-list comparisons do not silently change range cuts.
+  `OPEN:` run a cut-scan closure with half/double default range cuts on
+  signal and single-gamma samples, reporting total energy deposit,
+  photon-conversion count, and CPU time; target resolution date
+  2026-06-22.
+
+### Closure test for the derivation
+
+1. Generate paired seeds for `sig_foil_v3`, `cosmic_cry_essLund_v1`,
+   and `beam_neutron_hibeam_v1` under `nominal` and `nominal_hp`.
+2. For signal, compare prompt charged/neutral multiplicities,
+   visible-energy sums, and delayed neutron/capture-gamma observables;
+   the derivation predicts small prompt shifts but possible delayed-tail
+   changes.
+3. For cosmic and beam-neutron samples, compare neutron capture time,
+   capture-gamma multiplicity, and detector-region energy deposits; the
+   derivation predicts HP-sensitive shifts in the thermal/epithermal
+   tail.
+4. Record bootstrap confidence intervals and paired deltas in plan 47.
+   If a row's observable is neutron-capture dominated, promote `_HP` to
+   the required production tag for that row; otherwise carry the
+   HP/non-HP delta as a plan-45 model systematic.
 
 ## 3. Alternative physics lists (model systematics)
 
