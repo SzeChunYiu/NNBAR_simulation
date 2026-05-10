@@ -182,6 +182,19 @@ l1_defence_ci_report:
         flagged_delta_rows_have_caveat_text: true
         approved_or_blocked_rows_visible: true
       remediation: null
+    - check_id: l1_note_package_freshness
+      status: pass | fail
+      files_checked:
+        - docs/rebuild_plans/50_reviewer_defense_package.md
+        - docs/rebuild_plans/55_internal_note_template.md
+      evidence:
+        promoted_note_rows_checked: <n>
+        package_staleness_statuses_allowed: [current, stale-with-caveat]
+        staleness_id_present: true
+        stale_package_caveat_present_when_needed: true
+        review_evidence_link_keys: [package, staleness_summary, ci_report, archive_inventory, archive_drill, note_annex, glossary_audit]
+        review_artifact_hash_keys: [package, staleness_summary, ci_report, archive_inventory, archive_drill, note_annex, glossary_audit]
+      remediation: null
 ```
 
 Report review rules:
