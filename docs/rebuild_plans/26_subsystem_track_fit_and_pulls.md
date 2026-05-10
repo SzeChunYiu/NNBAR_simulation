@@ -100,13 +100,13 @@ artifact rows may change.
 ## 2. Current implementation and alternatives
 
 - *Legacy current.* `_track_anchor_and_direction` (plan 08 §3.2;
-  `charged.py:62-81`): direction is `(last_hit - first_hit) / |…|`;
+  `nnbar_reconstruction/charged.py:62-81`): direction is `(last_hit - first_hit) / |…|`;
   no covariance.
-- *Live Stage E.1 hook.* `fit_track_candidates` (`track_fit.py:55-117`)
+- *Live Stage E.1 hook.* `fit_track_candidates` (`nnbar_reconstruction/track_fit.py:55-117`)
   consumes plan-25 V.1 `hit_indices`, fetches Class A TPC coordinates,
-  runs `_fit_line` (`track_fit.py:32-43`), writes
+  runs `_fit_line` (`nnbar_reconstruction/track_fit.py:32-43`), writes
   `direction_method=linear_pca`, residual vectors, χ²/ndf, and a
-  covariance vector from `_covariance` (`track_fit.py:46-52`). This
+  covariance vector from `_covariance` (`nnbar_reconstruction/track_fit.py:46-52`). This
   unblocks V.3/V.4 and C.2 consumers, but it still needs the full §1.3
   quality fields (`fit_id`, failure reason, covariance validity,
   degraded flag) before final closure sign-off.
@@ -120,7 +120,7 @@ artifact rows may change.
 
 | Alternative | Source paper / codebase | NNBAR-specific adaptation | Expected ladder leaf delta |
 |---|---|---|---|
-| Current first-last direction | Existing `_track_anchor_and_direction` (`charged.py:62-81`) | Preserve as reproducibility baseline and degraded fallback when too few hits exist for a covariance fit. | No V.2 improvement; documents current truth-free but covariance-free baseline. |
+| Current first-last direction | Existing `_track_anchor_and_direction` (`nnbar_reconstruction/charged.py:62-81`) | Preserve as reproducibility baseline and degraded fallback when too few hits exist for a covariance fit. | No V.2 improvement; documents current truth-free but covariance-free baseline. |
 | Linear least-squares / PCA | Standard straight-line total least squares | Fit straight tracks in `(x, y, z)` because plan 17 has no B-field curvature; derive covariance from residuals. | Expected to improve plan 38 IV(V.2) pull width and enable V.4 weighted vertexing with low implementation cost. |
 | Kalman fit | ACTS Kalman track-fitting codebase | Seed from V.1/PCA state and run straight-track process model until magnetic-field scenarios exist. | Best covariance model for plan 38 IV(V.2); likely similar central value to PCA in no-B-field data, but cleaner covariance propagation to V.4. |
 
@@ -201,7 +201,7 @@ with explicit remaining gates:
 
 - **Target module:** extend `nnbar_reconstruction/track_fit.py`.
 - **Public function:** `fit_track_candidates(candidates, tpc)`
-  (`track_fit.py:55-117`).
+  (`nnbar_reconstruction/track_fit.py:55-117`).
 - **Current unit coverage:** `tests/test_charged_reco.py` already
   asserts the V.2 direction schema, finite PCA direction, covariance
   vector, residual rows, and `direction_method=linear_pca` in
@@ -220,15 +220,15 @@ with explicit remaining gates:
 
 The live L3 hook is intentionally close to, but not yet identical to,
 the §1.3 fixture. L3 can promote V.2 only after the following concrete
-gaps close in `fit_track_candidates` (`track_fit.py:55-117`):
+gaps close in `fit_track_candidates` (`nnbar_reconstruction/track_fit.py:55-117`):
 
 | Gap | Current live behavior | Required promotion behavior |
 |---|---|---|
 | fitter identity | `direction_method=linear_pca` is emitted, but no stable `fit_id` column is present | add a versioned `fit_id` (for example `linear_pca_v1`) so plan 38 and plan 40 can key rows across reruns |
-| covariance shape | `_covariance` (`track_fit.py:46-52`) is stored as `direction_covariance` vector | either expand to the six `cov_*` fields in §1.3 or document a deterministic vector order consumed by plans 30 and 40 |
+| covariance shape | `_covariance` (`nnbar_reconstruction/track_fit.py:46-52`) is stored as `direction_covariance` vector | either expand to the six `cov_*` fields in §1.3 or document a deterministic vector order consumed by plans 30 and 40 |
 | failure reason | `fit_quality_state` is present, but one-hit / bad-coordinate rows do not carry a machine-readable reason | add `fit_failure_reason` with values such as `insufficient_class_a_hits` or `nonfinite_class_a_coordinates` |
 | covariance gate | covariance validity is implicit in downstream interpretation | add `covariance_valid` so plan 30 can down-weight or reject singular fits without re-deriving the check |
-| degraded baseline | first-last direction remains available as `_track_anchor_and_direction` (`charged.py:62-81`) | expose degraded use as `fit_degraded=true` rather than silently mixing it with PCA rows |
+| degraded baseline | first-last direction remains available as `_track_anchor_and_direction` (`nnbar_reconstruction/charged.py:62-81`) | expose degraded use as `fit_degraded=true` rather than silently mixing it with PCA rows |
 | residual degrees of freedom | `chi2_ndf` and `residuals_xyz` are emitted | add `n_residual_degrees_of_freedom` so plan 40 pull-width tests can reject under-constrained fits |
 
 Acceptance of this checklist is a plan-side gate, not a request for L0
@@ -247,10 +247,10 @@ stay true across synthetic and real-output tests:
 
 | Invariant | Current live behavior | Replacement requirement |
 |---|---|---|
-| truth blindness | `fit_track_candidates` (`track_fit.py:55-117`) consumes V.1 hit indices and Class A `x/y/z` coordinates; it does not need truth momentum or `Track_ID` | replacement output must be unchanged when Class B direction, species, parentage, and legacy track-id columns are dropped |
+| truth blindness | `fit_track_candidates` (`nnbar_reconstruction/track_fit.py:55-117`) consumes V.1 hit indices and Class A `x/y/z` coordinates; it does not need truth momentum or `Track_ID` | replacement output must be unchanged when Class B direction, species, parentage, and legacy track-id columns are dropped |
 | stable fitter identity | `direction_method=linear_pca` is the only current method label | promoted rows must add a versioned `fit_id` while keeping `direction_method` as the human-readable algorithm family |
-| covariance semantics | `_covariance` (`track_fit.py:46-52`) currently writes a flattened coordinate covariance vector | replacement must either emit the six §1.3 covariance components or publish a deterministic vector order plus `covariance_valid` |
-| degraded-row visibility | `_track_anchor_and_direction` (`charged.py:62-81`) remains only a legacy first-last fallback | any fallback use must set `fit_degraded=true` and cannot be mixed silently with PCA or Kalman rows |
+| covariance semantics | `_covariance` (`nnbar_reconstruction/track_fit.py:46-52`) currently writes a flattened coordinate covariance vector | replacement must either emit the six §1.3 covariance components or publish a deterministic vector order plus `covariance_valid` |
+| degraded-row visibility | `_track_anchor_and_direction` (`nnbar_reconstruction/charged.py:62-81`) remains only a legacy first-last fallback | any fallback use must set `fit_degraded=true` and cannot be mixed silently with PCA or Kalman rows |
 | residual accounting | current rows include `residuals_xyz`, `chi2_ndf`, and `n_direction_hits` | promoted rows must carry a residual sidecar and `n_residual_degrees_of_freedom` so plan 40 can reject under-constrained fits |
 | failure-state stability | the live hook only exposes `fit_quality_state=pass/fail` | replacements must add `fit_failure_reason` and keep `pass`/`warn`/`fail`/`not_applicable` meanings consistent with §4 and plan 66 |
 
