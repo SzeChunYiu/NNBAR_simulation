@@ -72,25 +72,39 @@ When the event vertex is reconstructed (plan 30):
 
 Used by plan 37 (event selection) as an additional cut variable.
 
-## 4. Closure
+## 4. Alternative comparison matrix
+
+| Candidate | P.7 decision rule | Current/source citation | Class-A status | Comparison metric | Failure mode to inspect |
+|---|---|---|---|---|---|
+| **No fit / raw mass (current)** | Use raw `M_γγ` from photon four-vectors and six cuts. | Raw mass at `reconstruction.py:1414–1417`; no fit columns in schema `1322–1365`. | Production-eligible baseline. | Raw mass width, pull bias, π⁰ efficiency. | Worse resolution; limited accidental rejection. |
+| **Mass-constrained π⁰ fit** | Adjust photon four-vectors within covariance subject to `M_γγ = m_π⁰`. | New P.7 module after plan-34 output. | Eligible after covariance closure. | Width improvement, pull mean/width, χ² K-S p-value. | Bad covariance can fake improvement and miscalibrate χ². |
+| **Vertex-constrained event fit** | Constrain photon and charged-object origins to the reconstructed vertex. | Consumes plan-30 vertex and plan-33/29 objects. | Eligible only when vertex covariance exists. | Event χ², visible-mass resolution, selection stability. | Sparse-vertex events need explicit no-fit path. |
+| **Combined mass+vertex fit** | Fit π⁰ mass and common vertex constraints simultaneously. | Extends §§2–3. | Eligible after separate constraints pass. | Global χ² and downstream S.3/S.4 separation. | Harder failure diagnosis; do after simpler fits. |
+| **Truth-constrained diagnostic** | Seed or constrain to generated π⁰ direction/energy. | Truth labels are evaluator-only under plan 40. | Not production-eligible. | Upper-bound resolution only. | Would violate plan 01 if used in decision path. |
+
+Plan 38 records raw, mass-only, vertex-only, and combined-fit ladder
+rows so event-variable and selection consumers can choose the simplest
+validated fit.
+
+## 5. Closure
 
 `cal_singlegamma_v1` paired into synthetic π⁰s — verify σ(M_γγ)
 improves by ≥ 20% after the constraint vs raw photon four-vectors.
 On `sig_foil_v3` π⁰ candidates, the fitted-four-vector pulls follow
 plan 40 §2 tolerances.
 
-## 5. Acceptance criteria
+## 6. Acceptance criteria
 
-- §2 implementation lands; §4 closure passes.
+- §2 implementation lands; §5 closure passes.
 - §2 χ² distribution follows expected ndf within K-S p > 0.01.
 
-## 6. Dependencies
+## 7. Dependencies
 
 - **24, 30, 33, 34, 38, 40** — inputs.
 - *Consumed by:* plan 36 (event variables; uses fitted four-vectors),
   plan 37 (selection), plan 38 (ladder leaf P.7).
 
-## 7. References
+## 8. References
 
 - Belle II kinematic-fit framework documentation.
 - GlueX π⁰ kinematic fit notes.
