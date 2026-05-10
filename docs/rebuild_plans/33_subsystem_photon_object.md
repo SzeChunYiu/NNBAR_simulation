@@ -127,6 +127,53 @@ columns remain diagnostic provenance; they cannot seed `cluster_id`,
 Truth canonical (plan 38 §3.1): gamma momentum direction at
 production.
 
+### 2.4 Physics derivation for P.3
+
+#### Physics derivation
+
+P.3 physically estimates the photon flight direction from the annihilation
+vertex to the electromagnetic shower barycentre. The truth-side quantity
+is the generated photon momentum unit vector at production, while the
+production estimator observes only the reconstructed vertex, the P.1
+cluster centroid, detector geometry, and P.2 neutral decision. For a
+neutral EM shower in a calorimeter, the shower centroid is a noisy
+measurement of the impact point; combining it with the best reconstructed
+vertex gives the maximum-information straight-line estimator available
+from Class-A inputs \cite{ParticleDataGroup:2024RPP,fabjan2020particle}.
+
+The estimator is the normalized vector from vertex to centroid, with an
+explicit origin fallback only when no reconstructed vertex exists. Its
+dominant bias is vertex displacement or cluster-centroid bias inherited
+from P.1 and plan 30; its variance is set by centroid resolution divided
+by path length, plus vertex covariance. Robustness comes from storing the
+path length, fallback flag, and source cluster ids so closure can split
+the angular-pull distribution by direction source instead of hiding sparse
+fallback rows.
+
+#### Logic gaps
+
+| Parameter | Status before production | Closure study / target date |
+|---|---|---|
+| origin fallback `vertex_x/y/z = 0` | `OPEN:` safe sparse-table fallback, not a physics vertex estimate | Measure fallback angular-pull tails on `cal_singlegamma_v1` and signal-like sparse rows; target 2026-06-20 |
+| minimum usable `photon_path_length_cm` | `OPEN:` no lower bound preventing unstable normalization | Scan low path-length rows and require finite angular-pull RMS before accepting fallback/vertex rows; target 2026-06-20 |
+| P.1 centroid weighting used by direction | tied to P.1 energy-weighted centroid, but centroid bias is `OPEN:` until P.1 closure passes | Propagate P.1 centroid residuals into P.3 angular-pull width; target 2026-06-30 |
+| vertex covariance contribution | `OPEN:` plan 30 covariance not yet propagated into photon-direction uncertainty | Join plan-30 covariance rows and test pull width against plan 40; target 2026-06-30 |
+| fallback-origin fraction allowed in thesis rows | `OPEN:` no signed maximum fraction | Require a reviewer-visible fallback fraction and block if angular-pull tails dominate; target 2026-07-05 |
+
+#### Closure test for the derivation
+
+1. Run the selected P.1/P.2 photon-candidate chain on `cal_singlegamma_v1`
+   and signal-like rows with generated photon directions hidden from the
+   estimator.
+2. Compute the reconstructed P.3 unit vector from vertex and centroid,
+   then evaluate angular residuals against the generated direction only in
+   the closure artifact.
+3. Split the residual distribution by `used_reconstructed_vertex`, energy
+   bin, path-length bin, and P.1 cluster-quality flag.
+4. Require the angular-pull width to match the propagated centroid-plus-
+   vertex uncertainty and require the fallback-origin tail to be explicitly
+   caveated before any thesis-facing photon direction is promoted.
+
 ## 3. Energy (P.4)
 
 Target production energy is the calibrated P.1 cluster sum:
@@ -213,6 +260,59 @@ Initial fragment-merge decision examples:
 
 The examples define review cases for the merge fixture. They do not
 create executable merge algorithms or alter the current photon baseline.
+
+### 4.3 Physics derivation for P.3/P.4
+
+#### Physics derivation
+
+P.3 physically estimates the photon flight direction, defined on the
+truth side as the unit vector from the annihilation vertex to the
+generated photon momentum direction before detector interactions. P.4
+physically estimates the photon energy deposited in the EM calorimeter
+system after calibration. For an electromagnetic shower, the calorimeter
+energy sum and barycentre are near-minimal sufficient observables once
+the event vertex is fixed; shower containment and resolution follow the
+standard radiation-length/Moliere-radius description and calorimeter
+response model \cite{ParticleDataGroup:2024RPP,fabjan2020particle}.
+The HIBEAM/NNBAR prototype establishes that the absolute energy scale and
+lead-glass/scintillator response must be calibrated with detector data,
+not inferred from truth ancestry \cite{Dunne2022CalorimeterPrototype}.
+
+The target estimator is therefore the vertex-to-centroid unit vector for
+P.3 and the calibrated P.1 cluster energy sum for P.4. The origin
+fallback is a flagged sparse-data estimator, not an equivalent physics
+choice. Fragment merging is allowed only when geometry and timing are
+consistent with one shower, because over-merging biases the two-photon
+mass spectrum in plan 34. Dominant uncertainties are vertex resolution,
+cluster-centroid resolution, energy-scale calibration, calorimeter
+resolution, and fragment split/merge bias.
+
+#### Logic gaps
+
+| Parameter | Status before production | Closure study / target date |
+|---|---|---|
+| origin fallback when no vertex exists | allowed only as a flagged estimator, not a primary physics choice | Measure fallback fraction and angular-pull degradation on `cal_singlegamma_v1`; target 2026-06-20 |
+| photon direction normalisation and zero-path handling | `OPEN:` needs a frozen invalid-row policy for coincident vertex/centroid rows | Inject zero/near-zero path fixtures and require explicit invalid flags rather than silent unit-vector defaults; target 2026-06-15 |
+| fragment-merge angular, distance, and timing thresholds | `OPEN:` diagnostic `geom_time_merge_diag_v0` thresholds are not production frozen | Scan duplicate rate versus π0 daughter over-merge rate on single-gamma and close-pi0 samples; target 2026-06-25 |
+| `leadglass_fraction = 0` for scintillator-only photons and Ch 8 guard `leadglass_fraction >= 0.55` | Thesis guard is reproduced; production semantics need a signed downstream-impact DEC | Propagate scintillator-only and low-lead-glass rows through plans 34/37; target 2026-06-20 |
+| closure pass limits: direction pull width `[0.9, 1.2]`, `|mu| < 0.05`, energy bias `< 1%`, photon efficiency `>= 0.95`, over-merge `< 2%` | `OPEN:` analysis-quality thresholds need downstream mass/selection impact evidence | Tie limits to pi0 mass resolution and Ch 10 cut-flow stability; target 2026-07-05 |
+
+#### Closure test for the derivation
+
+1. Build photon rows from fixed P.1/P.2 fixtures and the plan-30 vertex
+   fixture using only Class-A cluster, neutral-score, geometry, timing,
+   and calibration inputs.
+2. On `cal_singlegamma_v1` energy points, compute P.3 angular residuals
+   against the truth photon direction and P.4 energy response against the
+   generated photon energy only inside the evaluator.
+3. Split the report by reconstructed-vertex and origin-fallback rows, and
+   quote the fallback fraction before any direction-method DEC can sign.
+4. Run the same closure with no-merge and geometry/time merge candidates;
+   require duplicate-rate improvement without exceeding the pi0
+   over-merge guard.
+5. Repeat after dropping `Track_ID`, `Parent_ID`, `Name`, process, and
+   ancestry aliases; photon four-vector hashes and merge decisions must
+   match exactly.
 
 ## 5. Alternative comparison matrix
 
