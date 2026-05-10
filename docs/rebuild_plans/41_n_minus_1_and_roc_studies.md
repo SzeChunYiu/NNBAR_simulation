@@ -215,15 +215,42 @@ L3/software handoff requirements:
    added to this plan. This avoids inventing CLI names and keeps the A+
    examiner gate enforceable.
 
+### 4.1 Study artifact manifest schema
+
+Each future N-1, ROC, or cut-search producer must write a manifest row
+beside the machine JSON artifacts before plan 47 or plan 50 can consume
+the plots:
+
+```yaml
+schema_version: plan41_selection_studies@stage-e1
+study_kind: n_minus_1 | roc | cut_search
+dataset_ids: [sig_foil_v3, cosmic_cry_essLund_overburdenA_v1, <beam-neutron dataset id>]
+signal_events_hash: <sha256 of frozen signal events.csv>
+background_events_hashes: {<dataset_id>: <sha256 of frozen events.csv>}
+cut_definitions_hash: <sha256 of plan-37 cut tuple used>
+variable_definitions_hash: <sha256 of plan-36 variable set used>
+bootstrap_replicas: 200
+bootstrap_seed: <plan-04 deterministic seed>
+ladder_leaves: [S.1, S.2, S.3, S.4, S.5, S.6]
+ledger_rows: [LIC-CH10-CUTFLOW]
+artifact_hashes: {json: <sha256>, plot: <sha256>, table: <sha256|null>}
+producer_help_verified: true
+```
+
+The manifest is invalid if a rendered PNG lacks a matching JSON/table
+hash, if the producer help surface was not verified, or if a cut-search
+row omits its DEC-approved objective. This keeps study plots
+reproducible and prevents hand-edited figures from entering the ledger.
+
 ## 5. Acceptance criteria
 
 - §1 N-1 plots complete for plan 37 cuts.
 - §2 ROC curves complete for plan 36 continuous variables.
 - §3 objective signed in DEC; optimal tuple reported on test set.
 - §4 software handoff is complete: each blocked producer has explicit
-  inputs, outputs, failure assertions, provenance fields, the existing
-  cut-flow support surface is cited, and a no-invented-CLI rule is in
-  force.
+  inputs, outputs, failure assertions, provenance fields, a required
+  manifest schema, the existing cut-flow support surface is cited, and
+  a no-invented-CLI rule is in force.
 
 ## 6. Risks and mitigations
 
