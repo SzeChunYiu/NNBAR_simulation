@@ -4,13 +4,14 @@ title: Signal efficiency — acceptance × selection × reconstruction
 version: 0.1
 status: draft
 owner: Analysis WG
-depends_on: [00_README, 04_statistical_uncertainty, 13_signal_model, 20_sample_signal, 30_subsystem_vertex, 37_subsystem_event_selection]
+depends_on: [00_README, 04_statistical_uncertainty, 13_signal_model, 20_sample_signal, 30_subsystem_vertex, 37_subsystem_event_selection, 60_fiducial_volume_and_edge_effects]
 outputs:
   - {path: docs/rebuild_plans/43_signal_efficiency.md, schema: this file}
 acceptance:
   - {test: efficiency factorisation produced (acceptance, reconstruction, selection) per stage, method: §1 deliverable, pass_when: each stage quantified}
   - {test: per-final-state-channel breakdown reported, method: §2 deliverable, pass_when: ≥ 5 channels}
   - {test: licentiate "≈ 70% signal acceptance" reproduced after reconstruction × selection, method: ledger row plus §3.1 gates, pass_when: LIC-CH10-NUM-1 is green or yellow under plan 47 §2}
+  - {test: factorisation manifest carries fiducial profile and geometry version from plan 60, method: §1.3 manifest gate, pass_when: every efficiency row has profile + geometry tag}
 risks:
   - {risk: per-channel efficiency is correlated; sum is not factorisable simply, mitigation: §1 explicit covariance reporting}
 estimated_effort: M
@@ -87,6 +88,30 @@ Truth columns are used to define denominators and final-state acceptance
 only. Reconstruction and selection numerators are computed from Class A
 reconstruction outputs and cut-flow booleans.
 
+### 1.3 Fiducial-profile handoff from plan 60
+
+Plan 60 owns the fiducial profiles and per-observable acceptance
+budget. Plan 43 consumes that budget; it does not redefine edge cuts.
+Every inclusive and by-channel efficiency artifact must therefore carry
+these fields:
+
+| Field | Required value / source | Why it is mandatory |
+|---|---|---|
+| `dataset_id` | current plan 03 frozen id, with `sig_foil_v3` retained as the plan 20 alias when used | joins plan 43 counts to registry provenance |
+| `fiducial_profile` | one of plan 60 `none`, `loose`, `tight` | identifies whether the quoted efficiency is diagnostic, default, or systematic-envelope |
+| `geometry_version` | plan 16 geometry/alignment tag used by the fiducial producer | prevents geometry drift from masquerading as efficiency drift |
+| `edge_budget_row` | plan 60 §7 observable key | binds each efficiency number to its denominator/numerator policy |
+| `dominant_edge_nuisances` | plan 45 nuisance ids, usually N8/N10 plus calibration hooks as needed | lets plan 47 display edge-related systematics beside statistics |
+
+The default thesis-facing signal-efficiency row uses the `loose`
+fiducial profile. The `none` profile is diagnostic only, and the
+`tight` profile supplies the edge systematic unless plan 60's
+profile-comparison table justifies a different envelope. The manifest
+assertion is: every row in `factorisation.parquet` and
+`channel_efficiency.parquet` has non-null `fiducial_profile`,
+`geometry_version`, and `edge_budget_row`; otherwise the affected plan
+47 row is `not-attempted`.
+
 ## 2. Per-channel breakdown
 
 Per-channel efficiencies use truth final-state topology for grouping and
@@ -143,8 +168,9 @@ the artifacts produced by §§1-2, not new reconstruction logic.
 | factorisation closure | `factorisation.json:direct_total`, `product_total` | direct selected/generated ratio equals the conditional-factor product to the §1 `1e-12` tolerance. | S.6 with V.5, C.1-C.6, P.1-P.7 contributors | LIC-CH10-NUM-1 |
 | uncertainty completeness | `factorisation_covariance.npz`, per-stage Wilson/jackknife fields | every stage in §1.2 has a central value, Wilson interval, jackknife uncertainty, and covariance entry. | plan 04 §3-§4; plan 38 observable budget | LIC-CH10-CUTFLOW |
 | channel coverage | `channel_efficiency.parquet`, `channel_manifest.json` | the five named §2.2 channels plus `other` are present, and their summed counts reproduce the inclusive §1 counts exactly. | E.9/S.6, charged leaves C.1-C.6, π0 leaves P.5-P.7 | plan 47 §1 channel rows |
-| sample provenance | `factorisation_manifest.json`, `channel_manifest.json` | dataset id is `sig_foil_v3`; truth, reco, geometry, and command hashes match between inclusive and by-channel runs. | plan 03 signal registry; plan 16 geometry | plan 47 `sample` and `command` fields |
-| publication handoff | rendered Markdown table plus machine artifacts | the thesis-facing table quotes inclusive efficiency, staged factors, and channel rows from the machine artifacts without recomputation. | plans 43→46/47/50 | LIC-CH06/LIC-CH10 signal-efficiency rows |
+| sample provenance | `factorisation_manifest.json`, `channel_manifest.json` | dataset id is `sig_foil_v3` alias plus current plan 03 registry id; truth, reco, geometry, fiducial profile, and command hashes match between inclusive and by-channel runs. | plan 03 signal registry; plans 16 and 60 geometry/profile | plan 47 `sample` and `command` fields |
+| fiducial-budget completeness | `factorisation_manifest.json`, `channel_manifest.json`, plan 60 §7 row key | every efficiency row has non-null fiducial profile, geometry version, edge budget row, and dominant edge nuisance ids. | plan 60 §7; plan 45 N8/N10 | plan 47 systematic/caveat fields |
+| publication handoff | rendered Markdown table plus machine artifacts | the thesis-facing table quotes inclusive efficiency, staged factors, channel rows, and fiducial profile from the machine artifacts without recomputation. | plans 43→46/47/50 | LIC-CH06/LIC-CH10 signal-efficiency rows |
 
 If any gate fails, plan 47 marks the affected row `red` or
 `not-attempted`; downstream significance in plan 46 must not consume the
@@ -160,5 +186,5 @@ headline signal efficiency.
 ## 5. Dependencies
 
 - **04** — uncertainty.
-- **13, 20, 30, 37** — inputs.
+- **13, 20, 30, 37, 60** — inputs and fiducial-profile budget.
 - *Consumed by:* plan 47 (ledger), plan 50, plan 46 (significance).
