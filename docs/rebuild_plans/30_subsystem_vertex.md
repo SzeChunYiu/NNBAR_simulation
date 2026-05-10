@@ -85,7 +85,7 @@ Per plan 24 V.3 / V.4 / V.5 schemas:
 - **downstream consumers:** plans 36, 38, 41, 43, 45, and 47.
 
 Current implementation citation: the vertex path is implemented by
-`reconstruct_event_vertices` (`vertex.py:163-254`; plan 08 §3.3).
+`reconstruct_event_vertices` (`nnbar_reconstruction/vertex.py:163-254`; plan 08 §3.3).
 It projects valid tracks to `z=0`, averages projections,
 reports radial RMS / skipped counts, and currently excludes some seeds
 with truth `Name`.
@@ -144,7 +144,7 @@ seeds. Migration:
 
 | Alternative | Source paper / codebase | NNBAR-specific adaptation | Expected ladder leaf delta |
 |---|---|---|---|
-| Mean of projections | Existing `reconstruct_event_vertices` (`vertex.py:163-254`) | Preserve as reproduction baseline; use V.3 projection validity and no truth-name seed exclusion after migration. | Baseline V.4 result; simple but no covariance weighting. |
+| Mean of projections | Existing `reconstruct_event_vertices` (`nnbar_reconstruction/vertex.py:163-254`) | Preserve as reproduction baseline; use V.3 projection validity and no truth-name seed exclusion after migration. | Baseline V.4 result; simple but no covariance weighting. |
 | Billoir χ² fit | Billoir-style covariance-weighted vertex fit | Use V.2/V.3 covariance matrices and plan 16 foil geometry; downweight high-χ² tracks. | Expected to reduce vertex r/z pull width and improve V.5 foil compatibility stability. |
 | Adaptive vertex fit | Kalman/adaptive robust vertex literature | Iterate weights to suppress outlier tracks from secondary interactions or EM conversions. | Potentially best V.4 robustness in shower-rich signal events; higher tuning burden before plan 38 scoring. |
 
@@ -172,16 +172,16 @@ with the geometry constants from plan 16.
 ## 7. Stage E.1 implementation handoff
 
 The legacy reproduction hook is `reconstruct_event_vertices`
-(`vertex.py:163-254`). It remains useful for comparing against older
+(`nnbar_reconstruction/vertex.py:163-254`). It remains useful for comparing against older
 event-level V.4 coordinates, but it groups by `Track_ID` and is no
 longer the preferred plan-30 fixture surface.
 
 The live Stage E.1 fixture hooks are now split in `vertex_reco.py`:
-`project_tracks_to_foil` (`vertex_reco.py:45-87`) writes V.3
-projection rows, `aggregate_event_vertices` (`vertex_reco.py:90-132`)
+`project_tracks_to_foil` (`nnbar_reconstruction/vertex_reco.py:45-87`) writes V.3
+projection rows, `aggregate_event_vertices` (`nnbar_reconstruction/vertex_reco.py:90-132`)
 writes V.4 event vertices and covariance, and `apply_foil_acceptance`
-(`vertex_reco.py:157-194`) writes the V.5 foil gate from
-`FoilGeometry` (`vertex_reco.py:13-18`). The corresponding regression
+(`nnbar_reconstruction/vertex_reco.py:157-194`) writes the V.5 foil gate from
+`FoilGeometry` (`nnbar_reconstruction/vertex_reco.py:13-18`). The corresponding regression
 coverage lives in `tests/test_vertex_reco.py`: V.3 schema/projection
 rows at `test_project_tracks_to_foil_emits_plan_30_v3_rows`
 (`tests/test_vertex_reco.py:39-74`), geometry-only V.4/V.5 acceptance
@@ -215,9 +215,9 @@ The live split hooks already produce V.3, V.4, and V.5 fixture rows,
 but promotion to the plan-47/43 surface still needs explicit
 provenance and truth-invariance coverage. L3 can promote the plan-30
 fixture chain only after these gaps close across `project_tracks_to_foil`
-(`vertex_reco.py:45-87`), `aggregate_event_vertices`
-(`vertex_reco.py:90-132`), and `apply_foil_acceptance`
-(`vertex_reco.py:157-194`):
+(`nnbar_reconstruction/vertex_reco.py:45-87`), `aggregate_event_vertices`
+(`nnbar_reconstruction/vertex_reco.py:90-132`), and `apply_foil_acceptance`
+(`nnbar_reconstruction/vertex_reco.py:157-194`):
 
 | Gap | Current live behavior | Required promotion behavior |
 |---|---|---|
@@ -245,16 +245,16 @@ if these invariants survive in the fixture rows and regression tests:
 
 | Invariant | Current live behavior | Replacement requirement |
 |---|---|---|
-| truth blindness | `project_tracks_to_foil` (`vertex_reco.py:45-87`) consumes V.2 fit rows, and `apply_foil_acceptance` (`vertex_reco.py:157-194`) consumes geometry | V.3/V.4/V.5 rows must be unchanged when `Track_ID`, truth vertices, truth origin labels, and particle names are dropped |
+| truth blindness | `project_tracks_to_foil` (`nnbar_reconstruction/vertex_reco.py:45-87`) consumes V.2 fit rows, and `apply_foil_acceptance` (`nnbar_reconstruction/vertex_reco.py:157-194`) consumes geometry | V.3/V.4/V.5 rows must be unchanged when `Track_ID`, truth vertices, truth origin labels, and particle names are dropped |
 | fixture separation | projection, event-vertex, and foil-acceptance rows are emitted by separate hooks | replacements must keep V.3, V.4, and V.5 fixtures separately materialized and hash the consumed upstream table for each stage |
-| geometry provenance | `FoilGeometry` (`vertex_reco.py:13-18`) supplies radius, half-thickness, and version | promoted V.5 rows must carry `foil_geometry_version` plus the plan 60 geometry side-car hash and edge-distance fields |
-| aggregation identity | `aggregate_event_vertices` (`vertex_reco.py:90-132`) emits `aggregation_method=mean_projection` | Billoir or adaptive fits must version the aggregation method and land only after a plan 38 V.4 row plus plan 05 decision |
+| geometry provenance | `FoilGeometry` (`nnbar_reconstruction/vertex_reco.py:13-18`) supplies radius, half-thickness, and version | promoted V.5 rows must carry `foil_geometry_version` plus the plan 60 geometry side-car hash and edge-distance fields |
+| aggregation identity | `aggregate_event_vertices` (`nnbar_reconstruction/vertex_reco.py:90-132`) emits `aggregation_method=mean_projection` | Billoir or adaptive fits must version the aggregation method and land only after a plan 38 V.4 row plus plan 05 decision |
 | covariance semantics | current projection and vertex covariance fields are flattened vectors | promoted rows must either expand component fields or publish a deterministic vector order consumed by plans 40 and 43 |
 | invalid-state visibility | projection and acceptance reasons are explicit, while invalid V.4 rows rely on `vertex_valid=false` | replacements must expose a V.4 invalid reason so plan 47 caveats and plan 66 DQM do not infer failure modes from null coordinates |
 
 These invariants keep the vertex fixture chain independent from closure
 truth and from the legacy `reconstruct_event_vertices`
-(`vertex.py:163-254`) reproduction hook.
+(`nnbar_reconstruction/vertex.py:163-254`) reproduction hook.
 
 ## 8. Acceptance criteria
 
