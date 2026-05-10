@@ -90,7 +90,7 @@ Per plan 24 C.1 / C.5 / C.6 schemas:
 - **downstream consumers:** plans 32, 38, 43, 45, and 47.
 
 Current implementation citation: `reconstruct_charged_objects`
-(`nnbar_reconstruction/charged.py:151-228`, plan 08 §3.4) owns the
+(`nnbar_reconstruction/charged.py:151-238`, plan 08 §3.4) owns the
 legacy charged-object reproduction path. It emits `pid_guess`, `dedx`,
 `scintillator_range`, direction components `px`, `py`, and `pz`, plus
 `truth_name` for validation/calibration only. It does **not** emit the
@@ -302,7 +302,7 @@ Per plan 57 MVA protocol:
 
 | Alternative | Source paper / codebase | NNBAR-specific adaptation | Expected ladder leaf delta |
 |---|---|---|---|
-| Cut-based baseline | Existing `reconstruct_charged_objects` (`nnbar_reconstruction/charged.py:151-228`) | Keep thesis Ch 8/9 threshold form but remove the C.1 truth-name gate before production scoring. | Reproduces baseline; ladder delta comes primarily from removing truth substitution. |
+| Cut-based baseline | Existing `reconstruct_charged_objects` (`nnbar_reconstruction/charged.py:151-238`) | Keep thesis Ch 8/9 threshold form but remove the C.1 truth-name gate before production scoring. | Reproduces baseline; ladder delta comes primarily from removing truth substitution. |
 | Likelihood-ratio PID | Plan 57 MVA protocol / standard likelihood-ratio classifier | Train on plan 23 charged calibration samples using C.2/C.3/C.4 features and locked train/validation/test splits. | Expected to reduce C.5 π/p confusion, especially near stopping-proton boundaries; must beat cut-based on plan 38. |
 
 ## 4. EM and neutral rejection (C.6)
