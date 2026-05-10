@@ -19,7 +19,7 @@ risks:
   - {risk: geometry refactor silently changes a thesis-quoted dimension, mitigation: plan 53 CI runs geometry-audit on every PR}
   - {risk: alignment scenarios stay theoretical and never get exercised, mitigation: plan 47 ledger requires at least one alignment systematic for any quoted vertex resolution}
 estimated_effort: M
-last_updated: 2026-05-09
+last_updated: 2026-05-10
 ---
 
 # Geometry truth and alignment-systematic seam
@@ -68,6 +68,15 @@ perturbation drawn from a scenario file:
 # alignment_scenarios/<tag>.yml
 seed: 12345
 scenarios:
+  Beampipe:
+    translation_sigma_mm: {x: 0.2, y: 0.2, z: 0.5}
+    rotation_sigma_mrad: {x: 0.1, y: 0.1, z: 0.2}
+  Beampipe_Shielding:
+    translation_sigma_mm: {x: 2.0, y: 2.0, z: 2.0}
+    rotation_sigma_mrad: {x: 1.0, y: 1.0, z: 1.0}
+  Silicon:
+    translation_sigma_mm: {x: 0.05, y: 0.05, z: 0.10}
+    rotation_sigma_mrad: {x: 0.10, y: 0.10, z: 0.20}
   TPC:
     translation_sigma_mm: {x: 0.5, y: 0.5, z: 1.0}
     rotation_sigma_mrad: {x: 0.3, y: 0.3, z: 0.5}
@@ -77,15 +86,46 @@ scenarios:
   LeadGlass:
     translation_sigma_mm: {x: 0.5, y: 0.5, z: 0.5}
     rotation_sigma_mrad: {x: 0.2, y: 0.2, z: 0.2}
+  CosmicShielding:
+    translation_sigma_mm: {x: 5.0, y: 5.0, z: 5.0}
+    rotation_sigma_mrad: {x: 2.0, y: 2.0, z: 2.0}
 ```
 
 Registered scenarios (v0.1):
 
-| Tag | Source / motivation |
-|---|---|
-| `perfect` | identity; matches today |
-| `nominal_survey` | hypothetical survey-grade misalignment |
-| `worst_case_construction` | bracket for early-commissioning |
+**DEC-2026-05-10-4 stub — alignment scenario sigma grid.**
+Context: no ESS/HIBEAM survey constants are available yet, but vertex
+and object-systematics studies need a concrete, repeatable perturbation
+grid. Decision: register the three scenario tags below. `perfect` is an
+identity baseline; `nominal_survey` is an engineering-prior placeholder;
+`worst_case_construction` is a deliberately wider commissioning
+bracket. Follow-up: replace the placeholder sigmas with measured survey
+covariances and promote this stub to the decision log before any
+alignment systematic is used in a quoted thesis result.
+
+Values are independent Gaussian widths applied per placed logical
+volume. Translations are in millimetres and rotations are small-angle
+Euler perturbations in milliradians. Shared shielding values are broad
+because they mostly affect background material traversal; silicon and
+TPC values are tighter because they dominate vertex observables.
+
+| Tag | Builder group | σ translation (x,y,z) mm | σ rotation (x,y,z) mrad | Source / motivation |
+|---|---|---:|---:|---|
+| `perfect` | all builders | (0, 0, 0) | (0, 0, 0) | identity; matches today's geometry audit |
+| `nominal_survey` | Beampipe | (0.2, 0.2, 0.5) | (0.1, 0.1, 0.2) | mechanically constrained beamline prior |
+| `nominal_survey` | Beampipe_Shielding | (2.0, 2.0, 2.0) | (1.0, 1.0, 1.0) | shielding placement is less vertex-critical |
+| `nominal_survey` | Silicon | (0.05, 0.05, 0.10) | (0.10, 0.10, 0.20) | survey-grade tracker placeholder |
+| `nominal_survey` | TPC | (0.5, 0.5, 1.0) | (0.3, 0.3, 0.5) | chamber placement placeholder |
+| `nominal_survey` | Scintillator | (1.0, 1.0, 1.0) | (0.5, 0.5, 0.5) | module/stave mounting placeholder |
+| `nominal_survey` | LeadGlass | (0.5, 0.5, 0.5) | (0.2, 0.2, 0.2) | calorimeter block-stack placeholder |
+| `nominal_survey` | CosmicShielding | (5.0, 5.0, 5.0) | (2.0, 2.0, 2.0) | shielding tolerance placeholder |
+| `worst_case_construction` | Beampipe | (1.0, 1.0, 2.0) | (0.5, 0.5, 1.0) | early-commissioning bracket |
+| `worst_case_construction` | Beampipe_Shielding | (10.0, 10.0, 10.0) | (3.0, 3.0, 3.0) | broad passive-shielding bracket |
+| `worst_case_construction` | Silicon | (0.2, 0.2, 0.5) | (0.5, 0.5, 1.0) | tracker-stress bracket |
+| `worst_case_construction` | TPC | (2.0, 2.0, 5.0) | (1.5, 1.5, 2.0) | vertex-resolution stress bracket |
+| `worst_case_construction` | Scintillator | (5.0, 5.0, 5.0) | (2.0, 2.0, 2.0) | timing/energy association stress bracket |
+| `worst_case_construction` | LeadGlass | (2.0, 2.0, 2.0) | (1.0, 1.0, 1.0) | photon direction/energy stress bracket |
+| `worst_case_construction` | CosmicShielding | (20.0, 20.0, 20.0) | (5.0, 5.0, 5.0) | conservative background-material bracket |
 
 Plan 45 systematics consumes the scenario set to produce a vertex-
 resolution and π⁰-mass-width systematic.
@@ -104,7 +144,7 @@ unchanged), satisfying plan 02's identity-default discipline.
 - §1 builder list complete; per-builder volume-level details
   populated in v0.2.
 - §2 audit passes on current `main`.
-- §3 ≥ 3 scenarios registered (perfect, nominal_survey, worst_case).
+- §3 ≥ 3 scenarios registered (`perfect`, `nominal_survey`, `worst_case_construction`).
 - §4 implementation lands in the simulation source with paired DEC
   entry.
 
