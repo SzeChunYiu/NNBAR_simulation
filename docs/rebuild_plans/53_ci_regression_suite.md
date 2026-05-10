@@ -87,8 +87,8 @@ requirements, not claims that the final workflow file already exists.
 | Check id | Trigger | Assertion | Failure semantics |
 |---|---|---|---|
 | `l1_defence_overlay_schema` | changes to plans 50, 51, 55, or 56 | every L1 overlay/question/note/glossary term has a stable id and a required artifact field | Tier 1 block |
-| `l1_review_evidence_links` | changes to plan 50 | package schema exposes overlay roll-up, owner sign-off, rerun manifest, rerun transcript, command-template ids, verifier hashes, CI report, note annex, glossary audit, and staleness status | Tier 1 block |
-| `l1_question_status_transition` | changes to plan 51 | answered L1 reviewer-question rows carry artifact, overlay, owner sign-off, review-evidence links, and rerun manifest/transcript/template ids plus verifier hash when refreshed evidence is claimed | Tier 1 block |
+| `l1_review_evidence_links` | changes to plan 50 | package schema exposes overlay roll-up, owner sign-off, rerun manifest, rerun transcript, command-template ids, verifier hashes, CI report, note annex, glossary audit, review-artifact hashes, and staleness status | Tier 1 block |
+| `l1_question_status_transition` | changes to plan 51 | answered L1 reviewer-question rows carry artifact, overlay, owner sign-off, review-evidence links, review-artifact hashes, and rerun manifest/transcript/template ids plus verifier hash when refreshed evidence is claimed | Tier 1 block |
 | `l1_wave4_plan_presence` | changes under `docs/rebuild_plans/` | plans 58, 59, 61, and 64 exist and remain between 200 and 300 lines unless a split plan is declared | Tier 1 block |
 | `l1_no_stale_cli_or_code_cites` | changes to L1-owned plans | grep for `*.py:<line>` and nnbar module commands, then require the A+ verifier transcript or remove the claim | Tier 1 block |
 | `l1_cutflow_identity_guard` | changes to plans 37, 50, 51, or 55 | canonical singular `pass_*` selection columns remain named in defence overlays and note annexes | Tier 1 block |
@@ -96,7 +96,7 @@ requirements, not claims that the final workflow file already exists.
 | `l1_rerun_transcript_link` | changes to plans 50 or 52 | any ready plan-50 L1 roll-up links both the plan-52 rerun manifest and execution transcript | Tier 1 block |
 | `l1_command_template_registry` | changes to plan 52 | transcript command-template ids are registered, immutable, limited to verified CLI help output or explicit blocked templates, and carry verifier transcripts | Tier 1 block |
 | `l1_package_staleness_guard` | changes to plans 50-56 | ready plan-50 L1 packages carry `l1_staleness.status: current` against the latest L1 hashes | Tier 1 block |
-| `l1_note_package_freshness` | changes to plans 50 or 55 | promoted L1 note annexes quote only current packages or include an explicit stale-package caveat | Tier 1 block |
+| `l1_note_package_freshness` | changes to plans 50 or 55 | promoted L1 note annexes quote only current packages or include an explicit stale-package caveat, and carry note/package/CI artifact hashes | Tier 1 block |
 | `l1_archive_drill_manifest` | thesis-freeze package build | plan-54 L1 archive drill exists, starts from the top-level README, and records blocked rows plus owner sign-off refs and review-artifact hashes | Tier 1 block for freeze packages |
 | `l1_glossary_signoff` | changes to plans 50, 55, or 56 | plan-56 sign-off rows cover every L1 term used by defence overlays and note annexes | Tier 1 block |
 
@@ -125,6 +125,10 @@ l1_defence_ci_report:
       evidence:
         line_count: 284
         stale_citation_matches: 0
+        owner_signoff_refs_present: true
+        review_evidence_link_keys: [package, ci_report, note_annex, glossary_audit]
+        review_artifact_hash_keys: [ci_report, note_annex, glossary_audit]
+        command_template_verifier_hashes: [sha256:<hash>]
       remediation: null
 ```
 
@@ -143,9 +147,10 @@ Report review rules:
 | answered-question transition evidence includes command-template ids and verifier hash | reviewer registry closes a refreshed-evidence question without replay contract or A+ verifier proof |
 | answered-question transition evidence includes owner sign-off | reviewer registry closes a question without accountable approval |
 | answered-question transition evidence includes review-evidence links | reviewer registry answer cannot be traced to package, CI, note, and glossary artifacts |
+| answered-question transition evidence includes review-artifact hashes | reviewer registry answer links can drift after artifacts are regenerated |
 | staleness guard appears for ready L1 packages | stale defence package is promoted as current evidence |
-| review-evidence links include CI, note, and glossary artifacts | package has L1 evidence in prose but no machine-readable handoff |
-| note freshness check appears for promoted notes | thesis-facing note quotes stale package as current evidence |
+| review-evidence links include CI, note, glossary artifacts, and hashes | package has L1 evidence in prose but no machine-readable handoff |
+| note freshness check appears for promoted notes with artifact hashes | thesis-facing note quotes stale package or unverifiable note evidence as current evidence |
 
 A warning status is allowed only for Tier 3 weekly checks. Tier 1 L1
 checks are pass/fail and block the plan-set edit when they fail.
@@ -159,8 +164,9 @@ checks are pass/fail and block the plan-set edit when they fail.
 - §5 L1 defence-package CI checks implemented for Stage E.3 plan edits,
   including rerun transcript linkage for refreshed artifacts and
   answered-question transition evidence with command-template ids plus verifier
-  hashes and owner sign-off, package staleness guards, review-evidence link
-  checks, note freshness checks, and command-template registry/verifier checks.
+  hashes, owner sign-off, review-artifact hashes, package staleness guards,
+  review-evidence link checks, note freshness checks, and command-template
+  registry/verifier checks.
 - Freeze-mode L1 CI includes archive-drill, owner-signoff, and
   glossary-signoff checks.
 
