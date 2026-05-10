@@ -98,6 +98,54 @@ The first implementation may use a rectangular pulse model. A realistic
 proton-current profile is a later method choice and must create a new
 `beam_time_model_id` plus a DEC row.
 
+### 2.2 Physics derivation for pile-up overlay
+
+#### Physics derivation
+
+Plan 58 physically estimates the probability that additional cosmic or
+beam-induced activity overlaps a signal or background candidate within
+the ESS timing structure. The truth-side quantity is the real
+time-ordered superposition of detector hits in an ESS pulse period; the
+production estimator observes only event timestamps, rates, hit tables,
+and reconstructed Class-A objects. The ESS long-pulse clock fixes a
+14 Hz period and a 2.86 ms in-pulse window in this v0.1 model, while
+Poisson rate folding converts per-event Monte Carlo survival into
+per-pulse and per-second occupancy probabilities
+\cite{Garoby2018ESS,HIBEAM_NNBAR_at_ESS,ParticleDataGroup:2024RPP}.
+
+The estimator is therefore a deterministic overlay sampler with saved
+rate rows: draw multiplicities from source rates in the correct unit,
+assign events to pulse windows, merge hit-level tables, rerun
+reconstruction, and compare baseline versus overlay event variables and
+selection booleans. Dominant uncertainty is the rate normalisation and
+time model, followed by timing resolution, high-occupancy tails, missing
+beam sub-channel samples, and truth-sidecar leakage. A reco-object-only
+overlay can diagnose stress but cannot close L11 for thesis-facing
+claims.
+
+#### Logic gaps
+
+| Parameter | Status before production | Closure study / target date |
+|---|---|---|
+| `ess_pulse_rate_hz = 14.0` and `ess_pulse_width_ms = 2.86` | Source-crosswalk constants; DEC still draft | Freeze `DEC-58-TIME-MODEL` after verifying plan-14/22 source anchors; target 2026-06-20 |
+| rectangular pulse profile | `OPEN:` conservative v0.1 approximation | Compare rectangular profile with a richer current-profile sidecar when available; target 2026-07-05 |
+| multiplicity distribution for overlays | `OPEN:` Poisson assumption until source manifests define correlations | Validate per-pulse multiplicity against cosmic and beam source manifests; target 2026-06-30 |
+| hit-level versus reco-object overlay mode | hit-level is required for closure; reco-object mode is diagnostic | Run side-by-side stress test and block thesis claims from reco-object-only rows; target 2026-06-25 |
+| pass limits on S.6 acceptance shift and p99 occupancy tails | `OPEN:` nuisance size must be measured, not guessed | Propagate paired A/B overburden overlays into plan-45 pile-up nuisance rows; target 2026-07-05 |
+
+#### Closure test for the derivation
+
+1. Build rate rows with explicit per-event, per-pulse, and per-second
+   units for signal, cosmic, and beam-neutron nodes.
+2. Generate deterministic hit-level overlays for signal plus CRY
+   overburden A/B samples under the frozen time model.
+3. Rerun reconstruction and compare TPC, scintillator, lead-glass, and
+   plan-37 cut-flow outputs before and after overlay.
+4. Report signal acceptance shifts, background survivor intervals, and
+   p95/p99 occupancy tails with the correct sparse-count interval method.
+5. Drop validation sidecars and require overlay multiplicities,
+   reconstructed variables, and selection decisions to remain unchanged.
+
 ## 3. Rate-unit contract
 
 Plan 58 uses three distinct units. Reviewers must be able to audit which
