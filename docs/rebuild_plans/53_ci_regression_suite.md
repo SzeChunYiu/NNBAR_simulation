@@ -87,6 +87,7 @@ requirements, not claims that the final workflow file already exists.
 | Check id | Trigger | Assertion | Failure semantics |
 |---|---|---|---|
 | `l1_defence_overlay_schema` | changes to plans 50, 51, 55, or 56 | every L1 overlay/question/note/glossary term has a stable id and a required artifact field | Tier 1 block |
+| `l1_question_status_transition` | changes to plan 51 | answered L1 reviewer-question rows carry artifact, overlay, owner sign-off, and rerun transcript ids when refreshed evidence is claimed | Tier 1 block |
 | `l1_wave4_plan_presence` | changes under `docs/rebuild_plans/` | plans 58, 59, 61, and 64 exist and remain between 200 and 300 lines unless a split plan is declared | Tier 1 block |
 | `l1_no_stale_cli_or_code_cites` | changes to L1-owned plans | grep for `*.py:<line>` and nnbar module commands, then require the A+ verifier transcript or remove the claim | Tier 1 block |
 | `l1_cutflow_identity_guard` | changes to plans 37, 50, 51, or 55 | canonical singular `pass_*` selection columns remain named in defence overlays and note annexes | Tier 1 block |
@@ -134,6 +135,7 @@ Report review rules:
 | report git rev matches package git rev | archived defence artifacts and CI evidence diverge |
 | archive and glossary checks are present when freeze mode runs | freeze package omits L1 drill or term sign-off evidence |
 | rerun transcript check appears when roll-up uses refreshed artifacts | package claims rerun evidence without execution proof |
+| answered-question transition evidence is present | reviewer registry closes a question without package evidence |
 
 A warning status is allowed only for Tier 3 weekly checks. Tier 1 L1
 checks are pass/fail and block the plan-set edit when they fail.
@@ -145,7 +147,8 @@ checks are pass/fail and block the plan-set edit when they fail.
 - §3 failure semantics documented and enforced.
 - §4 coverage targets met on `main`.
 - §5 L1 defence-package CI checks implemented for Stage E.3 plan edits,
-  including rerun transcript linkage for refreshed artifacts.
+  including rerun transcript linkage for refreshed artifacts and
+  answered-question transition evidence.
 - Freeze-mode L1 CI includes archive-drill and glossary-signoff checks.
 
 ## 7. Risks
