@@ -350,6 +350,17 @@ l1_note_annex:
         archive_inventory: sha256:<hash-or-null>
         archive_drill: sha256:<hash-or-null>
       caveat_text: <required unless applicability is not_applicable>
+    - annex_block: defence_routing
+      applicability: applies | blocked
+      source_plans: [50, 51, 52, 53, 54, 56]
+      defence_overlay_id: em_cluster_truth_blindness
+      additional_defence_overlay_ids: [pi0_cut_decomposition, selection_cutflow_identity, pileup_l11_status, strange_v0_contamination, tof_timing_resolution, bayesian_prior_sensitivity, unbounded_caveat_status]
+      reviewer_question_ids: [RQ-L1-EM-P1-CLUSTERING, RQ-L1-EM-P2-DISCRIMINANT, RQ-L1-PI0-CUTS, RQ-L1-SELECTION-CUTFLOW, RQ-L1-PILEUP-L11, RQ-L1-STRANGE-BARYON, RQ-L1-TOF, RQ-L1-BAYES-LIMIT, RQ-L1-UNBOUNDED-CAVEATS]
+      required_contents: [plan-50 overlay ids match plan-51 questions, plan-52 bundle ids match plan-54 archive pack members, plan-53 report id and plan-56 glossary audit id are current]
+      evidence_refs: [l1_defence_routing_crosswalk]
+      review_evidence_links: {overlay_rollup: <plan50-rollup-id>, owner_signoff_refs: [L1-routing-owner:<owner-hash-or-null>], ci_report: <plan53-l1-report-id>, rerun_manifest: plan52:Defence routing, rerun_transcript: plan52:defence_routing:transcript-or-null, command_template_id: blocked_missing_input_v1, command_template_verifier: null, glossary_audit: <plan56-audit-id>, staleness_summary: <plan50-staleness-id>, archive_inventory: <plan54-inventory-id-or-null>, archive_drill: <plan54-drill-id-or-null>}
+      artifact_hashes: {note_annex: sha256:<hash>, defence_package: sha256:<hash-or-null>, staleness_summary: sha256:<hash-or-null>, ci_report: sha256:<hash-or-null>, rerun_manifest: sha256:<hash-or-null>, rerun_transcript: sha256:<hash-or-null>, command_template_verifier: null, glossary_audit: sha256:<hash-or-null>, archive_inventory: sha256:<hash-or-null>, archive_drill: sha256:<hash-or-null>}
+      caveat_text: <required when any routing fixture hash drifts>
 ```
 
 Review rules:
