@@ -1,6 +1,6 @@
 ---
 id: 37_subsystem_event_selection
-title: Subsystem — event selection / cut-flow (leaves S.1–S.6)
+title: Subsystem — event selection / cut-flow (leaves S.1-S.6)
 version: 0.1
 status: draft
 owner: Analysis WG
@@ -19,29 +19,29 @@ last_updated: 2026-05-09
 
 # Subsystem — event selection / cut-flow
 
-*Charter.* Owns leaves S.1–S.6. The thesis Ch 10 cut-based selection
+*Charter.* Owns leaves S.1-S.6. The thesis Ch 10 cut-based selection
 plus its multivariate replacement.
 
-## 1. Leaf S.1–S.6 cut-flow schema
+## 1. Leaf S.1-S.6 cut-flow schema
 
 Inputs are the plan-36 `events.csv` variables. Outputs are the
 `pass_*` booleans below plus `passes_preliminary_selection`. Plan 08
 identifies `_selection_flags` as the producer
-(`reconstruction.py:1573–1600`) and `summarize_events` as the writer
-(`reconstruction.py:1730–1733`). The CLI cumulative order is fixed by
-`cli._cutflow` (`cli.py:37–44`, plan 08 §4.1):
+(`vertex.py:293-319`) and `summarize_events` as the writer
+(`vertex.py:322-444`). The CLI cumulative order is fixed by
+`cli._cutflow` (`cli.py:29-47`, plan 08 §4.1):
 `pass_scintillator_energy → pass_tpc_foil_track → pass_pion_count →
 pass_invariant_mass → pass_sphericity → pass_scintillator_balance`.
 
 | Leaf | CLI order | Input variable(s) | Produced column | Threshold / rule | Thesis source | Code citation |
 |---|---:|---|---|---|---|---|
-| S.1 | 1 | `scintillator_edep` | `pass_scintillator_energy` | `20 ≤ Σ scintillator eDep ≤ 2000 MeV` | licentiate Ch 10 cut-flow, defaults documented as Ch 9 in plan v0.1 | config `selection_scintillator_energy_min/max` (`reconstruction.py:42–43`); flag at `1573–1582` |
-| S.1 | 2 | `has_foil_tpc_track` | `pass_tpc_foil_track` | at least one reconstructed TPC track projected to the foil | licentiate Ch 10 cut-flow | flag at `reconstruction.py:1583`; upstream `has_foil_tpc_track` row at `1723–1724` |
-| S.2 | 3 | `pion_multiplicity` | `pass_pion_count` | `pion_multiplicity ≥ 1` | licentiate Ch 10 cut-flow | flag at `reconstruction.py:1584`; multiplicity at `1721–1722` |
-| S.3 | 4 | `visible_invariant_mass` | `pass_invariant_mass` | finite visible mass `≥ 500 MeV` | licentiate Ch 10 cut-flow | config `selection_invariant_mass_min` (`reconstruction.py:44`); flag at `1585–1586` |
-| S.4 | 5 | `sphericity` | `pass_sphericity` | finite sphericity `≥ 0.2` | licentiate Ch 10 cut-flow | config `selection_sphericity_min` (`reconstruction.py:45`); flag at `1587–1588` |
-| S.5 | 6 | `upper_scintillator_edep`, `lower_scintillator_edep` | `pass_scintillator_balance` | upper `≤ 320 MeV` and lower `≤ 930 MeV` | licentiate Ch 10 cut-flow | config `selection_upper/lower_scintillator_max` (`reconstruction.py:46–47`); flag at `1589–1592` |
-| S.6 | — | all S.1–S.5 booleans | `passes_preliminary_selection` | logical AND of the six cut booleans | licentiate Ch 10 final preselection | AND at `reconstruction.py:1593–1600`; cumulative report in `cli._cutflow` |
+| S.1 | 1 | `scintillator_edep` | `pass_scintillator_energy` | `20 ≤ Σ scintillator eDep ≤ 2000 MeV` | licentiate Ch 10 cut-flow, defaults documented as Ch 9 in plan v0.1 | config fields in `ReconstructionConfig` (`reconstruction.py:14-56`); flag in `_selection_flags` (`vertex.py:293-319`) |
+| S.1 | 2 | `has_foil_tpc_track` | `pass_tpc_foil_track` | at least one reconstructed TPC track projected to the foil | licentiate Ch 10 cut-flow | flag in `_selection_flags` (`vertex.py:293-319`); upstream row written by `summarize_events` (`vertex.py:322-444`) |
+| S.2 | 3 | `pion_multiplicity` | `pass_pion_count` | `pion_multiplicity ≥ 1` | licentiate Ch 10 cut-flow | flag in `_selection_flags` (`vertex.py:293-319`); multiplicity written by `summarize_events` (`vertex.py:322-444`) |
+| S.3 | 4 | `visible_invariant_mass` | `pass_invariant_mass` | finite visible mass `≥ 500 MeV` | licentiate Ch 10 cut-flow | config fields in `ReconstructionConfig` (`reconstruction.py:14-56`); flag in `_selection_flags` (`vertex.py:293-319`) |
+| S.4 | 5 | `sphericity` | `pass_sphericity` | finite sphericity `≥ 0.2` | licentiate Ch 10 cut-flow | config fields in `ReconstructionConfig` (`reconstruction.py:14-56`); flag in `_selection_flags` (`vertex.py:293-319`) |
+| S.5 | 6 | `upper_scintillator_edep`, `lower_scintillator_edep` | `pass_scintillator_balance` | upper `≤ 320 MeV` and lower `≤ 930 MeV` | licentiate Ch 10 cut-flow | config fields in `ReconstructionConfig` (`reconstruction.py:14-56`); flag in `_selection_flags` (`vertex.py:293-319`) |
+| S.6 | — | all S.1-S.5 booleans | `passes_preliminary_selection` | logical AND of the six cut booleans | licentiate Ch 10 final preselection | AND in `_selection_flags` (`vertex.py:293-319`); cumulative report in `cli._cutflow` |
 
 ### 1.1 Per-cut and cumulative accounting
 
@@ -58,7 +58,7 @@ studies in plan 41 use the independent flags and may propose
 retuned thresholds, but those retuned thresholds require a plan-05
 DEC entry and must not overwrite the Ch 10 baseline columns.
 
-Truth-use boundary: S.1–S.6 consume only event-variable columns. Any
+Truth-use boundary: S.1-S.6 consume only event-variable columns. Any
 truth/provenance dependence must be resolved upstream before the row is
 eligible for the reproduction ledger.
 
@@ -94,7 +94,7 @@ Per plan 41:
 
 | Candidate | S.6 decision rule | Current/source citation | Class-A status | Comparison metric | Reporting rule |
 |---|---|---|---|---|---|
-| **Thesis cut-flow baseline** | Apply §1 cuts in `cli._cutflow` order and require `passes_preliminary_selection`. | `_selection_flags` (`reconstruction.py:1573–1600`) and `cli._cutflow` (`cli.py:37–44`). | Production-eligible once upstream truth leaks are removed. | Reproduce Ch 10 signal acceptance and cosmic survivors. | Primary thesis reproduction number. |
+| **Thesis cut-flow baseline** | Apply §1 cuts in `cli._cutflow` order and require `passes_preliminary_selection`. | `_selection_flags` (`vertex.py:293-319`) and `cli._cutflow` (`cli.py:29-47`). | Production-eligible once upstream truth leaks are removed. | Reproduce Ch 10 signal acceptance and cosmic survivors. | Primary thesis reproduction number. |
 | **Retuned rectangular cuts** | Re-derive thresholds from plan-41 N-1 / ROC scans while keeping the same variables. | Reuses §1 produced columns. | Eligible only with DEC entries for threshold changes. | Expected limit sensitivity vs baseline. | Report alongside baseline; do not overwrite Ch 10. |
 | **BDT selection** | Train a bounded tree model on plan-36 variables and threshold the score. | Plan 57-governed replacement for S.6. | Eligible after frozen features, training provenance, and audit. | ROC AUC, background rejection at fixed signal efficiency, calibration. | Ladder comparison row; baseline remains quoted. |
 | **Neural selection** | Train a small NN on the same feature contract. | Plan 57 alternative. | Eligible only if deterministic export and interpretability artifacts land. | Same as BDT plus seed/export reproducibility. | Use only if it materially beats BDT. |
@@ -130,4 +130,4 @@ cut-flow.
 ## 6. Dependencies
 
 - **04, 24, 36, 38, 41, 47, 57** — inputs.
-- *Consumed by:* plans 41–46 (analysis level), 47, 50.
+- *Consumed by:* plans 41-46 (analysis level), 47, 50.
