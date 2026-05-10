@@ -78,6 +78,19 @@ implementation cannot pass by copying prose values:
 A validation row is accepted only when the result row, dispatch row, and
 input bundle all agree on method, inputs, and displayed value.
 
+Initial validation rows:
+
+| `validation_case_id` | `quantity` | `s_input` | `b_input` | `n_obs_input` | `expected_method` | `expected_display_value` | `rounding_rule` | `dispatch_required` | `validation_status` |
+|---|---|---:|---:|---:|---|---:|---|---:|---|
+| `asimov_high_b` | `discovery_Z0` | 50 | 20 | 70 | `Asimov Z0` | 8.68 | two-decimal Z | true | `not_run` |
+| `asimov_modest_boundary` | `discovery_Z0` | 10 | 6 | 16 | `Asimov Z0` | 3.37 | two-decimal Z | true | `not_run` |
+| `zero_background_dispatch` | `discovery_Z0` | 10 | 0 | 10 | `Feldman-Cousins` | null | no asymptotic value when `b = 0` | true | `not_run` |
+| `zero_survivor_background_ul` | `background_survival_ul` | 0 | 0 | 0 | `Feldman-Cousins` | 1.0e-5 | displayed-precision upper limit from `2.44 / 244000` | true | `not_run` |
+
+The rows start as `not_run` because L3 owns the eventual statistics
+implementation. Plan 47 may flip them only after recomputing the formula
+and checking the linked dispatch/result/input-bundle rows.
+
 DEC stub: `DEC-46-Z0-ASYMPTOTIC` — choose the Cowan Asimov discovery
 formula above for `s > 5` and `b > 5`; require §3 F-C handover for
 zero/near-zero rows. Status: draft, pending Methodology Council sign-off.
