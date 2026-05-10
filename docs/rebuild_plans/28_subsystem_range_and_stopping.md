@@ -263,6 +263,25 @@ L3 code. They also keep plan 29 charged PID from interpreting missing
 range rows as physics until the failure reason and edge-distance fields
 are present.
 
+### 5.4 Stage E.1 producer/consumer contract
+
+The L3 C.3 patch must make range association reproducible across PID,
+closure, fiducial, and systematics consumers:
+
+| Contract item | Required behavior | Downstream check |
+|---|---|---|
+| input key | consume C.1 candidates and V.2 fit rows by `(event_id, charged_candidate_id)` plus `fit_id` when available | range rows can be traced to the exact direction/covariance row used for projection |
+| output key | emit one C.3 row keyed by `(event_id, charged_candidate_id, range_id)` for each attempted charged candidate | plan 29 PID can join range features without treating missing rows as physics |
+| associated-hit sidecar | write matched scintillator hit ids, projected distances, and Bragg-rank fields keyed by the output key | plan 40/45 closure can audit range and Bragg observables without re-running association |
+| geometry provenance | record plan 60 geometry/profile hash, edge distance, and scintillator profile bin | fiducial and edge-effect systematics can separate detector coverage from PID behavior |
+| source hashes | record C.1 candidate hash, V.2 fit hash, and scintillator input hash in the manifest | plan 47 can prove C.3, C.5, and nuisance artifacts used the same upstream rows |
+| failure taxonomy | emit `range_quality_state` and `range_failure_reason` for no-hit, bad-fit, backward-only, or edge-loss rows | plan 66 DQM and plan 29 PID consume explicit reasons, not null `range_cm` inference |
+
+This contract keeps `reconstruct_range_table`
+(`nnbar_reconstruction/range_reco.py:78-107`) as the Stage E.1 C.3
+producer until L3 replaces the projection implementation behind the
+same keys.
+
 ## 6. Acceptance criteria
 
 - §3 closure passes.
@@ -271,7 +290,8 @@ are present.
   plan 38 C.3/C.5 ladder delta.
 - §5 Stage E.1 handoff is actionable for L3: the target public
   function, current unit/integration tests, remaining test obligation,
-  promotion invariants, and required C.3 fields (`range_id`, `association_method`, `range_cm`,
+  promotion invariants, producer/consumer contract, and required C.3
+  fields (`range_id`, `association_method`, `range_cm`,
   `range_edep_mev`, `bragg_peak_position_cm`,
   `range_quality_state`, `range_failure_reason`,
   `scintillator_edge_distance_mm`, `scintillator_profile_bin`, and
