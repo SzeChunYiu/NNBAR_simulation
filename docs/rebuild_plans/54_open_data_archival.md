@@ -132,7 +132,9 @@ l1_archive_drill:
     - inspect_plan52_execution_transcript
     - inspect_plan52_command_template_verifier
     - verify_review_artifact_hashes
+    - inspect_plan53_l1_ci_report
     - compare_plan55_note_annex
+    - compare_plan56_glossary_audit
   result: pass | fail
   failure_reason: null
 ```
@@ -149,6 +151,7 @@ Drill review rules:
 | command-template verifier is inspected after the transcript | archive preserves execution output but not the verified command contract |
 | refreshed-artifact rows carry verifier hashes | archive trusts a rerun command without A+ command-surface proof |
 | review-artifact hashes are checked before the note annex | archive links package prose to stale CI, note, or glossary artifacts |
+| CI report and glossary audit are opened explicitly | archive hash comparison passes but reviewer-facing evidence is unreadable |
 | note annex is checked against package overlay | thesis prose cannot be traced to evidence |
 
 The drill transcript is archived beside the inventory manifest and is
