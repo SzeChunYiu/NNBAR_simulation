@@ -371,6 +371,15 @@ or to an explicitly shadowed optimisation candidate. Reviewers should
 reject any bundle that merges baseline, retuned, and MVA-derived booleans
 under one unqualified selection result.
 
+Initial reviewer audit cases:
+
+| `audit_case_id` | Reviewer question | Required evidence before accept | Reject condition |
+|---|---|---|---|
+| `p37_baseline_identity_audit` | Do thresholds, columns, and `CUT_ORDER` match the frozen Ch 10 baseline? | cut identity rows, config id, and cumulative-order row | any row silently retunes or renames a baseline cut |
+| `p37_cutflow_count_audit` | Are independent and cumulative counts both present? | signal, cosmic, and beam rows with denominators and intervals | only final survivors are reported |
+| `p37_blindness_audit` | Did truth-blind inputs remain stable through selection? | before/after hashes and changed-event list | production rows depend on labels or future truth joins |
+| `p37_shadow_audit` | Are retuned and MVA outputs separated from baseline booleans? | separate config ids, columns, and DEC statuses | a candidate score overwrites `passes_preliminary_selection` |
+
 ## 5. Acceptance criteria
 
 - §1 cuts implemented exactly.
