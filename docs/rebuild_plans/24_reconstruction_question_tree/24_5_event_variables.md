@@ -61,6 +61,25 @@ Leaf E.1: calorimeter hits → total visible calorimeter energy
   allowed truth use: validation_only
   downstream consumers: S.1, S.5, S.6; plans 36, 37, 41
 
+Leaf E.2: calorimeter hits + geometry → hemisphere energy split
+  inputs (Class A): Scintillator and LeadGlass hit columns
+                    (Event_ID, eDep, x, y, z, module_ID, vol_name),
+                    geometry side-cars, and the plan 36 hemisphere
+                    convention
+  forbidden (Class B): Track_ID, Parent_ID, Name, origin_vol_name,
+                       truth event topology labels
+  decision rule: partition deposited energy by the documented upper /
+                 lower detector convention (plan 36 §3, sign of y in
+                 the baseline) and report scintillator and lead-glass
+                 sub-sums separately.
+  output schema: {event_id: int64, upper_scintillator_mev: float64,
+                  lower_scintillator_mev: float64,
+                  upper_leadglass_mev: float64,
+                  lower_leadglass_mev: float64,
+                  hemisphere_convention: string}
+  allowed truth use: validation_only
+  downstream consumers: S.5, S.6; plans 36, 37, 41
+
 ### Next measurement (event-variable branch)
 
 Per-variable distribution comparison: signal sample (plan 20) vs
