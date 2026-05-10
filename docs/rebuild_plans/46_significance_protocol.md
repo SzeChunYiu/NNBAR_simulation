@@ -220,6 +220,19 @@ Review fixtures:
 | `beam_neutron_low_count` | `method_selected = Feldman-Cousins` and no asymptotic or CLs value is emitted |
 | `background_high_count_shape` | `method_selected = CLs/pyhf` only if a binned model is attached; otherwise `result_status = incomplete` |
 
+Initial result-record examples:
+
+| `result_id` | `dataset_or_channel` | `quantity` | `method_selected` | `central_value` | `interval_low`, `interval_high` | `decision_dec_id` | `result_status` |
+|---|---|---|---|---:|---|---|---|
+| `result_asimov_high_b` | `sig_validation_high_b` | `discovery_Z0` | `Asimov Z0` | 8.68 | null, null | `DEC-46-Z0-ASYMPTOTIC` | `validation` |
+| `result_zero_survivor_ul` | `cosmic_muon_zero_survivor` | `background_survival_ul` | `Feldman-Cousins` | null | 0, `1.0e-5` | `DEC-46-LIMIT-CONVENTION` | `validation` |
+| `result_beam_low_count_fc` | `beam_neutron_low_count` | `observed_limit` | `Feldman-Cousins` | null | populated by F-C construction | `DEC-46-FC-HANDOVER` | `draft` |
+| `result_high_count_shape_blocked` | `background_high_count_shape` | `expected_limit` | `CLs/pyhf` | null | null, null | `DEC-46-LIMIT-CONVENTION` | `incomplete_without_binned_model` |
+
+These examples are ledger shapes. They are accepted only if the linked
+dispatch row and input bundle carry the same method, counts, caveats,
+and confidence level.
+
 Any record with missing `decision_dec_id`, hidden `unbounded_limitations`,
 or a method mismatch between dispatch and result is rejected before the
 number reaches the reproduction ledger.
