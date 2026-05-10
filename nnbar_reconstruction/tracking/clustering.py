@@ -13,11 +13,20 @@ GPU Acceleration:
 - Configurable via USE_GPU environment variable
 """
 
+import logging
 import numpy as np
 from typing import List, Tuple, Optional, Dict
 from dataclasses import dataclass
 import pandas as pd
 import os
+
+try:
+    from tqdm import tqdm
+except ImportError:
+    def tqdm(x, **kw):
+        return x
+
+logger = logging.getLogger(__name__)
 
 # GPU backend imports
 from ..utils.gpu_backend import get_backend, GPUBackend
