@@ -332,6 +332,11 @@ scan and closure table.
 - §1 violation removed.
 - §4 closure passes.
 - §3 ladder benchmark recorded.
+- Promotion checklist and evidence-bundle rows identify the exact
+  clusterer method, energy-bin closure rows, and Class-B drop hash used
+  for any plan-32/33 handoff.
+- Blocked or reproduction-only bundles cannot be consumed as production
+  cluster membership evidence.
 
 ## 6. Dependencies
 
