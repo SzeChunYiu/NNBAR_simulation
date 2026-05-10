@@ -25,6 +25,14 @@ factorisation reveals where loss occurs.
 
 ## 1. Factorisation
 
+**Verified CLI surface (A+ gate, 2026-05-10).** The live L3
+worktree currently exposes only `summarize`, `scan-pid`, and
+`validate-reco` under `python -m nnbar_reconstruction.cli --help`;
+`summarize --help` supports `--run`, `--json`, and `--tables-dir`.
+Signal-efficiency commands below are therefore L3/software
+implementation gates, not runnable invocations, until their `--help`
+surface exists.
+
 The headline efficiency is measured as conditional factors on the same
 registered signal sample, with covariance saved so reviewers can see
 which loss term dominates:
@@ -35,36 +43,32 @@ epsilon_signal = epsilon_acceptance * epsilon_reconstruction * epsilon_selection
 
 ### 1.1 Runnable procedure
 
-1. Build reconstruction tables for the frozen signal sample:
+1. Build reconstruction tables for the frozen signal sample one run at
+   a time with the verified plan 09 §14 command:
 
    ```bash
    python -m nnbar_reconstruction.cli summarize \
-       NNBAR_Detector/output/sig_foil_v3 --all-runs \
-       --table output/reco/sig_foil_v3/ --json output/reco/sig_foil_v3/summary.json
+       NNBAR_Detector/output/sig_foil_v3 --run <run> \
+       --tables-dir output/reco/sig_foil_v3/run_<run>/ \
+       --json output/reco/sig_foil_v3/run_<run>/summary.json
    ```
 
-2. Compute the staged efficiency from truth parquet and reconstruction
-   CSVs:
-
-   ```bash
-   python -m nnbar_reconstruction.cli signal-efficiency \
-       --truth-particle NNBAR_Detector/output/sig_foil_v3/Particle_output_*.parquet \
-       --truth-interaction NNBAR_Detector/output/sig_foil_v3/Interaction_output_*.parquet \
-       --reco-vertices output/reco/sig_foil_v3/vertices.csv \
-       --reco-events output/reco/sig_foil_v3/events.csv \
-       --reco-charged output/reco/sig_foil_v3/charged.csv \
-       --reco-photons output/reco/sig_foil_v3/photons.csv \
-       --reco-pi0 output/reco/sig_foil_v3/pi0.csv \
-       --geometry docs/rebuild_plans/16_geometry_and_alignment.md \
-       --bootstrap 200 --out output/efficiency/sig_foil_v3/
-   ```
-
-3. Write `factorisation.json`, `factorisation.parquet`,
+2. Concatenate run-level reconstruction tables only after applying the
+   plan 09 §15 event-id offset, then save
+   `output/reco/sig_foil_v3/manifest.json` with input hashes.
+3. **Blocked L3/software implementation gate:** no verified
+   signal-efficiency CLI exists in the live L3 worktree. Before this
+   section is runnable, a help-verified producer must read
+   `Particle_output_*.parquet`, `Interaction_output_*.parquet`,
+   `vertices.csv`, `events.csv`, `charged.csv`, `photons.csv`,
+   `pi0.csv`, and plan 16 geometry; run 200 bootstrap replicas; and
+   write to `output/efficiency/sig_foil_v3/`.
+4. Write `factorisation.json`, `factorisation.parquet`,
    `factorisation_covariance.npz`, and `factorisation_manifest.json`.
    The manifest stores input hashes, geometry/alignment scenario, event
    counts at each denominator, Wilson intervals (plan 04 §4), and
    jackknife uncertainties for conditional efficiencies (plan 04 §3).
-4. Assert the product of conditional factors equals the direct
+5. Assert the product of conditional factors equals the direct
    `passes_preliminary_selection / n_generated` efficiency to `1e-12`
    in the saved JSON before uncertainties are attached.
 
@@ -92,21 +96,11 @@ read by the reconstruction or selection path.
 
 1. Reuse `output/efficiency/sig_foil_v3/factorisation_manifest.json`
    from §1 to ensure the event set and hashes are identical.
-2. Run the channel breakdown using plan 13 topology labels:
-
-   ```bash
-   python -m nnbar_reconstruction.cli signal-efficiency \
-       --truth-particle NNBAR_Detector/output/sig_foil_v3/Particle_output_*.parquet \
-       --truth-interaction NNBAR_Detector/output/sig_foil_v3/Interaction_output_*.parquet \
-       --reco-vertices output/reco/sig_foil_v3/vertices.csv \
-       --reco-events output/reco/sig_foil_v3/events.csv \
-       --reco-charged output/reco/sig_foil_v3/charged.csv \
-       --reco-photons output/reco/sig_foil_v3/photons.csv \
-       --reco-pi0 output/reco/sig_foil_v3/pi0.csv \
-       --by-channel docs/rebuild_plans/13_signal_model.md \
-       --bootstrap 200 --out output/efficiency/sig_foil_v3/by_channel/
-   ```
-
+2. **Blocked L3/software implementation gate:** the same verified
+   signal-efficiency producer from §1.1 must support a by-channel mode
+   before this section is runnable. It must read the §1 manifest, plan
+   13 topology labels, the same truth/reco inputs, and write to
+   `output/efficiency/sig_foil_v3/by_channel/` with matching hashes.
 3. Write `channel_efficiency.parquet`, `channel_efficiency.json`,
    `channel_covariance.npz`, and `channel_manifest.json`. The parquet
    has one row per `(channel, stage)` with denominator, numerator,
