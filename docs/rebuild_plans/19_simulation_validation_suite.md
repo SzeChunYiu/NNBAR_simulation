@@ -35,7 +35,10 @@ Current `NNBAR_Detector/tests/` inventory, read from the L3 worktree on
 | Test file | Primary validation surface | Sanity plot / artifact | Regression budget | CI matrix dimension |
 |---|---|---|---|---|
 | `test_closure.py` | vertex closure and K-S bias detection | `output/validation/closure/vertex_pull.png` plus JSON summary | unbiased fixture green; biased fixture red; deterministic fixed inputs | `reco-closure` on Python versions |
+| `test_cli_response_matrix.py` | plan 42 response-matrix CLI and artifact writers | response parquet, covariance NPZ, and metadata JSON per observable | registered flags present; artifacts schema-stable | `response-matrix-cli` |
+| `test_cli_summarize_flags.py` | plan 42 summarize `--all-runs` and output flags | offset tables manifest plus summary table | event-offset concatenation stable; help lists remediation flags | `summarize-cli` |
 | `test_fast_mc.py` | fast-MC smearing and closure fixtures | `output/validation/fast_mc/closure_pull.png` plus seed manifest | fixed-seed deterministic; deliberate bias detected | `fast-mc` on Python versions |
+| `test_integration_real_sample.py` | real Geant4-output reconstruction schema integration | plan-09 section-14 table set from checked-in real sample fixture | real sample reconstructs to expected tables and columns | `real-sample-integration` |
 | `test_ladder_cli.py` | plan 38 CLI report writers | ladder run/factorise JSON reports | report schema stable; `python -m` entrypoint exits 0 | `truth-ladder-cli` |
 | `test_ladder_factorise.py` | additive truth-gap factorisation | factorisation residual table | residual closes truth gap; missing rungs rejected | `truth-ladder-core` |
 | `test_ladder_leaves.py` | plan 24 leaf registry coverage | leaf-registry JSON dump | every leaf present in fixed order; unknown leaves fail | `truth-ladder-core` |
@@ -47,12 +50,17 @@ Current `NNBAR_Detector/tests/` inventory, read from the L3 worktree on
 | `test_reconstruction_validation.py` | validation report and readiness gates | validation JSON plus class-support table | readiness thresholds enforced; all-run aggregation stable | `reco-validation` |
 | `test_registry_integrity.py` | plan 03 dataset manifests and state machine | registry round-trip JSON / manifest hash report | illegal states/transitions rejected; hash repair deterministic | `registry` |
 | `test_statistics.py` | plan 04 bootstrap, jackknife, Wilson, F-C | statistical interval JSON / pull table | seed binding deterministic; reference intervals reproduced | `statistics` |
+| `test_verify_citations.py` | A+ citation verifier for Python/C++ function and class references | verifier pass/fail fixtures and temporary source snippets | in-range citations pass; out-of-range or wrong identifier citations fail | `citation-verifier` |
 
-Plan 53 runs these via pytest on every PR. The older simulation-source
-tests (`test_cmake_configuration.py`, `test_cpp_static_safety.py`,
+Plan 53 runs these via pytest on every PR. The current inventory was
+verified against 17 `test_*.py` files in the L3 `tests/` directory on
+2026-05-10. The older simulation-source tests
+(`test_cmake_configuration.py`, `test_cpp_static_safety.py`,
 `test_geometry_audit.py`, and macro syntax tests) are no longer present
-in the current L3 test tree; if they return, this table must be updated
-in the same commit.
+in that directory; if they return, this table must be updated in the
+same commit. `test_reconstruction_smoke.py` was measured at 533 lines
+during this inventory pass, so future edits to that test need a split
+before growth.
 
 ## 2. Sanity plots per SD
 
