@@ -95,7 +95,7 @@ requirements, not claims that the final workflow file already exists.
 | `l1_defence_rerun_manifest` | Tier 3 weekly | plan-52 defence rerun bundle has rows for EM chain, selection, pile-up, strange, TOF, Bayesian cross-checks, and unbounded-caveat status | Tier 3 tracking issue if incomplete |
 | `l1_overlay_pack_member_parity` | changes to plans 50, 51, 52, 54, 55, or 56 | every plan-50 L1 overlay id maps through a plan-51 question id and to a plan-52 rerun bundle member, a plan-54 archive pack member, a plan-55 parent or fixture note-annex block, and at least one plan-56 glossary term; the defence-routing member covers the full set | Tier 1 block |
 | `l1_rerun_transcript_link` | changes to plans 50 or 52 | any ready plan-50 L1 roll-up links both the plan-52 rerun manifest and execution transcript, and plan-52 rows carry review-evidence links plus rerun/verifier review-artifact hashes | Tier 1 block |
-| `l1_command_template_registry` | changes to plan 52 | transcript command-template ids are registered, immutable, limited to verified CLI help output or explicit blocked templates, and carry verifier transcripts, hashes, and sources | Tier 1 block |
+| `l1_command_template_registry` | changes to plan 52 or its command-template companion | transcript command-template ids are registered, immutable, limited to verified CLI help output or explicit blocked templates, and carry verifier transcripts, hashes, sources, and the split registry path | Tier 1 block |
 | `l1_package_staleness_guard` | changes to plans 50-56 | ready plan-50 L1 packages carry `l1_staleness.status: current` against the latest L1 hashes, including plan-54 archive inventory/drill hashes | Tier 1 block |
 | `l1_note_package_freshness` | changes to plans 50 or 55 | promoted L1 note annexes quote only current packages or include an explicit stale-package caveat, and carry note/package/rerun/CI/glossary artifact hashes plus staleness id | Tier 1 block |
 | `l1_archive_drill_manifest` | thesis-freeze package build | plan-54 L1 archive drill exists, starts from the top-level README, and records blocked rows plus owner sign-off refs, archive-drill hash, rerun hashes, verifier hashes/sources, and review-artifact hashes | Tier 1 block for freeze packages |
@@ -140,9 +140,11 @@ l1_defence_ci_report:
       status: pass | fail
       files_checked:
         - docs/rebuild_plans/52_run_orchestration.md
+        - docs/rebuild_plans/52_run_orchestration_l1_command_templates.md
       evidence:
         executable_template_ids: [validate_reco_cutflow_v1, validate_reco_allruns_v1]
         blocked_template_ids: [blocked_missing_input_v1]
+        registry_source_files: [docs/rebuild_plans/52_run_orchestration_l1_command_templates.md]
         verified_command: python -m nnbar_reconstruction.cli validate-reco --help
         verified_options: [--runs, --all-runs, --json]
         verifier_exit_status: 0
