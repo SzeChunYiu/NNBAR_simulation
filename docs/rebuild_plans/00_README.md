@@ -390,6 +390,52 @@ them.
   feature-schema audit. Cross-cutting plan consumed by 29, 32, 37 and
   any future MVA upgrade.
 
+### 4.13 A+ closure — physics studies added by 2026-05-10 audit
+
+The 2026-05-10 examiner pass identified nine NNBAR-specific physics
+studies that A+ defense expects but were missing or lightweight in the
+original 57-plan set. Plans 58–66 close that gap. Owner-lane assignments
+are recorded in `docs/parallel-sessions/L<n>.md` Wave 4 sections.
+
+- **58_pileup_at_ess_intensity.md** (L1) — ESS beam time structure
+  (14 Hz, 2.86 ms long pulse) drives event overlap; declared as plan-01
+  limitation L11 but no overlay protocol. Plan 58 specifies the per-event
+  vs per-second rate folding, occupancy budgets per subsystem, and
+  cosmic-on-cosmic overlay closure procedure.
+- **59_strange_baryon_contamination.md** (L1) — K_s, Λ, Σ from beam-
+  neutron interactions on foil and shielding. Plan 14 §3 mentions but
+  does not source-model. Plan 59 covers branching estimates, V0
+  topology / displaced-vertex signatures, rejection cuts, closure on a
+  Λ-enriched beam-neutron slice.
+- **60_fiducial_volume_and_edge_effects.md** (L0) — per-subsystem
+  fiducial cuts (TPC drift volume, scintillator coverage, lead-glass
+  acceptance, foil-edge buffer); efficiency-vs-radius / vs-z tables;
+  closure on `cal_singleproton_*` + `sig_foil_v3` slices.
+- **61_time_of_flight_discrimination.md** (L1) — TPC drift-time +
+  scintillator hit-time → TOF estimator; cosmic-vs-signal separation;
+  per-subsystem resolution budget; closure on `cal_*` + `cosmic_*`.
+- **62_detector_aging_and_radiation_damage.md** (L2) — ESS dose-rate
+  per subsystem, literature aging constants, expected response
+  degradation over N years, mitigation; links plan 01 §L3 and plan 18
+  intercalibration.
+- **63_calibration_drift_monitoring.md** (L2) — drift-monitoring
+  schedule across the run year, per-constant tolerance bands, failure
+  triggers; integrates plan 18, plan 53 CI, plan 66 DQM.
+- **64_bayesian_limit_cross_check.md** (L1) — Bayesian credible
+  interval with Jeffreys + flat priors compared to F-C (plan 04 §5)
+  and CLs (plan 46); prior-sensitivity discussion.
+- **65_hibeam_phase1_combination.md** (L2) — Phase-1 result format
+  (vertex-only TPC), combination strategy with NNBAR Phase-2,
+  blinding protocol, correlation handling for shared systematics.
+- **66_data_quality_monitoring.md** (L0) — per-run quality variables
+  (TPC gain, scintillator yield, lead-glass linearity, vertex residual),
+  threshold table, pass/fail flag, plan-53 CI integration, plan-03
+  `quality_status` field. Offline DQM only; online DQM is post-
+  commissioning.
+
+These plans are written at A+ depth (200–300 lines each) directly,
+not as v0.1 skeletons.
+
 ---
 
 ## 5. Dependency DAG
