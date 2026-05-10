@@ -70,6 +70,29 @@ n_hits
 chi2_seed             # quality estimator from fitter
 ```
 
+### 1.3 Machine-readable V.1 candidate fixture
+
+The L3 charged-side redesign needs a stable V.1 fixture before V.2,
+vertexing, PID, or ladder scorers consume track candidates. The target
+artifact stores one row per candidate plus a sidecar for hit membership:
+
+| Fixture field | Meaning / invariant |
+|---|---|
+| `event_id`, `candidate_id` | stable join key; `candidate_id` is unique within each event |
+| `hit_membership_key` | deterministic hash of sorted Class A TPC hit indices |
+| `anchor_x`, `anchor_y`, `anchor_z` | first fitted/seeded point in detector coordinates |
+| `direction_x`, `direction_y`, `direction_z` | finite unit direction vector used by V.2 |
+| `n_hits` | number of Class A TPC hits in the candidate |
+| `cluster_method` | `geometric_cluster`, `hough_seed`, `legacy_track_id_diagnostic`, or later DEC-approved method |
+| `candidate_quality_state`, `candidate_failure_reason` | §5 quality contract in machine-readable form |
+| `truth_grouping_used` | false for production rows; true only for legacy diagnostic fixtures |
+
+The sidecar keyed by `(event_id, candidate_id, hit_membership_key)`
+contains the ordered hit indices and optional per-hit residual seed
+quantities. Dropping `Track_ID`, `Parent_ID`, `Name`, and
+`origin_vol_name` from the input must not change any production fixture
+row except rows explicitly labelled `legacy_track_id_diagnostic`.
+
 ## 2. Current implementation (per plan 08 §3.2)
 
 `_track_anchor_and_direction(group)` (`charged.py:61-82`).
