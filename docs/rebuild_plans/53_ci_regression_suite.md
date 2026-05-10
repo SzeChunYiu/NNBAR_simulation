@@ -87,7 +87,7 @@ requirements, not claims that the final workflow file already exists.
 | Check id | Trigger | Assertion | Failure semantics |
 |---|---|---|---|
 | `l1_defence_overlay_schema` | changes to plans 50, 51, 55, or 56 | every L1 overlay/question/note/glossary term has a stable id and a required artifact field | Tier 1 block |
-| `l1_review_evidence_links` | changes to plan 50 | package schema exposes overlay roll-up, owner sign-off, rerun manifest, rerun transcript, command-template ids, verifier hashes, CI report, note annex, glossary audit, staleness summary, review-artifact hashes, and staleness status | Tier 1 block |
+| `l1_review_evidence_links` | changes to plan 50 | package schema exposes overlay roll-up, owner sign-off, rerun manifest, rerun transcript, command-template ids, verifier hashes, CI report, archive inventory/drill, note annex, glossary audit, staleness summary, review-artifact hashes, and staleness status | Tier 1 block |
 | `l1_question_status_transition` | changes to plan 51 | answered L1 reviewer-question rows carry artifact, overlay, owner sign-off, review-evidence links, review-artifact hashes, and rerun manifest/transcript/template ids plus verifier hash when refreshed evidence is claimed | Tier 1 block |
 | `l1_wave4_plan_presence` | changes under `docs/rebuild_plans/` | plans 58, 59, 61, and 64 exist and remain between 200 and 300 lines unless a split plan is declared | Tier 1 block |
 | `l1_no_stale_cli_or_code_cites` | changes to L1-owned plans | grep for `*.py:<line>` and nnbar module commands, then require the A+ verifier transcript or remove the claim | Tier 1 block |
@@ -126,8 +126,8 @@ l1_defence_ci_report:
         line_count: 284
         stale_citation_matches: 0
         owner_signoff_refs_present: true
-        review_evidence_link_keys: [package, staleness_summary, ci_report, note_annex, glossary_audit]
-        review_artifact_hash_keys: [package, staleness_summary, ci_report, note_annex, glossary_audit]
+        review_evidence_link_keys: [package, staleness_summary, ci_report, archive_inventory, archive_drill, note_annex, glossary_audit]
+        review_artifact_hash_keys: [package, staleness_summary, ci_report, archive_inventory, archive_drill, note_annex, glossary_audit]
         archive_drill_hash_present: true
         command_template_verifier_hashes: [sha256:<hash>]
       remediation: null
@@ -150,7 +150,7 @@ Report review rules:
 | answered-question transition evidence includes review-evidence links | reviewer registry answer cannot be traced to package, CI, note, and glossary artifacts |
 | answered-question transition evidence includes review-artifact hashes | reviewer registry answer links can drift after artifacts are regenerated |
 | staleness guard appears for ready L1 packages and includes archive hashes | stale defence package is promoted as current evidence |
-| review-evidence links include package, staleness, CI, note, glossary artifacts, and hashes | package has L1 evidence in prose but no machine-readable handoff |
+| review-evidence links include package, staleness, CI, archive, note, glossary artifacts, and hashes | package has L1 evidence in prose but no machine-readable handoff |
 | note freshness check appears for promoted notes with artifact hashes and staleness id | thesis-facing note quotes stale package or unverifiable note evidence as current evidence |
 
 A warning status is allowed only for Tier 3 weekly checks. Tier 1 L1
