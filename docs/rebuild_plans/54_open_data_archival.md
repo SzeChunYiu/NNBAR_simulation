@@ -83,6 +83,7 @@ l1_defence_inventory:
       status: present | blocked | stale
       caveat: <required until P.1-P.7 closure rows are present>
       staleness_summary_hash: sha256:<hash-or-null>
+      defence_routing_crosswalk_hash: sha256:<hash-or-null>
       owner_signoff_refs: [RQ-L1-EM-P1-CLUSTERING:<owner-hash-or-null>]
       rerun_manifest_hash: sha256:<hash-or-null>
       rerun_transcript_hash: sha256:<hash-or-null>
@@ -104,6 +105,7 @@ l1_defence_inventory:
       status: present | blocked | retired | stale
       caveat: null
       staleness_summary_hash: sha256:<hash-or-null>
+      defence_routing_crosswalk_hash: sha256:<hash-or-null>
       owner_signoff_refs: [RQ-L1-SELECTION-CUTFLOW:<owner-hash>]
       rerun_manifest_hash: sha256:<hash-or-null>
       rerun_transcript_hash: sha256:<hash-or-null>
@@ -126,6 +128,7 @@ l1_defence_inventory:
       status: present | blocked | stale
       caveat: <required until paired pile-up closure is present>
       staleness_summary_hash: sha256:<hash-or-null>
+      defence_routing_crosswalk_hash: sha256:<hash-or-null>
       owner_signoff_refs: [RQ-L1-PILEUP-L11:<owner-hash-or-null>]
       rerun_manifest_hash: sha256:<hash-or-null>
       rerun_transcript_hash: sha256:<hash-or-null>
@@ -146,6 +149,7 @@ l1_defence_inventory:
       status: present | blocked | stale
       caveat: <required until Lambda-enriched closure is present>
       staleness_summary_hash: sha256:<hash-or-null>
+      defence_routing_crosswalk_hash: sha256:<hash-or-null>
       owner_signoff_refs: [RQ-L1-STRANGE-BARYON:<owner-hash-or-null>]
       rerun_manifest_hash: sha256:<hash-or-null>
       rerun_transcript_hash: sha256:<hash-or-null>
@@ -166,6 +170,7 @@ l1_defence_inventory:
       status: present | blocked | stale
       caveat: <required until cal and cosmic TOF closure rows are present>
       staleness_summary_hash: sha256:<hash-or-null>
+      defence_routing_crosswalk_hash: sha256:<hash-or-null>
       owner_signoff_refs: [RQ-L1-TOF:<owner-hash-or-null>]
       rerun_manifest_hash: sha256:<hash-or-null>
       rerun_transcript_hash: sha256:<hash-or-null>
@@ -186,6 +191,7 @@ l1_defence_inventory:
       status: present | blocked | stale
       caveat: <required until Jeffreys and flat-prior comparison rows exist>
       staleness_summary_hash: sha256:<hash-or-null>
+      defence_routing_crosswalk_hash: sha256:<hash-or-null>
       owner_signoff_refs: [RQ-L1-BAYES-LIMIT:<owner-hash-or-null>]
       rerun_manifest_hash: sha256:<hash-or-null>
       rerun_transcript_hash: sha256:<hash-or-null>
@@ -206,6 +212,7 @@ l1_defence_inventory:
       status: present | blocked | stale
       caveat: <required unless status is present>
       staleness_summary_hash: sha256:<hash-or-null>
+      defence_routing_crosswalk_hash: sha256:<hash-or-null>
       owner_signoff_refs: [RQ-L1-UNBOUNDED-CAVEATS:<owner-hash-or-null>]
       rerun_manifest_hash: sha256:<hash-or-null>
       rerun_transcript_hash: sha256:<hash-or-null>
@@ -227,6 +234,7 @@ l1_defence_inventory:
       status: present | blocked | stale
       caveat: <required if any linked routing artifact is stale or blocked>
       staleness_summary_hash: sha256:<hash-or-null>
+      defence_routing_crosswalk_hash: sha256:<hash-or-null>
       owner_signoff_refs: [L1-routing-owner:<owner-hash-or-null>]
       rerun_manifest_hash: sha256:<hash-or-null>
       rerun_transcript_hash: sha256:<hash-or-null>
@@ -255,7 +263,7 @@ Inventory review rules:
 | command-template verifier hashes are archived | future rerun cannot prove the command surface was verified |
 | CI, note-annex, and glossary hashes are archived | package evidence cannot be traced to review, prose, and term-signoff artifacts |
 | archive drill hash is archived with the inventory | future reader cannot prove the reviewer-style drill transcript matched the inventory |
-| `stale` rows keep package and staleness hashes | future readers cannot tell why archived evidence was not quote-ready |
+| `stale` rows keep package, defence-routing crosswalk, and staleness hashes | future readers cannot tell why archived evidence was not quote-ready or which route was audited |
 | `blocked` rows carry a caveat and owning plan | open limitations disappear at freeze |
 | retired parquet rows keep manifests | retention policy removes replay provenance |
 | inventory hash is listed in the top-level README | reviewer cannot discover the L1 defence pack |
