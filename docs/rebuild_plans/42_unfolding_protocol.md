@@ -10,11 +10,11 @@ outputs:
 acceptance:
   - {test: response matrix produced for at least visible invariant mass and π⁰ mass, method: §2 deliverable, pass_when: matrices saved}
   - {test: regularisation choice (IBU vs SVD) named with per-observable iteration / reg parameter, method: §3 review, pass_when: signed in DEC}
-  - {test: closure on truth-MC sample passes, method: §4 closure, pass_when: pull mean ≈ 0, width ≈ 1 within tolerance}
+  - {test: closure on truth-MC sample passes, method: §4 closure, pass_when: every §4.2 observable row passes its explicit pull/bias/yield tolerance}
 risks:
   - {risk: model dependence — unfolded distribution depends on the prior, mitigation: §5 model-variation systematic}
 estimated_effort: M
-last_updated: 2026-05-09
+last_updated: 2026-05-10
 ---
 
 # Unfolding protocol
