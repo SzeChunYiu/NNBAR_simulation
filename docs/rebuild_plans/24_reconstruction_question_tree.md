@@ -19,7 +19,7 @@ risks:
   - {risk: leaves get renamed during subsystem-plan writing → cascading rework, mitigation: this plan is signed before 25-37 start (00_README §2)}
   - {risk: tree completeness can never be proven, only refuted, mitigation: §10 reviewer challenge inviting new branches}
 estimated_effort: L
-last_updated: 2026-05-09
+last_updated: 2026-05-10
 ---
 
 # Reconstruction fundamental question tree
@@ -93,9 +93,10 @@ subsystem plan.
 
 ```
 Root: Can reconstruction prove n̄ annihilation from observables alone?
-  ├── §2 Vertex                 (V.1 hits→tracks, V.2 direction,
-  │                              V.3 foil projection, V.4 aggregation,
-  │                              V.5 acceptance)              → plan 25
+  ├── §2 Vertex                 (V.1 hits→tracks → plan 25,
+  │                              V.2 direction → plan 26,
+  │                              V.3 projection, V.4 aggregation,
+  │                              V.5 acceptance → plan 30)
   ├── §3 Charged objects        (C.1 cand, C.2 dE/dx, C.3 range,
   │                              C.4 scint match, C.5 π/p decision,
   │                              C.6 rejection)               → plans 25, 27, 28, 29
@@ -148,7 +149,7 @@ identified by review become signed §2–§6 revision additions.
 - **01_realism_contract** — Class A/B/C scheme; §7 audit gate.
 - **07, 08** — simulation/reconstruction baselines.
 - **09** — column classifications used in per-leaf input lists.
-- *Consumed by:* plans 25, 27–37, 38 (rungs), 47 (ledger method),
+- *Consumed by:* plans 25–37, 38 (rungs), 47 (ledger method),
   50 (defence package).
 
 ## 13. References
