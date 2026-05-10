@@ -135,6 +135,8 @@ l1_defence_rerun_manifest:
         package_rollup: <plan50-rollup-id>
         staleness_summary: <plan50-staleness-id>
         ci_report: <plan53-l1-report-id>
+        archive_inventory: <plan54-inventory-id-or-null>
+        archive_drill: <plan54-drill-id-or-null>
         note_annex: <plan55-annex-id-or-null>
         glossary_audit: <plan56-audit-id>
       blocker: null
@@ -148,7 +150,7 @@ Manifest review rules:
 | every ready row records source and output hashes | refreshed artifacts cannot be tied to frozen inputs |
 | every blocked row names the missing input | unavailable samples are hidden as silent skips |
 | overlay ids point back to plan 50 | rerun evidence is disconnected from the defence package |
-| review-evidence links point to package, staleness, CI, note, and glossary artifacts | rerun evidence cannot be reconciled with reviewer-facing artifacts |
+| review-evidence links point to package, staleness, CI, archive, note, and glossary artifacts | rerun evidence cannot be reconciled with reviewer-facing artifacts |
 | seed formula matches §2 exactly | reviewer rerun is not bitwise reproducible |
 | answered or closed reviewer questions carry an owner sign-off ref | rerun evidence closes a question without accountable approval |
 
@@ -185,7 +187,10 @@ l1_defence_rerun_transcript:
       owner_signoff_ref: RQ-L1-SELECTION-CUTFLOW:<owner-hash-or-null>
       review_artifact_hashes:
         package: sha256:<hash>
+        staleness_summary: sha256:<hash>
         ci_report: sha256:<hash>
+        archive_inventory: sha256:<hash-or-null>
+        archive_drill: sha256:<hash-or-null>
         note_annex: sha256:<hash-or-null>
         glossary_audit: sha256:<hash>
 ```
@@ -201,7 +206,7 @@ Transcript review rules:
 | blocked rows preserve the upstream owner | reviewer-triggered rerun becomes an unowned deferral |
 | host class and environment lock are recorded | local, LUNARC, and container reruns cannot be compared |
 | transcript owner sign-off refs match the manifest and plan 51 | execution evidence is promoted under a different approval than the request |
-| transcript review-artifact hashes match plan 50/53/55/56 links | execution evidence is promoted after review artifacts drift |
+| transcript review-artifact hashes match plan 50/53/54/55/56 links | execution evidence is promoted after review artifacts drift |
 
 A rerun is promotable only when every `ready` row in §4.1 has a
 matching transcript row with `exit_status: pass`. Blocked rows remain
