@@ -35,7 +35,8 @@ Leaf P.5/P.6: photon objects → π⁰ candidates and accidental tags
 - **Current implementation evidence:** the compact current source
   implements π⁰ pairing and the strict six-cut AND inside
   `find_pi0_candidates` (`photon.py:204-263`). The configured
-  thresholds live in `ReconstructionConfig` (`reconstruction.py:14-41`).
+  thresholds live in the current `ReconstructionConfig` pi0 fields;
+  §2.3 records the class and field grep evidence without a stale line range.
   The current output emits only
   `passes_selection`, so the individual `passes_*` cut columns below
   are a required plan-34 remediation target rather than a current
@@ -179,7 +180,7 @@ before this plan was committed:
 
 | Cited contract | Verifier evidence | Status |
 |---|---|---|
-| π⁰ threshold defaults | `class ReconstructionConfig` resolves at `reconstruction.py:14`, inside the cited `reconstruction.py:14-41` range. | keep citation |
+| π⁰ threshold defaults | `grep -nE '^(def|class) ReconstructionConfig' nnbar_reconstruction/reconstruction.py` resolves the class in the current L3 source, and `grep -nE 'pi0_(mass|min|max|total|scint|leadglass|opening)'` resolves the Ch 8 pi0 threshold fields in that class body. | keep verified symbol, no stale line citation |
 | raw pair construction and strict six-cut AND | `def find_pi0_candidates` resolves at `photon.py:204`, inside the cited `photon.py:204-263` range. | keep citation |
 | optional prompt-timing veto source | `def annotate_timing_windows` resolves at `vertex.py:86`, inside the cited `vertex.py:86-160` range. | keep citation |
 
