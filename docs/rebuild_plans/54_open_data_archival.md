@@ -4,7 +4,7 @@ title: Open-data archival — Zenodo, DOI, RECAST-style preservation
 version: 0.1
 status: draft
 owner: Reproducibility WG
-depends_on: [00_README, 03_dataset_registry, 11_build_and_runtime_environment, 47_reproduction_ledger, 50_reviewer_defense_package, 51_reviewer_question_registry, 52_run_orchestration, 53_ci_regression_suite, 55_internal_note_template, 56_glossary]
+depends_on: [00_README, 03_dataset_registry, 11_build_and_runtime_environment, 47_reproduction_ledger, 50_reviewer_defense_package, 51_reviewer_question_registry, 52_run_orchestration, 53_ci_regression_suite, 55_internal_note_template, 55_internal_note_template_l1_annex_fixture, 56_glossary]
 outputs:
   - {path: docs/rebuild_plans/54_open_data_archival.md, schema: this file}
 acceptance:

@@ -4,7 +4,7 @@ title: Internal-note template — L1 annex fixture
 version: 0.1
 status: draft
 owner: Software Quality
-depends_on: [55_internal_note_template, 50_reviewer_defense_package, 51_reviewer_question_registry, 52_run_orchestration, 53_ci_regression_suite, 54_open_data_archival, 56_glossary]
+depends_on: [55_internal_note_template, 50_reviewer_defense_package, 51_reviewer_question_registry, 52_run_orchestration]
 outputs:
   - {path: docs/rebuild_plans/55_internal_note_template_l1_annex_fixture.md, schema: split L1 annex fixture}
 acceptance:
