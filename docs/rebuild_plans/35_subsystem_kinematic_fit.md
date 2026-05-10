@@ -79,6 +79,19 @@ surface that made the fit eligible or ineligible:
 | `covariance_status` | `valid`, `missing`, `singular`, or `diagnostic_only` | non-valid status forbids fitted outputs |
 | `failure_reason_if_invalid` | status-specific reason string | must map to a §1.2 failure reason |
 
+Initial covariance-model examples:
+
+| `covariance_model_id` | Fit input surface | Allowed fit modes | Required closure row | Approval rule |
+|---|---|---|---|---|
+| `diag_energy_angle_plan40_v0` | diagonal photon energy, θ, and φ uncertainties from the plan-40 pull model | `mass_constraint` | `cal_singlegamma_v1:synthetic_pi0_pairs` | diagnostic until pull width and χ² closure pass |
+| `diag_photon_plus_vertex_v0` | photon diagonal terms plus plan-30 vertex covariance | `vertex_constraint`, `combined` | `sig_foil_v3:plan34_candidates` | blocked until vertex covariance and convergence audits pass |
+| `full_photon_covariance_rnd_v0` | full photon covariance matrix including off-diagonal energy-angle terms | `mass_constraint`, `combined` | dedicated plan-40 full-matrix pull row | cannot replace diagonal model without `DEC-35-COVARIANCE-MODEL` |
+| `diagnostic_truth_resolution` | generated resolution labels used only as an evaluator stress test | none in production | Class-B truth-drop rerun | forbidden for fit inputs; output hashes must match after removal |
+
+These ids are row-key examples for the fixture and closure inventory,
+not runtime CLI names. The production default remains `raw_only_repro`
+until a covariance-model DEC is approved.
+
 The covariance fixture is rejected if truth resolution or generated
 four-vector information appears in any fit-input field.
 
