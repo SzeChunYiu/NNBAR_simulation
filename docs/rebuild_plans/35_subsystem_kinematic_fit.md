@@ -113,7 +113,7 @@ the cut-config id. That key is the join surface for raw, fitted, and
 fit-failure rows; it must not include truth parentage, generated π⁰
 ids, or row order after filtering.
 
-### 1.4 A+ citation audit for current raw-candidate baseline
+### 1.5 A+ citation audit for current raw-candidate baseline
 
 Current-source claims in §1 and §4 were re-checked against the L3
 worktree before this plan was committed:
