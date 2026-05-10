@@ -32,16 +32,29 @@ inputs to plans 21 (cosmic sample), 22 (beam-neutron sample), and
 
 ### 1.1 Source: CRY (LLNL Cosmic-Ray Shower library)
 
-Plan 21 integrates CRY. CRY parameters fixed here:
+Plan 21 integrates CRY. CRY parameters fixed here and cross-checked
+against plan 21 §1:
 
-| Parameter | Value | Justification |
+| Parameter | Value | Justification / source |
 |---|---|---|
-| Latitude | 55.7° N | ESS Lund, Sweden |
-| Altitude | 10 m a.s.l. | Lund site |
-| Date | 2026-06-01 (provisional) | corresponds to thesis-defence preparation; plan 21 §X confirms |
-| Solar modulation | use CRY default for that date | cosmic flux varies ~10% over the solar cycle |
-| Particle types enabled | µ, e±, γ, n, p | covers all relevant secondaries |
-| Sample box | size as detector + overburden | matches geometry |
+| Latitude | 55.7° N | ESS Lund coordinate used by plan 21 §1. |
+| Altitude | 10 m a.s.l. | Lund-site altitude used by plan 21 §1. |
+| Date | 2026-06-01 | Provisional solar-modulation date; plan 21 marks this as user-confirmed before freeze. |
+| Solar modulation | CRY default for date | Included in the CRY model; plan 45 carries the residual cosmic-flux nuisance. |
+| Particle types enabled | µ, e±, γ, n, p | Atmospheric mixture needed for muon, EM, and hadronic sub-channels. |
+| Sample box dimensions | full detector + 5 m overburden | Matches plan 21 §1 sample-box definition; overburden variants are in plan 21 §2. |
+| Sample box top altitude | 10 m above ground | Plan 21 §1; separates site altitude from generator plane height. |
+
+**DEC-2026-05-10-1 stub — CRY site/date freeze.** Context: CRY
+flux depends on latitude, altitude, date, and solar modulation. Decision:
+Wave 2 freezes the cosmic baseline at ESS Lund latitude 55.7° N,
+altitude 10 m a.s.l., CRY date 2026-06-01, and CRY's default solar
+modulation for that date. Rationale: this matches plan 21 §1 and makes
+cosmic-rate rows reproducible while preserving a plan-45 cosmic-flux
+systematic. Alternatives: use the legacy per-species macros only, or
+scan several dates across the solar cycle. Consequence: `cosmic_cry_essLund_*`
+manifest rows must include these values and cite this DEC stub until a
+formal plan-05 entry is promoted.
 
 ### 1.2 Sub-channels
 
