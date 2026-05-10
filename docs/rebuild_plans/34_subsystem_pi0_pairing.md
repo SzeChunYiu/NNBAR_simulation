@@ -206,7 +206,27 @@ thesis six-cut baseline.
    columns. The raw pair list, kinematic quantities, cut booleans, and
    `passes_selection` must be unchanged.
 
-### 5.1 Decision-log stubs for π⁰ pairing and cuts
+### 5.1 Machine-readable π⁰ closure fixture
+
+Each pairing/cut candidate writes one closure-result row per dataset and
+selection configuration:
+
+| Field | Required content | Review rule |
+|---|---|---|
+| `pairing_method_id`, `cut_config_id` | raw pairer and cut tuple under test | must match §1/§2 fixture fields |
+| `dataset_id` | `sig_foil_v3` or `cal_singlepion_mip_v1` | signal and no-π⁰ accidental samples both required |
+| `n_events`, `n_raw_pairs`, `n_selected_pairs` | denominators and selected counts | zero denominators fail closure |
+| `mass_peak_mean_mev`, `mass_peak_width_mev` | selected mass fit outputs | compared to §5 pass criterion |
+| `correct_pair_efficiency` | signal truth-label evaluator metric | validation-only, never a production input |
+| `accidental_selected_rate` | no-π⁰ or wrong-parent selected rate | reported with finite interval |
+| `per_cut_pass_fractions` | map for the six §2 cut columns | proves the strict AND decomposes correctly |
+| `class_b_drop_hash` | rerun artifact without photon truth/provenance | pair list and cut hashes must match |
+| `closure_status` | `pass`, `fail`, or `diagnostic_only` | only `pass` rows can support production cuts |
+
+Rows whose truth labels affect the pair list, kinematics, or cut booleans
+are invalid even if their evaluator-only efficiency numbers improve.
+
+### 5.2 Decision-log stubs for π⁰ pairing and cuts
 
 P.5/P.6 choices change candidate multiplicity and the Ch 8 π⁰
 baseline, so threshold or ranking changes require plan-05 approval:
