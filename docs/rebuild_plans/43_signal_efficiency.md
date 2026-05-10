@@ -28,7 +28,8 @@ factorisation reveals where loss occurs.
 **Verified CLI surface (A+ gate, 2026-05-10).** The live L3
 worktree exposes `summarize`, `scan-pid`, `response-matrix`, and
 `validate-reco` under `python -m nnbar_reconstruction.cli --help`;
-`summarize --help` supports `--run`, `--json`, and `--tables-dir`.
+`summarize --help` supports `--all-runs`, `--tables-dir`,
+`--table`, `--bootstrap`, and `--json`.
 It does not expose signal-efficiency commands yet, so those steps below
 are L3/software implementation gates until their `--help` surface
 exists.
@@ -43,19 +44,20 @@ epsilon_signal = epsilon_acceptance * epsilon_reconstruction * epsilon_selection
 
 ### 1.1 Runnable procedure
 
-1. Build reconstruction tables for the frozen signal sample one run at
-   a time with the verified plan 09 §14 command:
+1. Build reconstruction tables for the frozen signal sample with the
+   verified multi-run plan 09 §14 command:
 
    ```bash
    python -m nnbar_reconstruction.cli summarize \
-       NNBAR_Detector/output/sig_foil_v3 --run <run> \
-       --tables-dir output/reco/sig_foil_v3/run_<run>/ \
-       --json output/reco/sig_foil_v3/run_<run>/summary.json
+       NNBAR_Detector/output/sig_foil_v3 --all-runs \
+       --tables-dir output/reco/sig_foil_v3/ \
+       --table output/reco/sig_foil_v3/runs.csv \
+       --json output/reco/sig_foil_v3/summary.json
    ```
 
-2. Concatenate run-level reconstruction tables only after applying the
-   plan 09 §15 event-id offset, then save
-   `output/reco/sig_foil_v3/manifest.json` with input hashes.
+2. Assert `output/reco/sig_foil_v3/manifest.json` records the
+   plan 09 §15 event-id offset and source hashes before the staged
+   efficiency producer consumes the reconstruction tables.
 3. **Blocked L3/software implementation gate:** no verified
    signal-efficiency CLI exists in the live L3 worktree. Before this
    section is runnable, a help-verified producer must read
