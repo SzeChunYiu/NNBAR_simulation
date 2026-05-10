@@ -292,6 +292,17 @@ l1_defence_ci_report:
         note_annex_block: event_variable_and_cutflow_identity
         independent_and_cumulative_counts_required: true
       remediation: null
+    - check_id: l1_defence_rerun_manifest
+      status: pass | fail | warn
+      files_checked:
+        - docs/rebuild_plans/52_run_orchestration.md
+      evidence:
+        expected_bundle_members: [em_object_chain, ch10_cutflow, pileup_l11, strange_v0, tof_timing, bayesian_limits, unbounded_caveats]
+        missing_bundle_members: [<member-or-empty>]
+        ready_rows_require_source_and_output_hashes: true
+        blocked_rows_require_owner_and_blocker: true
+        review_evidence_links_required: true
+      remediation: null
 ```
 
 Report review rules:
