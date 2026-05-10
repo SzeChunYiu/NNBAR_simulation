@@ -222,6 +222,13 @@ lead-glass fraction and method tags \cite{ParticleDataGroup:2024RPP,fabjan2020pa
 Detector-specific scale and component response are fixed by plan 18 and
 prototype calibration evidence \cite{Dunne2022CalorimeterPrototype}.
 
+Wave-6 photon-object leaf coupling:
+
+| Leaf | Coupling guard | Closure assertion |
+|---|---|---|
+| P.3 direction | consumes P.1 centroid plus plan-30 vertex/fallback status | angular pulls are split by vertex source and path length |
+| P.4 energy | consumes calibrated P.1 component sums plus plan-18 constants | energy linearity is split by lead-glass fraction and method id |
+
 #### Logic gaps
 
 | Parameter | Status before production | Closure study / target date |
