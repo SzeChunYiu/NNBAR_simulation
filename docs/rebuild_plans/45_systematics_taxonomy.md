@@ -120,6 +120,55 @@ Initial throw-row rejection examples:
 | `payload_kind_mismatch` | scenario endpoint used for a `continuous` nuisance or numeric shift used for an envelope | `incomplete` | variation payload must match §1 `variation_kind` |
 | `empty_observable_list` | throw recomputes no affected observables | `incomplete` | cannot clear a missing-systematic flag for any quoted result |
 
+### 1.3 Physics derivation for nuisance definitions
+
+#### Physics derivation
+
+Each nuisance physically estimates the first-order response of a quoted
+efficiency, background rate, or observable to one uncertain detector,
+model, or source parameter. The truth-side quantity is the result that
+would be obtained with the real detector and true flux/model settings;
+the production estimator observes nominal simulation plus paired
+up/down or envelope throws. Treating these variations as nuisance
+parameters is the standard likelihood/covariance construction for
+propagating systematic uncertainty, provided each nuisance has a unique
+source, a ±1σ or envelope definition, and a declared correlation policy
+\cite{ParticleDataGroup:2024RPP,Cowan:2011Likelihood}.
+
+The estimator is therefore a registry plus throw ledger. Continuous
+calibration uncertainties use paired plus/minus throws, discrete physics
+model choices use envelopes, and scenario uncertainties use named
+geometry/material endpoints. Dominant biases come from double-counting
+one physical source under multiple nuisance ids, treating unbounded
+limitations as zero-width errors, and freezing correlations before paired
+variation runs exist. Robustness comes from nominal-linked throws,
+single-source ownership, symmetric correlation-pair rows, and explicit
+ledger flags for every unmeasured `M0` correlation.
+
+#### Logic gaps
+
+| Parameter | Status before production | Closure study / target date |
+|---|---|---|
+| N1-N3/N9 detector-calibration ±1σ values | Draft values from plans 17/18; require measured throw hashes | Run paired calibration throws and verify affected energy/PID observables; target 2026-06-30 |
+| N4/N5 discrete physics and signal-model envelopes | `OPEN:` envelope endpoints named but not measured in the ledger | Recompute signal/background observables for each endpoint and freeze half-spread rule; target 2026-07-05 |
+| N6/N7 flux normalisation widths | Draft ±15% cosmic and ±10% beam widths; rate-source DEC not signed | Couple to plan-44 rate-source rows and verify no double normalisation; target 2026-06-30 |
+| N8/N10 geometry/material scenario envelopes | `OPEN:` scenario endpoints need paired geometry/material runs | Measure alignment/material effects and decide whether N8/N10 correlation stays `M0`; target 2026-07-05 |
+| `M0` correlation pairs | provisional numeric 0.0 with missing-correlation flag | Produce paired-throw covariance rows or carry explicit M0 caveat in plan 47/50; target 2026-07-10 |
+
+#### Closure test for the derivation
+
+1. For every nuisance N1-N10, build nominal-linked throw rows matching
+   the declared variation kind and affected-observable list.
+2. Recompute each affected result for both directions or all envelope
+   endpoints, storing nominal hashes and opposite-throw links.
+3. Build the correlation-pair fixture and assert symmetry, diagonal
+   identity, and explicit flags for every unmeasured `M0` pair.
+4. Run the single-source audit: each calibration, flux, geometry, and
+   model effect must appear in exactly one owning nuisance or one
+   unbounded caveat.
+5. Pass the bundle to plan 46 and verify numeric covariance inputs,
+   draft throws, M0 flags, and unbounded limitations remain distinct.
+
 ## 2. Correlation matrix
 
 A nuisance is fully correlated with itself. The up/down throws of a
