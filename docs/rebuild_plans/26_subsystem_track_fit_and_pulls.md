@@ -97,16 +97,24 @@ bitwise unchanged when validation-only truth direction fields are
 removed from the evaluator input; only `pulls_theta_phi` and closure
 artifact rows may change.
 
-## 2. Current vs alternative
+## 2. Current implementation and alternatives
 
-- *Current.* `_track_anchor_and_direction` (plan 08 §3.2; `charged.py:61-82`): direction
-  is `(last_hit - first_hit) / |…|`; no covariance.
+- *Legacy current.* `_track_anchor_and_direction` (plan 08 §3.2;
+  `charged.py:61-82`): direction is `(last_hit - first_hit) / |…|`;
+  no covariance.
+- *Live Stage E.1 hook.* `fit_track_candidates` (`track_fit.py:55-117`)
+  consumes plan-25 V.1 `hit_indices`, fetches Class A TPC coordinates,
+  runs `_fit_line` (`track_fit.py:32-43`), writes
+  `direction_method=linear_pca`, residual vectors, χ²/ndf, and a
+  covariance vector from `_covariance` (`track_fit.py:46-52`). This
+  unblocks V.3/V.4 and C.2 consumers, but it still needs the full §1.3
+  quality fields (`fit_id`, failure reason, covariance validity,
+  degraded flag) before final closure sign-off.
 - *Kalman fit.* Seeded by V.1; produces direction + covariance +
   residuals. Standard ACTS implementation. Provides χ²/ndf.
 - *Linear least-squares (PCA).* Cheaper than Kalman; gives
   covariance from the eigen-decomposition. Acceptable for straight
   tracks.
-
 
 ### 2.1 Alternative comparison rows
 
@@ -168,18 +176,26 @@ to silently retune vertex or PID thresholds.
 
 ## 5. Stage E.1 implementation handoff
 
-For L3's reconstruction redesign, V.2 should become a standalone module
-with a stable input/output seam:
+For L3's reconstruction redesign, V.2 is now a standalone module seam
+with explicit remaining gates:
 
 1. Accept V.1 candidate hit indices and fetch only Class A TPC columns.
-2. Run the configured fitter in priority order: PCA/linear LS first,
-   then Kalman once the covariance model is source-backed.
+2. The live baseline runs PCA/linear LS and labels rows with
+   `direction_method=linear_pca`; Kalman remains a later replacement once
+   its covariance model is source-backed.
 3. Emit the §1 direction and covariance schema plus the §4 quality
-   fields in one row per V.1 candidate.
+   fields in one row per V.1 candidate. The current hook partially
+   satisfies this; L3 still must add `fit_id`, `fit_failure_reason`,
+   `covariance_valid`, `fit_degraded`, and
+   `n_residual_degrees_of_freedom` before plan 40 closure can treat the
+   table as complete.
 4. Retain `_track_anchor_and_direction` only as a named degraded
    baseline, never as an unlabeled production-equivalent result.
 5. Freeze the V.2 table before any truth direction, pull, or ladder
    scorer reads it.
+6. Plan 66 consumes `fit_quality_state`, covariance validity, degraded
+   fraction, and hit count as run-quality fields once those columns are
+   present.
 
 ## 6. Acceptance criteria
 
