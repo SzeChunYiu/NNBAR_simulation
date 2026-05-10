@@ -160,6 +160,18 @@ thresholds are reproducible before retuning:
 Initial config row: `ch8_pi0_baseline_v0` uses the values above with
 `config_status = baseline`.
 
+Initial cut-config examples:
+
+| `cut_config_id` | Cut tuple | Intended study | Decision status | Downstream rule |
+|---|---|---|---|---|
+| `ch8_pi0_baseline_v0` | six Ch 8 thresholds exactly as listed in §2 | thesis reproduction and plan-47 baseline | `baseline` under `DEC-34-PI0-CUT-BASELINE` | may feed plan 35/36 once per-cut columns are emitted |
+| `mass_window_loose_diag_v0` | widen only the mass window while preserving all other Ch 8 thresholds | N-1 / sideband diagnostic for P.5 pairing | `candidate` under `DEC-34-RETUNED-PI0-CUTS` | cannot overwrite baseline `passes_*` columns |
+| `prompt_timing_veto_diag_v0` | add timing-residual veto after the six Ch 8 cuts | accidental-rejection comparison using plan-36 timing sums | `candidate` pending timing calibration DEC | diagnostic until efficiency and fake-rate closure pass |
+| `truth_parent_oracle_blocked` | reject pairs by generated π⁰ parentage | validation upper bound only | `blocked` by truth-use boundary | never feeds production pair, fit, or selection rows |
+
+Candidate configs write new candidate columns or sidecar rows. They do
+not change `ch8_pi0_baseline_v0` or its plan-47 reproduction counts.
+
 ### 2.3 A+ citation audit for current cut implementation
 
 Current-source claims in §1-§2 were re-checked against the L3 worktree
