@@ -83,14 +83,27 @@ straight; this simplifies finders but eliminates momentum measurement
 from curvature — momentum currently comes from kinematics (KE on
 hits) plus stopping-range information.
 
-## 4. Acceptance criteria
+## 4. Closure-test specification
+
+1. **Dataset id:** `cal_singlepion_50to600MeV_v2` from plan 03,
+   restricted to fiducial events with at least two Class A TPC hits.
+2. **Observable:** V.1 track-finding efficiency and fake-candidate
+   rate, reported with plan 04 Wilson intervals.
+3. **Fitter / matcher:** run the candidate V.1 finder under test;
+   match reconstructed candidates to truth tracks only inside a
+   `@validation_only` scoring function using hit overlap / `Track_ID`.
+4. **Pass criterion:** efficiency ≥ 90% in the fiducial slice, or a
+   signed limitation documenting the loss mechanism and the ladder
+   delta in plan 38.
+
+## 5. Acceptance criteria
 
 - §1 inputs match plan 09 (no Class B in production path).
 - §2 current implementation noted; migration item logged.
 - §3 alternative comparison run on ladder when plan 49 picks an
   improvement target.
 
-## 5. Dependencies
+## 6. Dependencies
 
 - **08** — current implementation.
 - **24** — leaf identity.
