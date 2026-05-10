@@ -100,9 +100,13 @@ appear as explicit caveats beside every total-background quote in plan
 
 | Unmodelled source | Source citation | Missing sample id | Expected-rate status | Observable signature | Limitation flags |
 |---|---|---|---|---|---|
-| `environmental_gamma` | plan 14 §4; plan 01 §6 | none | unbounded by current rebuild | room γ activity in lead glass/scintillator, low-energy EM pile-up | L3, L5, L8, L11 |
-| `detector_internal` | plan 14 §4; plan 01 §6 | none | unbounded by current rebuild | scintillator self-radioactivity, lead-glass dark/photoelectron activity, dead/hot channel fakes | L4, L5, L8, L12 |
-| `beampipe_activation` | plan 14 §4; plan 01 §6 | none | unbounded by current rebuild | delayed activation γ/charged secondaries correlated with beam operation | L5, L6, L8, L11 |
+| `environmental_gamma` | plan 14 §4; plan 01 §6 | `unregistered_environmental_gamma` | unbounded by current rebuild | room γ activity in lead glass/scintillator, low-energy EM pile-up | L3, L5, L8, L11 |
+| `detector_internal` | plan 14 §4; plan 01 §6 | `unregistered_detector_internal` | unbounded by current rebuild | scintillator self-radioactivity, lead-glass dark/photoelectron activity, dead/hot channel fakes | L4, L5, L8, L12 |
+| `beampipe_activation` | plan 14 §4; plan 01 §6 | `unregistered_beampipe_activation` | unbounded by current rebuild | delayed activation γ/charged secondaries correlated with beam operation | L5, L6, L8, L11 |
+
+The `unregistered_*` values are deliberate caveat sentinels, not
+registry dataset ids. A total-background quote must fail review if it
+silently treats one of these sentinels as zero expected background.
 
 DEC stub: `DEC-44-UNMODELLED-CAVEATS` — keep these rows out of the
 numeric background sum until simulated samples are registered, but
