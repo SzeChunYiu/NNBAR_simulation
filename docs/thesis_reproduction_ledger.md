@@ -20,7 +20,7 @@ Living ledger instantiated from plan 47 §1. Wave 2 status is `not-attempted`: r
 
 ## Rows seeded in Wave 2
 
-Current row count: **96** (Chapters 5-8 seed).
+Current row count: **98** (Chapters 5-9 seed).
 
 | id | source | thesis_value | sample | reproducing.command | status | leaf | decision_log | notes |
 |---|---|---|---|---|---|---|---|---|
@@ -123,6 +123,9 @@ Current row count: **96** (Chapters 5-8 seed).
 | LIC-CH08-NUM-3 | licentiate+phd Ch8 False Identification of pi0 from Cosmic Ray Background — false-pi0 cosmic-muon composition and KE bins | 99.6% false pi0 from cosmic muons; muon KE bins 1-5 GeV 45%, 5-10 GeV 20%, 10-50 GeV 20%, >50 GeV 15%; residual cosmic-neutron KE 0-0.5 GeV | cosmic_cry_essLund_v1 | `python3 -m nnbar_reconstruction.cli pi0-fake-study NNBAR_Detector/output/cosmic_cry_essLund_v1 --run 0 --json output/ledger/LIC-CH08-NUM-3.json --table output/ledger/LIC-CH08-NUM-3.csv` | not-attempted | P.6 |  | Cosmic-veto system is not included, so the row stays not-attempted until a background sample is regenerated. |
 | LIC-CH08-EQ-2 | licentiate+phd Ch8 Improving pi0 Identification Through Energy Analysis — eqt:significance_pi0 — local S threshold metric | S = N_signal / sqrt(N_signal + N_background) | sig_foil_v3 | `python3 -m nnbar_reconstruction.cli summarize NNBAR_Detector/output/sig_foil_v3 --run 0 --tables-dir output/ledger/LIC-CH08-EQ-2` | not-attempted | S.6 |  | Local counting-statistics proxy; not a final likelihood or upper-limit construction. |
 
+| LIC-CH09-EQ-1 | licentiate+phd Ch9 Invariant Mass — inv_mass_formula — final-state invariant mass | W = sqrt((Σ_i E_i)^2 - (Σ_i p_i)^2); free nbar-nucleon scale about 1.88 GeV; signal peak near 1.3 GeV | sig_foil_v3 | `python3 -m nnbar_reconstruction.cli summarize NNBAR_Detector/output/sig_foil_v3 --run 0 --tables-dir output/ledger/LIC-CH09-EQ-1` | not-attempted | E.7 |  | Formula and scale appear in both thesis versions; row binds the visible-mass observable. |
+| LIC-CH09-TAB-1 | licentiate+phd Ch9 Preliminary Event Selection / Selection Criteria and Event Cut Flow — tab:cut_flow_table — post-cut survival fractions | final listed cut retains 0.68 signal; 0 simulated non-muon and muon cosmic backgrounds survive; thresholds include scintillator [20,2000] MeV, W>=0.5 GeV, sphericity>=0.2 | sig_foil_v3 | `python3 -m nnbar_reconstruction.cli summarize NNBAR_Detector/output/sig_foil_v3 --run 0 --tables-dir output/ledger/LIC-CH09-TAB-1` | not-attempted | S.6 |  | Cut-flow values are sample-specific finite-MC evidence, not proof of zero physical background. |
+
 ## Source scan notes
 
 - Chapter 5 rows were scanned from both `/Users/billy/Desktop/projects/overleaf-hibeam-thesis/5_Detector_simulation.tex` and `/Volumes/MyDrive/nnbar/phd thesis/thesis_extracted/5_Detector_simulation.tex`.
@@ -130,4 +133,5 @@ Current row count: **96** (Chapters 5-8 seed).
 - PhD-only rows are marked with `PHD-` ids and come from sections absent in the frozen licentiate chapter.
 - Chapter 7 rows were scanned from both `/Users/billy/Desktop/projects/overleaf-hibeam-thesis/7_Reconstruction.tex` and `/Volumes/MyDrive/nnbar/phd thesis/thesis_extracted/7_Reconstruction.tex`; the PhD-only HIBEAM TPC ML boundary row is marked with a `PHD-` id.
 - Chapter 8 rows were scanned from both `/Users/billy/Desktop/projects/overleaf-hibeam-thesis/8_Object_Definition.tex` and `/Volumes/MyDrive/nnbar/phd thesis/thesis_extracted/8_Object_Definition.tex`.
+- Chapter 9 rows were scanned from both `/Users/billy/Desktop/projects/overleaf-hibeam-thesis/9_Event_Variables.tex` and `/Volumes/MyDrive/nnbar/phd thesis/thesis_extracted/9_Event_Variables.tex`.
 - Figure rows intentionally keep `thesis_value: figure`; future execution applies the plan 47 §3 visual/bin/K-S comparison protocol.
