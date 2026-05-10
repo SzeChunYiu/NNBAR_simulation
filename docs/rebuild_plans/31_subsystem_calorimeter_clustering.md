@@ -35,7 +35,45 @@ This is the most prominent Class B leak in the production reco path.
 It was chosen for the licentiate because it gives the right answer
 in MC; replacing it is the largest single migration item.
 
-## 2. Replacement candidates
+## 2. Leaf P.1 input/output schema
+
+Leaf P.1: calorimeter hits → neutral-shower cluster candidates
+
+- **Inputs (production, Class A only):** LeadGlass and Scintillator
+  parquet rows with `Event_ID`, `eDep`, `x`, `y`, `z`, and optional
+  `t` from plan 09 §§9–10. Geometry side-cars from plan 09 §13 may
+  be used to define nearest-neighbour topology, cell adjacency, and
+  detector-component labels.
+- **Current implementation evidence:** plan 08 identifies the present
+  source resolver as `_leadglass_shower_sources`
+  (`reconstruction.py:407–499`) and its use inside
+  `reconstruct_photon_objects` before photon-row construction
+  (`reconstruction.py:890–896`). Lead-glass groups are emitted at
+  `reconstruction.py:1046–1075`; scintillator-only groups at
+  `reconstruction.py:1077–1099`. The emitted photon table currently
+  doubles as the cluster surface (`reconstruction.py:793–822`).
+- **Decision rule (target):** seed clusters from local calorimeter
+  energy maxima, grow by detector adjacency / spatial proximity, and
+  split or merge clusters using only hit energy, hit position, timing,
+  and calibrated detector geometry. No `Track_ID`, `Parent_ID`,
+  `Name`, `Process`, or `Interaction` ancestry may decide cluster
+  membership.
+- **Outputs:** one row per cluster with `event_id`, `cluster_id`,
+  `detectors_present`, `n_leadglass_hits`, `n_scintillator_hits`,
+  `leadglass_edep`, `scintillator_edep`, `total_edep`,
+  energy-weighted `cluster_x`, `cluster_y`, `cluster_z`, optional
+  `cluster_time_ns`, `seed_hit_id`, topology quality flags, and a
+  reproducible hit-membership key. Diagnostic truth labels may be
+  joined only in validation artifacts, not in this production table.
+- **Downstream consumers:** plan 32 reads the cluster row and hit
+  membership for shower-shape observables; plan 33 converts accepted
+  neutral clusters into photon four-vectors.
+- **Truth-use boundary:** the current ancestry fields are retained
+  only for closure labels and reproduction-ledger comparison; the
+  production P.1 output is invalid if cluster membership changes when
+  Class B columns are removed.
+
+## 3. Replacement candidates
 
 | Candidate | Method | Source | Notes |
 |---|---|---|---|
@@ -47,20 +85,20 @@ in MC; replacing it is the largest single migration item.
 Plan 38 ladder leaf P.1 scores each. Plan 47 ledger reproduces
 licentiate first with the truth-labelled version, then replaces.
 
-## 3. Closure on `cal_singlegamma_v1`
+## 4. Closure on `cal_singlegamma_v1`
 
 For γ at fixed E:
 
 - ΔE/E (cluster vs truth gamma KE) < 5% mean; bias < 1%.
 - Cluster centroid within 1 cm of energy-weighted truth deposit.
 
-## 4. Acceptance criteria
+## 5. Acceptance criteria
 
 - §1 violation removed.
-- §3 closure passes.
-- §2 ladder benchmark recorded.
+- §4 closure passes.
+- §3 ladder benchmark recorded.
 
-## 5. Dependencies
+## 6. Dependencies
 
 - **24** — leaf P.1.
 - **38** — ladder.
