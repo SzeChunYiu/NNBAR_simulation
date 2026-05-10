@@ -33,29 +33,28 @@ inheriting the default.
 
 Source: `NNBAR_Detector/src/PhysicsList.cc` (plan 07 §4), verified in
 the L3 worktree at `src/PhysicsList.cc`. `PhysicsList::PhysicsList()`
-is defined at line 48; the verbatim constructor-registration block is
-lines 59–79:
+is the verified constructor; the constructor-registration block is:
 
 | Constructor | Purpose | Justification + citation |
 |---|---|---|
-| `G4EmStandardPhysics_option4` (line 59) | EM transport for e±, γ, and charged ions | `option4` is the precision EM configuration used when CPU Geant4 owns EM showers; it is appropriate for lead-glass/scintillator energy response because it enables the more detailed EM model choices documented by the Geant4 EM manual and LHC EM-validation updates `\cite{bagulya2017recent}`. No current `src/PhysicsList.cc` line registers base `G4EmStandardPhysics`; the `em_opt0` variant in §3 is therefore a planned systematic, not a source-observed Celeritas fallback. |
+| `G4EmStandardPhysics_option4` | EM transport for e±, γ, and charged ions | `option4` is the precision EM configuration used when CPU Geant4 owns EM showers; it is appropriate for lead-glass/scintillator energy response because it enables the more detailed EM model choices documented by the Geant4 EM manual and LHC EM-validation updates `\cite{bagulya2017recent}`. No current `src/PhysicsList.cc` line registers base `G4EmStandardPhysics`; the `em_opt0` variant in §3 is therefore a planned systematic, not a source-observed Celeritas fallback. |
 | `G4DecayPhysics` | Decays of unstable particles | Required because signal final states contain π⁰/π±, kaons, eta/omega/rho daughters, and muons. The Geant4 Physics Reference Manual decay chapter defines the standard decay-process registration used here. |
 | `G4HadronElasticPhysics` | Elastic hadron scattering | Needed as a separate constructor so low-energy pions, protons, neutrons, and nuclear fragments scatter elastically in material before depositing energy; Geant4's hadronic manual treats elastic and inelastic processes as distinct components. |
-| `G4HadronPhysicsFTFP_BERT` (line 63) | Hadronic inelastic interactions | Provides FTFP string fragmentation at high energy and Bertini intranuclear cascade at lower energy. This matches the signal's multi-hadron annihilation/transport needs and the cosmic/beam hadronic tail; cite Fritiof/Lund model papers `\cite{Andersson:1986gw,Nilsson-Almqvist:1986ast}`, QGS/string context `\cite{Kaidalov:1983ew}`, and Bertini validation `\cite{Wright:2015xia}`. The `_HP` variant is discussed in §2. |
+| `G4HadronPhysicsFTFP_BERT` | Hadronic inelastic interactions | Provides FTFP string fragmentation at high energy and Bertini intranuclear cascade at lower energy. This matches the signal's multi-hadron annihilation/transport needs and the cosmic/beam hadronic tail; cite Fritiof/Lund model papers `\cite{Andersson:1986gw,Nilsson-Almqvist:1986ast}`, QGS/string context `\cite{Kaidalov:1983ew}`, and Bertini validation `\cite{Wright:2015xia}`. The `_HP` variant is discussed in §2. |
 | `G4StoppingPhysics` | Stopped-particle absorption/annihilation | Required for stopped negative hadrons and antinucleons, including the antineutron-at-rest signal topology. The Geant4 hadronic/stopping manual covers capture and annihilation at rest, while plan 13 supplies the signal-model bibliography. |
 | `G4IonPhysics` | Ion and light-fragment interactions | Needed because antineutron annihilation and neutron captures can create deuterons, alphas, and heavier nuclear fragments that transport through the detector; Geant4's ion physics manual defines the light-ion process set. |
 | `G4NeutronTrackingCut` | Time/energy control for neutrons | Bounds CPU cost from long-lived thermal neutrons while preserving explicit tracking until the configured cut; this constructor is documented in the Geant4 hadronic neutron-transport guidance. Any cut value becomes a plan-03/12 build parameter for neutron-background samples. |
 | `G4RadioactiveDecayPhysics` | Decays of radioactive isotopes | Needed for activation/capture products in shielding and material studies even if not part of the first thesis-rate quote. The Geant4 Radioactive Decay manual is the governing citation. |
-| `G4OpticalPhysics` (lines 71–79) | Optical photons from Cerenkov/scintillation/WLS | Required for optical-mode intercalibration and for Ch5 lead-glass/scintillator photon-yield figures. The Geant4 optical-photon manual covers Cerenkov, scintillation, WLS, and boundary processes. |
+| `G4OpticalPhysics` | Optical photons from Cerenkov/scintillation/WLS | Required for optical-mode intercalibration and for Ch5 lead-glass/scintillator photon-yield figures. The Geant4 optical-photon manual covers Cerenkov, scintillation, WLS, and boundary processes. |
 
 No `G4StepLimiterPhysics` registration is present in the verified
 constructor block, so this plan no longer counts it as a registered
 constructor. If user limits become required, they need a source change
 and a separate DEC entry before plan 12 can cite them.
 
-PAI ionisation model is *available* but not invoked (helper definitions
-at lines 134–173; the `AddPAIModel("pai")` call is commented out at
-line 68);
+PAI ionisation model is *available* but not invoked: helper functions
+`AddPAIModel` and `NewPAIModel` exist, while the `AddPAIModel("pai")`
+call is commented out in `PhysicsList::PhysicsList`;
 plan 27 dE/dx audit decides whether to enable it for the TPC region.
 
 Production cuts (plan 07 §3.4): 1 keV–10 TeV; default cut value
@@ -63,7 +62,7 @@ Production cuts (plan 07 §3.4): 1 keV–10 TeV; default cut value
 
 ## 2. The `_HP` decision
 
-The source comment beside the line-63 registration says
+The source comment beside the `G4HadronPhysicsFTFP_BERT` registration says
 *"_HP will slow down a lot"*. The
 non-HP `G4HadronPhysicsFTFP_BERT` does not use the High-Precision
 neutron data (`G4NDL`) for `E < 20 MeV`. Consequences:
@@ -297,27 +296,27 @@ changed.
 ### Logic gaps
 
 - **Elastic-scattering model coverage.** Grounding: source registers
-  `G4HadronElasticPhysics` at line 62. `OPEN:` run pion/proton
+  `G4HadronElasticPhysics`. `OPEN:` run pion/proton
   scattering closure through beampipe, scintillator, and lead-glass
   material slices, comparing angular tails against plan-15 material
   predictions and plan-28 range/stopping residuals; target resolution
   date 2026-06-22.
 - **Stopping/annihilation at rest.** Grounding: source registers
-  `G4StoppingPhysics` at line 64. `OPEN:` compare stopped antineutron
+  `G4StoppingPhysics`. `OPEN:` compare stopped antineutron
   final-state multiplicity and stopped negative-hadron absorption rows
   against the plan-13 signal-model alternatives; target resolution date
   2026-06-22.
 - **Ion and fragment transport.** Grounding: source registers
-  `G4IonPhysics` at line 65. `OPEN:` add a fragment-production audit to
+  `G4IonPhysics`. `OPEN:` add a fragment-production audit to
   the signal and beam-neutron samples, reporting fragment charge/mass,
   range, and deposited energy; target resolution date 2026-06-29.
 - **Neutron tracking cut value.** Grounding: source registers
-  `G4NeutronTrackingCut` at line 66, but this plan has not yet recorded
+  `G4NeutronTrackingCut`, but this plan has not yet recorded
   the actual cut thresholds. `OPEN:` dump the configured time/energy
   thresholds and scan half/double values for capture-gamma rate,
   capture time, and CPU cost; target resolution date 2026-06-15.
 - **Radioactive/activation coupling.** Grounding:
-  `G4RadioactiveDecayPhysics` is registered at line 67. `OPEN:` link
+  `G4RadioactiveDecayPhysics` is registered. `OPEN:` link
   activation-product rates to plans 14 and 62 before any delayed
   radioactive background is quoted; target resolution date 2026-06-29.
 
