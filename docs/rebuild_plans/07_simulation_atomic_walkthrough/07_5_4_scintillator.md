@@ -1,0 +1,16 @@
+---
+id: 07_5_4_scintillator
+title: Simulation atomic walkthrough §5.4 — Scintillator builder
+version: 0.1
+status: draft
+owner: Sim Production
+depends_on: [07_simulation_atomic_walkthrough]
+---
+
+# §5.4 `Scintillator` builder (src/detector/Scintillator_geometry.cc)
+
+Status: pending L0 deepening.
+
+Required coverage for this file: per-volume hierarchy, materials,
+dimensions, placements, decision branches, and source citations in the
+form `(src/detector/Scintillator_geometry.cc:linenumber)`.
