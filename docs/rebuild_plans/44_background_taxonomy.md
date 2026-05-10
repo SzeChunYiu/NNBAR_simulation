@@ -297,6 +297,19 @@ A background sum is promotion-ready only when these checks are complete.
 Otherwise plan 46 receives validation fixtures or caveats, not an
 authorised numerical background expectation.
 
+Initial evidence-bundle examples:
+
+| `evidence_bundle_id` | Included rows | Reviewer action |
+|---|---|---|
+| `p44_registered_sum_bundle_v0` | registered node ids, sample ids, rate rows, selection config, and signed rate-source DEC ids | approve as numeric `b_expected` input only for authorised rows |
+| `p44_zero_survivor_limit_bundle_v0` | zero-survivor denominators, F-C interval ids, `epsilon90`, and exposure labels | pass to plan 46 as an upper-limit constraint, not a central zero |
+| `p44_unmodelled_caveat_bundle_v0` | missing-sample sentinels, limitation flags, required prose caveats, and affected nodes | require plan-50 caveat text before any final defence quote |
+| `p44_unsigned_rate_blocked_bundle_v0` | draft rate rows without signed DEC ids plus blocked total-background preview | reject numeric inclusion until the rate-source DEC and interval rows exist |
+
+Evidence bundles keep background accounting conservative: measured,
+limited, missing, and draft channels remain different objects instead of
+collapsing into one background-sum scalar.
+
 ## 4. Acceptance criteria
 
 - §1 tree complete.
