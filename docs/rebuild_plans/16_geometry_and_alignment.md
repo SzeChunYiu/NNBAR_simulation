@@ -6,17 +6,17 @@ status: draft
 owner: Sim Production
 depends_on: [00_README, 01_realism_contract, 07_simulation_atomic_walkthrough, 15_material_budget]
 inputs:
-  - {path: NNBAR_Detector/src/detector/*.cc, schema: geometry source}
-  - {path: NNBAR_Detector/docs/Detector_Geometry_Reference.md, schema: reference text}
+  - {path: NNBAR_Detector/src/Detector_Module/*.cc, schema: geometry builder source}
+  - {path: NNBAR_Detector/src/DetectorConstruction.cc, schema: placement coordinator}
 outputs:
   - {path: docs/rebuild_plans/16_geometry_and_alignment.md, schema: this file}
   - {path: nnbar_reconstruction/_alignment/, schema: alignment scenario configs}
 acceptance:
   - {test: every active geometry builder has a §-entry, method: file ↔ doc cross-reference, pass_when: full coverage}
-  - {test: geometry-audit CLI passes on current main, method: cli.geometry-audit invocation, pass_when: exit code 0}
+  - {test: geometry verifier gap is explicit, method: L3 CLI/file check, pass_when: no invented geometry-audit surface remains}
   - {test: at least three alignment scenarios are registered, method: registry review, pass_when: ≥ 3}
 risks:
-  - {risk: geometry refactor silently changes a thesis-quoted dimension, mitigation: plan 53 CI runs geometry-audit on every PR}
+  - {risk: geometry refactor silently changes a thesis-quoted dimension, mitigation: plan 53 must run the future geometry verifier or checked runtime dump on every PR}
   - {risk: alignment scenarios stay theoretical and never get exercised, mitigation: plan 47 ledger requires at least one alignment systematic for any quoted vertex resolution}
 estimated_effort: M
 last_updated: 2026-05-10
@@ -25,34 +25,41 @@ last_updated: 2026-05-10
 # Geometry truth and alignment-systematic seam
 
 *Charter.* Lock the geometry as built today (already audited via the
-`geometry-audit` CLI, plan 08 §10) and design a misalignment seam so
+the verified geometry builder files) and design a misalignment seam so
 that future systematic studies can apply controlled perturbations
 without touching the simulation source.
 
 ## 1. Geometry as built
 
-Active source: `NNBAR_Detector/src/detector/*.cc` (plan 07 §5.4).
-Per-builder summary:
+Active source verified on 2026-05-10: `NNBAR_Detector/src/Detector_Module/*.cc`, coordinated by `NNBAR_Detector/src/DetectorConstruction.cc`. The old `NNBAR_Detector/src/detector/*.cc` path is absent in the L3 worktree and must not be cited. Per-builder summary:
 
-| Builder | Source | Output volumes | Audit reference |
-|---|---|---|---|
-| `Beampipe` | `beampipe_geometry.cc` (35 KB) | beampipe-1..N | beampipe-5: r_in 1120 mm, r_out 1140 mm, len 5000 mm |
-| `Beampipe_Shielding` | `beampipe_shielding_geometry.cc` (7 KB) | shielding LVs | per geometry doc |
-| `Silicon` | `Silicon_geometry.cc` (8 KB) | silicon vertex layers | per geometry doc |
-| `TPC` | `TPC_geometry.cc` (12 KB) | 12 TPC modules | Type I 854×1994×2520 mm; Type II 2284×854×2520 mm |
-| `Scintillator` | `Scintillator_geometry.cc` (34 KB) | 792 scintillator modules | per geometry doc; module list in `Scintillator_Module_Position.txt` |
-| `LeadGlass` | `LeadGlass_geometry.cc` (19 KB) | 17972 lead-glass blocks | per geometry doc |
-| `CosmicShielding` | `Cosmic_Shielding_geometry.cc` (14 KB) | shielding LVs | per geometry doc |
+| Builder | Verified source | Source lines | Output volumes | Audit reference |
+|---|---|---:|---|---|
+| `Beampipe` | `src/Detector_Module/beampipe_geometry.cc` | 503 | beampipe-1..N | beampipe-5 dimensions still need a generated geometry reference |
+| `Beampipe_Shielding` | `src/Detector_Module/beampipe_shielding_geometry.cc` | 144 | shielding LVs | geometry reference absent; derive from source/runtime dump |
+| `Silicon` | `src/Detector_Module/Silicon_geometry.cc` | 169 | silicon vertex layers | geometry reference absent; derive from source/runtime dump |
+| `TPC` | `src/Detector_Module/TPC_geometry.cc` | 214 | 12 TPC modules | Type I/II dimensions still need a generated geometry reference |
+| `Scintillator` | `src/Detector_Module/Scintillator_geometry.cc` | 516 | 792 scintillator modules | module list from runtime output; geometry reference absent |
+| `LeadGlass` | `src/Detector_Module/LeadGlass_geometry.cc` | 346 | lead-glass block stack | geometry reference absent; derive from source/runtime dump |
+| `CosmicShielding` | `src/Detector_Module/Cosmic_Shielding_geometry.cc` | 285 | shielding LVs | geometry reference absent; derive from source/runtime dump |
 
 Codex-supervisor expands each builder's volume list to the per-volume
 position/dimension/material level in v0.2.
 
-## 2. Geometry audit CLI
+## 2. Geometry verifier gap
 
-`python -m nnbar_reconstruction.cli geometry-audit . --fail-on-mismatch`
-(plan 08 §10) cross-checks the builders against
-`docs/Detector_Geometry_Reference.md`. Required to pass before any
-sample is registered as `frozen` (plan 03 §6).
+A+ verifier status on 2026-05-10: the L3 CLI exposes only
+`summarize`, `scan-pid`, `response-matrix`, and `validate-reco`;
+`geometry-audit` is not a registered subcommand. The files
+`NNBAR_Detector/docs/Detector_Geometry_Reference.md` and
+`nnbar_reconstruction/geometry_audit.py` are also absent in the L3
+worktree. Therefore Plan 16 must treat geometry-audit as a blocking
+implementation gap, not as an existing command.
+
+Before any sample is registered as `frozen` (plan 03 §6), L3/Sim
+Production must either restore a geometry-audit implementation or
+replace this acceptance test with a checked runtime geometry dump that
+covers the builders in §1.
 
 ## 3. Alignment as a systematic
 
@@ -132,18 +139,21 @@ resolution and π⁰-mass-width systematic.
 
 ## 4. Implementation seam
 
-The seam lives in the per-builder `Construct_Volumes(worldLV)`
-methods. A `nnbar::Alignment::Apply(transform, lv_name, scenario)`
-helper returns the perturbed transform.
+Verified current seam point: every active builder in §1 implements a
+`Construct_Volumes(G4LogicalVolume* mother)` method. No alignment helper
+exists yet. The proposed implementation is a future
+`nnbar::Alignment::Apply(transform, lv_name, scenario)` helper inserted
+at placement time; until L3/Sim Production implements it, Plan 16 only
+registers the scenario contract and does not claim source-level support.
 
-In `perfect` mode the helper is a no-op (the transform is returned
-unchanged), satisfying plan 02's identity-default discipline.
+In `perfect` mode the future helper must be a no-op (the transform is
+returned unchanged), satisfying plan 02's identity-default discipline.
 
 ## 5. Acceptance criteria
 
 - §1 builder list complete; per-builder volume-level details
   populated in v0.2.
-- §2 audit passes on current `main`.
+- §2 verifier gap remains explicit until L3/Sim Production restores or replaces geometry-audit.
 - §3 ≥ 3 scenarios registered (`perfect`, `nominal_survey`, `worst_case_construction`).
 - §4 implementation lands in the simulation source with paired DEC
   entry.
@@ -154,9 +164,9 @@ unchanged), satisfying plan 02's identity-default discipline.
   before commissioning.
   *Mitigation:* `nominal_survey` is a placeholder driven by typical
   detector survey precision; revisited at commissioning.
-- *Risk:* alignment perturbation breaks the geometry-audit (positions
-  no longer match the reference doc).
-  *Mitigation:* the audit is run only on `perfect` configurations;
+- *Risk:* alignment perturbation breaks the future geometry verifier
+  (positions no longer match the reference baseline).
+  *Mitigation:* the verifier is run only on `perfect` configurations;
   alignment-perturbed builds are registered separately in plan 03.
 
 ## 7. Dependencies
@@ -168,5 +178,5 @@ unchanged), satisfying plan 02's identity-default discipline.
 
 ## 8. References
 
-- `NNBAR_Detector/docs/Detector_Geometry_Reference.md`.
-- `nnbar_reconstruction/geometry_audit.py` (plan 08 §10).
+- Verified L3 paths: `src/Detector_Module/*.cc` and `src/DetectorConstruction.cc`.
+- TODO: generate or restore a geometry reference artifact and geometry-audit verifier before freezing samples.
