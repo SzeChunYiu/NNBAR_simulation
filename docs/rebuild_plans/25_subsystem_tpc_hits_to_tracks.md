@@ -17,7 +17,7 @@ acceptance:
 risks:
   - {risk: current "first/last step" sparse representation loses tracking information, mitigation: §3 alternative finders restore intermediate steps when needed}
 estimated_effort: M
-last_updated: 2026-05-09
+last_updated: 2026-05-10
 ---
 
 # Subsystem — TPC hits to track candidates
@@ -75,7 +75,7 @@ Each candidate is benchmarked on the truth-substitution ladder
 |---|---|---|---|
 | Geometric clustering | DBSCAN (Ester et al.) / sklearn-style density clustering | Run in `(x, y, z, t)` after per-module normalisation; tune `eps` and `min_samples` on `cal_singlepion_50to600MeV_v2`. | Reduces V.1 truth substitution by removing the `Track_ID` grouping gate; possible efficiency loss in overlapping tracks. |
 | Hough transform | ALICE TPC tracking notes / straight-line Hough variant | Use straight-line parameterisation because plan 17 has no B-field curvature; seed from TPC layer/module IDs. | Improves V.1 robustness for sparse first/last-step records; may add fake tracks in shower-rich events. |
-| Kalman seeded by Hough | ACTS track-fitting codebase | Treat Hough seeds as straight-track states and defer curvature terms until a magnetic-field scenario exists. | Adds covariance for downstream V.2/V.4 weighting, but V.1 delta is qualitative until plan 38 scoring. |
+| Kalman seeded by Hough | ACTS track-fitting codebase | Treat Hough seeds as straight-track states and defer curvature terms until a magnetic-field scenario exists. | Should reduce V.1 damage in the plan 38 matrix by stabilising V.2 direction covariance and V.4 vertex weighting; score against visible mass, vertex residuals, and charged multiplicity. |
 | Riemann fit | Riemann-circle fit literature | Keep as a documented non-baseline option; without curvature it degenerates to a line-fit cross-check. | Low expected V.1 gain in the current no-B-field setup; useful mainly as a systematic comparison. |
 
 The current "no B-field" configuration (plan 17) makes tracks
