@@ -280,6 +280,7 @@ l1_defence_ci_report:
         - docs/rebuild_plans/32_subsystem_shower_shape.md
         - docs/rebuild_plans/33_subsystem_photon_object.md
         - docs/rebuild_plans/34_subsystem_pi0_pairing.md
+        - docs/rebuild_plans/34_subsystem_pi0_pairing_handoff_examples.md
         - docs/rebuild_plans/35_subsystem_kinematic_fit.md
         - docs/rebuild_plans/36_subsystem_event_variables.md
         - docs/rebuild_plans/37_subsystem_event_selection.md
