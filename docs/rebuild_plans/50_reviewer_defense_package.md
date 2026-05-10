@@ -210,6 +210,7 @@ l1_staleness:
     plan52_rerun_manifest: <hash>
     plan52_rerun_transcript: <hash>
     plan52_command_templates: <hash>
+    plan52_command_template_verifiers: <hash>
     plan55_note_annex: <hash>
     plan56_glossary_audit: <hash>
   status: current | stale | blocked
@@ -221,7 +222,7 @@ Invalidation rules:
 | Changed input | Required package action |
 |---|---|
 | plan-51 question text, route, or status | regenerate affected overlay roll-up and reopen answered rows if artifact hashes changed |
-| plan-52 manifest, transcript, or command-template hash | mark refreshed-artifact overlays stale until output hashes and command semantics are rechecked |
+| plan-52 manifest, transcript, command-template, or verifier hash | mark refreshed-artifact overlays stale until output hashes and command semantics are rechecked |
 | plan-53 L1 CI report hash | rerun package audit before thesis-freeze promotion |
 | plan-55 annex row | compare note-facing caveat text with package caveat text |
 | plan-56 term sign-off | recheck every overlay that uses the changed term |
@@ -249,8 +250,9 @@ The generator joins ledger rows × dataset manifests × ladder matrices
 - §2 mapping covered for every entry in plan 51 v0.1.
 - L1 packages include the §2.3 overlay roll-up before any affected
   result is promoted to thesis-quote status.
-- Ready L1 packages include plan-52 rerun manifest, transcript, and
-  command-template registry links when refreshed artifacts are claimed.
+- Ready L1 packages include plan-52 rerun manifest, transcript,
+  command-template registry, and verifier links when refreshed artifacts
+  are claimed.
 - Ready L1 packages carry a current §2.4 staleness summary.
 - The package schema exposes `l1_review_evidence` links for overlays,
   rerun artifacts, command templates, and staleness status.
