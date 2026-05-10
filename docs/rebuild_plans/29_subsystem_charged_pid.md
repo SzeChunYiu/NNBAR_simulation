@@ -271,7 +271,26 @@ These invariants keep C.5 as a reproducible analysis rule rather than a
 hidden truth filter. They also define what the future likelihood-ratio
 replacement must prove before it can supersede the cut-based baseline.
 
-### 6.3 Stage E.1 verification command
+### 6.3 Stage E.1 producer/consumer contract
+
+The L3 C.5/C.6 patch must expose a stable table boundary so plan 38
+ladder rows, plan 47 ledgers, and plan 66 DQM can consume charged-PID
+decisions without re-running calibration scans or reopening truth labels:
+
+| Contract item | Required behavior | Downstream check |
+|---|---|---|
+| input key | consume one C.1 candidate keyed by `(event_id, charged_candidate_id)` plus the selected C.2 `estimator_id` and C.3 `range_id` rows | C.5 rows can be joined to the exact dE/dx and range facts used for scoring |
+| output key | emit one C.5 row keyed by `(event_id, charged_candidate_id, pid_decision_id)` and optional C.6 rejection rows keyed by `(event_id, charged_candidate_id, rejection_id)` | plan 38 and plan 47 count attempted candidates without inferring missing rows as accepted or rejected physics |
+| rule provenance | record `rule_version`, `classifier_family`, and threshold or likelihood-artifact hashes in every manifest | plan 05 can audit any threshold or classifier change before promotion |
+| source hashes | record C.1, C.2, C.3, and optional C.4 sidecar hashes before writing C.5/C.6 outputs | plan 47 can prove the same upstream tables fed PID, signal-efficiency, and DQM artifacts |
+| rejection taxonomy | restrict production reasons to observable invalid-state, EM-like, neutral-like, conversion-like, and geometry-loss categories | plan 66 aggregates rejection fractions without reading `Name`, `Interaction`, or truth energy |
+| calibration boundary | consume frozen calibration artifacts only; do not call `scan-pid` from the production scorer | closure studies can score labels after the C.5/C.6 table is frozen, but cannot alter production rows |
+
+This contract keeps `classify_charged_candidates`
+(`nnbar_reconstruction/charged_pid.py:60-118`) as the Stage E.1 C.5/C.6
+producer until L3 replaces the classifier behind the same keys.
+
+### 6.4 Stage E.1 verification command
 
 L3's C.5/C.6 patch is promotable only when the charged-PID slice
 exercises both the synthetic threshold/rejection path and the real-output
@@ -289,7 +308,7 @@ C.2/C.3 row hashes. A likelihood-ratio replacement also needs the plan
 57 train/validation/test artifact and a plan 05 decision before it can
 replace the cut-based baseline.
 
-### 6.4 Stage E.1 artifact manifest schema
+### 6.5 Stage E.1 artifact manifest schema
 
 The C.5/C.6 producer must write a manifest that freezes rule identity,
 thresholds, consumed C.2/C.3 rows, and rejection taxonomy before plan 38
@@ -327,9 +346,11 @@ before accepting C.5/C.6 ladder or ledger rows.
   reproduced.
 - §6 Stage E.1 handoff is actionable for L3: current production and
   calibration hooks are cited, production C.1/C.5/C.6 inputs and
-  outputs are named, promotion invariants, verification command, and artifact manifest
-  schema are explicit, current charged-reco tests are cited, and the remaining tests must prove the
-  production scorer is invariant to dropping Class B truth columns.
+  outputs are named, promotion invariants, producer/consumer contract,
+  verification command, and artifact manifest schema are explicit,
+  current charged-reco tests are cited, and the remaining tests must
+  prove the production scorer is invariant to dropping Class B truth
+  columns.
 
 ## 8. Risks
 
