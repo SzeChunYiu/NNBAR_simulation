@@ -31,7 +31,8 @@ proposal.
 **Verified CLI surface (A+ gate, 2026-05-10).** The live L3
 worktree exposes `summarize`, `scan-pid`, `response-matrix`, and
 `validate-reco` under `python -m nnbar_reconstruction.cli --help`;
-`summarize --help` supports `--run`, `--json`, and `--tables-dir`.
+`summarize --help` supports `--all-runs`, `--tables-dir`,
+`--table`, `--bootstrap`, and `--json`.
 It does not expose N-1, ROC, or cut-search commands yet, so those
 steps below are L3/software implementation gates until their `--help`
 surface exists.
@@ -42,21 +43,23 @@ procedure, not an optimisation step.
 
 ### 1.1 Runnable procedure
 
-1. Build reconstruction tables for each registered sample one run at a
-   time with the verified plan 09 §14 command:
+1. Build reconstruction tables for each registered sample with the
+   verified multi-run plan 09 §14 command:
 
    ```bash
    python -m nnbar_reconstruction.cli summarize \
-       NNBAR_Detector/output/<dataset_id> --run <run> \
-       --tables-dir output/reco/<dataset_id>/run_<run>/ \
-       --json output/reco/<dataset_id>/run_<run>/summary.json
+       NNBAR_Detector/output/<dataset_id> --all-runs \
+       --tables-dir output/reco/<dataset_id>/ \
+       --table output/reco/<dataset_id>/runs.csv \
+       --json output/reco/<dataset_id>/summary.json
    ```
 
    Required datasets are `sig_foil_v3` (plan 20),
    `cosmic_cry_essLund_overburdenA_v1` (plan 21), and the beam-neutron
-   dataset selected by plan 22. Concatenate run-level `events.csv`
-   only after applying the plan 09 §15 event-id offset, then save
-   `output/reco/<dataset_id>/manifest.json` with input hashes.
+   dataset selected by plan 22. Assert each output directory contains
+   `events.csv` and `manifest.json`; the manifest must record the
+   plan 09 §15 event-id offset and source hashes before any N-1 or ROC
+   producer consumes the table.
 2. **Blocked L3/software implementation gate:** no verified N-1 CLI
    exists in the live L3 worktree. Before this section is runnable, a
    help-verified producer must read signal/background `events.csv`,
