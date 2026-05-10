@@ -88,14 +88,29 @@ parents in truth. Two ways to bound the accidental rate:
 
 Plan 47 ledger quotes both.
 
-## 4. Acceptance criteria
+## 4. Alternative comparison matrix
+
+| Leaf | Candidate | Decision rule | Current/source citation | Class-A status | Comparison metric |
+|---|---|---|---|---|---|
+| P.5 | **All unordered pairs (current)** | Pair every neutral photon pair once by object-id ordering. | Current implementation at `reconstruction.py:1406–1409` (plan 08 §3.5.3). | Production-eligible; O(N²). | π⁰ efficiency, candidate multiplicity, runtime. |
+| P.5 | **Best mass match per photon** | Build all pairs, then greedily keep pairs closest to `m_π⁰` without reusing photons. | Replacement after raw pair enumeration. | Eligible; mass threshold DEC required. | Correct-pair efficiency and high-multiplicity fake rate. |
+| P.5 | **Kinematic-fit ranked pairing** | Rank raw pairs by plan-35 χ² and mass pull. | Consumes plan-35 fit outputs after raw pair construction. | Eligible once fit covariance is validated. | Mass resolution and accidental rejection at fixed efficiency. |
+| P.6 | **Six-cut selection (current)** | Apply mass, total-energy, scintillator-energy, lead-glass-energy, LG-fraction, and opening-angle cuts. | Config defaults at `reconstruction.py:29–35`; booleans at `1422–1427`; failure reasons at `1428–1437`, `1519–1526`. | Production-eligible; thresholds must be thesis-cited or DEC-logged. | Signal efficiency, fake rate, N-1 sensitivity. |
+| P.6 | **Prompt-timing veto** | Require photon time residuals near zero before accepting prompt π⁰s. | Current diagnostic prompt timing at `reconstruction.py:1390–1402`, `1451–1469`, `1508–1512`. | Eligible after timing calibration and DEC. | Accidental-rate reduction vs efficiency loss. |
+| P.6 | **Truth-parent label** | Reject pairs whose photons do not share a truth π⁰ parent. | Validation-only diagnostic inherited from source aliases. | Not production-eligible. | Upper-bound accidental rejection only. |
+
+Plan 38 records P.5 pairing and P.6 accidental-rejection choices
+separately so a better ranking can be adopted without changing the
+thesis six-cut baseline.
+
+## 5. Acceptance criteria
 
 - §2 individual passes_* columns + `passes_selection`.
 - §2 closure passes.
 - §3 accidental rate produced for at least the licentiate signal
   sample.
 
-## 5. Dependencies
+## 6. Dependencies
 
 - **24, 33, 38, 40** — inputs.
 - *Consumed by:* plan 35 (kinematic fit), plan 36 (event variables),
