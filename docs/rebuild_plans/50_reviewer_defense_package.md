@@ -39,7 +39,9 @@ defence:
     build_id: build-prod-<rev>
   reproducing_command: |
     python -m nnbar_reconstruction.cli validate-reco \
-        NNBAR_Detector/output/sig_foil_v3 --runs 0,1,...
+        NNBAR_Detector/output/sig_foil_v3 --runs 0,1,... \
+        --json output/defense/LIC-CH10-NUM-1/validate_reco.json
+  reproducing_command_template_id: validate_reco_cutflow_v1
   ladder_sensitivity:
     primary_observable: visible_invariant_mass
     dominant_leaves: [P.4, V.4, P.3]   # IV(L) sorted
@@ -84,6 +86,9 @@ defence:
     staleness_summary: <plan50-staleness-id-or-path>
     review_artifact_hashes:
       package: sha256:<hash-or-null>
+      rerun_manifest: sha256:<hash-or-null>
+      rerun_transcript: sha256:<hash-or-null>
+      command_template_verifier: sha256:<hash-or-null>
       ci_report: sha256:<hash-or-null>
       note_annex: sha256:<hash-or-null>
       glossary_audit: sha256:<hash-or-null>
