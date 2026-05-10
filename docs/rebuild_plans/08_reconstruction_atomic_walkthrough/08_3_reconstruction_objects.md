@@ -167,41 +167,106 @@ feeds `has_foil_origin`. Under plan 09 these are Class B or
 truth/provenance-like fields, so the current charged-object baseline still
 has truth-dependent paths tracked by plan 08 §3.7.
 
-### 3.5 Photon / π⁰ reconstruction (lines ≈ 700–1300)
+### 3.5 Photon / π⁰ reconstruction
 
-The photon-object pipeline is documented at length in
-`reconstruction.md` lines 88–155. Atomic steps:
+This subsection is being deepened in logical units. The current entry covers
+lead-glass/scintillator shower source resolution, charged/neutral photon-object
+classification, and photon-fragment merging. The π⁰-pairing public function
+`find_pi0_candidates` remains the next §3.5 unit.
 
-1. *Lead-glass cluster grouping by truth ancestry.* Currently uses
-   `Parent_ID` chains and the optional `Interaction` truth table to
-   resolve descendant shower particles back to their gamma ancestor
-   (`reconstruction.md` line 142–144). This is a heavy Class B read
-   path that plan 26 (calorimeter clustering) must replace with a
-   geometric/topological clustering algorithm.
-2. *Charged/neutral discriminant.* TPC tracks are grouped into
-   reconstructed candidates whose direction is taken from the event
-   vertex toward the farthest TPC hit. A lead-glass cluster is
-   tagged charged when its vertex-to-centroid direction falls inside
-   `charged_cluster_match_angle_deg` (default 10.5°). Charged
-   matches must also satisfy `charged_cluster_match_time_tolerance_ns`
-   when timing is available. Class A path; the truth `Track_ID` is
-   only stored as `source_track_id` for provenance.
-3. *Photon merging.* Truth-labelled neutral gamma fragments with
-   nearly identical reconstructed directions are merged before π⁰
-   pairing (`photon_fragment_merge_angle_deg`, default 2°). The
-   truth labels here are Class B; plan 26 audits whether merging
-   can be moved to a geometric-only criterion.
-4. *Photon four-vector.* Direction = vertex → shower centroid (when
-   a vertex exists; else origin → centroid as legacy fallback).
-   Energy = lead-glass eDep + scintillator eDep from gamma-shower
-   descendants (resolved through ancestry). Plan 28 owns the per-leaf
-   improvements.
-5. *π⁰ pairing.* All photon pairs are formed; per pair the invariant
-   mass, opening angle, and total energy are computed. The
-   `passes_*` columns capture the thesis Ch 8 selection windows
-   individually plus the strict `passes_selection`.
-6. *π⁰ provenance columns.* Each π⁰ candidate carries
-   `source_track_ids` (alias list), `truth_charge_match_class`,
-   `selection_failure_reasons`, and pi0 timing diagnostics. These are
-   *diagnostic / validation* columns marked with the
-   `@diagnostic_only` decorator under plan 01.
+#### 3.5.1 Shower-source and charged-match helpers
+
+- `_leadglass_shower_sources(leadglass, interactions=None)`
+  (`reconstruction.py:407–499`) attaches `_shower_source_track_id` and
+  `_shower_truth_name` to lead-glass or scintillator deposits. Empty inputs
+  receive empty source columns; sparse inputs without `Event_ID`, `Track_ID`,
+  `Parent_ID`, and `Name` fall back to raw `Track_ID`/`Name` or row index
+  (`reconstruction.py:413–421`). With lineage columns, it builds maps from
+  the calorimeter table plus optional `Interaction` table and walks EM
+  ancestry so gamma/e±/pi0-related shower descendants are grouped under the
+  appropriate source (`reconstruction.py:423–499`). `Event_ID` is Class A;
+  `Track_ID`, `Parent_ID`, `Name`, `Process`/`Proc`, and interaction ancestry
+  are Class B truth/provenance in plan 09 (§3–§4, §8–§10).
+- `_tpc_tracks_to_skip_for_charged_matching(tpc, config)`
+  (`reconstruction.py:632–688`) removes TPC tracks whose truth labels should
+  not seed charged calorimeter matching: neutral names are always skipped;
+  e± tracks from non-charged parents are skipped; close e+/e- sibling pairs
+  within `config.electron_pair_max_entry_separation_cm` (default 5.0 cm) are
+  skipped (`reconstruction.py:639–688`). Inputs `Name` and `Parent_ID` are
+  Class B; positions are Class A.
+- `_merge_photon_fragments(photons, config)` (`reconstruction.py:502–629`)
+  merges neutral, truth-labelled gamma fragments when `has_tpc_track` is
+  false and the angular separation to the seed direction is ≤
+  `config.photon_fragment_merge_angle_deg` (default 2.0°;
+  `reconstruction.py:502–535`). Merged rows sum lead-glass and scintillator
+  energy, energy-weight centroids/times, union `source_track_ids`, force
+  `truth_name = "gamma"`, recompute direction/path length, clear charged-match
+  fields, and then reassign per-event `object_id` values (`reconstruction.py:543–629`).
+
+#### 3.5.2 `reconstruct_photon_objects(leadglass, scintillator=None, tpc=None, config=DEFAULT_CONFIG, vertices=None, interactions=None)`
+
+**Source:** `NNBAR_Detector/nnbar_reconstruction/reconstruction.py:783–1101`.
+
+**Inputs:** lead-glass and optional scintillator, TPC, vertices, and
+Interaction tables. Lead-glass/scintillator deposits use the NNbarHit-derived
+schema in plan 09 §9–§10: `Event_ID` (Class A), `Track_ID`/`Parent_ID`/`Name`
+(Class B), `x/y/z` and `t` (Class A), and `eDep` (Class A calorimeter energy,
+with detector calibration caveats). Vertices read `event_id`, `vertex_x/y/z`,
+and optional `vertex_time_ns` from §3.3 output (`reconstruction.py:829–849`).
+TPC inputs for charged matching require `Event_ID`, `Track_ID`, and `x/y/z`,
+with optional `t` (`reconstruction.py:850–889`). Interactions provide Class B
+ancestry for shower-source resolution and matchability (`reconstruction.py:891–911`).
+
+**Decision rule:** if both lead-glass and scintillator are empty, return an
+empty photon table with the declared schema (`reconstruction.py:793–827`).
+Valid reconstructed vertices are cached per event; absent vertices fall back to
+origin `(0,0,0)` and `used_reconstructed_vertex = false` in emitted objects
+(`reconstruction.py:829–849`, `953–958`, `1030–1035`). TPC charged-match
+candidate directions are built from the event vertex toward the farthest valid
+TPC hit, after applying `_tpc_tracks_to_skip_for_charged_matching`; endpoint
+time is retained when finite (`reconstruction.py:850–889`).
+
+Lead-glass and scintillator deposits are first resolved to shower sources using
+`_leadglass_shower_sources` (`reconstruction.py:890–896`). Parent maps across
+Interaction, lead-glass, and scintillator sources support the nested
+`has_matchable_tpc_origin`, `has_direct_matchable_tpc_track`, and
+`has_lineage_evidence` predicates (`reconstruction.py:897–939`). For each
+source group, `build_photon_row` energy-weights the cluster centroid and time,
+computes direction and path length from the reconstructed vertex or origin,
+then scans charged-match candidate tracks. A charged match is accepted only
+when angle ≤ `config.charged_cluster_match_angle_deg` (default 10.5°) and, if
+a finite time delta exists, `abs(delta) <= config.charged_cluster_match_time_tolerance_ns`
+(default 50 ns; `reconstruction.py:941–989`).
+
+Truth/provenance classification is diagnostic: `_shower_truth_name`, direct or
+ancestor TPC matchability, and sparse geometric evidence feed
+`_charge_match_truth_from_name` into `truth_charge_match_class`
+(`reconstruction.py:990–1014`). Lead-glass groups emit first; groups with
+`leadglass_edep < config.min_photon_energy` (default 5.0 MeV) are skipped
+(`reconstruction.py:1046–1075`). Scintillator-only groups that were not already
+emitted by a lead-glass source are emitted when `scintillator_edep >=
+config.min_photon_energy` (`reconstruction.py:1077–1099`). The final table is
+passed through `_merge_photon_fragments` before return (`reconstruction.py:1101`).
+
+**Outputs:** DataFrame columns `event_id`, `object_id`, `source_track_id`,
+`source_track_ids`, `truth_name`, `truth_charge_match_class`, `leadglass_edep`,
+`scintillator_edep`, `total_energy`, `leadglass_fraction`, `cluster_x/y/z`,
+`cluster_time_ns`, `vertex_x/y/z`, `vertex_time_ns`, `photon_path_length_cm`,
+`used_reconstructed_vertex`, `ux/uy/uz`, `matched_tpc_track_id`,
+`charged_match_angle_deg`, `matched_tpc_time_ns`,
+`charged_match_time_delta_ns`, and `has_tpc_track` (`reconstruction.py:793–822`).
+Plan 09 §14.4 describes the photon table as shower centroids, directions,
+energy, charged/neutral outputs, and source-track truth provenance.
+
+**Truth reads:** this path reads Class B `Track_ID`, `Parent_ID`, `Name`,
+interaction ancestry, source-track aliases, and truth charge classes for shower
+source grouping, diagnostic truth labels, charged-match-class diagnostics, and
+fragment merging. The geometric charged/neutral decision itself is angle/timing
+based, but the current source grouping and fragment merge still depend on truth
+provenance, as tracked by plan 08 §3.7.
+
+#### 3.5.3 Pending π⁰-pairing detail
+
+`find_pi0_candidates(photons, config=DEFAULT_CONFIG)` (`reconstruction.py:1316–1531`)
+forms photon pairs and applies the π⁰ mass/energy/opening-angle policy. It is the
+next §3.5 unit to document with the same line-level input/output/truth-read detail.
