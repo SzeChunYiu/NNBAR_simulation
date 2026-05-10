@@ -183,9 +183,15 @@ can be accepted.
 ## 4. Software handoff and blocker contract
 
 The verified live CLI can build the frozen reconstruction inputs with
-`summarize`, but it does not yet expose the study producers required by
-§§1-3. Until those producers exist, this plan is intentionally blocked
-at the software boundary rather than substituting a hand-made plot.
+`summarize` and can compute the supporting cumulative cut-flow with
+`cutflow` (`cli.py:254-263`). The cut-flow support surface is regression
+covered by `test_cutflow_counts_are_cumulative_in_plan_37_order`
+(`tests/test_selection.py:79-100`) and `test_cutflow_cli_reads_events_csv`
+(`tests/test_selection.py:103-119`). It is not a full N-1, ROC, or
+cut-search producer: those study producers required by §§1-3 still do
+not exist as help-verified surfaces. Until those producers exist, this
+plan is intentionally blocked at the software boundary rather than
+substituting a hand-made plot.
 
 L3/software handoff requirements:
 
@@ -214,8 +220,9 @@ L3/software handoff requirements:
 - §2 ROC curves complete for plan 36 continuous variables.
 - §3 objective signed in DEC; optimal tuple reported on test set.
 - §4 software handoff is complete: each blocked producer has explicit
-  inputs, outputs, failure assertions, provenance fields, and a
-  no-invented-CLI rule.
+  inputs, outputs, failure assertions, provenance fields, the existing
+  cut-flow support surface is cited, and a no-invented-CLI rule is in
+  force.
 
 ## 6. Risks and mitigations
 
