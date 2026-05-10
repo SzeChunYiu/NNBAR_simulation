@@ -92,6 +92,24 @@ l1_defence_inventory:
       note_annex_hash: sha256:<hash-or-null>
       glossary_audit_hash: sha256:<hash-or-null>
       archive_drill_hash: sha256:<hash-or-null>
+    - pack_member: pileup_l11
+      source_plans: [1, 44, 50, 51, 52, 55, 58]
+      artifact_paths:
+        - output/defense/<row_id>.yml
+        - output/pileup/<study_id>/overlay_manifest.yml
+      artifact_hashes:
+        - sha256:<hash-or-null>
+      status: present | blocked | stale
+      caveat: <required until paired pile-up closure is present>
+      staleness_summary_hash: sha256:<hash-or-null>
+      owner_signoff_refs: [RQ-L1-PILEUP-L11:<owner-hash-or-null>]
+      command_template_ids: [blocked_missing_input_v1]
+      command_template_verifier_hashes: []
+      command_template_verifier_sources: []
+      ci_report_hash: sha256:<hash-or-null>
+      note_annex_hash: sha256:<hash-or-null>
+      glossary_audit_hash: sha256:<hash-or-null>
+      archive_drill_hash: sha256:<hash-or-null>
     - pack_member: unbounded_caveats
       source_plans: [1, 45, 50, 51, 55, 56]
       artifact_paths:
