@@ -81,6 +81,46 @@ The annex is not a substitute for the defence package. It is the note
 reader's compact route map to the exact package fields that answer the
 foreseeable EM/selection examiner questions.
 
+
+### 1.2 Machine-readable L1 note annex fixture
+
+A promoted internal note stores the L1 annex as a structured block so
+plan 53 can compare the note, defence package, and reviewer-question
+registry without parsing prose. The same block can be rendered in the
+Markdown note appendix.
+
+```yaml
+l1_note_annex:
+  result_id: LIC-CH10-NUM-1
+  note_version: v1
+  annex_rows:
+    - annex_block: event_variable_and_cutflow_identity
+      applicability: applies | not_applicable | blocked
+      source_plans: [36, 37]
+      defence_overlay_id: selection_cutflow_identity
+      reviewer_question_ids: [RQ-L1-SELECTION-CUTFLOW]
+      required_contents:
+        - canonical pass_* columns
+        - independent and cumulative cut counts
+      evidence_refs:
+        - <defence package path or ledger key>
+      caveat_text: null
+```
+
+Review rules:
+
+| Rule | Failure caught |
+|---|---|
+| annex row names match the §1.1 blocks | note drifts from defence package taxonomy |
+| every `applies` row names a defence overlay id | note has no machine-readable package handoff |
+| every `blocked` row carries `caveat_text` | hidden missing evidence in reviewer-facing prose |
+| every low-count note includes the limit-convention row | Bayesian prior sensitivity omitted from sparse-count claims |
+| every L11 note includes the pile-up caveat row | independent-event limitation omitted from acceptance claims |
+
+The note author may add prose after the structured annex, but the
+structured row is the reviewable source of truth for CI and plan-50
+package regeneration.
+
 ## 2. Plan vs note separation
 
 - A *plan* describes intent, gates, ownership, acceptance criteria.
