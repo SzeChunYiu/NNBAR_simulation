@@ -310,6 +310,17 @@ l1_glossary_signoff:
       thesis_status: same | translated | flagged_delta
       approved_by: <L1-owner-or-null>
       caveat_text: <required when thesis_status is flagged_delta>
+    - term: command-template verifier hash
+      defence_package_refs:
+        - em_cluster_truth_blindness
+        - selection_cutflow_identity
+      note_refs:
+        - em_object_chain
+        - event_variable_and_cutflow_identity
+      audit_row_ref: l1_glossary_audit:command-template verifier hash
+      thesis_status: same | translated | flagged_delta
+      approved_by: <L1-owner-or-null>
+      caveat_text: <required when thesis_status is flagged_delta>
 ```
 
 ## 4. Acceptance criteria
