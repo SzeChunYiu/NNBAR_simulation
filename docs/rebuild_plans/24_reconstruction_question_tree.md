@@ -91,7 +91,26 @@ Leaf V.1: TPC hits → track candidates
   downstream consumers: V.2, V.3, V.4 (this plan); plan 25 (subsystem)
 ```
 
-Leaves V.2–V.5 follow the same pattern (populated by plan 25).
+Leaf V.2: track candidates → fitted track directions
+  inputs (Class A): V.1 candidate-track table plus the referenced TPC
+                    hit columns (Event_ID, x, y, z, t, eDep, photons,
+                    px, py, pz, xHitID, module_ID, step_info, vol_name)
+  forbidden (Class B): Track_ID, Parent_ID, Name, origin_vol_name,
+                       particle_x, particle_y, particle_z
+  decision rule: fit or estimate a direction from the ordered Class A
+                 hit coordinates; the current baseline is the
+                 first-to-last-hit unit vector from plan 08 §3.2
+                 (`reconstruction.py:165–184`), with covariance and
+                 residuals supplied by plan 26 before sign-off.
+  output schema: {event_id: int64, candidate_id: int64,
+                  anchor_xyz: float64[3], direction_xyz: float64[3],
+                  direction_covariance: float64[3,3],
+                  chi2_ndf: float64, n_direction_hits: int32,
+                  direction_method: string}
+  allowed truth use: validation_only
+  downstream consumers: V.3, V.4, C.2, C.4; plans 26, 27, 29, 30
+
+Leaves V.3–V.5 follow the same pattern (populated by plan 30).
 
 ### Next measurement (vertex branch)
 
