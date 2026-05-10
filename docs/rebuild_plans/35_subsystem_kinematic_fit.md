@@ -354,6 +354,11 @@ non-converged candidates.
 
 - §2 implementation lands; §5 closure passes.
 - §2 χ² distribution follows expected ndf within K-S p > 0.01.
+- Promotion checks prove raw candidate preservation, valid covariance
+  inputs, passing closure metrics, and signed fit-quality decisions
+  before plans 36/37 consume fitted quantities.
+- Evidence bundles keep raw reproduction, fitted candidates, missing
+  covariance blockers, and fit-quality shadows separate.
 
 ## 7. Dependencies
 
