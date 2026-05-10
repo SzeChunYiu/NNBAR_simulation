@@ -95,7 +95,7 @@ requirements, not claims that the final workflow file already exists.
 | `l1_defence_rerun_manifest` | Tier 3 weekly | plan-52 defence rerun bundle has rows for EM chain, selection, pile-up, strange, TOF, and Bayesian cross-checks | Tier 3 tracking issue if incomplete |
 | `l1_rerun_transcript_link` | changes to plans 50 or 52 | any ready plan-50 L1 roll-up links both the plan-52 rerun manifest and execution transcript, and plan-52 rows carry review-evidence links plus review-artifact hashes | Tier 1 block |
 | `l1_command_template_registry` | changes to plan 52 | transcript command-template ids are registered, immutable, limited to verified CLI help output or explicit blocked templates, and carry verifier transcripts | Tier 1 block |
-| `l1_package_staleness_guard` | changes to plans 50-56 | ready plan-50 L1 packages carry `l1_staleness.status: current` against the latest L1 hashes | Tier 1 block |
+| `l1_package_staleness_guard` | changes to plans 50-56 | ready plan-50 L1 packages carry `l1_staleness.status: current` against the latest L1 hashes, including plan-54 archive inventory/drill hashes | Tier 1 block |
 | `l1_note_package_freshness` | changes to plans 50 or 55 | promoted L1 note annexes quote only current packages or include an explicit stale-package caveat, and carry note/package/CI/glossary artifact hashes plus staleness id | Tier 1 block |
 | `l1_archive_drill_manifest` | thesis-freeze package build | plan-54 L1 archive drill exists, starts from the top-level README, and records blocked rows plus owner sign-off refs and review-artifact hashes | Tier 1 block for freeze packages |
 | `l1_glossary_signoff` | changes to plans 50, 55, or 56 | plan-56 sign-off rows cover every L1 term used by defence overlays and note annexes | Tier 1 block |
@@ -148,7 +148,7 @@ Report review rules:
 | answered-question transition evidence includes owner sign-off | reviewer registry closes a question without accountable approval |
 | answered-question transition evidence includes review-evidence links | reviewer registry answer cannot be traced to package, CI, note, and glossary artifacts |
 | answered-question transition evidence includes review-artifact hashes | reviewer registry answer links can drift after artifacts are regenerated |
-| staleness guard appears for ready L1 packages | stale defence package is promoted as current evidence |
+| staleness guard appears for ready L1 packages and includes archive hashes | stale defence package is promoted as current evidence |
 | review-evidence links include package, staleness, CI, note, glossary artifacts, and hashes | package has L1 evidence in prose but no machine-readable handoff |
 | note freshness check appears for promoted notes with artifact hashes and staleness id | thesis-facing note quotes stale package or unverifiable note evidence as current evidence |
 
