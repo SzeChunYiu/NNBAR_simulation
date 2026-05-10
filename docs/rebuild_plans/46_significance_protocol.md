@@ -319,6 +319,20 @@ A significance or limit row is promotion-ready only when all four checks
 are present. Validation rows may exercise arithmetic, but final quotes
 require complete provenance and signed convention decisions.
 
+Initial evidence-bundle examples:
+
+| `evidence_bundle_id` | Included rows | Reviewer action |
+|---|---|---|
+| `p46_asimov_validation_bundle_v0` | Cowan-style worked examples, input bundle ids, dispatch rows, recomputed `Z_0`, and rounding audit | approve arithmetic only; final quotes still need complete provenance |
+| `p46_fc_zero_survivor_bundle_v0` | F-C zero-survivor interval, confidence level, background-limit linkage, and handover-rule row | pass endpoint to plan 44/47 without converting it to central `b = 0` |
+| `p46_complete_final_quote_bundle_v0` | signal, background, nuisance covariance, caveats, DEC ids, and validation-case references | eligible for plan 47/50 only if no caveat blocks an unconditional quote |
+| `p46_incomplete_provenance_bundle_v0` | missing input reason, blocked result id, and review owner for the absent source row | reject any quoted significance or limit number until the source row is supplied |
+
+Evidence bundles force statistics outputs to carry their provenance and
+method-dispatch context. A number that cannot name its signal,
+background, nuisance, caveat, and convention rows remains a validation
+fixture rather than a final result.
+
 ## 4. Acceptance criteria
 
 - §1 Z_0 target implementation lands in the L3-owned
