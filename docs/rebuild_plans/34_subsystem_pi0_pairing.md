@@ -191,6 +191,55 @@ first pass the L3 `--help` verifier from the parallel-session protocol.
 Closure on truth π⁰s is specified in §5; plan 35 separately
 measures the post-fit mass resolution.
 
+### 2.4 Physics derivation for P.5/P.6
+
+#### Physics derivation
+
+P.5 physically estimates whether two reconstructed photon objects are
+consistent with one neutral pion decay. The truth-side quantity is a
+π⁰ that decays to two photons with invariant mass equal to the PDG
+π⁰ mass; the production estimator observes only the two photon
+four-vectors and computes `M_gg^2 = 2 E1 E2 (1 - cos alpha)` under the
+massless-photon approximation \cite{ParticleDataGroup:2024RPP}. P.6
+physically estimates the accidental-pair contamination: pairs passing
+the same production kinematics but not originating from the same π⁰ in
+validation truth.
+
+The near-minimal production estimator is all unordered photon pairs plus
+a cut tuple on invariant mass, total visible energy, calorimeter energy
+components, lead-glass fraction, and opening angle. This preserves every
+candidate needed by the downstream fit while keeping the accidental
+rejection auditable as individual booleans. The dominant uncertainty is
+not the invariant-mass formula itself; it is photon energy scale,
+direction/vertex resolution, combinatorics in multi-photon events, and
+the threshold choice for accepting or rejecting accidental pairs.
+
+#### Logic gaps
+
+| Parameter | Status before production | Closure study / target date |
+|---|---|---|
+| unordered-pair enumeration | First-principles complete for two-body candidates; runtime scales as `O(N^2)` | Stress-test candidate multiplicity and runtime on high-photon signal/background samples; target 2026-06-15 |
+| mass window `[100, 180] MeV` around `m_pi0 = 134.977 MeV` | Ch 8 reproduction baseline; width is empirical, not derived from the PDG mass alone | Scan mass windows versus correct-pair efficiency and accidental rate; target 2026-06-25 |
+| total-energy max `720 MeV`, scintillator max `250 MeV`, lead-glass max `980 MeV`, lead-glass fraction min `0.55`, opening-angle min `30 deg` | Ch 8 reproduction thresholds; production retune remains `OPEN:` | N-1/ROC scan with signal, no-pi0, and wrong-parent controls; target 2026-06-30 |
+| best-mass or fit-ranked replacement policy | `OPEN:` no production ranking is frozen | Compare all-pairs, best-mass, and plan-35 fit-ranked candidates at fixed signal efficiency; target 2026-07-05 |
+| closure pass limits: `|mu - 134.977 MeV| < 5 MeV`, raw width `< 35 MeV`, post-fit width `< 25 MeV` | `OPEN:` analysis-quality thresholds need downstream selection impact evidence | Propagate through plans 35/37 and require stable Ch 10 cut-flow counts; target 2026-07-05 |
+
+#### Closure test for the derivation
+
+1. Build all unordered photon pairs from a frozen plan-33 photon fixture
+   and compute invariant mass, opening angle, total energy, component
+   energies, and the six Ch 8 cut booleans without truth labels.
+2. On `sig_foil_v3`, fit the selected `M_gg` peak and measure
+   correct-pair efficiency with truth labels used only by the evaluator.
+3. On `cal_singlepion_mip_v1` and wrong-parent sidebands, measure the
+   accidental selected-pair rate with a finite interval even when the
+   selected count is zero.
+4. Repeat N-1 scans for each threshold and keep the Ch 8 baseline
+   immutable while any retuned tuple is written as a sidecar candidate.
+5. Drop `Track_ID`, `Parent_ID`, `Name`, process, and ancestry aliases;
+   raw pair lists, kinematics, cut booleans, failure reasons, and final
+   `passes_selection` must be unchanged.
+
 ## 3. Accidental rejection (P.6)
 
 Accidentals are pairs where the two photons came from different
