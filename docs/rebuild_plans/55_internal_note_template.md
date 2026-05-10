@@ -131,7 +131,7 @@ is a small matrix, not a prose judgement, so omissions are visible in CI.
 | Checklist item | Applies when | Required evidence |
 |---|---|---|
 | reviewer question coverage | any annex row has `applicability: applies` | at least one plan-51 question id is listed |
-| defence package handoff | any note quotes a final EM/selection number | plan-50 overlay id and package revision are recorded |
+| defence package handoff | any note quotes a final EM/selection number | plan-50 overlay id, package revision, and owner sign-off status are recorded |
 | package freshness | any note quotes a final EM/selection number | plan-50 staleness status is `current` or the note carries the stale-package caveat |
 | rerun reproducibility | any note says an artifact was refreshed | plan-52 rerun manifest row id, execution transcript row id, command-template id, command-template verifier hash, and output hash are recorded |
 | CI transcript | any note is promoted after Stage E.3 starts | plan-53 L1 report id is recorded |
@@ -168,8 +168,8 @@ cite plans by ID.
 - Stage E.3 notes that quote L1 EM, selection, timing, pile-up,
   strange-background, or Bayesian-limit evidence satisfy the §1.3
   checklist, including rerun transcript, command-template links, and
-  verifier hashes for refreshed artifacts and package freshness evidence
-  for quoted numbers.
+  verifier hashes for refreshed artifacts, owner sign-off, and package
+  freshness evidence for quoted numbers.
 
 ## 4. Dependencies
 
