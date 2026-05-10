@@ -307,6 +307,36 @@ C.2 artifact manifest fields `estimator_id`, `path_length_source`,
 unit-test-only bridge and cannot feed plan 29 PID promotion or plan 45
 calibration nuisances.
 
+### 6.6 Stage E.1 artifact manifest schema
+
+The C.2 producer must write a manifest that freezes estimator identity,
+path-length provenance, and truncation settings before PID or nuisance
+artifacts consume the dE/dx rows:
+
+```yaml
+schema_version: plan27_c2_dedx@stage-e1
+dataset_id: <plan-03 dataset id>
+producer: reconstruct_dedx_table
+estimator_id: <stable estimator version>
+estimator: truncated_mean | arithmetic_mean_reproduction | landau_mpv
+input_v1_hash: <sha256 of V.1 candidate table>
+input_tpc_hash: <sha256 of TPC input table>
+output_dedx_hash: <sha256 of C.2 dE/dx table>
+contribution_sidecar_hash: <sha256 of selected/rejected step sidecar>
+low_truncation_fraction: <float>
+high_truncation_fraction: <float>
+path_length_source_values: [class_a_track_length, coordinate_span, v2_covariance_path, degraded_missing]
+quality_states_allowed: [pass, warn, fail, not_applicable]
+failure_reasons_allowed: [none, empty_candidate, missing_step_length, nonpositive_step_length, nonfinite_energy_deposit]
+calibration_source: <plan-17-or-plan-23 calibration id>
+```
+
+The manifest is invalid if the truncation fractions differ from the DEC
+entry named by `estimator_id` or if contribution-sidecar rows cannot be
+joined back to `(event_id, charged_candidate_id, estimator_id)`. Plans
+29, 40, 45, and 66 consume this manifest before trusting dE/dx values
+or calibration residuals.
+
 ## 7. Acceptance criteria
 
 - §3 closure within 5% across the charged calibration set.
@@ -316,7 +346,7 @@ calibration nuisances.
 - §6 Stage E.1 handoff is actionable for L3: the target public
   functions, current unit/integration tests, remaining test obligation,
   promotion invariants, producer/consumer contract, verification
-  command, and required C.2 fields (`estimator_id`, `dedx_mev_per_cm`,
+  command, artifact manifest schema, and required C.2 fields (`estimator_id`, `dedx_mev_per_cm`,
   `path_length_cm`, `path_length_source`, `n_steps_used`, truncation
   fractions, `truncation_applied`, `dedx_quality_state`,
   `dedx_failure_reason`, `calibration_source`, and contribution sidecar
