@@ -20,7 +20,7 @@ risks:
   - {risk: only first two TPC LVs get the field; the other 10 modules drift in null field, mitigation: §2 records as known incompleteness, plan 25 vertex study quantifies}
   - {risk: TPC W-value mismatch between sensitive detector and reference data, mitigation: §3 audit + DEC}
 estimated_effort: M
-last_updated: 2026-05-09
+last_updated: 2026-05-10
 ---
 
 # TPC field calibration
@@ -63,12 +63,36 @@ the source (PDG; Sauli, *Principles of operation of multiwire
 proportional and drift chambers*, CERN 77–09).
 
 This is a documented discrepancy
-(`docs/detector_fundamental_question_tree.md` §3). Plan 17 must:
+(`docs/detector_fundamental_question_tree.md` §3). Plan 17 locks the
+production-vs-reference policy as follows:
 
-1. Decide the production value (with a DEC entry in plan 05).
-2. Record the chosen value as a Class C constant in plan 09.
-3. Propagate the difference between 23.6 eV and the reference into
-   plan 45 systematics as a "TPC W-value" nuisance with ±15% range.
+**DEC-2026-05-10-5 stub — TPC W-value production constant.**
+Context: the as-built `TPCSD` output already used 23.6 eV, while the
+gas-reference range for Ar/CO₂ (90/10) is approximately 26.0–27.4 eV.
+Decision: keep **23.6 eV** as the production constant for all current
+rebuild reproduction rows and frozen `sig_foil_v3`-style samples,
+because changing it would silently rewrite existing electron-count and
+dE/dx observables. Treat **26.0 eV** as the reference alternative for
+closure plots and systematic reweighting, not as the default until a
+new dataset version is regenerated. Follow-up: promote this stub to the
+decision log and update the plan 09 Class C row when the TPC calibration
+registry exists.
+
+Production-vs-reference handling:
+
+| Quantity | Value | Role | Rationale |
+|---|---:|---|---|
+| `tpc_w_value_ev.production` | 23.6 eV | default conversion in current samples | identity-default; matches `TPCSD.cc` and existing ledger rows |
+| `tpc_w_value_ev.reference` | 26.0 eV | closure/reweighting target | rounded Ar/CO₂ literature value, avoids over-precision before gas-mixture validation |
+| `tpc_w_value_ev.upper_reference` | 27.4 eV | systematic envelope endpoint | preserves the high end of the cited reference range |
+
+The propagation rule is deterministic: for a step with fixed energy
+deposit, the expected electron count scales as
+`N_e(reference) = N_e(production) * 23.6 / W_reference`. Thus the 26.0
+eV closure point is a −9.2% electron-count shift relative to the
+current production output; the 27.4 eV endpoint is a −13.9% shift. Plan
+45 should round this to a symmetric ±15% "TPC W-value" nuisance until a
+dedicated gas-gain calibration narrows the range.
 
 Drift velocity is set indirectly through Geant4's stepper handling;
 the rebuild does not currently override it. If GarfieldGPU is enabled
@@ -92,7 +116,9 @@ limitation L3 (plan 01 §6).
 ## 5. Acceptance criteria
 
 - §2 field map produced; uniformity within 1%.
-- §3 W-value DEC entry approved; reference chosen and recorded.
+- §3 W-value DEC stub recorded; production/reference values chosen and
+  promoted to the decision log before any regenerated TPC sample is
+  frozen.
 - §3 systematic propagation lands in plan 45.
 - §1 limitation (only first 2 TPC LVs get the field) is documented
   here and feeds plan 25 with a "field coverage" caveat.
