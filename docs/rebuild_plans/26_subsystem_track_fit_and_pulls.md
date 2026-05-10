@@ -277,14 +277,31 @@ This contract keeps `fit_track_candidates`
 (`nnbar_reconstruction/track_fit.py:55-117`) as the only Stage E.1 V.2
 producer until L3 replaces the implementation behind the same keys.
 
+### 5.5 Stage E.1 verification command
+
+L3's V.2 patch is promotable only when the fitter slice exercises both
+the synthetic schema path and the real-output C.1→V.2 chain:
+
+```bash
+pytest tests/test_charged_reco.py::test_fit_track_candidates_emits_plan_26_direction_schema \
+       tests/test_charged_reco.py::test_fit_track_candidates_real_sample_consumes_candidate_rows
+```
+
+The review note for that patch must quote the command output and the
+V.2 artifact manifest fields `fit_id`, `direction_method`,
+`covariance_valid`, `fit_degraded`, `fit_quality_state`, and
+`fit_failure_reason`. A replacement fitter that passes only synthetic
+rows cannot feed plan 30 or plan 40; the real-output selector must run
+against the paired V.1 candidate fixture before promotion.
+
 ## 6. Acceptance criteria
 
 - §3 closure passes on calibration sample.
 - Direction covariance is reported into output schema.
 - §5 Stage E.1 handoff is actionable for L3: the target public
   function, current unit/integration tests, remaining failure-state test
-  obligation, promotion invariants, producer/consumer contract, and
-  required V.2 fields (`fit_id`, direction components,
+  obligation, promotion invariants, producer/consumer contract,
+  verification command, and required V.2 fields (`fit_id`, direction components,
   covariance components, `chi2_ndf`, `n_residual_degrees_of_freedom`,
   `direction_method`, residual sidecar rows, `fit_quality_state`,
   `fit_failure_reason`, `covariance_valid`, and `fit_degraded`) are all
