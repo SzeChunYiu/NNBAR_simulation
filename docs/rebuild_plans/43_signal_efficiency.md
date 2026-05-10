@@ -185,8 +185,8 @@ headline signal efficiency.
 
 The verified live CLI can build the reconstruction tables consumed by
 this plan, can verify the selection-factor cut-flow support with
-`cutflow` (`cli.py:254-263`), and the current statistics support includes
-`jackknife_efficiency` (`statistics/jackknife.py:31-89`) for the
+`cutflow` (`nnbar_reconstruction/cli.py:254-263`), and the current statistics support includes
+`jackknife_efficiency` (`nnbar_reconstruction/statistics/jackknife.py:31-89`) for the
 plan-04 block-jackknife uncertainty. That helper is regression covered
 by `test_jackknife_efficiency_uses_plan_04_block_size`
 (`tests/test_statistics.py:41-54`), while the cut-flow CLI is covered by
