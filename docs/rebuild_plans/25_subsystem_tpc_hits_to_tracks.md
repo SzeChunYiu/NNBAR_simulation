@@ -96,7 +96,7 @@ row except rows explicitly labelled `legacy_track_id_diagnostic`.
 ## 2. Current implementation and live redesign hook
 
 Legacy reconstruction still calls `_track_anchor_and_direction(group)`
-(`charged.py:61-82`). It sorts hits by time then input order; takes
+(`charged.py:62-81`). It sorts hits by time then input order; takes
 anchor = first coord and direction = (last - first); and exposes no fit,
 covariance, or quality cut beyond ≥ 2 valid coordinates. The legacy
 grouping into "tracks" is driven by `Track_ID` (Class B violation), so
@@ -104,11 +104,11 @@ it remains a reproduction baseline and migration item, not the target
 production V.1 path.
 
 The live L3 charged-side hook for this plan is
-`reconstruct_track_candidates` (`charged.py:352-418`). It builds the
+`reconstruct_track_candidates` (`charged.py:245-311`). It builds the
 §1.3 typed V.1 candidate columns from Class A TPC hit coordinates,
 records `cluster_method=geometric_cluster`, writes
 `truth_grouping_used=False`, and uses `_hit_membership_key`
-(`charged.py:338-340`) plus `_track_seed_chi2` (`charged.py:343-349`)
+(`charged.py:231-233`) plus `_track_seed_chi2` (`charged.py:236-242`)
 for stable membership and seed-quality fields. This is an initial
 schema-producing hook: it unblocks V.2/plan-26 and DQM wiring, while
 §3 alternatives still own the physics-performance upgrade from the
@@ -221,6 +221,12 @@ module and the plan-side contract is now explicit:
 - §2 current implementation noted; migration item logged.
 - §3 alternatives each list source, NNBAR adaptation, and plan 38
   V.1 expected-delta observables for plan 49 to consume.
+- §6 Stage E.1 handoff is actionable for L3: the target public
+  function, unit-test path, integration-test path, and mandatory V.1
+  fields (`candidate_id`, hit indices, anchor, direction, hit count,
+  `cluster_method`, `candidate_quality_state`,
+  `candidate_failure_reason`, `truth_grouping_used=False`, and
+  `hit_membership_key`) are all named before implementation begins.
 
 ## 8. Dependencies
 
