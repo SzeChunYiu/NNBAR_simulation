@@ -76,6 +76,22 @@ Leaf S.2: reconstructed pion counts → pion-multiplicity cut
   allowed truth use: validation_only
   downstream consumers: S.6; plans 37, 41, 47
 
+Leaf S.3: visible invariant mass → mass cut
+  inputs (Class A): E.7 visible invariant mass and uncertainty,
+                    object-validity flags, and plan 37 visible-mass
+                    threshold
+  forbidden (Class B): truth invariant mass, truth particle
+                       four-vectors, Track_ID, Parent_ID, Name
+  decision rule: pass when reconstructed visible invariant mass is
+                 valid and at least the thesis Ch 9 threshold
+                 (500 MeV in plan 37 §1), with no substitution from
+                 truth four-vectors when objects are missing.
+  output schema: {event_id: int64, visible_invariant_mass_mev:
+                  float64, mass_threshold_mev: float64,
+                  mass_valid: bool, pass_invariant_mass: bool}
+  allowed truth use: validation_only
+  downstream consumers: S.6; plans 37, 41, 47
+
 ### Next measurement (selection branch)
 
 Reproduce the licentiate's cut-flow on the registered signal sample
