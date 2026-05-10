@@ -28,16 +28,58 @@ proposal.
 
 ## 1. N-1 plots
 
-For every cut C in plan 37 §1:
+For every cut C in plan 37 §1, produce one N-1 artifact set with all
+other cuts applied and C removed from the AND. This is a closure
+procedure, not an optimisation step.
 
-1. Apply all *other* cuts.
-2. Plot the distribution of the variable C operates on, for signal
-   sample (plan 20) and each background (cosmic plan 21, beam
-   neutron plan 22).
-3. Annotate the cut value and the resulting acceptance / rejection.
+### 1.1 Runnable procedure
 
-N-1 plots reveal which cut does the heaviest lifting and which is
-nearly redundant given the others.
+1. Build the reconstruction tables for each registered sample with the
+   canonical event-ID offset (plan 09 §14.6):
+
+   ```bash
+   python -m nnbar_reconstruction.cli summarize \
+       NNBAR_Detector/output/<dataset_id> --all-runs \
+       --table output/reco/<dataset_id>/ --json output/reco/<dataset_id>/summary.json
+   ```
+
+   Required datasets are `sig_foil_v3` (plan 20),
+   `cosmic_cry_essLund_overburdenA_v1` (plan 21), and the beam-neutron
+   dataset selected by plan 22.
+2. Run the N-1 producer over the `events.csv` tables only:
+
+   ```bash
+   python -m nnbar_reconstruction.cli n-minus-one \
+       --signal output/reco/sig_foil_v3/events.csv \
+       --background output/reco/cosmic_cry_essLund_overburdenA_v1/events.csv \
+       --background output/reco/<beam_neutron_dataset>/events.csv \
+       --cuts docs/rebuild_plans/37_subsystem_event_selection.md \
+       --bootstrap 200 --out output/studies/n_minus_1/
+   ```
+
+3. For each cut write `<cut>.png`, `<cut>.json`, and a manifest entry
+   containing: dataset id, input table hash, applied companion cuts,
+   bin edges, weighted counts, signal acceptance, background rejection,
+   Wilson interval (plan 04 §4), and ladder leaf.
+4. Assert the command exits non-zero if any plan 37 §1 cut has no JSON
+   and PNG artifact. The acceptance gate for this section is artifact
+   coverage plus reproducible hashes, not visual inspection alone.
+
+### 1.2 Per-cut fields, tolerances, and cross-references
+
+| Cut | Event-table field(s) from plan 09 §14.6 | N-1 binning / tolerance | Ladder leaf | Ledger hook |
+|---|---|---|---|---|
+| `pass_scintillator_energy` | total scintillator energy and the boolean cut flag | 20 MeV bins over 0-2000 MeV; acceptance/rejection values must reproduce from JSON within the Wilson 68% interval. | S.1 / E.1-E.2 | LIC-CH10-CUTFLOW using plan 47 §1 schema |
+| `pass_tpc_foil_track` | `n_tracks_used`, `n_tracks_skipped`, foil-track boolean | integer bins; zero/nonzero split must match the cut-flow count exactly. | S.1 / V.5 | LIC-CH10-CUTFLOW |
+| `pass_pion_count` | charged, photon, and π0 multiplicities | integer bins; cumulative count changes must be ≤ 1 event under deterministic rerun. | S.2 / E.9 | LIC-CH10-CUTFLOW |
+| `pass_invariant_mass` | visible invariant mass | 25 MeV bins from 0-2500 MeV; threshold acceptance must match JSON within Wilson 68%. | S.3 / E.7 | LIC-CH10-CUTFLOW |
+| `pass_sphericity` | sphericity | 0.02-wide bins on [0, 1]; threshold acceptance must match JSON within Wilson 68%. | S.4 / E.5 | LIC-CH10-CUTFLOW |
+| `pass_scintillator_balance` | upper and lower scintillator energies | two 20 MeV marginal histograms plus 2-D pass mask; row/column projections must match JSON within Wilson 68%. | S.5 / E.2 | LIC-CH10-CUTFLOW |
+
+All plotted inputs are reconstruction/event-summary fields derived from
+Class A columns in plan 09. Truth labels enter only through dataset-level
+sample identity (signal vs named background) and never through per-event
+selection decisions.
 
 ## 2. ROC curves
 
