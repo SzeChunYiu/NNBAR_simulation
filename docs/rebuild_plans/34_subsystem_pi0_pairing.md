@@ -68,6 +68,27 @@ Leaf P.5/P.6: photon objects → π⁰ candidates and accidental tags
 
 Strict `passes_selection` = AND of all six.
 
+### 2.1 Per-cut failure-reason contract
+
+The individual cut columns are auditable only if the final strict AND
+can be decomposed without rerunning reconstruction. Each candidate row
+therefore carries a deterministic `selection_failure_reasons` list
+computed from the six booleans in §2:
+
+| Failing column | Reason token |
+|---|---|
+| `passes_mass_window` | `mass_window` |
+| `passes_total_energy` | `total_energy` |
+| `passes_scintillator_energy` | `scintillator_energy` |
+| `passes_leadglass_energy` | `leadglass_energy` |
+| `passes_leadglass_fraction` | `leadglass_fraction` |
+| `passes_opening_angle` | `opening_angle` |
+
+If all six booleans are true, `selection_failure_reasons = []` and
+`passes_selection = true`. If one or more booleans are false,
+`passes_selection = false` and the list preserves the §2 table order.
+No truth-label or parentage field may add or suppress a failure reason.
+
 The current compact source does not yet emit per-cut failure reasons,
 source-alias diagnostics, or prompt-timing π⁰ diagnostics. Those are
 target outputs for this plan or downstream validation artifacts, and
