@@ -146,7 +146,10 @@ The procedure uses verified existing CLI surface only for table
 production and validation. Any future fiducial producer is an L3-owned
 implementation gate until its `--help` output exists.
 
-1. Build reconstruction tables for the frozen signal sample:
+1. Build reconstruction tables for the frozen signal sample. Plan 20
+   names the target `sig_foil_v3`; the current plan 03 frozen registry
+   id is `sig_foil_500MeV_v3`, so the manifest must record both the
+   plan-20 alias and the plan-03 id.
 
    ```bash
    python -m nnbar_reconstruction.cli summarize \
@@ -196,7 +199,29 @@ default and quotes `tight-loose` as an edge systematic. The `none`
 profile remains a diagnostic baseline and cannot be thesis-facing unless
 plan 45 records why edge effects are negligible.
 
-## 7. Systematics and ledger integration
+## 7. Per-observable acceptance budget
+
+Every plan 43 signal-efficiency artifact that consumes a fiducial
+profile must carry the observable-level budget below. The central value
+is filled by the closure job; this plan fixes the denominator, the
+profile dependency, and the nuisance handoff so reviewers can see
+whether an edge cut protects or distorts the quoted observable.
+
+| Observable / result | Denominator | Numerator | Profile comparison | Required budget fields | Ledger hook |
+|---|---|---|---|---|---|
+| signal acceptance | generated `sig_foil_v3` alias / `sig_foil_500MeV_v3` registry events | events with `fiducial_pass` before reconstruction and selection losses | `none`, `loose`, `tight` | central efficiency, Wilson interval, `tight-loose` shift, geometry tag | LIC-CH06 signal-acceptance rows |
+| vertex residual / foil compatibility | events with reconstructable V.4 vertices | events passing V.5 and buffered foil states | `loose` vs `tight` | radial/z residual mean, pull width, edge-bin occupancy, N8 shift | plan 30 / plan 47 vertex rows |
+| charged PID efficiency | charged candidates entering C.1-C.6 | candidates passing TPC and scintillator fiducial states plus PID validity | `loose` vs `tight` | C.1/C.2/C.3 object-loss fractions, DQM warn/fail counts, N1/N2/N8 hooks | plan 29 charged-PID rows |
+| photon and pi0 efficiency | photon/pi0 candidates entering P.1-P.7 | candidates passing lead-glass acceptance and pi0 selection states | `loose` vs `tight` | edge-loss fraction, pi0-mass shift, N3/N8/N10 hooks | plans 34-35 / plan 47 pi0 rows |
+| final S.6 selection efficiency | generated signal events | events passing fiducial profile and plan 37 S.6 | `none`, `loose`, `tight` | direct selected/generated ratio, product closure against plan 43 factors, covariance with object losses | LIC-CH10 cut-flow rows |
+
+A budget row is complete only if it records the plan-03 dataset id, the
+plan-20 alias when applicable, the fiducial profile, the geometry tag,
+and the dominant plan 45 nuisance IDs. Missing fields downgrade the
+corresponding plan 47 row to `not-attempted` even if the raw event count
+exists.
+
+## 8. Systematics and ledger integration
 
 Edge effects map to existing plan 45 nuisances:
 
@@ -212,7 +237,7 @@ pi0-mass width, or selection efficiency must store the fiducial profile
 and geometry version. A row without those two fields is incomplete, even
 if its numeric efficiency agrees with the thesis.
 
-## 8. Alternatives and promotion policy
+## 9. Alternatives and promotion policy
 
 | Alternative | Pros | Cons | Promotion rule |
 |---|---|---|---|
@@ -225,7 +250,7 @@ Any change to the default profile, buffer size, or edge-smoothness pass
 criterion is a methodology change and needs a plan 05 decision-log entry
 before plan 43 or plan 47 can quote the result.
 
-## 9. Acceptance criteria
+## 10. Acceptance criteria
 
 - §3 names a fiducial rule for every active subsystem and foil edge.
 - §4 event and object schemas are implemented by an L3 help-verified
@@ -233,12 +258,14 @@ before plan 43 or plan 47 can quote the result.
 - §5 closure runs on `sig_foil_500MeV_v3` and
   `cal_singleproton_50to500MeV_v2` with manifests and hashes.
 - §6 radius/z/profile tables exist and show no unexplained edge cliff.
-- §7 maps residual edge effects to plan 45 nuisance IDs or explicit
+- §7 per-observable budget rows record denominator, numerator,
+  profile comparison, ledger hook, and dominant nuisance IDs.
+- §8 maps residual edge effects to plan 45 nuisance IDs or explicit
   plan 01 caveats.
 - Plan 43 stores the selected fiducial profile and geometry version in
   every signal-efficiency artifact.
 
-## 10. Dependencies
+## 11. Dependencies
 
 - **03** — dataset ids and frozen sample status.
 - **04** — Wilson intervals and bootstrap/jackknife uncertainty rules.
