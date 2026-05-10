@@ -109,12 +109,16 @@ l1_note_annex:
         ci_report: <plan53-l1-report-id>
         glossary_audit: <plan56-audit-id>
         staleness_summary: <plan50-staleness-id>
+        archive_inventory: <plan54-inventory-id-or-null>
+        archive_drill: <plan54-drill-id-or-null>
       artifact_hashes:
         note_annex: sha256:<hash>
         defence_package: sha256:<hash>
         staleness_summary: sha256:<hash>
         ci_report: sha256:<hash>
         glossary_audit: sha256:<hash>
+        archive_inventory: sha256:<hash-or-null>
+        archive_drill: sha256:<hash-or-null>
       caveat_text: null
 ```
 
