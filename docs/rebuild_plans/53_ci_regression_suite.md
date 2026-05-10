@@ -97,6 +97,42 @@ before L3 has implemented every statistics or reconstruction producer. A
 missing downstream artifact is represented as a blocked row with a named
 owner, not as a skipped CI check.
 
+
+### 5.1 L1 CI report fixture
+
+The CI implementation writes a compact report for the L1 checks so a
+failed run can be triaged without re-running grep by hand. The report is
+kept under the normal CI artifact directory and is linked from the plan-50
+defence package when a thesis-freeze package is produced.
+
+```yaml
+l1_defence_ci_report:
+  git_rev: <rev>
+  checked_at: <timestamp>
+  checks:
+    - check_id: l1_wave4_plan_presence
+      status: pass | fail | warn
+      files_checked:
+        - docs/rebuild_plans/58_pileup_at_ess_intensity.md
+      evidence:
+        line_count: 284
+        stale_citation_matches: 0
+      remediation: null
+```
+
+Report review rules:
+
+| Rule | Failure caught |
+|---|---|
+| every §5 check id appears in the report | CI silently skipped an L1 defence guard |
+| every failed check has remediation text | reviewer cannot tell which plan/owner must act |
+| line-count evidence is numeric, not prose | 500-line and Wave-4 depth gates become auditable |
+| stale-citation evidence includes match count | A+ examiner gate is not reduced to a checkbox |
+| report git rev matches package git rev | archived defence artifacts and CI evidence diverge |
+
+A warning status is allowed only for Tier 3 weekly checks. Tier 1 L1
+checks are pass/fail and block the plan-set edit when they fail.
+
 ## 6. Acceptance criteria
 
 - §1 tiers implemented in `.github/workflows/` (or equivalent).
