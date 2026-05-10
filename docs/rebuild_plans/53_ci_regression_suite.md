@@ -228,9 +228,11 @@ l1_defence_ci_report:
         - docs/rebuild_plans/51_reviewer_question_registry.md
       evidence:
         answered_rows_checked: <n>
-        required_answer_keys: [artifact, owner_signoff, review_evidence_links, review_artifact_hashes]
+        required_answer_keys: [artifact, owner_signoff, review_evidence_links, review_artifact_hashes, rerun_manifest_id, rerun_transcript_id]
         required_transition_keys: [old_status, new_status, required_artifact_status, l1_overlay_id]
-        refreshed_artifact_keys: [rerun_command_template_id, rerun_command_template_verifier_hash, rerun_command_template_verifier_source]
+        refreshed_artifact_keys: [rerun_manifest_id, rerun_transcript_id, rerun_command_template_id, rerun_command_template_verifier_hash, rerun_command_template_verifier_source]
+        rerun_manifest_refs_match_plan52: true
+        rerun_transcript_refs_present_or_blocked: true
         transition_matrix_checked: true
       remediation: null
     - check_id: l1_defence_overlay_schema
@@ -321,6 +323,7 @@ Report review rules:
 | rerun transcript check appears with review-evidence links and artifact hashes when roll-up uses refreshed artifacts | package claims rerun evidence without execution proof or artifact parity |
 | command-template registry check includes verifier transcript | transcript uses unsupported, unverified, or mutable command surface |
 | answered-question transition evidence includes command-template ids and verifier hash | reviewer registry closes a refreshed-evidence question without replay contract or A+ verifier proof |
+| answered-question transition evidence includes rerun manifest/transcript ids matching plan 52 | reviewer registry closes a question without a stable rerun row or transcript handoff |
 | answered-question transition evidence includes owner sign-off | reviewer registry closes a question without accountable approval |
 | answered-question transition evidence includes review-evidence links | reviewer registry answer cannot be traced to package, CI, note, and glossary artifacts |
 | answered-question transition evidence includes review-artifact hashes | reviewer registry answer links can drift after artifacts are regenerated |
