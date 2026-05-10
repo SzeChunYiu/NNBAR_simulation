@@ -294,6 +294,34 @@ L3/software handoff requirements:
    verified under the A+ examiner gate. Until then, this section is a
    software contract, not a runnable command list.
 
+### 10.1 Fiducial artifact manifest schema
+
+The fiducial producer, edge-report producer, and budget exporter must
+write manifest rows that freeze the geometry/profile state consumed by
+plan 43:
+
+```yaml
+schema_version: plan60_fiducial_edges@stage-e1
+dataset_id: sig_foil_500MeV_v3
+plan20_alias: sig_foil_v3
+producer_stage: fiducial_tables | edge_reports | budget_export
+geometry_version: <plan-16 geometry/alignment tag>
+fiducial_profile: none | loose | tight
+input_table_hashes: {vertices: <sha256>, charged: <sha256>, photons: <sha256>, pi0: <sha256>, events: <sha256>}
+event_fiducial_hash: <sha256 of §4.1 table>
+object_fiducial_hash: <sha256 of §4.2 table>
+edge_report_hashes: {radius: <sha256>, z: <sha256>, subsystem_loss: <sha256>, profile_comparison: <sha256>}
+budget_export_hash: <sha256 of §7 budget table>
+dominant_nuisance_ids: [N8, N10]
+dqm_manifest_hash: <sha256|null>
+producer_help_verified: true
+```
+
+The manifest is invalid if any active subsystem in §3 lacks an edge
+state, if geometry version or profile is missing, or if a budget row is
+written without the plan 45 nuisance handoff. Plan 43 must consume this
+manifest hash before quoting any fiducial-profile efficiency.
+
 ## 11. Acceptance criteria
 
 - §3 names a fiducial rule for every active subsystem and foil edge.
@@ -310,9 +338,9 @@ L3/software handoff requirements:
   every signal-efficiency artifact.
 - §10 software handoff is complete: fiducial production, edge reports,
   and budget export have explicit inputs, outputs, failure assertions,
-  provenance fields, the existing foil-only support surface is cited,
-  the current DQM support surface is cited, and a no-invented-CLI rule
-  is in force.
+  provenance fields, a required manifest schema, the existing foil-only
+  support surface is cited, the current DQM support surface is cited,
+  and a no-invented-CLI rule is in force.
 
 ## 12. Dependencies
 
