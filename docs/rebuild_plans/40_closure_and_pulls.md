@@ -40,6 +40,72 @@ L3 surface is the Python module `nnbar_reconstruction/closure/runner.py`;
 the runnable snippets below import that API directly. If L3 later adds a
 CLI, update §11 only after a help command proves that the surface exists.
 
+## 0.1 Wave 6 derivation — pull closure and uncertainty calibration
+
+### Physics derivation
+
+**What is physically measured.** Pull closure measures whether a
+reconstructed estimator is unbiased relative to validation truth and
+whether its reported uncertainty has the correct scale. The measured
+ground-truth quantity is the truth value for a leaf-specific observable;
+the closure observables are pull mean, pull width, reduced chi2, and
+shape compatibility between reconstructed and truth distributions.
+
+**Estimator rationale.** If an estimator is centred and its uncertainty
+model is correct, `(reco - truth) / sigma` should be distributed with
+mean near zero and width near one for the fitted quantities that plan 40
+owns. A nonzero mean indicates bias or a calibration offset; a pull
+width above one indicates underestimated uncertainty or unmodelled
+tails; a pull width below one indicates overestimated uncertainty or
+over-regularisation. K-S shape compatibility protects against a
+pathological case where moments look acceptable but the distribution
+shape is wrong.
+
+**Statistical character.** Pull statistics carry finite-sample
+uncertainty and bootstrap covariance, but systematic effects dominate
+defence-critical failures. Calibration constants, alignment,
+material-budget approximations, physics-list alternatives, and sample
+mode differences can all shift pulls coherently. Closure bands must be
+bound before reading the row's result; otherwise a pass can be created
+by post-hoc tolerance tuning.
+
+### Logic gaps
+
+- **Pull-mean and pull-width bands.** Grounding: §4 and §6 record
+  current leaf-specific bands. `OPEN:` derive each band from the
+  target thesis observable's allowed bias and uncertainty budget before
+  final defence use; target resolution date 2026-06-22.
+- **K-S p-value >0.01.** Grounding: current leaf-band shape guard.
+  `OPEN:` validate the false-fail/false-pass behaviour with toys and
+  bootstrap covariance at the expected row counts; target resolution
+  date 2026-06-29.
+- **Bootstrap interval stability.** Grounding: plan 04 supplies the
+  deterministic bootstrap convention. `OPEN:` define the minimum event
+  count or resampling budget for each leaf so the conclusion cannot flip
+  under the 68% interval; target resolution date 2026-06-22.
+- **Explicit column maps outside V.4.** Grounding: §1 states only V.4
+  has default runner support today. `OPEN:` either add tested defaults
+  in L3 or require each non-V.4 ledger row to carry its column map;
+  target resolution date 2026-06-15.
+- **Classification/count leaves.** Grounding: §4 removes the fake-pull
+  placeholder for non-fitted leaves. `OPEN:` bind PID, selection, and
+  count leaves to their native closure metrics in plans 29, 37, and
+  47; target resolution date 2026-06-29.
+
+### Closure test for the derivation
+
+1. For one ledger row and leaf, join reco, truth, and sigma columns by
+   event id; stop if the event coverage or sigma validity is not exact
+   enough for the row's declared band.
+2. Run `run_closure` with the pre-bound `ClosureBand` and persist
+   `closure_report.json` plus `metrics.csv`.
+3. Interpret failures by metric: pull mean routes to estimator bias,
+   pull width routes to uncertainty modelling, chi2/dof routes to
+   outliers or tails, and K-S failure routes to shape/model mismatch.
+4. Copy the metrics into plan 47 and keep the row `mismatch` until the
+   responsible leaf either closes or the residual is explicitly carried
+   as a plan-45 systematic.
+
 ## 1. Verified implementation surface
 
 Current L3 files:
