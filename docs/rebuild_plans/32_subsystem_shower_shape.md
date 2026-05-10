@@ -33,9 +33,9 @@ Leaf P.2: cluster candidates → charged/neutral discriminant inputs
 - **Current implementation evidence:** the compact current source
   implements the hard-cone charged/neutral baseline inside
   `reconstruct_photon_objects` (`photon.py:60-201`).
-  The threshold comes from `ReconstructionConfig`
-  (`reconstruction.py:14-41`) as
-  `charged_cluster_match_angle_deg = 8.0`. The same function also
+  The threshold comes from the current `ReconstructionConfig` field
+  `charged_cluster_match_angle_deg = 8.0`; the verifier transcript in
+  §1.5 records the class and field grep evidence. The same function also
   emits the diagnostic `truth_name` and `source_track_id` columns,
   so those fields remain validation/provenance surfaces rather than
   production discriminant inputs.
@@ -153,7 +153,7 @@ before this plan was committed:
 | Cited contract | Verifier evidence | Status |
 |---|---|---|
 | hard-cone row builder and charged-match fields | `def reconstruct_photon_objects` resolves at `photon.py:60`, inside the cited `photon.py:60-201` range. | keep citation |
-| charged-match threshold default | `class ReconstructionConfig` resolves at `reconstruction.py:14`, inside the cited `reconstruction.py:14-41` range. | keep citation |
+| charged-match threshold default | `grep -nE '^(def|class) ReconstructionConfig' nnbar_reconstruction/reconstruction.py` resolves the class in the current L3 source, and `grep -n 'charged_cluster_match_angle_deg'` resolves the 8.0 field in that class body. | keep verified symbol, no stale line citation |
 
 Plan 32 does not specify a runtime CLI command, and it does not cite the
 removed legacy split-study files. If the P.2 scorer later gains a CLI
