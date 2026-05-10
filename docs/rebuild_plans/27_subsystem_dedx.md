@@ -225,6 +225,32 @@ explicit remaining gates:
   future `dedx_quality_state` / `dedx_failure_reason` fields once L3
   exposes them.
 
+### 6.2 Stage E.1 code-gap checklist
+
+The live L3 hook already proves that C.2 can be reconstructed without
+truth labels, but the promoted fixture still needs the explicit quality
+and provenance fields from §1.3/§5. L3 can promote C.2 only after these
+gaps close in `reconstruct_dedx_table` (`dedx.py:91-119`) and
+`truncated_mean_dedx` (`dedx.py:41-70`):
+
+| Gap | Current live behavior | Required promotion behavior |
+|---|---|---|
+| estimator identity | `estimator=truncated_mean` and `calibration_source=plan27_truncated_mean_v0` are emitted | add a stable `estimator_id` that keys the DEC-approved low/high fractions and calibration source |
+| path provenance | `path_length_cm` is emitted from `TrackLength`, `trackl`, `step_length`, or coordinate deltas | add `path_length_source` so plan 26 and plan 38 can separate covariance-derived, Class-A track-length, and degraded span normalisations |
+| truncation provenance | low/high fractions are emitted, but selected/removed samples are not persisted | add `truncation_applied` plus the contribution sidecar keyed by `(event_id, charged_candidate_id, estimator_id)` |
+| quality state | missing/empty/non-positive paths produce NaN physics values without a machine-readable C.2 state | add `dedx_quality_state` and `dedx_failure_reason` with `pass`, `warn`, `fail`, or `not_applicable` semantics from §5 |
+| validation separation | Bethe-Bloch closure is specified but not linked to the production row id | write closure residuals only after the production row is frozen and key them to `estimator_id` |
+
+Acceptance of this checklist is a plan-side gate, not a request for L0
+to edit L3 code. The matching L3 patch must update
+`test_truncated_mean_dedx_drops_plan_27_tails`
+(`tests/test_charged_reco.py:168-181`),
+`test_reconstruct_dedx_table_uses_candidate_hit_membership`
+(`tests/test_charged_reco.py:184-207`), and
+`test_reconstruct_dedx_table_real_sample_has_plan_27_schema`
+(`tests/test_charged_reco.py:209-221`) so the synthetic and real-output
+chains assert every required C.2 promotion column.
+
 ## 7. Acceptance criteria
 
 - §3 closure within 5% across the charged calibration set.
