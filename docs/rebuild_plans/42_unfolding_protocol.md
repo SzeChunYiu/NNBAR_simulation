@@ -41,7 +41,8 @@ worktree exposes `summarize` and `response-matrix` under
 supports `--run`, `--json`, and `--tables-dir`;
 `response-matrix --help` supports `--all-runs`, `--tables-dir`,
 `--out-dir`, `--observables`, `--bootstrap`, `--min-truth-count`,
-and `--json`.
+and `--json`. `summarize --help` also supports `--all-runs`,
+`--table`, and `--bootstrap` for multi-run table production.
 Later unfolding-tuning, closure, and systematic commands remain
 L3-owned implementation gates until their `--help` surface exists.
 
@@ -54,19 +55,19 @@ production reconstruction decisions.
 ### 2.1 Runnable procedure
 
 1. Produce reconstruction tables with the verified plan 09 §14 schema
-   command, one run at a time until a multi-run summarize wrapper
-   exists:
+   command and multi-run event-id offsets:
 
    ```bash
    python -m nnbar_reconstruction.cli summarize \
-       NNBAR_Detector/output/sig_foil_v3 --run <run> \
-       --tables-dir output/reco/sig_foil_v3/run_<run>/ \
-       --json output/reco/sig_foil_v3/run_<run>/summary.json
+       NNBAR_Detector/output/sig_foil_v3 --all-runs \
+       --tables-dir output/reco/sig_foil_v3/ \
+       --table output/reco/sig_foil_v3/runs.csv \
+       --json output/reco/sig_foil_v3/summary.json
    ```
 
-2. Concatenate the run-level `events.csv` and `pi0.csv` tables only
-   after applying the plan 09 §15 event-id offset, and write input
-   hashes to `output/reco/sig_foil_v3/manifest.json`.
+2. Assert `output/reco/sig_foil_v3/manifest.json` exists and records
+   `event_id_offset = 1000000000`, source hashes, and the same run list
+   used by the response-matrix command.
 3. Build the response matrices with the verified response-matrix CLI:
 
    ```bash
