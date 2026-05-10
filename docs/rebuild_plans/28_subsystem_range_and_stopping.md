@@ -299,6 +299,35 @@ C.3 artifact manifest fields `range_id`, `association_method`,
 real-output selector skips because scintillator fixtures are missing,
 C.3 cannot feed plan 29 PID promotion or plan 60 fiducial profiles.
 
+### 5.6 Stage E.1 artifact manifest schema
+
+The C.3 producer must write a manifest that freezes range-association
+identity, geometry provenance, and associated-hit sidecars before PID or
+fiducial artifacts consume range rows:
+
+```yaml
+schema_version: plan28_c3_range@stage-e1
+dataset_id: <plan-03 dataset id>
+producer: reconstruct_range_table
+range_id: <stable range-estimator version>
+association_method: projected_path | legacy_track_id_diagnostic
+input_c1_hash: <sha256 of C.1/V.1 candidate table>
+input_v2_hash: <sha256 of V.2 fit table>
+input_scintillator_hash: <sha256 of scintillator input table>
+geometry_profile_hash: <sha256 of plan-60 geometry/profile sidecar>
+output_range_hash: <sha256 of C.3 range table>
+associated_hit_sidecar_hash: <sha256 of matched-hit sidecar>
+edge_fields_required: [scintillator_edge_distance_mm, scintillator_profile_bin]
+quality_states_allowed: [pass, warn, fail, not_applicable]
+failure_reasons_allowed: [none, no_scintillator_hits, bad_fit_state, backward_only_hits, outside_scintillator_acceptance]
+```
+
+The manifest is invalid if `association_method` is omitted, if the
+geometry profile hash is missing for edge-dependent rows, or if matched
+hits cannot be joined back to `(event_id, charged_candidate_id,
+range_id)`. Plans 29, 45, 60, and 66 consume this manifest before
+trusting range or Bragg-profile observables.
+
 ## 6. Acceptance criteria
 
 - §3 closure passes.
@@ -308,7 +337,7 @@ C.3 cannot feed plan 29 PID promotion or plan 60 fiducial profiles.
 - §5 Stage E.1 handoff is actionable for L3: the target public
   function, current unit/integration tests, remaining test obligation,
   promotion invariants, producer/consumer contract, verification
-  command, and required C.3 fields (`range_id`, `association_method`, `range_cm`,
+  command, artifact manifest schema, and required C.3 fields (`range_id`, `association_method`, `range_cm`,
   `range_edep_mev`, `bragg_peak_position_cm`,
   `range_quality_state`, `range_failure_reason`,
   `scintillator_edge_distance_mm`, `scintillator_profile_bin`, and
