@@ -187,6 +187,20 @@ checked by feature-contract immutability, component-wise fake-rate limits,
 and a Class-B drop hash proving no truth/provenance feature affects the
 score.
 
+The Wave-6 discriminant derivation ledger is:
+
+| P.2 sub-leaf | Truth-side quantity | Estimator rationale | Dominant uncertainty | Closure assertion |
+|---|---|---|---|---|
+| `shape.lateral` | transverse EM-shower compactness | lateral moments approximate Moliere-radius containment using only hit positions and energies | P.1 membership and edge leakage | single-gamma/electron samples report feature separation with intervals |
+| `shape.longitudinal` | shower-depth development and leakage | longitudinal moments and max-cell fraction distinguish EM from charged/hadronic deposits | calibration and detector-depth modelling | feature distributions are frozen before threshold scans |
+| `shape.timing` | promptness of the cluster relative to event timing | timing moments catch delayed or mismatched deposits without truth ancestry | timing-resolution caveat and pile-up | timing features remain disabled or nuisance-tagged until plan 61 closes |
+| `shape.track_match` | charged-particle compatibility of the cluster | nearest reconstructed-track distance/angle is the Class-A charged-veto proxy | track inefficiency and cone-angle tuning | cone scan reports neutral efficiency and charged fake-rate intervals |
+| `shape.score_gate` | calibrated neutral-shower decision | combining shape and track-match features gives a reviewable neutral score or rectangular cut set | calibration sample size and overtraining | score/pass hashes are invariant after Class-B columns are dropped |
+
+These sub-leaves separate feature physics from operating-point choice.
+Plan 33 may consume P.2 outputs only from a method id whose feature
+contract, threshold, and truth-blind hash are all recorded.
+
 #### Logic gaps
 
 | Parameter | Status before production | Closure study / target date |
