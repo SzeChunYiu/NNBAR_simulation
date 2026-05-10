@@ -96,6 +96,22 @@ Leaf E.3: reconstructed objects → longitudinal energy EL
   allowed truth use: validation_only
   downstream consumers: S.6; plans 36, 37, 41
 
+Leaf E.4: reconstructed objects → transverse energy ET
+  inputs (Class A): selected charged, photon, and π0 object energies
+                    and directions; V.4 event vertex; beam-axis
+                    convention from geometry
+  forbidden (Class B): truth particle momenta, truth event axis,
+                       Track_ID, Parent_ID, Name
+  decision rule: compute `ET = Σ E_i sin(alpha_i)` using the same
+                 object list and longitudinal-axis convention as E.3;
+                 invalid objects contribute neither energy nor truth
+                 substitutions.
+  output schema: {event_id: int64, transverse_energy_mev: float64,
+                  n_objects_used: int32, axis_definition: string,
+                  object_selection_version: string}
+  allowed truth use: validation_only
+  downstream consumers: S.6; plans 36, 37, 41
+
 ### Next measurement (event-variable branch)
 
 Per-variable distribution comparison: signal sample (plan 20) vs
