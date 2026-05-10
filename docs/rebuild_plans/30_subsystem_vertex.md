@@ -161,6 +161,13 @@ match the manifest used by plan 43 signal efficiency.
    tolerance and every skipped ray has a deterministic `skipped_reason` rather
    than a silently substituted truth point.
 
+### 1.8 V.4 derivation split file
+
+The Wave 6 V.4 aggregation derivation is maintained in
+`docs/rebuild_plans/30_subsystem_vertex/30_v4_vertex_aggregation.md`
+to keep this parent plan below the 500-line cap. The split file owns the
+V.4 Physics derivation, Logic gaps, and Closure test subsections.
+
 ## 2. Current implementation
 
 `vertex.py` (plan 08 §3.3):
