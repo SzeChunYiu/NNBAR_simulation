@@ -337,6 +337,23 @@ Until approval, alternative pair rankings and retuned cuts are plan-38
 ladder rows only; `passes_selection` remains the Ch 8 reproduction
 baseline.
 
+### 5.3 Initial downstream-handoff examples
+
+The first rebuild handoffs from plan 34 must make the boundary between
+production π⁰ candidates, diagnostics, and validation labels explicit:
+
+| `handoff_case_id` | Downstream consumer | Required payload | Required guard |
+|---|---|---|---|
+| `pi0_candidate_pass_to_p35` | plan 35 kinematic fit | ordered photon ids, candidate id, four-vector inputs, six cut booleans, and Ch 8 `passes_selection` | row is produced without truth-parent labels and references an approved cut-config id |
+| `baseline_cut_columns_to_p37` | plan 37 event selection | per-candidate `passes_mass_window`, energy/fraction cuts, opening-angle cut, and final strict AND | selection may aggregate these columns but may not recompute a different π⁰ baseline |
+| `prompt_timing_shadow` | plan 36 timing/event variables and plan 38 ladder | timing-veto score or residual sidecar keyed by candidate id | diagnostic-only until timing calibration and retuned-cut DEC approval exist |
+| `truth_label_sideband_only` | plan 44/47 accidental-rate studies | evaluator-only shared-parent or wrong-parent label keyed by production candidate id | label must be droppable with unchanged pair list, kinematics, and cut booleans |
+
+Any downstream table that cannot distinguish these four handoff modes is
+blocked from promoting a π⁰-pairing change. The default production handoff
+is `pi0_candidate_pass_to_p35`; the other rows are shadow or validation
+surfaces until their DEC and closure evidence are attached.
+
 ## 6. Acceptance criteria
 
 - §2 individual passes_* columns + `passes_selection`.
