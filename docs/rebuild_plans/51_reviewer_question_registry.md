@@ -111,12 +111,16 @@ audit when a seed becomes attached to a concrete ledger result.
       package: <plan-50 package key>
       staleness_summary: <plan-50 staleness key>
       ci_report: <plan-53 report key>
+      archive_inventory: <plan-54 inventory key-or-null>
+      archive_drill: <plan-54 drill key-or-null>
       note_annex: <plan-55 annex key-or-null>
       glossary_audit: <plan-56 audit key>
     review_artifact_hashes:
       package: sha256:<hash>
       staleness_summary: sha256:<hash>
       ci_report: sha256:<hash>
+      archive_inventory: sha256:<hash-or-null>
+      archive_drill: sha256:<hash-or-null>
       note_annex: sha256:<hash-or-null>
       glossary_audit: sha256:<hash>
   defense_package_updated: []
