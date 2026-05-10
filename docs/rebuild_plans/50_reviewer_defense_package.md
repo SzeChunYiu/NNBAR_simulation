@@ -212,6 +212,8 @@ l1_overlay_rollup:
   blocking_overlays:
     - overlay_id: pileup_l11_status
       blocker: no paired overlay closure yet
+    - overlay_id: strange_v0_contamination
+      blocker: no Lambda-enriched V0 closure yet
 ```
 
 Promotion rules:
