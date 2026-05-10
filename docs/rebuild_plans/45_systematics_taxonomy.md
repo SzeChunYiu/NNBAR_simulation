@@ -173,6 +173,18 @@ The pair fixture is rejected if a matrix cell has no matching pair row,
 if a pair row is asymmetric with the table, or if an `M0` pair reaches a
 quoted result without a ledger flag.
 
+Initial pair-row examples:
+
+| `correlation_pair_id` | `nuisance_id_a` | `nuisance_id_b` | `seed_value` | `numeric_interim_value` | `measurement_required` | `measurement_result_id` | `ledger_flag_required` | `correlation_dec_id` | `pair_status` |
+|---|---|---|---:|---:|---:|---|---:|---|---|
+| `N1__N1` | `N1` | `N1` | 1.0 | 1.0 | false | null | false | `DEC-45-CORRELATION-SEED` | `seeded` |
+| `N2__N8` | `N2` | `N8` | `M0` | 0.0 | true | null | true | `DEC-45-CALIBRATION-GROUPING` | `seeded` |
+| `N6__N7` | `N6` | `N7` | 0.0 | 0.0 | false | null | false | `DEC-45-CORRELATION-SEED` | `seeded` |
+| `N8__N10` | `N8` | `N10` | `M0` | 0.0 | true | null | true | `DEC-45-GEOMETRY-MATERIAL-GROUPING` | `seeded` |
+
+These examples cover the three seed classes: diagonal identity,
+independent off-diagonal zero, and measured-later `M0` pairs.
+
 DEC stubs:
 
 | DEC id | Convention to sign | Default |
