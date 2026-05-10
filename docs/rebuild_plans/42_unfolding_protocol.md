@@ -176,10 +176,52 @@ before changing regularisation or binning.
 
 ## 5. Model dependence
 
-A response matrix derived from one signal model differs from one
-derived from an alternative branching table (plan 13 §4). The
-"signal model" systematic propagates through the response matrix
-via re-derivation under each alternative, then quadrature.
+A response matrix derived from one signal model can bias the unfolded
+particle-level spectrum under another branching table. The signal-model
+systematic is therefore evaluated by re-deriving the response for the
+plan 13 §4 alternatives and propagating the difference into plan 45
+nuisance N5.
+
+### 5.1 Runnable procedure
+
+1. For each registered plan 13 §4 variation
+   (`branching_amsler1991`, `branching_friedman2007`,
+   `eta_omega_enhanced`, `eta_omega_suppressed`), create event weights
+   or alternate response inputs with the same plan 09 truth/reco columns
+   used by §2.
+2. Rebuild and apply the response for each variation:
+
+   ```bash
+   python -m nnbar_reconstruction.cli unfolding-systematics \
+       --nominal-response output/unfolding/response/sig_foil_v3/ \
+       --regularisation output/unfolding/tuning/chosen_regularisation.yml \
+       --signal-models docs/rebuild_plans/13_signal_model.md \
+       --truth-particle NNBAR_Detector/output/sig_foil_v3/Particle_output_*.parquet \
+       --truth-interaction NNBAR_Detector/output/sig_foil_v3/Interaction_output_*.parquet \
+       --reco-events output/reco/sig_foil_v3/events.csv \
+       --reco-pi0 output/reco/sig_foil_v3/pi0.csv \
+       --out output/unfolding/systematics/signal_model/
+   ```
+
+3. Save `signal_model_deltas.parquet`,
+   `signal_model_covariance.npz`, and `nuisance_N5.yml` with one row
+   per `(observable, bin, variation)`.
+4. Assert the nominal and all variations use identical binning and the
+   same regularisation choice. If any variation fails §4 closure, mark
+   the observable non-quotable rather than dropping the variation.
+
+### 5.2 Systematic tolerances and registry hooks
+
+| Observable | Model-dependence artifact | Acceptance / tolerance | Rationale citation | Registry hook |
+|---|---|---|---|---|
+| visible invariant mass | per-bin unfolded delta for each plan 13 §4 variation | save full covariance; if any bin shift exceeds `2 × stat σ`, ledger row must quote N5 separately. | plan 45 N5; plan 04 §6 | `data/systematics/registry.yml:N5` |
+| π0 mass | peak μ/σ delta and per-bin mass-spectrum delta | peak shift > 1 MeV is a named systematic, not a closure retune. | plan 40 P.5; plan 45 N5 | `data/systematics/registry.yml:N5` |
+| sphericity | per-bin unfolded delta and cumulative-shape delta | cumulative-shape shift > bootstrap 68% interval is quoted as N5. | plan 04 §2; plan 45 N5 | `data/systematics/registry.yml:N5` |
+
+The systematic combination rule is the plan 13 §4 quadrature rule
+unless plan 45's correlation matrix supersedes it. Plan 47 rows that
+quote unfolded values must cite both the closure artifact (§4) and the
+N5 systematic artifact from this section.
 
 ## 6. Acceptance criteria
 
