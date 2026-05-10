@@ -83,6 +83,21 @@ If `Σ E_i = 0` or no valid axis exists, emit finite sentinel values
 and `passes_neutral_discriminant = false`; never substitute truth
 direction or truth charge labels.
 
+### 1.2 Sentinel and validity contract
+
+P.2 outputs must be numerically safe for table joins and ML feature
+exports while still making invalid geometry explicit:
+
+| Condition | Required output |
+|---|---|
+| valid cluster axis and positive energy | compute all §1.1 features; `shape_features_valid = true` |
+| zero or non-finite `Σ E_i` | set spread/depth/timing features to `0.0`; `neutral_score = 0.0`; `passes_neutral_discriminant = false`; `shape_features_valid = false`; `shape_invalid_reason = zero_energy` |
+| no valid axis or centroid | same finite sentinels; `shape_invalid_reason = invalid_axis` |
+| no reconstructed track candidate | `nearest_track_distance_cm = 1.0e9` finite sentinel; `nearest_track_angle_deg = 180.0`; `shape_invalid_reason` remains empty if the shower-shape features are otherwise valid |
+
+Any row with `shape_features_valid = false` is excluded from training
+labels for BDT/NN candidates but remains in efficiency denominators.
+
 ## 2. Charged/neutral discriminant candidates
 
 | Candidate | P.2 decision rule | Current/source citation | Class-A status | Comparison metric | Failure mode to inspect |
