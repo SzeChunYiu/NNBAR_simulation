@@ -317,7 +317,7 @@ l1_defence_ci_report:
       files_checked:
         - docs/rebuild_plans/52_run_orchestration.md
       evidence:
-        expected_bundle_members: [em_object_chain, ch10_cutflow, pileup_l11, strange_v0, tof_timing, bayesian_limits, unbounded_caveats]
+        expected_bundle_members: [em_object_chain, ch10_cutflow, pileup_l11, strange_v0, tof_timing, bayesian_limits, unbounded_caveats, defence_routing]
         missing_bundle_members: [<member-or-empty>]
         ready_rows_require_source_and_output_hashes: true
         blocked_rows_require_owner_and_blocker: true
