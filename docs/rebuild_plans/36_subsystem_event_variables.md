@@ -79,15 +79,26 @@ when quoting hemispheric numbers.
 Plan 38 should score added variables (especially E.6 and fit-aware E.7)
 against the thesis baseline without deleting the reproduced Ch 10 inputs.
 
-## 5. Visible invariant mass closure
+## 5. Closure-test specification
 
-On `sig_foil_v3`:
-
-- Reco visible mass: from charged + photon + π⁰ four-vectors.
-- Truth visible mass: from `Particle_output` four-vectors of all
-  charged π/p and photons attributable to the primary.
-
-Tolerance per plan 40 §2: bias < 50 MeV; pull width ∈ [0.8, 1.2].
+1. **Dataset id:** run `sig_foil_v3` for signal-visible-mass closure
+   and the plan-41 signal/background samples for N-1 stability of all
+   E.1–E.9 variables. Truth four-vectors are evaluator-only labels.
+2. **Observable:** every §2 output column, with primary closure on
+   visible invariant mass; additionally monitor hemisphere sums,
+   timing in/out-of-window energy, event-shape variables, and object
+   multiplicities for finite values and expected ranges.
+3. **Fitter / estimator:** fit reco-minus-truth visible-mass residuals
+   with a Gaussian core and bootstrap bias/width uncertainty; use
+   Kolmogorov or χ² shape comparisons for added E.6 variables and
+   Wilson intervals for multiplicity agreement categories.
+4. **Pass criterion:** visible-mass bias `< 50 MeV`, pull width in
+   `[0.8, 1.2]`, all required E.1–E.9 output columns populated, no
+   non-finite values outside explicitly allowed sparse cases, and
+   E.6 variables recorded in plan 38 before any selection use.
+5. **Audit hook:** rerun with upstream diagnostic truth columns
+   dropped. Event-variable outputs must be unchanged except for
+   closure-only comparison columns.
 
 ## 6. Acceptance criteria
 
