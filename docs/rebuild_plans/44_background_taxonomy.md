@@ -284,6 +284,19 @@ unsigned rate as numeric `b`, or loses the plan-37 selection-config id.
 This keeps plan 46 from confusing absence of survivors with absence of
 background risk.
 
+Initial production-promotion checklist:
+
+| `promotion_check_id` | Evidence required | Blocks promotion when missing |
+|---|---|---|
+| `p44_node_registry_complete` | every registered background node has sample id, rate expression, and limitation flags | plan 46 cannot know which channels are bounded |
+| `p44_rate_rows_authorised` | survivor denominators, intervals, and signed rate-source DEC ids | central `b_expected` would include draft rates |
+| `p44_zero_survivors_intervalled` | F-C upper-limit fields for every zero-survivor node | exact-zero background claims could leak downstream |
+| `p44_caveats_preserved` | unmodelled caveat ids copied into every total-background handoff | missing samples could be treated as zero rate |
+
+A background sum is promotion-ready only when these checks are complete.
+Otherwise plan 46 receives validation fixtures or caveats, not an
+authorised numerical background expectation.
+
 ## 4. Acceptance criteria
 
 - §1 tree complete.
