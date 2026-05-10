@@ -145,6 +145,14 @@ variation runs exist. Robustness comes from nominal-linked throws,
 single-source ownership, symmetric correlation-pair rows, and explicit
 ledger flags for every unmeasured `M0` correlation.
 
+Wave-6 nuisance-group derivation ledger:
+
+| Group | Nuisance ids | Physical response being estimated | Closure assertion |
+|---|---|---|---|
+| calibration | N1, N2, N3, N9 | detector energy/PID/timing response to ±1σ calibration shifts | paired throws carry nominal hashes and opposite links |
+| model/source | N4, N5, N6, N7 | physics-list, signal-model, cosmic-flux, and beam-flux envelopes | envelope endpoints stay distinct from central rates |
+| geometry/material | N8, N10 | alignment and material-budget scenario response | scenario rows keep `M0` caveats until measured covariance exists |
+
 #### Logic gaps
 
 | Parameter | Status before production | Closure study / target date |
