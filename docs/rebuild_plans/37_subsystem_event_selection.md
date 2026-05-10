@@ -171,6 +171,19 @@ selection decisions do not depend on upstream truth/provenance fields:
 A failed audit keeps the cut-flow row out of plan 47 and blocks
 `DEC-37-TRUTH-BLIND-GATE` until the upstream truth dependency is fixed.
 
+Required audit row-key inventory:
+
+| `dataset_id` | Sample role | Required row purpose | Acceptance guard |
+|---|---|---|---|
+| `sig_foil_v3` | signal acceptance reproduction | Ch 10 final acceptance and truth-blind pass/fail stability | matching before/after hashes and empty `changed_event_ids` |
+| `cosmic_cry_essLund_overburdenA_v1` | cosmic rejection reproduction | zero-survivor cut-flow and interval handoff to plan 44/46 | matching before/after hashes and no exact-zero background claim |
+| `beam_neutron_hibeam_direct_v1` | beam-neutron extension sample | verify selection semantics before plan-41/44 beam rows quote rates | diagnostic-only until beam sample registry and rates are signed |
+| `plan41_retune_panel` | optimisation scan panel | guard retuned thresholds against truth/provenance coupling | required before any §3.2 handoff can be promoted |
+
+The inventory defines required audit keys only. It does not authorize a
+selection row for final quotes until measured §2.1 hashes and status
+fields are attached.
+
 ## 3. N-1 and ROC
 
 Per plan 41:
