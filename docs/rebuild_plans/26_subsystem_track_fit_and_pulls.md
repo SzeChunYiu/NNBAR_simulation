@@ -239,13 +239,33 @@ to edit L3 code. The matching L3 patch must update
 (`tests/test_charged_reco.py:153-165`) so every required column is
 asserted in both synthetic and real-output chains.
 
+### 5.3 Stage E.1 promotion invariants
+
+The current live hook is good enough as a degraded linear-PCA bridge,
+but L3 may not promote a replacement fitter unless these invariants
+stay true across synthetic and real-output tests:
+
+| Invariant | Current live behavior | Replacement requirement |
+|---|---|---|
+| truth blindness | `fit_track_candidates` (`track_fit.py:55-117`) consumes V.1 hit indices and Class A `x/y/z` coordinates; it does not need truth momentum or `Track_ID` | replacement output must be unchanged when Class B direction, species, parentage, and legacy track-id columns are dropped |
+| stable fitter identity | `direction_method=linear_pca` is the only current method label | promoted rows must add a versioned `fit_id` while keeping `direction_method` as the human-readable algorithm family |
+| covariance semantics | `_covariance` (`track_fit.py:46-52`) currently writes a flattened coordinate covariance vector | replacement must either emit the six §1.3 covariance components or publish a deterministic vector order plus `covariance_valid` |
+| degraded-row visibility | `_track_anchor_and_direction` (`charged.py:62-81`) remains only a legacy first-last fallback | any fallback use must set `fit_degraded=true` and cannot be mixed silently with PCA or Kalman rows |
+| residual accounting | current rows include `residuals_xyz`, `chi2_ndf`, and `n_direction_hits` | promoted rows must carry a residual sidecar and `n_residual_degrees_of_freedom` so plan 40 can reject under-constrained fits |
+| failure-state stability | the live hook only exposes `fit_quality_state=pass/fail` | replacements must add `fit_failure_reason` and keep `pass`/`warn`/`fail`/`not_applicable` meanings consistent with §4 and plan 66 |
+
+These invariants are the promotion gate for V.2, not a request for L0
+to edit L3 code. Any Kalman or ACTS-backed replacement must extend the
+plan-26 tests named in §5.1/§5.2 so the same assertions run before plan
+38 ladder scoring or plan 40 pull closure consumes the table.
+
 ## 6. Acceptance criteria
 
 - §3 closure passes on calibration sample.
 - Direction covariance is reported into output schema.
 - §5 Stage E.1 handoff is actionable for L3: the target public
   function, current unit/integration tests, remaining failure-state test
-  obligation, and required V.2 fields (`fit_id`, direction components,
+  obligation, promotion invariants, and required V.2 fields (`fit_id`, direction components,
   covariance components, `chi2_ndf`, `n_residual_degrees_of_freedom`,
   `direction_method`, residual sidecar rows, `fit_quality_state`,
   `fit_failure_reason`, `covariance_valid`, and `fit_degraded`) are all
