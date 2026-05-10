@@ -14,7 +14,7 @@ acceptance:
 risks:
   - {risk: asymptotic significance overstates Z₀ in low-stats regime, mitigation: §3 F-C handover}
 estimated_effort: S
-last_updated: 2026-05-09
+last_updated: 2026-05-10
 ---
 
 # Significance protocol
@@ -46,6 +46,18 @@ Worked examples for implementation tests:
 | high-background sanity | 50 | 20 | 8.68 | asymptotic path should run |
 | modest-count boundary | 10 | 6 | 3.37 | asymptotic path still allowed |
 | zero-background row | 10 | 0 | n/a | must dispatch to §3 F-C |
+
+### 1.1 Numerical validation gate
+
+The implementation test fixture must recompute the examples rather than
+copy the table. The gate is:
+
+1. the Asimov calculation for `s = 50`, `b = 20` rounds to `8.68` at two decimals.
+2. the Asimov calculation for `s = 10`, `b = 6` rounds to `3.37` at two decimals.
+3. Any request with `b = 0` returns no asymptotic value and records a
+   §3 method-dispatch row selecting `feldman_cousins`.
+4. The zero-survivor background example in §2 computes
+   `2.44 / 244000 = 1.0e-5` within displayed precision.
 
 DEC stub: `DEC-46-Z0-ASYMPTOTIC` — choose the Cowan Asimov discovery
 formula above for `s > 5` and `b > 5`; require §3 F-C handover for
@@ -116,6 +128,10 @@ before returning a number:
 | `confidence_level` | 0.90 primary, 0.95 cross-check when requested |
 | `nuisance_ids` | plan-45 IDs included in the calculation |
 | `decision_dec_id` | one of the DEC stubs below once signed |
+
+The `method_selected` values are ledger labels, not claims that CLI
+subcommands or Python functions with those exact names currently
+exist.
 
 This row is what plan 47 and plan 50 cite. A result without the
 dispatch row is incomplete even if the numeric Z or limit can be
