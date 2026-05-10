@@ -83,16 +83,54 @@ selection decisions.
 
 ## 2. ROC curves
 
-For every continuous variable V in plan 36 §2:
+For every continuous variable V in plan 36 §2, produce per-background
+ROC artifacts using the same frozen `events.csv` inputs as §1. ROC
+curves are diagnostics; they do not change the cut tuple until §3 has
+a DEC-signed objective.
 
-1. Vary V's threshold across its support.
-2. Plot signal acceptance vs background rejection (per background
-   sample).
-3. Compute the AUC.
-4. Mark the licentiate cut value on the curve.
+### 2.1 Runnable procedure
 
-ROC curves reveal whether the licentiate's hand-tuned cut sits at the
-ROC's knee or could be relaxed/tightened.
+1. Reuse the `output/reco/<dataset_id>/events.csv` tables generated
+   by §1.1 and verify their hashes match the N-1 manifest before
+   scanning thresholds.
+2. Run the ROC producer with deterministic bootstrap uncertainty:
+
+   ```bash
+   python -m nnbar_reconstruction.cli roc-study \
+       --signal output/reco/sig_foil_v3/events.csv \
+       --background output/reco/cosmic_cry_essLund_overburdenA_v1/events.csv \
+       --background output/reco/<beam_neutron_dataset>/events.csv \
+       --variables docs/rebuild_plans/36_subsystem_event_variables.md \
+       --bootstrap 200 --out output/studies/roc/
+   ```
+
+3. For each `(variable, background)` pair write `<variable>__<background>.png`
+   and `.json` with threshold grid, signal efficiency, background
+   rejection, AUC, bootstrap 68% interval (plan 04 §2), and the
+   licentiate threshold marker when plan 37 §1 defines one.
+4. Assert every continuous plan 36 §2 variable has at least one ROC
+   JSON per background and a manifest row linking it to plan 38's
+   observable budget. Missing variables fail the study even when the
+   plotted selection variables are complete.
+
+### 2.2 Variable tolerances and cross-references
+
+| Variable | Event-table field(s) | ROC threshold grid / tolerance | Ladder leaf | Subsystem / ledger hook |
+|---|---|---|---|---|
+| total calorimeter energy | scintillator plus lead-glass total energy | 20 MeV grid; AUC reproducibility within bootstrap 68% interval. | E.1 / S.1 | plans 36, 37; LIC-CH10-CUTFLOW |
+| upper/lower scint energy | upper and lower scintillator energies | 20 MeV grid per hemisphere; reject if both hemisphere markers are not stored. | E.2 / S.5 | plans 36, 37; LIC-CH10-CUTFLOW |
+| upper/lower lead-glass energy | upper and lower lead-glass energies | 20 MeV grid; AUC is diagnostic-only unless plan 37 adds a cut. | E.2 | plan 36; plan 47 §1 future row |
+| longitudinal energy `EL` | longitudinal event energy | 25 MeV grid; AUC interval from plan 04 bootstrap. | E.3 | plan 36; plan 38 matrix |
+| transverse energy `ET` | transverse event energy | 25 MeV grid; AUC interval from plan 04 bootstrap. | E.4 | plan 36; plan 38 matrix |
+| sphericity | sphericity | 0.02 grid on [0, 1]; store plan 37 threshold 0.2 as marker. | E.5 / S.4 | plans 36, 37; LIC-CH10-CUTFLOW |
+| Fox-Wolfram H0/H2 and thrust | event-shape moments and thrust | 0.02 dimensionless grid; diagnostic-only until plan 37 promotes a cut or MVA feature. | E.6 | plans 36, 57; plan 38 matrix |
+| visible invariant mass | visible invariant mass | 25 MeV grid over 0-2500 MeV; store plan 37 threshold 500 MeV as marker. | E.7 / S.3 | plans 36, 37; LIC-CH10-CUTFLOW |
+| in-time / out-of-time energy | timing-window energy split | 20 MeV grid; require separate ROC JSON for each timing side. | E.8 | plan 36; plan 38 matrix |
+
+Integer multiplicities in E.9 are excluded from ROC §2 and are covered
+by N-1/counting diagnostics in §1; if a future optimiser treats them
+as ordered thresholds, that promotion belongs in §3 with an explicit
+objective and DEC entry.
 
 ## 3. Optimal cut search
 
