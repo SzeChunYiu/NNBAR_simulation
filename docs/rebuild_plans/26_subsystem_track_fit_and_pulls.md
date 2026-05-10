@@ -216,6 +216,29 @@ with explicit remaining gates:
   `fit_id`, `fit_failure_reason`, `covariance_valid`, `fit_degraded`,
   and `n_residual_degrees_of_freedom`.
 
+### 5.2 Stage E.1 code-gap checklist
+
+The live L3 hook is intentionally close to, but not yet identical to,
+the §1.3 fixture. L3 can promote V.2 only after the following concrete
+gaps close in `fit_track_candidates` (`track_fit.py:55-117`):
+
+| Gap | Current live behavior | Required promotion behavior |
+|---|---|---|
+| fitter identity | `direction_method=linear_pca` is emitted, but no stable `fit_id` column is present | add a versioned `fit_id` (for example `linear_pca_v1`) so plan 38 and plan 40 can key rows across reruns |
+| covariance shape | `_covariance` (`track_fit.py:46-52`) is stored as `direction_covariance` vector | either expand to the six `cov_*` fields in §1.3 or document a deterministic vector order consumed by plans 30 and 40 |
+| failure reason | `fit_quality_state` is present, but one-hit / bad-coordinate rows do not carry a machine-readable reason | add `fit_failure_reason` with values such as `insufficient_class_a_hits` or `nonfinite_class_a_coordinates` |
+| covariance gate | covariance validity is implicit in downstream interpretation | add `covariance_valid` so plan 30 can down-weight or reject singular fits without re-deriving the check |
+| degraded baseline | first-last direction remains available as `_track_anchor_and_direction` (`charged.py:62-81`) | expose degraded use as `fit_degraded=true` rather than silently mixing it with PCA rows |
+| residual degrees of freedom | `chi2_ndf` and `residuals_xyz` are emitted | add `n_residual_degrees_of_freedom` so plan 40 pull-width tests can reject under-constrained fits |
+
+Acceptance of this checklist is a plan-side gate, not a request for L0
+to edit L3 code. The matching L3 patch must update
+`test_fit_track_candidates_emits_plan_26_direction_schema`
+(`tests/test_charged_reco.py:120-151`) and
+`test_fit_track_candidates_real_sample_consumes_candidate_rows`
+(`tests/test_charged_reco.py:153-165`) so every required column is
+asserted in both synthetic and real-output chains.
+
 ## 6. Acceptance criteria
 
 - §3 closure passes on calibration sample.
