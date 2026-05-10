@@ -24,7 +24,7 @@ significance" or "limit" the rebuild quotes.
 
 ## 1. Discovery significance
 
-Definition: asymptotic formula
+Definition: asymptotic Asimov discovery formula
 
 ```
 Z_0 = sqrt( 2 ((s + b) ln(1 + s/b) - s) )
@@ -33,6 +33,23 @@ Z_0 = sqrt( 2 ((s + b) ln(1 + s/b) - s) )
 valid for `s, b > 0` and reasonably large counts. Inputs `s` and `b`
 come from plan 43 (signal efficiency) and plan 44 (background tree),
 weighted by their nuisances per plan 45.
+
+`s` is the expected selected signal count for the exposure being
+quoted; `b` is the summed expected selected background count after
+applying plan-44 channel rates and plan-45 nuisance weights. The
+function is not evaluated for `b = 0`; those rows use §3.
+
+Worked examples for implementation tests:
+
+| Case | s | b | Expected `Z_0` | Use |
+|---|---:|---:|---:|---|
+| high-background sanity | 50 | 20 | 8.68 | asymptotic path should run |
+| modest-count boundary | 10 | 6 | 3.37 | asymptotic path still allowed |
+| zero-background row | 10 | 0 | n/a | must dispatch to §3 F-C |
+
+DEC stub: `DEC-46-Z0-ASYMPTOTIC` — choose the Cowan Asimov discovery
+formula above for `s > 5` and `b > 5`; require §3 F-C handover for
+zero/near-zero rows. Status: draft, pending Methodology Council sign-off.
 
 ## 2. Limit conventions
 
