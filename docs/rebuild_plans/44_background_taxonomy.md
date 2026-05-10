@@ -64,6 +64,22 @@ Each node carries:
 | systematic | plan 45 |
 | limitation_flags | plan 01 §6 |
 
+### 1.1 Rate and survivor accounting
+
+For every §1 node, the machine-readable tree stores both the measured
+survivor count and the convention used to convert it to an expected
+background contribution:
+
+| Source | Survivor field | Rate conversion | Required zero-survivor output |
+|---|---|---|---|
+| cosmic | `n_survivors_after_plan37` from the CRY sample, optionally split by primary species label | `survival_fraction * CRY_component_flux * exposure`, with overburden A as baseline and B as systematic | `epsilon90 = FC90(0, n_generated)`; for the 244k-event plan-21 sample this targets `≈ 1.0e-5` |
+| beam_neutron | `n_survivors_after_plan37` from each plan-22 sub-channel sample | `survival_fraction * neutron_yield_per_pulse * pulse_count * subchannel_weight` | `epsilon90` plus false-positive-per-pulse upper limit; target `≤ 1e-4` per pulse |
+
+Rows with nonzero survivors quote the measured fraction with the plan
+04 interval. Rows with zero survivors quote the F-C upper limit from
+§2; no report may collapse a zero-survivor node to exactly zero
+expected background.
+
 ## 2. Zero-survivor handling
 
 Per plan 04 §5: never quote `0 / N = 0`. Every zero-survivor channel
