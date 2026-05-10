@@ -65,8 +65,8 @@ That rule keeps open caveats visible in the DOI record.
 The archival package includes an `l1_defence_inventory` manifest so the
 Zenodo record can be audited without opening every defence package. The
 manifest is generated at thesis-freeze from plan 50 packages, plan 52
-rerun manifests, execution transcripts, command-template registry rows, and
-plan 55 notes.
+rerun manifests, execution transcripts, command-template registry rows,
+plan 53 L1 CI reports, plan 55 notes, and plan 56 glossary audits.
 
 ```yaml
 l1_defence_inventory:
@@ -87,6 +87,7 @@ l1_defence_inventory:
       ci_report_hash: sha256:<hash-or-null>
       note_annex_hash: sha256:<hash-or-null>
       glossary_audit_hash: sha256:<hash-or-null>
+      archive_drill_hash: sha256:<hash-or-null>
 ```
 
 Inventory review rules:
@@ -99,6 +100,7 @@ Inventory review rules:
 | command-template ids are archived with rerun rows | future rerun cannot know which verified command contract applied |
 | command-template verifier hashes are archived | future rerun cannot prove the command surface was verified |
 | CI, note-annex, and glossary hashes are archived | package evidence cannot be traced to review, prose, and term-signoff artifacts |
+| archive drill hash is archived with the inventory | future reader cannot prove the reviewer-style drill transcript matched the inventory |
 | `stale` rows keep package and staleness hashes | future readers cannot tell why archived evidence was not quote-ready |
 | `blocked` rows carry a caveat and owning plan | open limitations disappear at freeze |
 | retired parquet rows keep manifests | retention policy removes replay provenance |
@@ -123,6 +125,7 @@ l1_archive_drill:
   freeze_id: thesis-freeze-<date>
   reviewer_role: external_examiner
   selected_member: ch10_cutflow
+  drill_transcript_hash: sha256:<hash-or-null>
   expected_steps:
     - open_top_level_readme
     - locate_l1_defence_inventory
@@ -205,7 +208,7 @@ reproduce a numeric claim by:
   before final freeze.
 - L1 archive drill in §1.3 passes for at least one EM/selection member
   and records any blocked rows, owner sign-off refs, review-artifact
-  hashes, and verifier hashes for refreshed rows.
+  hashes, archive-drill hash, and verifier hashes for refreshed rows.
 
 ## 6. Dependencies
 
