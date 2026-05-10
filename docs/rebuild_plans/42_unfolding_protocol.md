@@ -89,15 +89,47 @@ here before they can be unfolded or quoted in plan 47.
 
 ## 3. Regularisation
 
-Two implementations:
+Regularisation is chosen per observable after the response matrix in §2
+is frozen. The choice is a methodology decision: the selected method and
+parameter are signed in plan 05 before any unfolded distribution is
+quoted in plan 47.
 
-- **Iterative Bayesian Unfolding (IBU)** with `n_iter` to tune.
-- **SVD unfolding** with regularisation parameter `k`.
+### 3.1 Runnable procedure
 
-Both implementations live in `pyhf` or `RooUnfold` ports;
-codex-supervisor wraps the chosen library.
+1. Scan both supported methods over the frozen response artifacts:
 
-Per-observable choice of method + tuning parameter is signed by DEC.
+   ```bash
+   python -m nnbar_reconstruction.cli unfold-tune \
+       --response-dir output/unfolding/response/sig_foil_v3/ \
+       --observables visible_mass,pi0_mass,sphericity \
+       --method ibu --n-iter 1,2,3,4,5,6,8 \
+       --method svd --k 2,3,4,5,6,8 \
+       --closure-sample output/reco/sig_foil_v3/events.csv \
+       --out output/unfolding/tuning/
+   ```
+
+2. Save one `tuning_<observable>.parquet` grid with method, parameter,
+   bias, variance, bin-to-bin correlation, pull mean/width, and closure
+   status. Also save diagnostic PNGs for L-curve / iteration curves.
+3. Select the least-flexible parameter that passes the observable's
+   tolerance in §3.2 and write `chosen_regularisation.yml` with the DEC
+   id that approved the choice.
+4. Assert unfolding cannot run in quote mode unless
+   `chosen_regularisation.yml` exists, names exactly one method/parameter
+   per observable, and the selected grid row has `closure_status=pass`.
+
+### 3.2 Per-observable tuning gates
+
+| Observable | Allowed scan | Selection tolerance | Rationale citation | Cross-reference |
+|---|---|---|---|---|
+| visible invariant mass | IBU `n_iter ∈ {1,2,3,4,5,6,8}`; SVD `k ∈ {2,3,4,5,6,8}` | choose the smallest parameter with pull mean `|mu| < 0.1`, width in `[0.8, 1.2]`, and median bin correlation `< 0.80`. | plan 40 §2 E.7 | E.7, plan 36, plan 47 §1 |
+| π0 mass | IBU `n_iter ∈ {1,2,3,4,5,6}`; SVD `k ∈ {2,3,4,5,6}` | choose the smallest parameter with mass bias `< 1 MeV`, pull width in `[0.9, 1.2]`, and no empty signal-window bin after unfolding. | plan 40 §2 P.5 | P.5-P.7, plans 34-35, plan 47 §1 |
+| sphericity | IBU `n_iter ∈ {1,2,3,4,5}`; SVD `k ∈ {2,3,4,5}` | choose the smallest parameter with pull mean `|mu| < 0.1`, width in `[0.9, 1.2]`, and monotonic cumulative distribution preserved. | plan 40 §2 default / plan 38 E.5 | E.5, plan 36, plan 41 |
+
+The default preference is IBU when IBU and SVD both pass with compatible
+closure because it exposes a single iteration count and maps directly to
+the D'Agostini reference; SVD is selected when it gives the only passing
+closure row or materially lower bin correlation under the same tolerance.
 
 ## 4. Closure
 
