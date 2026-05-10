@@ -191,21 +191,55 @@ TPC topology only.
    the production path, and the likelihood-ratio result has a plan 38
    C.5 ladder matrix entry before any promotion.
 
-## 6. Acceptance criteria
+## 6. Stage E.1 implementation handoff
+
+For L3's charged-side redesign, C.1/C.5/C.6 remains coupled to the
+legacy charged-object row until the truth-name gate is removed. The
+current help-verified scan surface is `scan-pid`; it calls
+`scan_charged_pid_thresholds` (`calibration.py:27-134`), which still
+scores labels from `truth_name` after `reconstruct_charged_objects`
+has emitted the production-like rows. That is valid for calibration
+scans only, not for the production charged-PID fixture.
+
+Plan-side gates for the L3 implementation:
+
+1. Consume the plan-25 C.1 candidate rows, plan-27 C.2 dE/dx rows,
+   plan-28 C.3 range rows, and C.4 scintillator-association sidecar;
+   do not re-open raw TPC truth columns in the C.5 scorer.
+2. Emit separate C.1, C.5, and C.6 fixture rows with the fields in
+   §1.4 and hashes of the consumed C.2/C.3 inputs.
+3. Preserve the cut-based threshold rule as a named reproduction mode,
+   then add likelihood-ratio scoring only behind a plan 57
+   train/validation/test artifact and a plan 05 decision entry.
+4. Keep EM/neutral rejection reasons observable-only: lead-glass
+   shower-shape, conversion-pair topology, hit timing, and geometry
+   side-cars. Truth `Name` and `Interaction` can appear only in
+   validation or labeling artifacts.
+5. Add or extend tests in the existing L3 charged-reco test file so
+   dropping `Name`, `Track_ID`, and truth kinetic energy cannot change
+   production candidate creation or production scoring.
+6. Plan 66 consumes charged-PID validity, rejection-reason fractions,
+   and rule-version drift once the C.5/C.6 fixtures are present.
+
+## 7. Acceptance criteria
 
 - §2 cut-based baseline reproduced.
 - §2 Name filter removed; replaced by §4 rejections.
 - §3 likelihood-ratio scored on ladder; matrix entry in plan 38.
 - Plan 47 ledger row "licentiate Ch 8 charged PID accuracy"
   reproduced.
+- §6 Stage E.1 handoff is actionable for L3: current calibration-only
+  scan surface is cited, production C.1/C.5/C.6 inputs and outputs are
+  named, and the charged-reco tests must prove the production scorer is
+  invariant to dropping Class B truth columns.
 
-## 7. Risks
+## 8. Risks
 
 - *Risk:* likelihood-ratio overfits on calibration sample.
   *Mitigation:* plan 57 §3 overtraining check; final score on
   signal-sample-derived test set.
 
-## 8. Dependencies
+## 9. Dependencies
 
 - **23, 24, 27, 28, 57** — inputs.
 - *Consumed by:* plans 32 (event selection), 38 (ladder), 47.
