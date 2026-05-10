@@ -72,8 +72,8 @@ diagnostic columns (`selection_failure_reasons`, source-track
 aliases, charged-match class, prompt timing) for validation; these
 are `@diagnostic_only` per plan 01.
 
-Closure on truth π⁰s: peak μ within 5 MeV of 134.977 MeV; π⁰-mass
-σ < 25 MeV after kinematic fit (plan 35).
+Closure on truth π⁰s is specified in §5; plan 35 separately
+measures the post-fit mass resolution.
 
 ## 3. Accidental rejection (P.6)
 
@@ -103,14 +103,34 @@ Plan 38 records P.5 pairing and P.6 accidental-rejection choices
 separately so a better ranking can be adopted without changing the
 thesis six-cut baseline.
 
-## 5. Acceptance criteria
+## 5. Closure-test specification
+
+1. **Dataset ids:** use `sig_foil_v3` truth π⁰ decays for signal
+   closure and `cal_singlepion_mip_v1` as the no-π⁰ accidental
+   sample; truth parentage labels are evaluator-only.
+2. **Observable:** raw and selected `M_γγ`, opening angle, selected
+   candidate multiplicity, per-cut pass fractions, correct-pair
+   efficiency, and accidental-pair rate.
+3. **Fitter / estimator:** fit the selected `M_γγ` peak with a
+   Gaussian core plus sideband background; quote bootstrap uncertainty
+   on the peak mean and width, and Wilson intervals for accidental
+   rates.
+4. **Pass criterion:** selected mass peak `|μ - 134.977 MeV| < 5 MeV`,
+   raw selected width `< 35 MeV`, post-plan-35 width `< 25 MeV`, and
+   no-π⁰ accidental selected-candidate rate documented with a finite
+   confidence interval.
+5. **Audit hook:** rerun after dropping photon truth/provenance
+   columns. The raw pair list, kinematic quantities, cut booleans, and
+   `passes_selection` must be unchanged.
+
+## 6. Acceptance criteria
 
 - §2 individual passes_* columns + `passes_selection`.
-- §2 closure passes.
+- §5 closure passes.
 - §3 accidental rate produced for at least the licentiate signal
   sample.
 
-## 6. Dependencies
+## 7. Dependencies
 
 - **24, 33, 38, 40** — inputs.
 - *Consumed by:* plan 35 (kinematic fit), plan 36 (event variables),
