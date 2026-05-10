@@ -232,6 +232,18 @@ background nodes:
 Plan 46 and plan 50 must preserve these rows as caveats. They may not
 convert a missing sample into an expected rate of zero.
 
+Initial caveat-row examples:
+
+| `node_id` | `missing_sample_id` | `expected_rate_status` | Required plan-46 behavior | Required plan-50 text |
+|---|---|---|---|---|
+| `unmodelled.environmental_gamma` | `unregistered_environmental_gamma` | `unbounded_by_current_rebuild` | copy to `unbounded_limitations`; do not include in `b_expected` | state that environmental γ pile-up is not bounded by current samples |
+| `unmodelled.detector_internal` | `unregistered_detector_internal` | `unbounded_by_current_rebuild` | block unconditional total-background quote if detector-internal fakes affect the observable | cite dead/hot channel and self-radioactivity caveat |
+| `unmodelled.beampipe_activation` | `unregistered_beampipe_activation` | `unbounded_by_current_rebuild` | keep outside numeric beam-neutron rate sum | state delayed activation remains a registered missing-sample item |
+
+These examples are mandatory caveat shapes, not background-rate rows.
+They remain present until plan 03 registers replacement samples and a
+new rate-result row supersedes the caveat through DEC review.
+
 DEC stub: `DEC-44-UNMODELLED-CAVEATS` — keep these rows out of the
 numeric background sum until simulated samples are registered, but
 require them as plan-50 caveats for every quoted total-background
