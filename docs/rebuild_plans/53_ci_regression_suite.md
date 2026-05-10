@@ -205,6 +205,7 @@ l1_defence_ci_report:
       files_checked:
         - docs/rebuild_plans/50_reviewer_defense_package.md
         - docs/rebuild_plans/55_internal_note_template.md
+        - docs/rebuild_plans/55_internal_note_template_l1_annex_fixture.md
       evidence:
         promoted_note_rows_checked: <n>
         package_staleness_statuses_allowed: [current, stale-with-caveat]
@@ -259,6 +260,7 @@ l1_defence_ci_report:
         - docs/rebuild_plans/50_reviewer_defense_package.md
         - docs/rebuild_plans/51_reviewer_question_registry.md
         - docs/rebuild_plans/55_internal_note_template.md
+        - docs/rebuild_plans/55_internal_note_template_l1_annex_fixture.md
         - docs/rebuild_plans/56_glossary.md
       evidence:
         overlay_ids_checked: [em_cluster_truth_blindness, pi0_cut_decomposition, selection_cutflow_identity, pileup_l11_status, strange_v0_contamination, tof_timing_resolution, bayesian_prior_sensitivity, unbounded_caveat_status]
