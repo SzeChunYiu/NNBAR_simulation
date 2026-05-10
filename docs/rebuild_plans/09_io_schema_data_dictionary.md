@@ -291,17 +291,22 @@ which sums per-`Module_ID` *max* photon counts.
 
 ## 12. GPUEnergy table
 
-Output from `CeleritasCalorimeter` (plan 07 §11.4). Populated only
-when `WITH_CELERITAS=ON` and Celeritas is active at runtime.
+Planned output from `CeleritasCalorimeter` (plan 07 §11.4), populated
+only when `WITH_CELERITAS=ON` and Celeritas is active at runtime. The
+current `NNBAR_Detector-L3` source tree contains no `src/physics/`, no
+`CeleritasCalorimeter`, and no `GPUEnergy_output` writer/layout; a
+source scan found only reconstruction I/O accepting an optional
+`GPUEnergy` kind. Therefore the active schema has zero produced columns
+in the current build.
 
-Records GPU-tracked e-, e+, gamma energy deposits in LeadGlass and
-Scintillator volumes that bypassed the CPU SDs (`opts.sd.enabled =
-false` per `main.cc:287`). Class A in column intent; the GPU/CPU
-parity is itself a calibration constant (§3.8 Class C) until proven
-identical at the percent level by plan 14.
+| Column | Dtype | Units | Semantics | Class | Rule | Notes |
+|---|---|---|---|---|---|---|
+| _none currently produced_ | — | — | No active Celeritas/GPUEnergy writer exists in this source tree | — | — | produced_by=absent; consumed_by=`io.load_run` tolerates missing `GPUEnergy_output_<run>.parquet` as an empty table |
 
-Codex-supervisor populates the column list against the Celeritas
-calorimeter source.
+When `CeleritasCalorimeter` is restored, this section must be replaced
+with the concrete Parquet layout before any `WITH_CELERITAS=ON` sample
+is registry-eligible. GPU/CPU parity remains Class C (§3.8) until plan
+14 proves percent-level equivalence.
 
 ## 13. Scintillator_Module_Position.txt (geometry side-car)
 
