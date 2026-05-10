@@ -111,6 +111,15 @@ These examples are audit-row shapes. They cannot enter the covariance
 until the paired nominal rows exist and the corresponding result hashes
 show that only the declared nuisance payload changed.
 
+Initial throw-row rejection examples:
+
+| `throw_rejection_id` | Invalid throw pattern | Required status | Review guard |
+|---|---|---|---|
+| `continuous_missing_plus` | continuous minus throw has no paired plus throw | `incomplete` | covariance cannot consume one-sided continuous shifts |
+| `nominal_hash_missing` | throw lacks a frozen paired nominal result id/hash | `incomplete` | result delta cannot be attributed to the nuisance |
+| `payload_kind_mismatch` | scenario endpoint used for a `continuous` nuisance or numeric shift used for an envelope | `incomplete` | variation payload must match §1 `variation_kind` |
+| `empty_observable_list` | throw recomputes no affected observables | `incomplete` | cannot clear a missing-systematic flag for any quoted result |
+
 ## 2. Correlation matrix
 
 A nuisance is fully correlated with itself. The up/down throws of a
