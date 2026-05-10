@@ -858,3 +858,51 @@ def multi_scale_clustering(
     return final_labels, tpc_data
 
 
+
+def cluster_with_hdbscan(
+    xyz: np.ndarray,
+    min_cluster_size=5,
+    min_samples=3,
+) -> np.ndarray:
+    """Cluster 3-D hit coordinates using HDBSCAN.
+
+    Args:
+        xyz: (N, 3) array of (x, y, z) coordinates.
+        min_cluster_size: Minimum number of points to form a cluster.
+        min_samples: Conservative clustering control passed to HDBSCAN.
+
+    Returns:
+        1-D integer labels with -1 marking noise.
+
+    Raises:
+        ImportError: If the optional ``hdbscan`` package is unavailable.
+    """
+    try:
+        import hdbscan as hdbscan_lib
+    except ImportError as exc:
+        raise ImportError(
+            "hdbscan package is required for cluster_with_hdbscan; "
+            "install it with `pip install hdbscan`."
+        ) from exc
+
+    if len(xyz) < min_cluster_size:
+        logger.debug(
+            "cluster_with_hdbscan: %d points < min_cluster_size=%d; all noise.",
+            len(xyz),
+            min_cluster_size,
+        )
+        return np.full(len(xyz), -1, dtype=np.int32)
+
+    clusterer = hdbscan_lib.HDBSCAN(
+        min_cluster_size=min_cluster_size,
+        min_samples=min_samples,
+    )
+    labels = clusterer.fit_predict(xyz.astype(np.float64))
+    n_clusters = len(set(labels.tolist()) - {-1})
+    logger.info(
+        "HDBSCAN: found %d cluster(s), %d noise point(s) from %d inputs.",
+        n_clusters,
+        int(np.sum(labels == -1)),
+        len(xyz),
+    )
+    return labels.astype(np.int32)
