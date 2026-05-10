@@ -32,6 +32,58 @@ Per plan 24 V.3 / V.4 / V.5 schemas:
 | V.4 vertex aggregation | V.3 projection table and covariance / quality fields | truth primary or interaction vertices; `Track_ID`, `Parent_ID`, `Name` | `{event_id, vertex_xyz, vertex_covariance, n_tracks_used, n_tracks_skipped, radial_rms_mm, aggregation_method, vertex_valid}` |
 | V.5 foil acceptance | V.4 vertex table and plan 16 foil radius / half-thickness | truth primary or interaction vertices; `Track_ID`, `Parent_ID`, `Name` | `{event_id, foil_compatible, vertex_valid, vertex_r_mm, vertex_z_mm, foil_geometry_version, acceptance_reason}` |
 
+### 1.1 Leaf schema block — V.3 foil projection
+
+- **inputs (Class A):** V.2 direction rows, anchor coordinates,
+  direction covariance, track quality, and plan 16 foil-plane geometry.
+- **forbidden (Class B):** `Track_ID`, `Parent_ID`, `Name`,
+  `origin_vol_name`, `particle_x`, `particle_y`, `particle_z`, truth
+  `Vx`, truth `Vy`, truth `Vz`.
+- **decision rule:** project each reconstructed track to the signed
+  foil plane using Class A track state and geometry only; mark tracks
+  invalid when the projection is parallel, ill-conditioned, or outside
+  the configured geometry envelope.
+- **output schema:** `event_id: int`, `candidate_id: int`,
+  `projection_xyz: float[3]`, `projection_covariance: float[3,3]`,
+  `projection_valid: bool`, `skipped_reason: str | null`,
+  `source_chi2_ndf: float`.
+- **allowed truth use:** `validation_only` for projection residual
+  plots and ladder scoring after projection output is frozen.
+- **downstream consumers:** V.4, V.5, plans 33, 36, 38, 40, and 47.
+
+### 1.2 Leaf schema block — V.4 vertex aggregation
+
+- **inputs (Class A):** V.3 projection rows, projection covariance,
+  track quality fields, and reconstructed candidate multiplicity.
+- **forbidden (Class B):** truth primary vertices, truth interaction
+  vertices, `Track_ID`, `Parent_ID`, `Name`, and truth origin labels.
+- **decision rule:** aggregate valid Class A projections with the
+  signed mean, covariance-weighted, or adaptive fitter; truth-labelled
+  seed exclusions are forbidden in production.
+- **output schema:** `event_id: int`, `vertex_xyz: float[3]`,
+  `vertex_covariance: float[3,3]`, `n_tracks_used: int`,
+  `n_tracks_skipped: int`, `radial_rms_mm: float`,
+  `aggregation_method: str`, `vertex_valid: bool`.
+- **allowed truth use:** `validation_only` for vertex residuals, pull
+  widths, and plan 38 ladder rows.
+- **downstream consumers:** V.5, plans 33, 36, 38, 40, 43, and 47.
+
+### 1.3 Leaf schema block — V.5 foil acceptance
+
+- **inputs (Class A):** V.4 vertex rows, vertex covariance, plan 16
+  foil radius, foil half-thickness, and geometry/alignment version.
+- **forbidden (Class B):** truth primary vertices, truth interaction
+  vertices, `Track_ID`, `Parent_ID`, `Name`, and truth origin labels.
+- **decision rule:** accept an event as foil-compatible only from the
+  reconstructed vertex and plan 16 geometry constants; no truth-origin
+  label may enter the acceptance gate.
+- **output schema:** `event_id: int`, `foil_compatible: bool`,
+  `vertex_valid: bool`, `vertex_r_mm: float`, `vertex_z_mm: float`,
+  `foil_geometry_version: str`, `acceptance_reason: str`.
+- **allowed truth use:** `validation_only` for acceptance efficiency
+  and closure plots after the V.5 gate output is frozen.
+- **downstream consumers:** plans 36, 38, 41, 43, 45, and 47.
+
 Current implementation citation: the vertex path is implemented by
 `reconstruct_event_vertices` (`vertex.py:163-254`; plan 08 §3.3).
 It projects valid tracks to `z=0`, averages projections,
@@ -40,7 +92,7 @@ with truth `Name`.
 
 ## 2. Current implementation
 
-`reconstruction.py` (plan 08 §3.3):
+`vertex.py` (plan 08 §3.3):
 
 - For each charged candidate (TPC track from plan 25 V.1) with
   valid TPC entry/exit: project to `z=0` plane.
