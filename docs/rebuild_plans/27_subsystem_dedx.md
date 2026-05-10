@@ -207,16 +207,23 @@ explicit remaining gates:
 
 ### 6.1 L3 target module, functions, and tests
 
-- **Target module:** add/extend `nnbar_reconstruction/dedx.py`.
-- **Public functions:** `truncated_mean_dedx(steps)` and
-  `reconstruct_dedx_table(candidates, tpc)`.
-- **Unit-test target:** add a `tests/test_charged_reco.py` case that
-  checks 10%/30% truncation on synthetic TPC steps, verifies fallback
-  path-length derivation from coordinates, and asserts NaN/null output
-  for missing or non-positive step lengths.
-- **Integration-test target:** add a real-output schema row that chains
-  plan-25 candidates into `reconstruct_dedx_table` on a registered TPC
-  fixture and verifies the plan 09 Class A columns are sufficient.
+- **Target module:** extend `nnbar_reconstruction/dedx.py`.
+- **Public functions:** `truncated_mean_dedx(steps)` (`dedx.py:41-70`)
+  and `reconstruct_dedx_table(candidates, tpc)` (`dedx.py:91-119`).
+- **Current unit coverage:** `tests/test_charged_reco.py` already
+  checks the signed truncation behavior in
+  `test_truncated_mean_dedx_drops_plan_27_tails`
+  (`tests/test_charged_reco.py:168-181`) and candidate-hit membership in
+  `test_reconstruct_dedx_table_uses_candidate_hit_membership`
+  (`tests/test_charged_reco.py:184-207`).
+- **Current integration coverage:** the real-output schema path is
+  `test_reconstruct_dedx_table_real_sample_has_plan_27_schema`
+  (`tests/test_charged_reco.py:209-221`), which chains plan-25
+  candidates into `reconstruct_dedx_table`.
+- **Remaining test obligation:** extend those tests for missing or
+  non-positive step lengths, explicit `path_length_source`, and the
+  future `dedx_quality_state` / `dedx_failure_reason` fields once L3
+  exposes them.
 
 ## 7. Acceptance criteria
 
@@ -225,12 +232,12 @@ explicit remaining gates:
 - §4 saturation limitation noted in plan 47 ledger for any
   high-dE/dx-quoted result.
 - §6 Stage E.1 handoff is actionable for L3: the target public
-  functions, unit-test path, integration-test path, and required C.2
-  fields (`estimator_id`, `dedx_mev_per_cm`, `path_length_cm`,
-  `path_length_source`, `n_steps_used`, truncation fractions,
-  `truncation_applied`, `dedx_quality_state`,
-  `dedx_failure_reason`, `calibration_source`, and contribution
-  sidecar rows) are all named before implementation begins.
+  functions, current unit/integration tests, remaining test obligation,
+  and required C.2 fields (`estimator_id`, `dedx_mev_per_cm`,
+  `path_length_cm`, `path_length_source`, `n_steps_used`, truncation
+  fractions, `truncation_applied`, `dedx_quality_state`,
+  `dedx_failure_reason`, `calibration_source`, and contribution sidecar
+  rows) are all named before replacement promotion.
 
 ## 8. Dependencies
 
