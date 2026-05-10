@@ -84,6 +84,28 @@ pending Methodology Council sign-off.
 When observed `n_obs ≤ 5` or expected `b ≤ 5`, the asymptotic Z_0
 is replaced by F-C. The handover threshold is signed in DEC.
 
+Handover rule for every significance/limit request:
+
+1. Build `s`, `b`, and `n_obs` after applying plan-44 rates and
+   plan-45 nuisances.
+2. If `n_obs ≤ 5` **or** `b ≤ 5`, set
+   `method = "feldman_cousins"` and do not evaluate asymptotic `Z_0`.
+3. Otherwise use §1 for discovery significance and §2 CLs for
+   high-count limits; still record the F-C spot-check when available.
+
+Worked examples:
+
+| n_obs | b | Decision | Reason |
+|---:|---:|---|---|
+| 0 | 0.0 | F-C | zero-survivor upper-limit row |
+| 4 | 12.0 | F-C | observed count is in small-count regime |
+| 8 | 4.5 | F-C | expected background is in small-count regime |
+| 8 | 5.5 | asymptotic/CLs allowed | both thresholds are above the handover |
+
+DEC stub: `DEC-46-FC-HANDOVER` — freeze the handover at
+`n_obs ≤ 5 or b ≤ 5`, with no data-driven retuning after unblinding.
+Status: draft, pending Methodology Council sign-off.
+
 ## 4. Acceptance criteria
 
 - §1 Z_0 implemented as a function in
