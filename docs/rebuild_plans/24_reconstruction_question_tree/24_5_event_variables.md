@@ -42,6 +42,25 @@ events.
 
 **Owning subsystem plan:** plan 36 (event variables).
 
+Leaf E.1: calorimeter hits → total visible calorimeter energy
+  inputs (Class A): Scintillator and LeadGlass hit columns
+                    (Event_ID, eDep, t, x, y, z, module_ID,
+                    vol_name, step_info) plus optional calibrated
+                    photon-count columns from plan 18
+  forbidden (Class B): Track_ID, Parent_ID, Name, origin_vol_name,
+                       Interaction ancestry, truth primary energy
+  decision rule: sum calibrated deposited energy over scintillator
+                 and lead-glass hits per event, preserving detector
+                 sub-sums; plan 08 §3.6 names this surface
+                 `calorimeter_edep`.
+  output schema: {event_id: int64, total_calorimeter_energy_mev:
+                  float64, scintillator_energy_mev: float64,
+                  leadglass_energy_mev: float64,
+                  n_calorimeter_hits: int32,
+                  calibration_version: string}
+  allowed truth use: validation_only
+  downstream consumers: S.1, S.5, S.6; plans 36, 37, 41
+
 ### Next measurement (event-variable branch)
 
 Per-variable distribution comparison: signal sample (plan 20) vs
