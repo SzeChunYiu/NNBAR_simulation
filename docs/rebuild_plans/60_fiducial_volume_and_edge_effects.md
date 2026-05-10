@@ -250,7 +250,36 @@ Any change to the default profile, buffer size, or edge-smoothness pass
 criterion is a methodology change and needs a plan 05 decision-log entry
 before plan 43 or plan 47 can quote the result.
 
-## 10. Acceptance criteria
+## 10. Software handoff and blocker contract
+
+The verified live CLI can build reconstruction tables and validation
+metrics with `summarize` and `validate-reco`, but it does not yet expose
+a fiducial producer. Until that producer has a help-verified surface,
+this plan's runnable work stops at table production, validation, and
+schema/manifest assertions.
+
+L3/software handoff requirements:
+
+1. The fiducial producer reads `vertices.csv`, `charged.csv`,
+   `photons.csv`, `pi0.csv`, plan 16 geometry/alignment side-cars, and
+   a named profile (`none`, `loose`, or `tight`). It writes both §4
+   tables and fails if any active subsystem in §3 lacks an edge state.
+2. The edge-report producer reads the fiducial event/object tables,
+   truth denominators where validation is allowed, and plan 43
+   selection outputs. It writes the §6 radius, z, subsystem-loss, and
+   profile-comparison tables without mutating plan 37 selection flags.
+3. The budget exporter writes the §7 per-observable rows with dataset
+   id, plan-20 alias, geometry tag, fiducial profile, nuisance ids, and
+   plan 47 ledger hook. Missing budget fields downgrade the consumer row
+   rather than being filled by hand.
+4. All fiducial artifacts record source hashes, geometry version,
+   profile name, command hashes for the verified upstream steps,
+   bootstrap/Wilson settings, and the plan 45 nuisance handoff.
+5. New command lines may be added only after their CLI surfaces are
+   verified under the A+ examiner gate. Until then, this section is a
+   software contract, not a runnable command list.
+
+## 11. Acceptance criteria
 
 - §3 names a fiducial rule for every active subsystem and foil edge.
 - §4 event and object schemas are implemented by an L3 help-verified
@@ -264,8 +293,11 @@ before plan 43 or plan 47 can quote the result.
   plan 01 caveats.
 - Plan 43 stores the selected fiducial profile and geometry version in
   every signal-efficiency artifact.
+- §10 software handoff is complete: fiducial production, edge reports,
+  and budget export have explicit inputs, outputs, failure assertions,
+  provenance fields, and a no-invented-CLI rule.
 
-## 11. Dependencies
+## 12. Dependencies
 
 - **03** — dataset ids and frozen sample status.
 - **04** — Wilson intervals and bootstrap/jackknife uncertainty rules.
