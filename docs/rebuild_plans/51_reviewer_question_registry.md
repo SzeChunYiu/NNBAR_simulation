@@ -87,6 +87,45 @@ A seed row is not considered answered merely because a plan mentions it.
 It is answered only when the required artifact exists, cites the relevant
 ledger row, and the defence package records the same status.
 
+
+### 2.2 Machine-readable L1 registry seed fixture
+
+The table in §2.1 is rendered into the living registry using the same
+shape as §1. This fixture fixes the fields that plan 50 and plan 53
+audit when a seed becomes attached to a concrete ledger result.
+
+```yaml
+- id: RQ-L1-SELECTION-CUTFLOW
+  asked_by: anticipated_examiner
+  asked_on: 2026-05-10
+  question: Does the Ch 10 cut-flow use the current canonical singular pass_* columns?
+  category: reproducibility
+  affects_results: []
+  routes_to_gate: [37, 47, 50]
+  status: open | answered | clarified | rejected
+  answer:
+    summary: <filled when artifact exists>
+    artifact: <cut-flow identity table or defence package path>
+  defense_package_updated: []
+  resolved_on: null
+  l1_overlay_id: selection_cutflow_identity
+  required_artifact_status: missing | blocked | present
+```
+
+Review rules:
+
+| Rule | Failure caught |
+|---|---|
+| every `RQ-L1-*` row carries `l1_overlay_id` | plan-50 overlay cannot route back to a reviewer question |
+| `routes_to_gate` includes the owning plan and plan 50 | question answered in prose but absent from defence package |
+| `affects_results` is empty only for unattached seed rows | concrete ledger result avoids package regeneration |
+| `required_artifact_status = present` requires `answer.artifact` | stale answered status without evidence |
+| rejected questions require a Methodology Council rationale | hard questions are not silently closed |
+
+When a result first cites one of these questions, `affects_results` and
+`defense_package_updated` become non-empty in the same commit that adds
+or refreshes the defence package.
+
 ## 3. Update protocol
 
 1. New question logged.
