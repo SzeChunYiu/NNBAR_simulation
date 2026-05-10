@@ -195,3 +195,318 @@ samples (plan 03 next-version) will adopt the reference value.
 - F. Sauli, *Principles of operation of multiwire proportional and
   drift chambers*, CERN 77–09 (1977).
 - PDG Review of Particle Physics, "Passage of particles through matter".
+
+---
+
+## DEC-2026-05-10-2
+**Topic.** Beam-neutron source path: MCPL preferred, parameterised fallback.
+**Status.** approved (provisional auto-approval; user delegated DEC sign-off)
+**Owners.** Beam-line POG (ESS HIBEAM contact pending)
+**Plans affected.** 14, 22, 44, 45
+**Code touched.** `src/sources/G4MCPLGenerator.cc` (MCPL path), `macro/beam_neutron/*.mac` (parameterised path)
+**Samples affected.** `beam_neutron_hibeam_*`
+
+### Context
+HIBEAM beam neutrons reaching the NNBAR detector are the tail of the
+spallation source spectrum after beam-line optics, choppers, and
+shielding. The simulation can consume either an MCPL file from the
+ESS HIBEAM beam-line simulation (preserving correlations) or a
+parameterised flux + spectrum (reproducible without external file
+but model-limited). Plan 22 had the parameterised fallback wired up
+but plan 14 §2 could not freeze `beam_neutron_hibeam_*_v1` manifests
+without a decision.
+
+### Decision
+Use **MCPL from the ESS HIBEAM beam-line simulation as the nominal
+path** for `beam_neutron_hibeam_*_v1` manifests once the ESS team
+delivers a provenance-sealed MCPL file. Until delivery, use the
+**parameterised flux + spectrum as a model-limited fallback**, with
+every produced row tagged `beam_neutron_model_only=true` so plan-45
+systematics can carry the model uncertainty explicitly. Re-promote
+this DEC when the MCPL file arrives, with the file hash and source
+plane definition recorded.
+
+### Rationale
+MCPL preserves beam-line correlations (energy / angle / time) that a
+sampled spectrum cannot encode; these correlations matter for
+secondary backgrounds (capture-gamma cascades, scattered tails). The
+sequencing recipe (parameterised → MCPL when available) keeps the
+rebuild iterating without blocking on external delivery, and the
+`beam_neutron_model_only` tag prevents accidental promotion of
+parameterised-baseline rows into final results.
+
+### Alternatives considered
+1. **Parameterised-only first pass** — rejected as final: omits
+   beam-line correlations.
+2. **Dual-run comparison (MCPL nominal, parameterised systematic)**
+   — kept as a future option for plan 45 once the MCPL file is in.
+
+### Consequences
+- Plan 22 freezes the parameterised-fallback manifest with the
+  `beam_neutron_model_only=true` tag.
+- Plan 14 §2 references this DEC as the source-path policy.
+- Plan 45 carries a `beam_neutron_source` nuisance that brackets the
+  parameterised-vs-MCPL difference; collapsed to "model-form only"
+  while MCPL is unavailable.
+- Once MCPL arrives, supersede this DEC with one that pins the file
+  hash and source plane.
+
+### Supersedes / Superseded by
+- Supersedes: none.
+- Superseded by: (none yet)
+
+### References
+- `docs/rebuild_plans/14_background_models.md` §2.1
+- `docs/rebuild_plans/22_sample_neutron_beam.md` §1
+- ESS HIBEAM technical-design beam spectrum.
+- MCPL standard: J. Bowman et al., *Comp. Phys. Comm.* 218 (2017) 17.
+
+---
+
+## DEC-2026-05-10-4
+**Topic.** Alignment scenario sigma grid — placeholder-with-trigger.
+**Status.** approved (provisional auto-approval; user delegated DEC sign-off)
+**Owners.** Detector-mechanics POG (ESS survey contact pending)
+**Plans affected.** 16, 25, 30, 45
+**Code touched.** `src/detector/AlignmentScenario.cc`
+**Samples affected.** all alignment-systematic samples
+
+### Context
+Vertex and object-systematics studies need a concrete, repeatable
+perturbation grid for alignment scenarios. ESS/HIBEAM survey
+constants are not yet available, but plan 16 §2 needs to register
+named scenarios so plan 30 (vertex) and plan 25 (TPC tracks) can
+consume them and plan 45 can carry an alignment systematic.
+
+### Decision
+Register **three scenario tags** with engineering-prior placeholder
+sigmas:
+
+- `perfect` — identity (0, 0, 0) translation and rotation σ.
+- `nominal_survey` — translation σ ≈ 1 mm (silicon/TPC), 5 mm
+  (shared shielding); rotation σ ≈ 0.5 mrad (silicon/TPC), 2 mrad
+  (shared).
+- `worst_case_construction` — 2× the nominal sigmas; deliberately
+  wider commissioning bracket.
+
+Every alignment-systematic row in plan 45 is tagged
+`alignment_uses_placeholder_sigmas=true` until the ESS detector
+survey is delivered. **Trigger:** when the ESS survey lands, supersede
+this DEC with one carrying the measured covariances; the placeholder
+tag flips off only after that promotion.
+
+### Rationale
+The rebuild cannot block plan-30 closure or plan-45 alignment
+systematics on external survey delivery, but quoting any thesis
+result against placeholder sigmas would mislead a reviewer. The
+trigger + tag mechanism keeps work flowing while making the
+provisional nature explicit and grep-able.
+
+### Alternatives considered
+1. **Defer alignment scenarios entirely** — rejected: blocks plans
+   25, 30, 45 from closing.
+2. **Single nominal scenario** — rejected: removes the
+   commissioning-bracket lever that plan 45 needs.
+3. **Adopt ATLAS/CMS published alignment σ as proxy** — kept as a
+   sanity-cross-check inside plan 16 §3 but not as production sigmas
+   (NNBAR geometry is too different).
+
+### Consequences
+- Plan 16 §2 registers the three scenarios with the placeholder
+  values.
+- Plan 25, 30 closure tests run against all three scenarios.
+- Plan 45 `alignment` nuisance uses the `worst_case_construction`
+  delta; flagged `placeholder` until trigger.
+- Plan-47 ledger rows that depend on alignment carry the
+  placeholder tag.
+
+### Supersedes / Superseded by
+- Supersedes: none.
+- Superseded by: (none yet)
+
+### References
+- `docs/rebuild_plans/16_geometry_and_alignment.md` §2
+- ATLAS Run-2 alignment paper (proxy cross-check).
+- CMS tracker alignment review (proxy cross-check).
+
+---
+
+## DEC-2026-05-10-6
+**Topic.** Scintillator yield mode policy — fast/optical split.
+**Status.** approved (provisional auto-approval; user delegated DEC sign-off)
+**Owners.** Scintillator POG
+**Plans affected.** 09, 18, 33, 47
+**Code touched.** `src/sd/ScintillatorSD.cc`, `src/detector/Scintillator_geometry.cc`
+**Samples affected.** all scintillator-yield rows in plan 47 ledger
+
+### Context
+The scintillator photon-equivalent count uses **11136 photons/MeV**
+in the SD (`reconstruction.md` line 105) but the optical-mode
+material-properties table uses **10000 photons/MeV**. Existing
+reconstruction code consumes the 11136 value; optical-on samples
+generate from 10000.
+
+### Decision
+Keep **11136 photons/MeV** as the production value for fast-mode
+photon-equivalent rows. Keep **10000 photons/MeV** as the optical
+material-table value in optical-on samples. When comparing
+optical-on to fast-mode quantities, apply a **`11136 / 10000 = 1.1136`
+scale factor** explicitly. Mode-tag every sample so the ledger and
+plan 18 closure procedures can pick the correct comparison.
+
+### Rationale
+Both values are correct for their respective code paths. The fast
+mode is calibrated against the 11136 constant; the optical mode
+uses a physically motivated photon yield. Forcing equality would
+require silently rewriting one of the two paths and breaks
+reproduction in the other. The explicit scale factor makes the
+discrepancy transparent and reviewable.
+
+### Alternatives considered
+1. **Adopt 10000 everywhere** — rejected: silently rewrites every
+   fast-mode plan-47 row.
+2. **Adopt 11136 everywhere** — rejected: contradicts optical
+   material model; plan 18 §3 closure fails.
+3. **Per-row scale at analysis time** — kept; this is the chosen
+   path. The 1.1136 factor lives in plan 18 §3.
+
+### Consequences
+- Plan 09 declares `scintillator_yield_photon_per_mev` as a
+  Class C calibration with two values (`fast_mode: 11136`,
+  `optical_mode: 10000`).
+- Plan 18 §3 procedure documents the 1.1136 scale.
+- Plan 47 ledger rows carry a `scintillator_mode` tag.
+- Plan 45 carries `scintillator_yield_mode` as a one-sided
+  systematic (fast→optical reweighting), bounded by the 1.1136
+  factor uncertainty.
+
+### Supersedes / Superseded by
+- Supersedes: none.
+- Superseded by: (none yet)
+
+### References
+- `docs/rebuild_plans/18_intercalibration.md` §3
+- `src/sd/ScintillatorSD.cc` (11136 constant)
+- `src/detector/Scintillator_geometry.cc` optical properties (10000)
+
+---
+
+## DEC-2026-05-10-7
+**Topic.** Cross-repository mirror policy — live-pointer to HIBEAM.
+**Status.** approved (provisional auto-approval; user delegated DEC sign-off)
+**Owners.** Methodology Council
+**Plans affected.** 05, 09, 13, 38, 57
+
+### Context
+The HIBEAM TPC vertex-reconstruction repository has its own decision
+log. Decisions made there (truth-vertex source, MVA feature schemas,
+unit conventions) materially affect this rebuild. Plan 05 §6 specifies
+that cross-repo decisions should be mirrored, but did not commit to
+*how* — frozen-snapshot copy or live pointer.
+
+### Decision
+Adopt a **live-mirror pointer** for cross-repo decisions. The
+DECISION_LOG entry on our side is short and references the HIBEAM
+original by ID; we do not duplicate the body. Any update to the
+original on the HIBEAM side propagates to us via a monthly
+methodology-council review per plan 05 §6.
+
+### Rationale
+A frozen-snapshot copy duplicates editorial overhead and creates
+drift risk: when HIBEAM revises a mirrored decision, our copy can
+silently disagree with the upstream truth. A live pointer keeps the
+two repos consistent at the cost of a monthly check; the cost is
+small relative to the consistency win.
+
+### Alternatives considered
+1. **Frozen-snapshot copy** — rejected: drift risk over a
+   multi-year run.
+2. **No mirror; cite HIBEAM directly in plan bodies** — rejected:
+   reviewers expect to find the decision in our log too.
+
+### Consequences
+- DEC-2026-04-24-1 (HIBEAM, vertex truth = CSV) is mirrored as a
+  live pointer; cited by plans 09, 13, 38.
+- DEC-2026-05-08-1 (HIBEAM, MVA feature schema) is mirrored as a
+  live pointer; cited by plan 57.
+- Methodology council carries a monthly cross-repo drift check.
+
+### Supersedes / Superseded by
+- Supersedes: none.
+- Superseded by: (none yet)
+
+### References
+- `docs/rebuild_plans/05_decision_log.md` §6
+- HIBEAM repository `docs/governance/DECISION_LOG.md`.
+
+---
+
+## DEC-2026-05-10-8
+**Topic.** `reconstruction.py` 500-line refactor split.
+**Status.** approved (provisional auto-approval; user delegated DEC sign-off)
+**Owners.** Reconstruction WG (L3 lane)
+**Plans affected.** 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37
+**Code touched.** `nnbar_reconstruction/reconstruction.py`,
+`charged.py`, `photon.py`, `vertex.py`, `electron.py`,
+`event_variables.py`, `selection.py`, plus per-leaf modules
+(`charged_pid.py`, `dedx.py`, `range_reco.py`, `track_fit.py`,
+`shower_shape.py`, `pi0_pairing.py`, `kinematic_fit.py`,
+`calorimeter_clusters.py`, `photon_objects.py`).
+
+### Context
+`reconstruction.py` had grown to 1062 lines, violating the
+CODING_STANDARDS §1 500-line cap by 2.1×. Subsystem plans 25–37
+referenced functions in the monolith with `reconstruction.py:N-M`
+line refs that were systematically wrong (off by 50–150 lines or
+past EOF). The rebuild needed a per-subsystem split before
+plans 25–37 could carry resolvable citations.
+
+### Decision
+Split `reconstruction.py` into **per-subsystem modules**:
+
+- `charged.py`, `charged_pid.py`, `dedx.py`, `range_reco.py`,
+  `track_fit.py` — charged-side (plans 25–29).
+- `vertex.py` — vertex (plan 30).
+- `photon.py`, `photon_objects.py`, `calorimeter_clusters.py`,
+  `shower_shape.py`, `pi0_pairing.py` — EM-side (plans 31–34).
+- `kinematic_fit.py` — kinematic fit (plan 35).
+- `event_variables.py` — event variables (plan 36).
+- `selection.py` — event selection (plan 37).
+- `electron.py` — electron-pair reconstruction.
+
+`reconstruction.py` retains a re-export shim (≤ 100 lines) for
+backward import compatibility for **2 weeks** post-merge, then is
+deleted.
+
+### Rationale
+Per-subsystem modules: (a) honour the 500-line cap, (b) make plan
+25–37 line refs resolvable since each plan owns one or two files,
+(c) make per-subsystem unit testing tractable. Keeping the shim
+preserves any external-import callers during the transition;
+deleting it forces callers to migrate to the new module names.
+
+### Alternatives considered
+1. **Two-way split (charged.py + photon.py)** — rejected: still
+   over the 500-line cap on each.
+2. **Keep monolith, just add line markers in plan citations** —
+   rejected: doesn't fix the coding-standards violation.
+3. **Permanent re-export shim** — rejected: defers cleanup
+   indefinitely.
+
+### Consequences
+- Plans 25–37 line refs now resolve; `scripts/verify_citations.py`
+  passes against them.
+- pytest suite expanded to 128 passing tests (was 63 before split).
+- Backward-compatibility shim removed after 2026-05-24 (2 weeks).
+- Any downstream user of `from nnbar_reconstruction.reconstruction
+  import …` must migrate to the per-subsystem module by then.
+
+### Supersedes / Superseded by
+- Supersedes: none.
+- Superseded by: (none yet)
+
+### References
+- `docs/rebuild_plans/refactor/reconstruction_py_split.md`
+- `CODING_STANDARDS.md` §1 (500-line cap)
+- L3 commit series: `refactor(electron)`, `feat(charged)`,
+  `feat(photon)`, `feat(vertex)`, `refactor(reconstruction)`.
