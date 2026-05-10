@@ -348,6 +348,15 @@ Evidence bundles make event-variable method provenance explicit before
 plan 37 cuts on the row, so optional features and fit-aware quantities
 cannot silently replace Ch 10 reproduction fields.
 
+Initial reviewer audit cases:
+
+| `audit_case_id` | Reviewer question | Required evidence before accept | Reject condition |
+|---|---|---|---|
+| `p36_method_identity_audit` | Can every event variable be traced to a method and source mode? | method fixture, source-mode tags, and hemisphere convention id | unqualified variables are handed to plan 37 |
+| `p36_group_closure_audit` | Do all required E.1-E.9 groups have closure evidence? | closure rows and Class-B hashes for each group | one group is inferred from another group or omitted |
+| `p36_sparse_policy_audit` | Can sparse/nonfinite sentinels accidentally pass cuts? | sentinel rows, validity flags, and cut-impact table | invalid values map to passing booleans |
+| `p36_shadow_feature_audit` | Are E.6 diagnostics and fit-aware E.7 kept outside the baseline? | separate columns, method ids, and DEC status | optional features overwrite Ch 10 reproduction fields |
+
 ## 6. Acceptance criteria
 
 - §2 table complete; every variable produced.
