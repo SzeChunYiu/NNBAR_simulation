@@ -307,6 +307,23 @@ Until these entries are approved, fitted columns are diagnostic or
 ladder-comparison outputs; the raw π⁰ candidate remains the
 reproduction baseline.
 
+### 5.3 Initial downstream-handoff examples
+
+The first P.7 handoffs keep raw reproduction, fitted diagnostics, and
+failure accounting separated for consumers:
+
+| `handoff_case_id` | Downstream consumer | Required payload | Required guard |
+|---|---|---|---|
+| `raw_baseline_to_p36` | plan 36 event variables | raw mass, opening angle, total energy, candidate key, and `fit_mode = raw_only` | available for every plan-34 candidate, including failed or not-run fits |
+| `mass_fit_diag_to_p36` | plan 36 event variables and plan 38 ladder | fitted π⁰ four-vector, fit covariance tag, `fit_chi2`, and convergence flag | diagnostic until width, pull, convergence, and DEC evidence pass |
+| `fit_quality_shadow_to_p37` | plan 37 selection | `fit_probability`, `fit_chi2/fit_ndf`, and `fit_failure_reason` sidecar | cannot become a selection cut before `DEC-35-FIT-QUALITY-USE` is approved |
+| `missing_covariance_fallback` | plan 36/37 reproduction rows | raw candidate values plus `fit_converged = false` and `missing_covariance` accounting | fitted columns remain null; no truth-resolution substitute is allowed |
+
+Any downstream table that consumes P.7 must declare whether it used the
+raw, fitted-diagnostic, fit-quality-shadow, or fallback handoff. Mixed
+raw/fitted columns under the same field name are rejected because they
+would hide fit failures and bias plan-37 selection studies.
+
 ## 6. Acceptance criteria
 
 - §2 implementation lands; §5 closure passes.
