@@ -34,9 +34,10 @@ dependent residuals.
 | `V.4` | How do we aggregate multiple track projections into one event vertex? |
 | `V.5` | When do we accept the event vertex as foil-compatible? |
 
-**Owning subsystem plan:** plan 25.
+**Owning subsystem plans:** plan 25 for V.1, plan 26 for V.2,
+and plan 30 for V.3-V.5.
 
-### Per-leaf input/output schema (template, populated in plan 25)
+### Per-leaf input/output schemas
 
 ```
 Leaf V.1: TPC hits → track candidates
