@@ -162,6 +162,7 @@ l1_glossary_audit:
         - note_annex
       required_link_keys:
         - overlay_rollup
+        - defence_routing_crosswalk
         - owner_signoff_refs
         - rerun_manifest
         - rerun_transcript
@@ -189,6 +190,7 @@ l1_glossary_audit:
         - note_annex
       required_hash_keys:
         - package
+        - defence_routing_crosswalk
         - staleness_summary
         - ci_report
         - archive_inventory
