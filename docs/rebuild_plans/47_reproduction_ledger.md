@@ -74,10 +74,10 @@ overstate the rebuild's evidence.
   each thesis edit and add a row-level diff artifact; target resolution
   date 2026-06-15.
 - **Command-surface provenance.** Grounding: the A+ gate forbids
-  invented CLI surfaces. `OPEN:` every non-TODO command must have a
-  current help check or source-backed API verifier attached to the row
-  before it can be counted as reproduced; target resolution date
-  2026-06-22.
+  invented CLI surfaces. `OPEN:` every command intended for execution
+  must have a current help check or source-backed API verifier attached
+  to the row before it can be counted as reproduced; target resolution
+  date 2026-06-22.
 - **Mismatch cause taxonomy.** Grounding: Wave 5 required nonempty
   mismatch notes. `OPEN:` replace broad proxy explanations with
   row-specific causes tied to plans 12, 17, 18, 39, or 40 as exact
