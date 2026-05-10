@@ -210,6 +210,52 @@ recorded in a plan-05 DEC and copied to a machine-readable cut-config row.
 | `decision_dec_id` | signed `DEC-59-V0-REJECTION` or successor |
 | `production_status` | `blocked`, `diagnostic`, `candidate`, or `approved` |
 
+### 6.1 Physics derivation for strange-contamination rejection
+
+#### Physics derivation
+
+Plan 59 physically estimates whether strange hadrons produced by
+beam-neutron interactions can survive reconstruction and the plan-37
+selection. The truth-side quantity is the production and decay of
+K_S^0, Lambda, and Sigma states in detector material; the production
+estimator observes only reconstructed daughter tracks, neutral objects,
+secondary vertices, timing residuals, and event variables. PDG branching
+fractions fix decay weights, while Geant4/beam-neutron samples must
+provide the production yield; those two factors must never be merged
+\cite{ParticleDataGroup:2024RPP,Agostinelli2003}.
+
+The estimator is therefore a V0/topology sidecar: reconstruct displaced
+secondary vertices, evaluate mass hypotheses and pointing/timing
+compatibility, and measure strange survival after both V0 rejection and
+the baseline selection. Dominant uncertainty is strange production yield
+in material, followed by branching uncertainties, vertex resolution,
+charged/neutral daughter efficiency, mass-window calibration, and
+signal-efficiency loss from any veto. Truth labels may enrich closure
+samples but cannot drive production V0 decisions.
+
+#### Logic gaps
+
+| Parameter | Status before production | Closure study / target date |
+|---|---|---|
+| PDG branching snapshot and uncertainties | `OPEN:` values are prose-checked but need a replayable manifest | Freeze `DEC-59-PDG-BRANCHING-SNAPSHOT` with source ids and access date; target 2026-06-20 |
+| strange production yield by beam-neutron node/material | `OPEN:` missing or under-sampled in nominal beam-neutron rows | Build Lambda/K_S/Sigma enriched sidecars and yield table by plan-44 node; target 2026-07-05 |
+| V0 displacement, pointing, DCA, timing, and mass-window thresholds | `OPEN:` axes named but no numeric production thresholds | Scan each threshold on Lambda-enriched, K_S sideband, and signal samples; target 2026-07-05 |
+| signal-efficiency loss budget for V0 veto | `OPEN:` must be measured before veto promotion | Propagate veto candidates through S.6 and assign plan-45 residual nuisance; target 2026-07-10 |
+| residual strange-contamination interval | `OPEN:` no plan-44 rate inclusion until production yield and intervals exist | Combine yield, branching, survival, and F-C/Wilson intervals in §8 summary; target 2026-07-10 |
+
+#### Closure test for the derivation
+
+1. Build PDG branching rows and a strange-yield table keyed to plan-44
+   beam-neutron nodes and source-material bins.
+2. Create Lambda-enriched, Sigma-chain, and K_S sideband validation
+   slices; drop truth labels before running V0 reconstruction.
+3. Scan displacement, pointing, mass, timing, and neutral-leg cuts,
+   recording signal loss on `sig_foil_v3` and residual strange survivors.
+4. Verify sidecar-drop hashes: production V0 candidates, rejection
+   reasons, and plan-37 survival must not change without truth labels.
+5. Hand off measured or upper-limit contamination rows to plan 44 and
+   residual nuisance/signal-loss rows to plan 45.
+
 ## 7. Closure on a Lambda-enriched beam-neutron slice
 
 The required closure sample is a Lambda-enriched slice derived from the
