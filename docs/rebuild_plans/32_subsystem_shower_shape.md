@@ -132,7 +132,7 @@ P.2 baseline as `passes_neutral_discriminant = not has_tpc_track` and
 score must be written under a different method id and may not reuse the
 legacy fields as if they were calibrated probabilities.
 
-### 1.4 A+ citation audit for current neutral baseline
+### 1.5 A+ citation audit for current neutral baseline
 
 Current-source claims in §1 were re-checked against the L3 worktree
 before this plan was committed:
@@ -151,7 +151,7 @@ in this plan.
 
 | Candidate | P.2 decision rule | Current/source citation | Class-A status | Comparison metric | Failure mode to inspect |
 |---|---|---|---|---|---|
-| **Hard cone (current)** | Mark charged when vertex-to-centroid direction lies within `charged_cluster_match_angle_deg = 8.0°` of a TPC-track direction. | Charged-match candidates, threshold, and output flag are verified once in §1.4; implementation is `reconstruct_photon_objects` (`photon.py:60-201`). | Partly eligible: geometric cone is Class A if upstream track inputs are reconstructed objects; current row still carries provenance columns. | ROC point, charged contamination, neutral efficiency. | Track-key/provenance coupling can hide conversion/electron backgrounds. |
+| **Hard cone (current)** | Mark charged when vertex-to-centroid direction lies within `charged_cluster_match_angle_deg = 8.0°` of a TPC-track direction. | Charged-match candidates, threshold, and output flag are verified once in §1.5; implementation is `reconstruct_photon_objects` (`photon.py:60-201`). | Partly eligible: geometric cone is Class A if upstream track inputs are reconstructed objects; current row still carries provenance columns. | ROC point, charged contamination, neutral efficiency. | Track-key/provenance coupling can hide conversion/electron backgrounds. |
 | **Rectangular shower-shape cuts** | Apply tuned cuts on lateral RMS, depth, max-cell fraction, timing RMS, and track distance. | Replaces the single angle threshold in `reconstruct_photon_objects` (`photon.py:60-201`). | Production-eligible if thresholds are DEC-logged. | AUC/efficiency and N-1 stability for each variable. | Sharp thresholds may be unstable across clusterers. |
 | **BDT discriminant** | Train a bounded tree model on the §1 observables and track-distance variables. | Plan 57-governed replacement for the current hard cone. | Production-eligible after frozen feature contract and training provenance. | ROC AUC, calibration curve, feature-ablated stability. | Overtraining to single-γ calibration topology. |
 | **Neural discriminant** | Train a small NN on the same tabular features; threshold `neutral_score`. | Plan 57-governed alternative to BDT. | Production-eligible only if deterministic export and audit artifacts land. | Same as BDT plus seed/export reproducibility. | Harder to defend than BDT without clear gains. |
