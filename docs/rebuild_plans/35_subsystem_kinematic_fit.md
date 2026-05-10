@@ -80,7 +80,29 @@ Plan 36/37 consumers must prefer fitted quantities only when
 `fit_converged = true` and the relevant DEC is approved; otherwise
 they consume the raw plan-34 candidate fields.
 
-### 1.3 Current-to-target fit input key
+### 1.3 Machine-readable P.7 fit fixture
+
+The P.7 fixture stores one row per raw plan-34 candidate and preserves
+raw values even when a fit fails:
+
+| Field | Required content | Review rule |
+|---|---|---|
+| `event_id`, `fit_input_candidate_key` | stable join key from §1.4 | identical across raw, fitted, and failure rows |
+| `photon1_id`, `photon2_id`, `pairing_method_id` | raw candidate provenance | must match the consumed plan-34 fixture |
+| `fit_mode` | `raw_only`, `mass_constraint`, `vertex_constraint`, or `combined` | approved mode required before downstream use |
+| `covariance_model_id`, `resolution_model_id` | fit input uncertainty tags | `missing_covariance` if absent or invalid |
+| `raw_mass`, `raw_opening_angle_deg`, `raw_total_energy` | pre-fit observables | never overwritten by fitted values |
+| `fit_mass`, `fit_pi0_px_py_pz_e` | fitted observables | null unless `fit_converged = true` |
+| `fit_chi2`, `fit_ndf`, `fit_probability` | fit-quality outputs | consumed by plan 37 only after DEC approval |
+| `fit_converged`, `fit_failure_reason` | status fields from §1.2 | failure rows remain in denominator audits |
+| `fit_dec_id` | approving or draft DEC | required before fitted values replace raw variables |
+
+Fixture review verifies that failed fits keep the raw candidate available,
+that no truth four-vector or generated π⁰ id enters the fit inputs, and
+that fit-quality fields are null rather than invented when the fit did
+not converge.
+
+### 1.4 Current-to-target fit input key
 
 The current raw candidate table from `find_pi0_candidates`
 (`photon.py:204-263`) has `event_id`, `photon1_id`, and `photon2_id`
