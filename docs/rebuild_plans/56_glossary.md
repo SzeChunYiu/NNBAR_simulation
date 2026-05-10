@@ -297,6 +297,21 @@ A `flagged_delta` is acceptable only when the plan-55 note annex carries
 the same caveat text and the plan-50 overlay roll-up is not marked
 `ready` without that caveat.
 
+```yaml
+l1_glossary_signoff:
+  freeze_id: <thesis-freeze-id>
+  rows:
+    - term: pass_* columns
+      defence_package_refs:
+        - selection_cutflow_identity
+      note_refs:
+        - event_variable_and_cutflow_identity
+      audit_row_ref: l1_glossary_audit:pass_* columns
+      thesis_status: same | translated | flagged_delta
+      approved_by: <L1-owner-or-null>
+      caveat_text: <required when thesis_status is flagged_delta>
+```
+
 ## 4. Acceptance criteria
 
 - Every shorthand or acronym in the active plan set is defined, including
