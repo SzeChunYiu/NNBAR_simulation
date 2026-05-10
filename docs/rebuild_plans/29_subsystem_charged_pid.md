@@ -71,6 +71,14 @@ Per plan 57 MVA protocol:
 4. Score on the ladder (plan 38 leaf C.5). Improvement is reported
    as IV(C.5) reduction.
 
+
+### 3.1 Alternative comparison rows
+
+| Alternative | Source paper / codebase | NNBAR-specific adaptation | Expected ladder leaf delta |
+|---|---|---|---|
+| Cut-based baseline | Existing `reconstruct_charged_objects` (`reconstruction.py:430-700`) | Keep thesis Ch 8/9 threshold form but remove the C.1 truth-name gate before production scoring. | Reproduces baseline; ladder delta comes primarily from removing truth substitution. |
+| Likelihood-ratio PID | Plan 57 MVA protocol / standard likelihood-ratio classifier | Train on plan 23 charged calibration samples using C.2/C.3/C.4 features and locked train/validation/test splits. | Expected to reduce C.5 π/p confusion, especially near stopping-proton boundaries; must beat cut-based on plan 38. |
+
 ## 4. EM and neutral rejection (C.6)
 
 When `Name` filter is removed (§2 migration), the candidate set
