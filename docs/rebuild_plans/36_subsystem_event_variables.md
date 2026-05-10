@@ -55,6 +55,28 @@ Per-leaf **inputs** are the tables in §1; **outputs** are the listed
 `events.csv` columns. E.6 is added by this plan because the licentiate
 used only sphericity; plan 38 scores it as an optional discriminator.
 
+### 2.1 Event-shape formulas for E.5/E.6
+
+For every event-shape calculation, the object list is the
+reconstructed charged/photon/π⁰ list after upstream validity gates.
+Truth momenta and truth multiplicities are evaluator-only closure
+labels.
+
+- **Sphericity tensor (E.5):**
+  `S_ab = Σ_i p_{i,a} p_{i,b} / Σ_i |p_i|²`. Sort eigenvalues
+  `λ1 ≤ λ2 ≤ λ3`; report `sphericity = 1.5 * (λ1 + λ2)`.
+- **Fox-Wolfram moments (E.6):**
+  `H_l = Σ_ij |p_i||p_j| P_l(cos θ_ij) / (Σ_i |p_i|)²` for
+  `l ∈ {0, 2, 4}`. `H_0` is retained as a normalization sentinel;
+  `H_2` and `H_4` are the planned discriminants.
+- **Thrust (E.6):**
+  `T = max_n Σ_i |p_i · n| / Σ_i |p_i|`. The implementation should
+  use a deterministic seed-axis scan over object directions and their
+  hemispheric sums, then record the selected axis convention.
+- **Sparse events:** if fewer than two valid reconstructed objects or
+  zero total momentum norm is available, emit finite sentinel values
+  plus `event_shape_valid = false`; do not substitute truth objects.
+
 ## 3. Hemisphere convention
 
 The detector is symmetric about z=0 (the foil). "Upper" / "lower"
