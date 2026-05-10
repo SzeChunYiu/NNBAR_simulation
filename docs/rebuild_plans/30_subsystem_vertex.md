@@ -172,7 +172,7 @@ with the geometry constants from plan 16.
 ## 7. Stage E.1 implementation handoff
 
 The legacy reproduction hook is `reconstruct_event_vertices`
-(`vertex.py:163-252`). It remains useful for comparing against older
+(`vertex.py:163-254`). It remains useful for comparing against older
 event-level V.4 coordinates, but it groups by `Track_ID` and is no
 longer the preferred plan-30 fixture surface.
 
