@@ -77,6 +77,23 @@ labels.
   zero total momentum norm is available, emit finite sentinel values
   plus `event_shape_valid = false`; do not substitute truth objects.
 
+### 2.2 A+ citation audit for current event-variable baseline
+
+Current-source claims in §2 and §4 were re-checked against the L3
+worktree before this plan was committed:
+
+| Cited contract | Verifier evidence | Status |
+|---|---|---|
+| event-row assembly and raw sums/counts | `def summarize_events` resolves at `vertex.py:322`, inside the cited `vertex.py:322-447` range. | keep citation |
+| directional energy helper for E.3/E.4 | `def _directional_energy` resolves at `vertex.py:48`, inside the cited `vertex.py:48-67` range. | keep citation |
+| sphericity helper for E.5 | `def _sphericity` resolves at `vertex.py:255`, inside the cited `vertex.py:255-266` range. | keep citation |
+| visible-mass helper for E.7 | `def _visible_invariant_mass` resolves at `vertex.py:269`, inside the cited `vertex.py:269-290` range. | keep citation |
+| timing-window helper for E.8 | `def annotate_timing_windows` resolves at `vertex.py:86`, inside the cited `vertex.py:86-160` range. | keep citation |
+
+Plan 36 does not specify a runtime CLI command, and it does not cite the
+removed legacy split-study files. Any future event-variable study CLI row
+must pass the L3 `--help` verifier before this plan cites it.
+
 ## 3. Hemisphere convention
 
 The detector is symmetric about z=0 (the foil). "Upper" / "lower"
