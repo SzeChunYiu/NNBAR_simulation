@@ -258,6 +258,85 @@ and cannot be silently treated as optical closure.
    failures to plans 15, 18, 22, and 45 rather than changing event
    selections.
 
+## 2.3 Wave 6 derivation — elastic, stopping, ion, and neutron controls
+
+### Physics derivation
+
+**What is physically measured.** These constructors control the material
+transport side of the event after the primary annihilation or background
+source is generated. The measured truth-side quantities are elastic
+scattering angles, stopped-particle absorption or annihilation,
+light-ion/fragment transport, neutron survival time, and whether long-
+lived low-energy neutrons are tracked far enough to produce capture or
+delayed deposits.
+
+**Estimator rationale.** `G4HadronElasticPhysics` is required because
+elastic scattering changes charged/neutral trajectories and material
+path lengths without changing particle identity; those deflections feed
+range, vertex, and calorimeter-pointing observables. `G4StoppingPhysics`
+is the correct stopping/annihilation estimator for negative hadrons and
+antinucleons at rest, which is central to antineutron signal generation
+and stopped-secondary backgrounds `\cite{Bressani:2003pv,Golubeva:2018mrz}`.
+`G4IonPhysics` is required because nuclear breakup and capture can
+produce deuterons, alphas, and heavier fragments whose ranges and
+energy deposits are material-budget observables. `G4NeutronTrackingCut`
+is a CPU-control estimator, not a physics model; it must be validated
+against neutron capture/delayed-energy observables because cutting
+neutrons too early biases background estimates. The governing transport
+framework is Geant4 plus PDG material-interaction physics
+`\cite{Agostinelli2003,Allison2016,ParticleDataGroup:2024RPP}`.
+
+**Statistical character.** Elastic and stopping effects are
+event-by-event stochastic and can create non-Gaussian tails in vertex,
+range, and calorimeter residuals. Ion/fragments are usually sparse, so
+closure may be statistics-limited. Neutron tracking cuts introduce a
+systematic bias if the cut removes particles before capture; this bias
+does not shrink with more generated events unless the cut itself is
+changed.
+
+### Logic gaps
+
+- **Elastic-scattering model coverage.** Grounding: source registers
+  `G4HadronElasticPhysics` at line 62. `OPEN:` run pion/proton
+  scattering closure through beampipe, scintillator, and lead-glass
+  material slices, comparing angular tails against plan-15 material
+  predictions and plan-28 range/stopping residuals; target resolution
+  date 2026-06-22.
+- **Stopping/annihilation at rest.** Grounding: source registers
+  `G4StoppingPhysics` at line 64. `OPEN:` compare stopped antineutron
+  final-state multiplicity and stopped negative-hadron absorption rows
+  against the plan-13 signal-model alternatives; target resolution date
+  2026-06-22.
+- **Ion and fragment transport.** Grounding: source registers
+  `G4IonPhysics` at line 65. `OPEN:` add a fragment-production audit to
+  the signal and beam-neutron samples, reporting fragment charge/mass,
+  range, and deposited energy; target resolution date 2026-06-29.
+- **Neutron tracking cut value.** Grounding: source registers
+  `G4NeutronTrackingCut` at line 66, but this plan has not yet recorded
+  the actual cut thresholds. `OPEN:` dump the configured time/energy
+  thresholds and scan half/double values for capture-gamma rate,
+  capture time, and CPU cost; target resolution date 2026-06-15.
+- **Radioactive/activation coupling.** Grounding:
+  `G4RadioactiveDecayPhysics` is registered at line 67. `OPEN:` link
+  activation-product rates to plans 14 and 62 before any delayed
+  radioactive background is quoted; target resolution date 2026-06-29.
+
+### Closure test for the derivation
+
+1. Generate focused material-slice particle guns for pions, protons,
+   neutrons, and light ions using the same physics-list tag as the
+   target ledger row.
+2. For elastic scattering, compare angular residual tails to the
+   material budget and range/stopping expectations from plans 15 and
+   28.
+3. For stopping, compare stopped-particle final-state multiplicities,
+   visible energy, and capture products to plan-13 signal-model and
+   plan-14 background expectations.
+4. For neutron tracking cuts, scan the configured thresholds and record
+   capture-gamma and CPU deltas. A cut that changes a thesis observable
+   beyond its plan-04 tolerance becomes a plan-45 nuisance or a required
+   production setting, not an undocumented speed optimisation.
+
 ## 3. Alternative physics lists (model systematics)
 
 For systematic comparison, the audit registers these alternatives:
