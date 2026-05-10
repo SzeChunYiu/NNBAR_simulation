@@ -146,6 +146,55 @@ These examples define count-row shape only. They do not replace the
 baseline identity rows, and they must be regenerated whenever the
 selection config id or input event hash changes.
 
+### 1.5 Physics derivation for S.1-S.6
+
+#### Physics derivation
+
+S.1-S.6 physically estimate whether an event is compatible with the
+neutron-antineutron signal topology after reconstruction. The truth-side
+quantity is the event class; the production estimator observes only
+Class-A event variables from plan 36. Rectangular cuts are not a
+first-principles optimum, but they are the transparent thesis baseline:
+each threshold encodes a physically motivated signal-region condition on
+calorimeter energy, foil-track presence, pion multiplicity, visible
+mass, event shape, and top/bottom scintillator balance. Optimisation and
+uncertainty reporting must therefore be framed as a cut-flow/ROC problem
+with explicit intervals rather than as exact acceptance/background
+counts \cite{ParticleDataGroup:2024RPP,Cowan:2011Likelihood}.
+
+The estimator is the ordered Ch 10 cut-flow plus the final strict AND.
+Its dominant uncertainties are upstream event-variable bias, finite
+signal/background sample size, threshold overtraining, zero-survivor
+background intervals, and truth/provenance leakage through upstream
+fixtures. Robustness comes from preserving independent and cumulative
+counts, keeping the Ch 10 baseline immutable, and writing retuned or MVA
+selections as shadow configurations until their DEC evidence is signed.
+
+#### Logic gaps
+
+| Parameter | Status before production | Closure study / target date |
+|---|---|---|
+| Ch 10 thresholds: `20-2000 MeV` scintillator, `>=1` pion, visible mass `>=500 MeV`, sphericity `>=0.2`, upper/lower scintillator `<=320/930 MeV` | Reproduction baseline; production retune remains `OPEN:` | Reproduce signal and cosmic cut-flow, then run plan-41 N-1/ROC scans; target 2026-06-30 |
+| `CUT_ORDER` cumulative ordering | Thesis reproduction convention; order is not asserted as statistically optimal | Compare independent/N-1 effects and document any retuned order as a separate config; target 2026-07-05 |
+| zero-survivor background handling | Must be interval/upper-limit based, never exact zero | Attach plan-04 interval rows for cosmic and beam survivor counts; target 2026-06-20 |
+| S.6 BDT/NN replacement threshold | `OPEN:` shadow-only until feature freeze and calibration pass | Require plan-57 feature freeze, calibration curve, held-out ROC, and overwrite audit; target 2026-07-10 |
+| truth-blind gate for final quotes | `OPEN:` depends on upstream Class-B drop hashes | Run before/after event-table hashes for every quoted selection bundle; target 2026-06-25 |
+
+#### Closure test for the derivation
+
+1. Build the baseline selection fixture from a frozen plan-36 event table
+   and evaluate every individual `pass_*` column plus the final AND.
+2. Produce independent and cumulative counts on `sig_foil_v3` and
+   `cosmic_cry_essLund_overburdenA_v1`, including denominators and
+   interval/upper-limit handoffs for zero-survivor rows.
+3. Verify that thresholds, canonical column names, and cumulative order
+   match the Ch 10 identity rows before any retuned or MVA candidate is
+   compared.
+4. Run N-1/ROC scans and shadow S.6 candidates only as separate config
+   ids; never overwrite the baseline booleans.
+5. Drop truth/provenance columns from upstream inputs; cut booleans,
+   cumulative counts, and selected event ids must remain unchanged.
+
 ## 2. Closure-test specification / Ch 10 reproduction
 
 1. **Dataset ids:** `sig_foil_v3` for signal acceptance and
