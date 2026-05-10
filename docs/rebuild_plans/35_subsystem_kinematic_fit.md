@@ -62,6 +62,26 @@ Fit outputs record the covariance version, resolution-model tag, and
 whether the vertex constraint was active so plan 38 can compare raw,
 mass-only, vertex-only, and combined fits on the same candidates.
 
+#### 1.1.1 Machine-readable fit-input covariance fixture
+
+Before a fit is attempted, each photon input records the covariance
+surface that made the fit eligible or ineligible:
+
+| Field | Required content | Review rule |
+|---|---|---|
+| `fit_input_candidate_key` | deterministic key from §1.4 | joins both photons to the candidate row |
+| `photon_id` | consumed plan-33 photon id | exactly two rows per mass-constraint attempt |
+| `energy_sigma_mev` | finite positive energy uncertainty | missing or non-positive blocks the fit |
+| `theta_sigma_rad`, `phi_sigma_rad` | finite positive direction uncertainties | missing values produce `missing_covariance` |
+| `covariance_terms` | diagonal terms initially; full matrix when approved | matrix dimension must match the chosen `fit_mode` |
+| `covariance_model_id` | plan-40 covariance model tag | copied into the P.7 fit fixture |
+| `resolution_model_id` | calibrated resolution source tag | required before production use |
+| `covariance_status` | `valid`, `missing`, `singular`, or `diagnostic_only` | non-valid status forbids fitted outputs |
+| `failure_reason_if_invalid` | status-specific reason string | must map to a §1.2 failure reason |
+
+The covariance fixture is rejected if truth resolution or generated
+four-vector information appears in any fit-input field.
+
 ### 1.2 Fit-status contract
 
 Downstream consumers must distinguish a valid raw candidate from an
