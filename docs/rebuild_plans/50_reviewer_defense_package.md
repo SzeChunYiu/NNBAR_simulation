@@ -300,6 +300,47 @@ Invalidation rules:
 `current`. A stale package is still archived for provenance, but it cannot
 be used as thesis evidence until regenerated.
 
+### 2.5 L1 defence-routing crosswalk
+
+The defence-routing crosswalk is the package-local copy of the route that
+plan 53 audits across plans 50, 52, 54, 55, and 56. It is regenerated with
+the package so an examiner can start from one overlay id and find the
+question owner, rerun bundle, archive member, note annex, and glossary term
+without searching every plan by hand.
+
+```yaml
+l1_defence_routing_crosswalk:
+  crosswalk_id: l1_defence_routing_crosswalk
+  source_hashes:
+    plan50_overlay_schema: <hash>
+    plan51_question_registry: <hash>
+    plan52_rerun_manifest: <hash>
+    plan53_ci_rule: <hash>
+    plan54_archive_inventory: <hash>
+    plan55_note_annex: <hash>
+    plan56_glossary_audit: <hash>
+  routes:
+    em_cluster_truth_blindness: {question_ids: [RQ-L1-EM-P1-CLUSTERING, RQ-L1-EM-P2-DISCRIMINANT], rerun_bundle_member_id: em_object_chain, archive_pack_member_id: em_object_chain, note_annex_block: em_object_chain, glossary_terms: [defence overlay, rerun transcript, L1 archive pack member, defence routing]}
+    pi0_cut_decomposition: {question_ids: [RQ-L1-PI0-CUTS], rerun_bundle_member_id: em_object_chain, archive_pack_member_id: em_object_chain, note_annex_block: em_object_chain, glossary_terms: [defence overlay, rerun transcript, L1 archive pack member, defence routing]}
+    selection_cutflow_identity: {question_ids: [RQ-L1-SELECTION-CUTFLOW], rerun_bundle_member_id: ch10_cutflow, archive_pack_member_id: ch10_cutflow, note_annex_block: event_variable_and_cutflow_identity, glossary_terms: [pass_* columns, L1 archive pack member, defence routing]}
+    pileup_l11_status: {question_ids: [RQ-L1-PILEUP-L11], rerun_bundle_member_id: pileup_l11, archive_pack_member_id: pileup_l11, note_annex_block: pile_up_caveat, glossary_terms: [blocked template, defence routing]}
+    strange_v0_contamination: {question_ids: [RQ-L1-STRANGE-BARYON], rerun_bundle_member_id: strange_v0, archive_pack_member_id: strange_v0, note_annex_block: strange_background_caveat, glossary_terms: [blocked template, defence routing]}
+    tof_timing_resolution: {question_ids: [RQ-L1-TOF], rerun_bundle_member_id: tof_timing, archive_pack_member_id: tof_timing, note_annex_block: timing_tof_cross_check, glossary_terms: [blocked template, defence routing]}
+    bayesian_prior_sensitivity: {question_ids: [RQ-L1-BAYES-LIMIT], rerun_bundle_member_id: bayesian_limits, archive_pack_member_id: bayesian_limits, note_annex_block: limit_convention_cross_check, glossary_terms: [blocked template, defence routing]}
+    unbounded_caveat_status: {question_ids: [RQ-L1-UNBOUNDED-CAVEATS], rerun_bundle_member_id: unbounded_caveats, archive_pack_member_id: unbounded_caveats, note_annex_block: unbounded_caveat_status, glossary_terms: [unbounded caveat status, defence routing]}
+  status: current | stale | blocked
+```
+
+Crosswalk review rules:
+
+| Rule | Failure caught |
+|---|---|
+| every `required_l1_overlay_ids` entry appears exactly once in `routes` | overlay added to package but not to rerun/archive/note surfaces |
+| every `question_ids` entry exists in plan 51 and maps back to the same overlay | reviewer owner points at the wrong defence row |
+| bundle, archive, and note ids match plans 52, 54, and 55 | package route cannot be reproduced or archived |
+| every route names at least one plan-56 glossary term | thesis prose can introduce an unsigned synonym |
+| `status: current` requires the source hashes to match §2.4 staleness input | examiner receives a stale crosswalk as promotion evidence |
+
 ## 3. Generation
 
 A defence package is generated automatically by codex-supervisor
