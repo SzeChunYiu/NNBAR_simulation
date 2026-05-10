@@ -259,13 +259,32 @@ to edit L3 code. Any Kalman or ACTS-backed replacement must extend the
 plan-26 tests named in §5.1/§5.2 so the same assertions run before plan
 38 ladder scoring or plan 40 pull closure consumes the table.
 
+### 5.4 Stage E.1 producer/consumer contract
+
+The L3 V.2 patch must make the table boundary explicit enough that C.2,
+C.3, V.4, and plan 40 can consume it without re-opening TPC rows:
+
+| Contract item | Required behavior | Downstream check |
+|---|---|---|
+| input key | consume exactly one V.1 row keyed by `(event_id, candidate_id, hit_membership_key)` | plan 25 hit sidecar and V.2 rows have matching event/candidate multiplicity |
+| output key | emit one V.2 row keyed by `(event_id, candidate_id, fit_id)` for every attempted V.1 row | missing or failed fits are represented as rows with `fit_quality_state=fail`, not silent row drops |
+| residual sidecar | write residual rows keyed by `(event_id, candidate_id, fit_id, hit_index)` | plan 40 pull closure can count residual degrees of freedom without parsing `residuals_xyz` blobs |
+| source hashes | record V.1 table hash and TPC input hash in the V.2 manifest | plan 47 can prove the same V.1 candidate set fed C.2/C.3/V.4 artifacts |
+| covariance handoff | publish either six covariance components or a documented vector order plus `covariance_valid` | plan 30 vertex weighting and plan 40 pull tests reject singular covariance deterministically |
+| failure taxonomy | use `fit_failure_reason` values from §4 for non-finite, under-constrained, or degraded rows | plan 66 DQM aggregates failure fractions without inferring causes from null coordinates |
+
+This contract keeps `fit_track_candidates`
+(`nnbar_reconstruction/track_fit.py:55-117`) as the only Stage E.1 V.2
+producer until L3 replaces the implementation behind the same keys.
+
 ## 6. Acceptance criteria
 
 - §3 closure passes on calibration sample.
 - Direction covariance is reported into output schema.
 - §5 Stage E.1 handoff is actionable for L3: the target public
   function, current unit/integration tests, remaining failure-state test
-  obligation, promotion invariants, and required V.2 fields (`fit_id`, direction components,
+  obligation, promotion invariants, producer/consumer contract, and
+  required V.2 fields (`fit_id`, direction components,
   covariance components, `chi2_ndf`, `n_residual_degrees_of_freedom`,
   `direction_method`, residual sidecar rows, `fit_quality_state`,
   `fit_failure_reason`, `covariance_valid`, and `fit_degraded`) are all
