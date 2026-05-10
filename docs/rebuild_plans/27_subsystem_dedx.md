@@ -337,6 +337,27 @@ joined back to `(event_id, charged_candidate_id, estimator_id)`. Plans
 29, 40, 45, and 66 consume this manifest before trusting dE/dx values
 or calibration residuals.
 
+### 6.7 Stage E.1 fixture matrix
+
+The C.2 replacement patch must prove the estimator is keyed, calibrated,
+and truth-blind before plan 29 PID or plan 45 nuisance artifacts consume
+the dE/dx table:
+
+| Fixture case | Required input condition | Required assertion |
+|---|---|---|
+| truth-column drop | candidate membership and TPC steps are run with and without species, parentage, and legacy track labels | `dedx_mev_per_cm`, `estimator_id`, quality state, and contribution sidecar keys are unchanged |
+| truncation tails | one candidate has low and high ionization outliers around a stable core | selected/rejected contribution rows reproduce the signed low/high fractions and set `truncation_applied=true` |
+| missing path length | candidate steps have finite energy but no positive Class A path-length support | a C.2 row is emitted with a documented failure reason and no downstream PID feature is inferred from NaN |
+| nonfinite energy deposit | one or more selected steps have nonfinite `eDep` or equivalent energy-deposit value | nonfinite samples are excluded or the row fails with `dedx_failure_reason=nonfinite_energy_deposit` |
+| V.2 path handoff | the same candidate has both Class A coordinate span and a future V.2 path/covariance payload | `path_length_source` records which source was used and the manifest hash identifies the upstream V.2 table |
+| real candidate chain | real paired output is reconstructed through plan 25 candidates before dE/dx production | C.2 consumes frozen candidate keys and does not read validation labels to repair estimator inputs |
+
+The review artifact for the L3 patch must map each fixture row to a
+test selector or to an explicit not-promoted quality state in the C.2
+manifest. Rows that need plan 26 covariance support may remain gated
+until the V.2 manifest is present, but they must still define the
+expected `path_length_source` value.
+
 ## 7. Acceptance criteria
 
 - §3 closure within 5% across the charged calibration set.
@@ -346,7 +367,7 @@ or calibration residuals.
 - §6 Stage E.1 handoff is actionable for L3: the target public
   functions, current unit/integration tests, remaining test obligation,
   promotion invariants, producer/consumer contract, verification
-  command, artifact manifest schema, and required C.2 fields (`estimator_id`, `dedx_mev_per_cm`,
+  command, artifact manifest schema, fixture matrix, and required C.2 fields (`estimator_id`, `dedx_mev_per_cm`,
   `path_length_cm`, `path_length_source`, `n_steps_used`, truncation
   fractions, `truncation_applied`, `dedx_quality_state`,
   `dedx_failure_reason`, `calibration_source`, and contribution sidecar
