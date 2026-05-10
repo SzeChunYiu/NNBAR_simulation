@@ -357,6 +357,20 @@ The baseline selection can feed plan 44/46 only when these checks are
 complete. Any failed truth-blind audit or missing interval handoff keeps
 the result out of final reproduction and defence tables.
 
+Initial evidence-bundle examples:
+
+| `evidence_bundle_id` | Included rows | Reviewer action |
+|---|---|---|
+| `p37_ch10_cutflow_bundle_v0` | baseline identity rows, independent counts, cumulative counts, truth-blind audit, interval handoffs | approve for plan 47/46 only if `CUT_ORDER` and thresholds match the frozen baseline |
+| `p37_zero_survivor_bundle_v0` | cosmic and beam survivor counts, exposure rows, interval method, and provenance hashes | pass to plans 44/46 as an upper-limit input, never as exact-zero background |
+| `p37_retune_diag_bundle_v0` | plan-41 scan id, candidate config, touched columns, and held-out result | keep diagnostic until retune DEC approval and blind-retune checks pass |
+| `p37_mva_shadow_bundle_v0` | baseline booleans, shadow score, feature-freeze id, calibration rows, and overwrite audit | allow plan-57 review while blocking replacement of the baseline boolean |
+
+Evidence bundles make each selection quote traceable to a frozen baseline
+or to an explicitly shadowed optimisation candidate. Reviewers should
+reject any bundle that merges baseline, retuned, and MVA-derived booleans
+under one unqualified selection result.
+
 ## 5. Acceptance criteria
 
 - §1 cuts implemented exactly.
