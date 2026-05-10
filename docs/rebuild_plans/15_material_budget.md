@@ -31,6 +31,88 @@ detector. The material map drives multiple-scattering, photon
 conversion, and track-resolution estimates; without it those numbers
 are unsupported.
 
+## 0.1 Wave 6 derivation — material interaction budget
+
+### Physics derivation
+
+**What is physically measured.** The material budget measures the
+truth-side amount of matter a particle traverses between the foil and
+each detector subsystem. The load-bearing quantities are integrated
+`X/X₀` for electromagnetic showering, photon conversion, and multiple
+scattering; integrated `X/λ_I` for hadronic reinteractions; and the
+per-region material identity/density that converts path length into
+mass thickness.
+
+**Estimator rationale.** Radiation length is the natural material
+coordinate for electron bremsstrahlung, photon pair production, and
+EM shower development; nuclear interaction length is the natural
+coordinate for pion/proton/neutron reinteractions. PDG material and
+passage-of-particles formulae therefore define the estimator basis
+`\cite{ParticleDataGroup:2024RPP}`, while NIST tables and the Geant4
+material table provide the source values used by the simulation
+`\cite{NISTSTAR,Agostinelli2003,Allison2016}`. The Highland multiple-
+scattering approximation converts `X/X₀` into an angular-resolution
+floor, and the pair-production attenuation approximation converts
+`X/X₀` into a photon-conversion prior.
+
+**Statistical character.** A material map is deterministic for a fixed
+geometry and material table; the uncertainty is dominated by systematic
+composition, density, and geometry-survey errors rather than counting
+statistics. Ray-trace sampling error only enters when the map is
+approximated on a finite `(θ, φ)` grid. The closure target is therefore
+not a fitted central value but agreement between analytic material
+formulae, the Geant4 runtime material table, and particle-gun response.
+
+### Logic gaps
+
+- **Material constants `X₀` and `λ_I`.** Grounding: §1 uses PDG/NIST
+  element values and mass-weighted mixtures, but the sign-off source is
+  Geant4's runtime `G4MaterialTable`. `OPEN:` dump
+  `GetRadlen()` and `GetNuclearInterLength()` for every active material
+  and replace provisional mixture values; target resolution date
+  2026-06-15.
+- **Geometry path lengths (100 µm foil, ∼20 mm beampipe/walls, 25 cm
+  gas, ∼5 cm scintillator, ∼30 cm lead glass).** Grounding: plan 07 and
+  source geometry define the dimensions; this plan's current list is a
+  planning summary. `OPEN:` replace with ray-traced nominal paths from
+  the constructed geometry for the acceptance directions; target
+  resolution date 2026-06-15.
+- **Multiple-scattering constants (13.6 MeV and 0.038 log term).**
+  Grounding: PDG passage-of-particles Highland approximation
+  `\cite{ParticleDataGroup:2024RPP}`; no analysis tuning is allowed
+  unless plan 26 records a closure-motivated correction.
+- **Photon-conversion factor `7/9`.** Grounding: high-energy pair-
+  production attenuation in radiation-length units
+  `\cite{ParticleDataGroup:2024RPP}`. `OPEN:` verify the approximation
+  against Geant4 photon-gun conversion fractions in the relevant energy
+  range and material stack; target resolution date 2026-06-22.
+- **Acceptance anchor particles (π⁺ at 500 MeV and γ at 200 MeV,
+  θ=90°, φ=0°).** Grounding: current §5 review anchors. `OPEN:`
+  confirm these anchors cover the thesis ledger rows, or add a small
+  grid in momentum and angle before using the map as a universal
+  correction; target resolution date 2026-06-22.
+- **Composition vendor gaps.** Grounding: §1 marks scintillator,
+  lead-glass, coatings, and shielding concrete as source-defined but
+  vendor-uncited. `OPEN:` attach vendor datasheets or mark the affected
+  material constants as plan-45 composition nuisances; target
+  resolution date 2026-06-22.
+
+### Closure test for the derivation
+
+1. Dump the Geant4 material table for the nominal geometry and compare
+   every material's density, `X₀`, and `λ_I` to the §1 inventory.
+2. Ray-trace charged and neutral test particles from the foil over the
+   acceptance grid and integrate `X/X₀` and `X/λ_I` per subsystem.
+3. Run pion and photon guns at the §5 anchor points. Compare measured
+   scattering widths and conversion fractions to the Highland and
+   `1 - exp(-(7/9) X/X₀)` predictions with plan-04 uncertainty
+   propagation.
+4. Store the material-map tables and closure deltas in plan 47. If the
+   analytic-vs-Geant4 conversion fraction differs by more than the
+   existing 5% acceptance threshold, keep material-budget rows
+   `mismatch` or `blocked` until the source composition and geometry
+   are reconciled.
+
 ## 1. Material inventory
 
 For every `G4Material` instantiated in the active geometry, the
