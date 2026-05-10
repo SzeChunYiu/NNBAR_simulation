@@ -140,6 +140,23 @@ DEC stub: `DEC-46-FC-HANDOVER` — freeze the handover at
 `n_obs ≤ 5 or b ≤ 5`, with no data-driven retuning after unblinding.
 Status: draft, pending Methodology Council sign-off.
 
+### 3.2 Dispatch-row validation examples
+
+The method-dispatch row is itself a tested output. Fixtures should
+check the following rows before any plan-47 or plan-50 number is
+accepted:
+
+| Example | `dataset_or_channel` | `s_expected` | `b_expected` | `n_obs` | `method_selected` | Required behavior |
+|---|---|---:|---:|---:|---|---|
+| high-background discovery | `sig_validation_high_b` | 50 | 20 | 70 | `Asimov Z0` | computes §1 `Z_0 = 8.68` and records no F-C substitution |
+| zero-survivor background | `cosmic_muon_zero_survivor` | 0 | 0 | 0 | `Feldman-Cousins` | records no asymptotic Z and reports `epsilon90 = 1.0e-5` for `N=244000` |
+| nonzero low-count limit | `beam_neutron_low_count` | 0 | 1.2 | 3 | `Feldman-Cousins` | dispatches to low-count interval construction, not CLs/asymptotic Z |
+| high-count limit cross-check | `background_high_count_shape` | 0 | 12 | 18 | `CLs/pyhf` | allowed only when a binned nuisance model exists; otherwise result is incomplete |
+
+For all examples, `handover_rule`, `confidence_level`,
+`nuisance_ids`, and `decision_dec_id` must be populated even when the
+calculator is a target implementation rather than current CLI surface.
+
 ## 4. Acceptance criteria
 
 - §1 Z_0 target implementation lands in the L3-owned
