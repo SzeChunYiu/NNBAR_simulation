@@ -189,7 +189,7 @@ cite plans by ID.
   freshness evidence for quoted numbers.
 - Thesis-facing L1 annex rows expose review-evidence links and artifact
   hashes so plan 53 can reconcile notes against the package, staleness,
-  CI, and glossary evidence before promotion.
+  CI, archive, and glossary evidence before promotion.
 
 ## 4. Dependencies
 
