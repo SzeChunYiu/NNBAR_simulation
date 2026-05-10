@@ -302,6 +302,19 @@ Initial downstream-handoff examples:
 | `feature_contract_blocked` | candidate uses unregistered or provenance-bearing features | no downstream production consumer | plan 57/DEC-32 evidence must repair the feature list first |
 | `threshold_shadow_panel` | alternative thresholds written beside baseline columns | plan 37 impact studies may compare photon-yield changes | original baseline columns must remain unchanged |
 
+Initial production-promotion checklist:
+
+| `promotion_check_id` | Evidence required | Blocks promotion when missing |
+|---|---|---|
+| `p32_feature_contract_frozen` | registered feature list, sentinels, and threshold id | score cannot be reproduced by plan 33/37 reviewers |
+| `p32_all_label_components_pass` | photon, electron, and charged-pion closure rows with intervals | neutral efficiency or fake rate is only partially bounded |
+| `p32_truth_drop_stable` | feature, score, and pass/fail hashes match after Class-B drop | discriminator may be using provenance leakage |
+| `p32_downstream_shadow_kept` | baseline and alternative threshold columns remain separate | Ch 10 reproduction could be overwritten by a retune |
+
+A P.2 discriminator is production-eligible only when all checks point to
+measured fixture rows and signed DEC ids. Otherwise the row remains a
+ladder diagnostic even if one aggregate ROC number looks acceptable.
+
 ## 4. Acceptance criteria
 
 - §1 observables produced for every cluster.
