@@ -177,7 +177,7 @@ l1_defence_rerun_transcript:
   executed_rows:
     - bundle_member: Ch 10 selection cut-flow
       command_template_id: validate_reco_cutflow_v1
-      command_template_verifier_hash: sha256:<hash>
+      command_template_verifier_hash: sha256:b3cee4613afed558d4704df3dc5b281271aed768965d79a09603f812496806f0
       input_hashes: [sha256:<hash>]
       output_hashes: [sha256:<hash>]
       started_at: <timestamp>
