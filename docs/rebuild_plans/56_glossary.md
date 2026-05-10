@@ -188,6 +188,7 @@ l1_glossary_audit:
         - defence_ci_report
         - archive_inventory
         - note_annex
+        - note_annex_fixture
       required_hash_keys:
         - package
         - defence_routing_crosswalk
@@ -196,6 +197,7 @@ l1_glossary_audit:
         - archive_inventory
         - archive_drill
         - note_annex
+        - note_annex_fixture
         - glossary_audit
         - rerun_manifest
         - rerun_transcript
@@ -224,6 +226,7 @@ l1_glossary_audit:
         - archive_inventory
         - archive_drill
         - note_annex
+        - note_annex_fixture
       required_status_values:
         - current
         - stale
@@ -238,6 +241,7 @@ l1_glossary_audit:
         - defence_ci_report
         - archive_inventory
         - note_annex
+        - note_annex_fixture
       required_when:
         - note cites stale package as historical provenance
         - package staleness status is not current
