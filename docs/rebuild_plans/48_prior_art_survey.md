@@ -53,8 +53,8 @@ of inventing a key:
   transitions with the MURMUR experiment*, DOI
   `10.1140/epjc/s10052-021-08829-y`;
 - owner: Methodology Council plus bibliography maintainer;
-- rule: no plan may write `\cite{...MURMUR...}` until the key is present
-  and grep-verifies in the bibliography.
+- rule: no plan may write a MURMUR BibTeX citation command until the key
+  is present and grep-verifies in the bibliography.
 
 ## 2. Search-context lessons for NNBAR plans
 
