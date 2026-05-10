@@ -133,10 +133,46 @@ closure row or materially lower bin correlation under the same tolerance.
 
 ## 4. Closure
 
-- *MC closure.* Apply the response matrix to a different truth
-  distribution; verify the unfolded result agrees with the alternate
-  truth within statistical uncertainty.
-- *Pull closure.* Per plan 40 §1 on every unfolded bin.
+Closure is mandatory before any unfolded distribution is quoted. The
+response matrix is trained on the nominal signal sample, then tested on
+a statistically independent or reweighted truth distribution.
+
+### 4.1 Runnable procedure
+
+1. Prepare an alternate closure truth distribution using either a held-out
+   run block from `sig_foil_v3` or a plan 13 §4 signal-model reweighting.
+2. Run the closure command with the frozen response and regularisation:
+
+   ```bash
+   python -m nnbar_reconstruction.cli unfold-closure \
+       --response-dir output/unfolding/response/sig_foil_v3/ \
+       --regularisation output/unfolding/tuning/chosen_regularisation.yml \
+       --closure-events output/reco/sig_foil_v3/events.csv \
+       --closure-pi0 output/reco/sig_foil_v3/pi0.csv \
+       --truth-particle NNBAR_Detector/output/sig_foil_v3/Particle_output_*.parquet \
+       --truth-interaction NNBAR_Detector/output/sig_foil_v3/Interaction_output_*.parquet \
+       --bootstrap 200 --out output/unfolding/closure/sig_foil_v3/
+   ```
+
+3. For each observable write `closure_<observable>.json`,
+   `closure_<observable>_pulls.parquet`, and a PNG with truth, folded,
+   reconstructed, and unfolded spectra.
+4. Assert the closure JSON contains: input hashes, chosen method and
+   parameter, truth-bin counts, unfolded covariance, per-bin pulls,
+   global pull mean/width, and a pass/fail field evaluated against
+   §4.2.
+
+### 4.2 Closure tolerances
+
+| Observable | Closure target | Pass tolerance | Rationale citation | Cross-reference |
+|---|---|---|---|---|
+| visible invariant mass | unfolded closure spectrum vs truth four-vector mass | global pull mean `|mu| < 0.1`, width in `[0.8, 1.2]`, and no three adjacent bins with same-sign >2σ pulls. | plan 40 §2 E.7 | E.7, plan 36, plan 47 §1 |
+| π0 mass | unfolded π0 mass vs truth π0 mass / PDG target | peak bias `< 1 MeV`, pull width in `[0.9, 1.2]`, and signal-window yield within Wilson 68%. | plan 40 §2 P.5; plan 04 §4 | P.5-P.7, plans 34-35 |
+| sphericity | unfolded sphericity vs truth event-shape value | global pull mean `|mu| < 0.1`, width in `[0.9, 1.2]`, and cumulative distribution monotonicity preserved. | plan 40 §2 default | E.5, plan 36, plan 41 |
+
+Failed closure blocks quote-mode output. The next action is the plan 40
+§3 escalation path: check statistics, bias, systematics, then code bugs
+before changing regularisation or binning.
 
 ## 5. Model dependence
 
