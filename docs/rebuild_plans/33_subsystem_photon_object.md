@@ -361,6 +361,11 @@ method context that plan 34 needs to reproduce pair kinematics.
 - §2, §3 produce photon four-vector with stated semantics.
 - §4 truth-blind merging in place.
 - §6 closure passes.
+- Promotion checks prove four-vector provenance, energy-bin/category
+  closure, fragment policy stability, and scintillator-only guard impact
+  before plan 34 consumes photon rows.
+- Evidence bundles keep fallback, fragment-merge, and scintillator-only
+  diagnostics separate from the production photon-object handoff.
 
 ## 8. Dependencies
 
