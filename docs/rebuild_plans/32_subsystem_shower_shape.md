@@ -315,6 +315,19 @@ A P.2 discriminator is production-eligible only when all checks point to
 measured fixture rows and signed DEC ids. Otherwise the row remains a
 ladder diagnostic even if one aggregate ROC number looks acceptable.
 
+Initial evidence-bundle examples:
+
+| `evidence_bundle_id` | Included rows | Reviewer action |
+|---|---|---|
+| `p32_hard_cone_repro_bundle_v0` | hard-cone fixed-point row, component fake-rate intervals, Class-B hash | keep as Ch 10 reproduction context unless promotion checks also pass |
+| `p32_rectangular_candidate_bundle_v0` | feature contract, AUC rows, threshold id, and all label-component closures | candidate for plan-33 handoff review after DEC approval |
+| `p32_missing_negative_bundle_v0` | photon-positive closure without electron or charged-pion rows | reject because fake-rate coverage is incomplete |
+| `p32_shadow_threshold_bundle_v0` | baseline and alternative threshold result rows with separate config ids | permit plan-37 impact study but not baseline overwrite |
+
+Evidence bundles let the reviewer separate reproduction rows, production
+candidates, and blocked feature contracts before plan 33 consumes a
+neutral-discriminator output.
+
 ## 4. Acceptance criteria
 
 - §1 observables produced for every cluster.
