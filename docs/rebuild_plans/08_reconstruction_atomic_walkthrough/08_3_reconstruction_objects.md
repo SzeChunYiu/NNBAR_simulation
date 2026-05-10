@@ -167,6 +167,41 @@ feeds `has_foil_origin`. Under plan 09 these are Class B or
 truth/provenance-like fields, so the current charged-object baseline still
 has truth-dependent paths tracked by plan 08 §3.7.
 
+#### 3.4.3 `reconstruct_electron_pair_objects(tpc, config=DEFAULT_CONFIG)`
+
+**Source:** `NNBAR_Detector/nnbar_reconstruction/reconstruction.py:1119–1218`.
+
+**Inputs:** TPC hit table with required `Event_ID`, `Track_ID`, and `x/y/z`
+(`reconstruction.py:1147–1149`). Plan 09 classifies `Event_ID` as Class A,
+`Track_ID` as Class B, and hit positions as Class A with limitation L1 (plan 09
+§8 lines 151–159). Optional `t` controls first-hit ordering, `eDep` is summed per
+track for output, and `Name` is a Class B truth label used when present
+(`reconstruction.py:1151–1168`).
+
+**Decision rule:** empty/missing required inputs return an empty electron-pair
+table with the declared schema (`reconstruction.py:1131–1149`). The function
+sorts by event, track, optional time, and input order, then keeps the first hit
+per `(Event_ID, Track_ID)` (`reconstruction.py:1151–1162`). Within each event,
+it forms all track pairs whose finite first-hit coordinates are separated by ≤
+`config.electron_pair_max_entry_separation_cm` (default 5.0 cm;
+`reconstruction.py:1172–1185`, config line 48). If truth `Name` labels are
+present, it emits only opposite-sign electron/positron pairs: `e-`/`electron`
+map to -1, `e+`/`positron` map to +1, and the product must be -1
+(`reconstruction.py:1104–1116`, `1190–1194`). Without labels, it falls back to
+the geometric 5 cm rule.
+
+**Outputs:** DataFrame columns `event_id`, `pair_id`, `track1_id`, `track2_id`,
+`track1_truth_name`, `track2_truth_name`, `entry_separation`, entry midpoint
+`x/y/z`, `track1_tpc_edep`, `track2_tpc_edep`, `total_tpc_edep`, and
+`has_opposite_charge_truth` (`reconstruction.py:1131–1146`, `1198–1218`). Plan
+09 §14.3 describes this as the electron-pair table carrying truth-name pairs for
+validation (lines 283–286).
+
+**Truth reads:** `Name` gates labelled pair emission and is copied into output;
+`Track_ID` is used for grouping and output ids. Under plan 09 these are Class B
+or truth identifiers, so labelled electron-pair selection is a validation/legacy
+truth-assisted baseline, while sparse unlabeled inputs use geometry only.
+
 ### 3.5 Photon / π⁰ reconstruction
 
 This subsection documents lead-glass/scintillator shower source resolution,
