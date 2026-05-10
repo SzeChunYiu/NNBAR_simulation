@@ -178,7 +178,26 @@ quotes the selected Class-A replacement and the residual difference.
    `Name`, `Process`, and `Interaction` columns. Any change in
    production cluster membership fails the Class-A gate.
 
-### 4.1 Decision-log stubs for the P.1 replacement
+### 4.1 Machine-readable cluster closure fixture
+
+Each P.1 candidate clusterer writes one closure-result row per energy
+bin so plan 38 and plan 47 can compare algorithms without parsing plots:
+
+| Field | Required content | Review rule |
+|---|---|---|
+| `clusterer_method` | method id from §3 | must match the fixture's `clusterer_method` |
+| `dataset_id`, `energy_bin_mev` | `cal_singlegamma_v1` setting | every required bin in §4 gets a row |
+| `n_events`, `n_clusters` | denominators after quality gates | zero denominators fail closure |
+| `mean_delta_e_over_e`, `response_bias_interval_68` | Gaussian-core response and bootstrap interval | compared to §4 pass criterion |
+| `centroid_residual_rms_cm` | centroid closure metric | must be `< 1 cm` for a pass row |
+| `split_rate`, `merge_rate` | Wilson-interval rates | each must stay within the §4 budget |
+| `class_b_drop_hash` | rerun artifact with ancestry columns removed | cluster membership hash must match production run |
+| `closure_status` | `pass`, `fail`, or `diagnostic_only` | only `pass` rows can support production selection |
+
+A `diagnostic_only` row may document the Track_ID-keyed baseline, but a
+production clusterer needs `closure_status = pass` in every energy bin.
+
+### 4.2 Decision-log stubs for the P.1 replacement
 
 The current Track_ID-keyed grouping is a load-bearing baseline.
 Replacing it, and freezing any topological threshold, requires
