@@ -14,7 +14,7 @@ acceptance:
 risks:
   - {risk: covariance estimation (plan 26) is approximate → fit χ² distribution is wrong, mitigation: §3 covariance audit}
 estimated_effort: M
-last_updated: 2026-05-09
+last_updated: 2026-05-10
 ---
 
 # Subsystem — kinematic fit
@@ -61,6 +61,24 @@ emit `fit_converged = false`, `fit_failure_reason =
 Fit outputs record the covariance version, resolution-model tag, and
 whether the vertex constraint was active so plan 38 can compare raw,
 mass-only, vertex-only, and combined fits on the same candidates.
+
+### 1.2 Fit-status contract
+
+Downstream consumers must distinguish a valid raw candidate from an
+attempted fit that failed. P.7 rows therefore use the following
+status fields:
+
+| Condition | `fit_converged` | `fit_failure_reason` | Downstream rule |
+|---|---|---|---|
+| fit succeeds | `true` | empty string | fitted four-vectors may be consumed after DEC approval |
+| missing energy/direction covariance | `false` | `missing_covariance` | preserve raw candidate; do not substitute truth resolution |
+| numerical minimizer fails | `false` | `minimizer_failed` | preserve raw candidate; count in convergence-rate closure |
+| constraint singular or non-physical | `false` | `invalid_constraint` | preserve raw candidate; inspect covariance/model inputs |
+| fit intentionally not requested | `false` | `not_run` | raw-baseline row for plan-38 comparison |
+
+Plan 36/37 consumers must prefer fitted quantities only when
+`fit_converged = true` and the relevant DEC is approved; otherwise
+they consume the raw plan-34 candidate fields.
 
 ## 2. Mass-constrained π⁰ fit
 
