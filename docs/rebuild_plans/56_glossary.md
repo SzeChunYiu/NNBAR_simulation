@@ -167,6 +167,27 @@ l1_glossary_audit:
         - glossary_audit
       thesis_delta: none | flagged
       owner: L1
+    - term: review-artifact hashes
+      defined_in_section: "1.1"
+      source_plans: [50, 51, 52, 53, 54, 55]
+      required_contexts:
+        - defence_package_rollup
+        - reviewer_question_registry
+        - rerun_manifest
+        - defence_ci_report
+        - archive_inventory
+        - note_annex
+      required_hash_keys:
+        - package
+        - staleness_summary
+        - ci_report
+        - archive_inventory
+        - archive_drill
+        - note_annex
+        - glossary_audit
+        - rerun_manifest
+      thesis_delta: none | flagged
+      owner: L1
     - term: unbounded caveat status
       defined_in_section: "1.1"
       source_plans: [45, 50, 51, 55]
