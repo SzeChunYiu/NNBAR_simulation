@@ -224,6 +224,18 @@ configuration:
 Diagnostic rows may compare raw and fitted values, but raw π⁰ candidates
 remain the baseline until the corresponding DEC is approved.
 
+Required closure row-key inventory:
+
+| `dataset_id` | Sample role | Required row purpose | Acceptance guard |
+|---|---|---|---|
+| `cal_singlegamma_v1:synthetic_pi0_pairs` | controlled π⁰ mass-constraint sample | raw-vs-fit width improvement and pull calibration | width, pull, convergence, and χ² metrics present |
+| `sig_foil_v3:plan34_candidates` | in-sample raw π⁰ candidates | production-topology fit stability and ranking changes | convergence rate, ranking-change rate, and Class-B drop hash present |
+| `sig_foil_v3:missing_covariance_sideband` | sparse covariance fallback audit | `missing_covariance` accounting and raw-candidate preservation | missing-covariance rate matches §1.2 status rows |
+
+The inventory defines the minimum closure components. It does not approve
+fitted values for plan 36/37 until measured §5.1 rows and DEC evidence
+are attached.
+
 ### 5.2 Decision-log stubs for fit use
 
 Kinematic fitting changes a downstream four-vector and may add a
