@@ -293,6 +293,15 @@ Until approval, non-current discriminants may be trained and scored
 only as ladder alternatives; the current hard-cone baseline remains
 the reproduction path.
 
+Initial downstream-handoff examples:
+
+| `handoff_case_id` | Discriminator output pattern | Consumer expectation | Review guard |
+|---|---|---|---|
+| `neutral_score_pass_to_p33` | frozen `neutral_score` and `passes_neutral_discriminant` columns | plan 33 may build photon objects from accepted neutral clusters | requires §3 closure pass and stable Class-B drop hash |
+| `hard_cone_repro_diag` | current hard-cone decision emitted as reproduction baseline | plan 33 may keep it as a diagnostic ladder input | cannot be labelled as a learned or retuned discriminator |
+| `feature_contract_blocked` | candidate uses unregistered or provenance-bearing features | no downstream production consumer | plan 57/DEC-32 evidence must repair the feature list first |
+| `threshold_shadow_panel` | alternative thresholds written beside baseline columns | plan 37 impact studies may compare photon-yield changes | original baseline columns must remain unchanged |
+
 ## 4. Acceptance criteria
 
 - §1 observables produced for every cluster.
