@@ -59,21 +59,36 @@ Comment at `PhysicsList.cc:86`: *"_HP will slow down a lot"*. The
 non-HP `G4HadronPhysicsFTFP_BERT` does not use the High-Precision
 neutron data (`G4NDL`) for `E < 20 MeV`. Consequences:
 
-- Cosmic neutron transport (plan 21) misses sub-20 MeV inelastic
-  detail, which can affect capture-gamma backgrounds.
+- Cosmic neutron transport (plan 21) misses sub-20 MeV inelastic,
+  elastic-scattering, thermalisation, and capture detail, which can
+  affect capture-gamma backgrounds.
 - Beam neutron transport (plan 22) is in the same regime; the HIBEAM
-  beam includes thermal neutrons where `_HP` matters most.
+  beam includes thermal and epithermal neutrons where `_HP` matters
+  most.
+- Signal samples can still emit secondary low-energy neutrons, but
+  the thesis reproduction target is dominated by the multi-pion
+  antineutron-annihilation topology and not by delayed neutron capture.
 
-**Decision.** Plan 12 v0.1 keeps `_HP` off for the *signal* sample
-(matches licentiate baseline; plan 47 reproduction requires this) but
-**requires** `_HP` ON for cosmic neutron and beam neutron samples
-(plans 21, 22). The two configurations are registered as separate
-build_ids in plan 03.
+Two build tags are therefore mandatory:
 
-The signal-sample configuration without `_HP` is acceptable because
-the antineutron annihilation deposits its energy via FTFP at GeV-
-scale; sub-20-MeV neutron physics is irrelevant for the primary
-final state. This is documented as a `DEC-YYYY-MM-DD-N` in plan 05.
+| Sample class | `FTFP_BERT` without `_HP` | `FTFP_BERT_HP` | Required tag / rationale |
+|---|---|---|---|
+| Signal foil sample (`sig_foil_v3`) | **Baseline.** Matches the licentiate-era production choice and preserves plan-47 reproduction comparability. | Systematic cross-check only; run a paired smoke/closure sample if low-energy neutron secondaries become visible in photon/capture rows. | `nominal`: use non-HP unless a ledger row explicitly studies neutron-capture tails. |
+| Cosmic CRY sample (`cosmic_cry_essLund_*`) | Not acceptable for final rate rows because cosmic neutron/proton secondaries can thermalise and capture in shielding. | **Baseline.** Captures sub-20 MeV neutron transport and capture-gamma production. | `nominal_hp`: required by plans 14 and 21. |
+| Beam-neutron sample (`beam_neutron_hibeam_*`) | Not acceptable except as an explicit CPU-speed comparison. It under-models the thermal/cold neutron regime most relevant to ESS beam tails. | **Baseline.** Required for beam-neutron direct/scattered/capture-gamma sub-channels. | `nominal_hp`: required by plans 14 and 22. |
+
+**DEC-2026-05-10-3 stub — split HP policy.** Context: `_HP` improves
+low-energy neutron transport but increases CPU cost. Decision: keep
+`G4HadronPhysicsFTFP_BERT` without `_HP` for the signal reproduction
+baseline, and require `G4HadronPhysicsFTFP_BERT_HP` for cosmic and
+beam-neutron background baselines. Rationale: signal rows need legacy
+comparability and are not driven by sub-20-MeV neutron transport,
+whereas background rows are. Alternatives: all samples non-HP (faster,
+under-models neutron backgrounds) or all samples HP (simpler, slower,
+can drift from licentiate signal reproduction). Consequence: plan 03
+must register separate build IDs, plan 47 rows must cite the physics
+list tag, and plan 45 treats signal non-HP vs HP deltas as a model
+systematic only where neutron-capture observables enter.
 
 ## 3. Alternative physics lists (model systematics)
 
