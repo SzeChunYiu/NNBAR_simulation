@@ -15,16 +15,6 @@ CH10_CUTFLOW_ORDER = (
     "filtered_scintillator_balance",
 )
 
-# Lane-level π⁰ event gates recorded separately from the Ch.10 table.  The
-# extracted Ch.10 text calls vertexing a future improvement rather than a table
-# cut, but the lane plan uses this order for future π⁰-focused event selection.
-PI0_EVENT_GATE_ORDER = (
-    "charged_tracks",
-    "pi0_candidate",
-    "fiducial_vertex",
-    "visible_energy",
-)
-
 SCINTILLATOR_ENERGY_WINDOW_MEV = (20.0, 2000.0)
 MIN_TPC_TRACKS_TO_VERTEX = 1
 MIN_PION_COUNT = 1

@@ -16,17 +16,6 @@ def test_ch10_cutflow_order_matches_thesis_table():
     )
 
 
-def test_lane_pi0_event_gate_order_is_pinned_for_future_pi0_selection():
-    from nnbar_reconstruction.reconstruction.cutflow import PI0_EVENT_GATE_ORDER
-
-    assert PI0_EVENT_GATE_ORDER == (
-        "charged_tracks",
-        "pi0_candidate",
-        "fiducial_vertex",
-        "visible_energy",
-    )
-
-
 def test_ch10_cutflow_thresholds_match_thesis_table():
     from nnbar_reconstruction.reconstruction.cutflow import (
         FILTERED_SCINTILLATOR_LOWER_MAX_MEV,
