@@ -62,6 +62,27 @@ Leaf C.1: V.1/V.2 tracks → charged-track candidates
   allowed truth use: validation_only
   downstream consumers: C.2, C.3, C.4, C.5, C.6; plans 27, 28, 29
 
+Leaf C.2: charged-track candidates → dE/dx estimator
+  inputs (Class A): C.1 charged-candidate table plus referenced TPC
+                    step columns (Event_ID, eDep, TrackLength, x, y,
+                    z, t, photons, step_info)
+  forbidden (Class B): Name, Track_ID, Parent_ID, origin_vol_name,
+                       particle_x, particle_y, particle_z
+  decision rule: compute per-step `eDep / TrackLength` in a
+                 detector-only track slice, then form the plan 27
+                 truncated mean (drop top 30%, bottom 10% until
+                 calibration retunes it); the current plan 08 §3.4
+                 `dedx` output remains valid only after the C.1
+                 truth-name gate is removed.
+  output schema: {event_id: int64, charged_candidate_id: int64,
+                  dedx_mev_per_cm: float64, estimator: string,
+                  n_steps_used: int32, path_length_cm: float64,
+                  low_truncation_fraction: float64,
+                  high_truncation_fraction: float64,
+                  calibration_source: string}
+  allowed truth use: validation_only
+  downstream consumers: C.5, C.6; plans 27, 29
+
 ### Next measurement (charged branch)
 
 Per-species reconstructed efficiency on `cal_singlepion*` and
