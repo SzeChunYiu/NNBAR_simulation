@@ -280,6 +280,48 @@ Leaf C.5: dE/dx + range + scintillator energy → π/p PID decision
   allowed truth use: validation_only
   downstream consumers: C.6, E.9, S.2; plans 29, 36, 37
 
+#### C.5 Physics derivation
+
+- **What is physically measured:** C.5 estimates whether a charged candidate is
+  pion-like or proton-like from frozen C.2 dE/dx, C.3 range, C.4 association,
+  and scintillator energy observables.
+- **Estimator rationale:** Bethe-Bloch ionisation plus stopping range provide
+  complementary π/p separation; the cut-based baseline approximates a
+  likelihood decision boundary, while the target likelihood-ratio classifier is
+  the calibrated extension for correlated observables \cite{ParticleDataGroup:2024RPP,alice2014performance,Fisher1936Discriminant,Pedregosa:2011Scikit}.
+- **Statistical character:** threshold bias dominates near stopping-proton and
+  low-dE/dx boundaries; variance comes from C.2/C.3 measurement errors and
+  calibration-sample size. Robustness requires frozen calibration artifacts and
+  rule-versioned scores, not truth labels during production scoring.
+- **Citation:** `ParticleDataGroup:2024RPP`, `alice2014performance`,
+  `Fisher1936Discriminant`, and `Pedregosa:2011Scikit` are resolved in the
+  thesis bibliography.
+
+#### C.5 Logic gaps
+
+1. **Cut thresholds (`proton_dedx_min`, `short_range_cm`,
+   `short_range_proton_dedx_min`):** OPEN: scan on locked pion/proton
+   calibration samples with balanced F1, ROC AUC, and plan-38 ladder delta as
+   figures of merit; target resolution date 2026-05-24.
+2. **Likelihood-ratio promotion threshold:** OPEN: choose only after plan 57
+   train/validation/test split hashes exist; target resolution date 2026-05-31.
+3. **Feature covariance between C.2 and C.3:** OPEN: estimate from calibration
+   residuals and include in the likelihood score uncertainty; target resolution
+   date 2026-05-31.
+4. **Invalid C.2/C.3 handling:** OPEN: decide whether null dE/dx/range rows are
+   rejected, down-weighted, or scored as `unclassified`; target resolution date
+   2026-05-24.
+
+#### C.5 Closure test for the derivation
+
+1. Freeze C.1/C.2/C.3/C.4 production tables, then run the cut-based and
+   likelihood-ratio C.5 scorer without truth labels in the scoring input.
+2. Use labeling-only calibration splits to tune thresholds, then validation-only
+   labels to compute π/p confusion matrices, ROC curves, and balanced F1.
+3. Pass when the rule-versioned C.5 table is invariant to dropping truth labels
+   and any promoted classifier beats the cut baseline without regressing plan-47
+   reproduction rows.
+
 Leaf C.6: PID candidates + topology → rejected-candidate mask
   inputs (Class A): C.1-C.5 charged outputs, lead-glass / shower
                     shape observables from P.1/P.2 when available,
