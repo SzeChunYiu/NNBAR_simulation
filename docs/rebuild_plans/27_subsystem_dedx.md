@@ -271,6 +271,72 @@ patch. They keep plan 29 PID and plan 45 calibration nuisances from
 learning hidden truth labels or silently changing the dE/dx estimator
 between calibration and signal samples.
 
+### 6.4 Stage E.1 producer/consumer contract
+
+The L3 C.2 patch must expose enough provenance for PID, closure, and
+calibration-nuisance consumers to reproduce the exact estimator inputs:
+
+| Contract item | Required behavior | Downstream check |
+|---|---|---|
+| input key | consume C.1/V.1 candidates by `(event_id, charged_candidate_id)` plus the V.1 `hit_membership_key` when available | dE/dx rows can be joined back to the frozen candidate and hit sidecar without using truth labels |
+| output key | emit one C.2 row keyed by `(event_id, charged_candidate_id, estimator_id)` | plan 29 can join PID features without guessing which estimator was active |
+| contribution sidecar | write one contribution row per selected or rejected TPC step with truncation state | plan 40/45 closure can audit selected samples without re-running truncation |
+| source hashes | record V.1 candidate hash, TPC input hash, truncation fractions, and calibration source in the manifest | plan 47 can prove the same C.2 inputs fed PID and systematics artifacts |
+| path handoff | set `path_length_source` to distinguish Class-A step length, coordinate span, or future V.2 covariance path length | plan 38 separates estimator skill from degraded path-length availability |
+| failure taxonomy | emit `dedx_quality_state` and `dedx_failure_reason` for empty, non-positive, or non-finite rows | plan 66 DQM and plan 29 PID do not infer failures from NaN `dedx_mev_per_cm` |
+
+This contract keeps `reconstruct_dedx_table`
+(`nnbar_reconstruction/dedx.py:91-119`) as the Stage E.1 C.2 producer
+until L3 swaps in an implementation that preserves the same keys.
+
+### 6.5 Stage E.1 verification command
+
+L3's C.2 patch is promotable only when the dE/dx slice exercises the
+truncation unit, synthetic candidate membership, and real-output chain:
+
+```bash
+pytest tests/test_charged_reco.py::test_truncated_mean_dedx_drops_plan_27_tails \
+       tests/test_charged_reco.py::test_reconstruct_dedx_table_uses_candidate_hit_membership \
+       tests/test_charged_reco.py::test_reconstruct_dedx_table_real_sample_has_plan_27_schema
+```
+
+The review note for that patch must quote the command output and the
+C.2 artifact manifest fields `estimator_id`, `path_length_source`,
+`truncation_applied`, `dedx_quality_state`, `dedx_failure_reason`, and
+`calibration_source`. If the real-output selector skips, C.2 remains a
+unit-test-only bridge and cannot feed plan 29 PID promotion or plan 45
+calibration nuisances.
+
+### 6.6 Stage E.1 artifact manifest schema
+
+The C.2 producer must write a manifest that freezes estimator identity,
+path-length provenance, and truncation settings before PID or nuisance
+artifacts consume the dE/dx rows:
+
+```yaml
+schema_version: plan27_c2_dedx@stage-e1
+dataset_id: <plan-03 dataset id>
+producer: reconstruct_dedx_table
+estimator_id: <stable estimator version>
+estimator: truncated_mean | arithmetic_mean_reproduction | landau_mpv
+input_v1_hash: <sha256 of V.1 candidate table>
+input_tpc_hash: <sha256 of TPC input table>
+output_dedx_hash: <sha256 of C.2 dE/dx table>
+contribution_sidecar_hash: <sha256 of selected/rejected step sidecar>
+low_truncation_fraction: <float>
+high_truncation_fraction: <float>
+path_length_source_values: [class_a_track_length, coordinate_span, v2_covariance_path, degraded_missing]
+quality_states_allowed: [pass, warn, fail, not_applicable]
+failure_reasons_allowed: [none, empty_candidate, missing_step_length, nonpositive_step_length, nonfinite_energy_deposit]
+calibration_source: <plan-17-or-plan-23 calibration id>
+```
+
+The manifest is invalid if the truncation fractions differ from the DEC
+entry named by `estimator_id` or if contribution-sidecar rows cannot be
+joined back to `(event_id, charged_candidate_id, estimator_id)`. Plans
+29, 40, 45, and 66 consume this manifest before trusting dE/dx values
+or calibration residuals.
+
 ## 7. Acceptance criteria
 
 - §3 closure within 5% across the charged calibration set.
@@ -279,7 +345,8 @@ between calibration and signal samples.
   high-dE/dx-quoted result.
 - §6 Stage E.1 handoff is actionable for L3: the target public
   functions, current unit/integration tests, remaining test obligation,
-  promotion invariants, and required C.2 fields (`estimator_id`, `dedx_mev_per_cm`,
+  promotion invariants, producer/consumer contract, verification
+  command, artifact manifest schema, and required C.2 fields (`estimator_id`, `dedx_mev_per_cm`,
   `path_length_cm`, `path_length_source`, `n_steps_used`, truncation
   fractions, `truncation_applied`, `dedx_quality_state`,
   `dedx_failure_reason`, `calibration_source`, and contribution sidecar

@@ -2,8 +2,8 @@
 
 ## Summary
 
-- `total`: 235
-- `ok`: 235
+- `total`: 238
+- `ok`: 238
 - `skipped`: 0
 - `missing_identifier`: 0
 - `mismatch`: 0
@@ -47,6 +47,7 @@
 - ✅ `ok` docs/rebuild_plans/26_subsystem_track_fit_and_pulls.md:250 `fit_track_candidates` `nnbar_reconstruction/track_fit.py:55-117` — signature line falls inside cited range; signature lines: 55
 - ✅ `ok` docs/rebuild_plans/26_subsystem_track_fit_and_pulls.md:252 `_covariance` `nnbar_reconstruction/track_fit.py:46-52` — signature line falls inside cited range; signature lines: 46
 - ✅ `ok` docs/rebuild_plans/26_subsystem_track_fit_and_pulls.md:253 `_track_anchor_and_direction` `nnbar_reconstruction/charged.py:62-81` — signature line falls inside cited range; signature lines: 62
+- ✅ `ok` docs/rebuild_plans/26_subsystem_track_fit_and_pulls.md:277 `fit_track_candidates` `nnbar_reconstruction/track_fit.py:55-117` — signature line falls inside cited range; signature lines: 55
 - ✅ `ok` docs/rebuild_plans/27_subsystem_dedx.md:70 `reconstruct_charged_objects` `nnbar_reconstruction/charged.py:151-228` — signature line falls inside cited range; signature lines: 151
 - ✅ `ok` docs/rebuild_plans/27_subsystem_dedx.md:73 `reconstruct_dedx_table` `nnbar_reconstruction/dedx.py:91-119` — signature line falls inside cited range; signature lines: 91
 - ✅ `ok` docs/rebuild_plans/27_subsystem_dedx.md:74 `truncated_mean_dedx` `nnbar_reconstruction/dedx.py:41-70` — signature line falls inside cited range; signature lines: 41
@@ -64,6 +65,7 @@
 - ✅ `ok` docs/rebuild_plans/27_subsystem_dedx.md:251 `test_reconstruct_dedx_table_real_sample_has_plan_27_schema` `tests/test_charged_reco.py:209-221` — signature line falls inside cited range; signature lines: 209
 - ✅ `ok` docs/rebuild_plans/27_subsystem_dedx.md:262 `reconstruct_dedx_table` `nnbar_reconstruction/dedx.py:91-119` — signature line falls inside cited range; signature lines: 91
 - ✅ `ok` docs/rebuild_plans/27_subsystem_dedx.md:263 `truncated_mean_dedx` `nnbar_reconstruction/dedx.py:41-70` — signature line falls inside cited range; signature lines: 41
+- ✅ `ok` docs/rebuild_plans/27_subsystem_dedx.md:289 `reconstruct_dedx_table` `nnbar_reconstruction/dedx.py:91-119` — signature line falls inside cited range; signature lines: 91
 - ✅ `ok` docs/rebuild_plans/28_subsystem_range_and_stopping.md:67 `reconstruct_charged_objects` `nnbar_reconstruction/charged.py:151-228` — signature line falls inside cited range; signature lines: 151
 - ✅ `ok` docs/rebuild_plans/28_subsystem_range_and_stopping.md:71 `reconstruct_range_table` `nnbar_reconstruction/range_reco.py:78-107` — signature line falls inside cited range; signature lines: 78
 - ✅ `ok` docs/rebuild_plans/28_subsystem_range_and_stopping.md:74 `_range_row` `nnbar_reconstruction/range_reco.py:41-75` — signature line falls inside cited range; signature lines: 41
@@ -80,6 +82,7 @@
 - ✅ `ok` docs/rebuild_plans/28_subsystem_range_and_stopping.md:254 `reconstruct_range_table` `nnbar_reconstruction/range_reco.py:78-107` — signature line falls inside cited range; signature lines: 78
 - ✅ `ok` docs/rebuild_plans/28_subsystem_range_and_stopping.md:256 `_range_row` `nnbar_reconstruction/range_reco.py:41-75` — signature line falls inside cited range; signature lines: 41
 - ✅ `ok` docs/rebuild_plans/28_subsystem_range_and_stopping.md:257 `_invalid_row` `nnbar_reconstruction/range_reco.py:28-38` — signature line falls inside cited range; signature lines: 28
+- ✅ `ok` docs/rebuild_plans/28_subsystem_range_and_stopping.md:281 `reconstruct_range_table` `nnbar_reconstruction/range_reco.py:78-107` — signature line falls inside cited range; signature lines: 78
 - ✅ `ok` docs/rebuild_plans/29_subsystem_charged_pid.md:93 `reconstruct_charged_objects` `nnbar_reconstruction/charged.py:151-228` — signature line falls inside cited range; signature lines: 151
 - ✅ `ok` docs/rebuild_plans/29_subsystem_charged_pid.md:154 `reconstruct_charged_objects` `nnbar_reconstruction/charged.py:151-228` — signature line falls inside cited range; signature lines: 151
 - ✅ `ok` docs/rebuild_plans/29_subsystem_charged_pid.md:198 `classify_charged_candidates` `nnbar_reconstruction/charged_pid.py:60-118` — signature line falls inside cited range; signature lines: 60

@@ -268,6 +268,50 @@ to edit L3 code. The matching L3 replacement patch must update
 (`tests/test_charged_reco.py:106-117`) so both synthetic and
 real-output chains prove the invariants.
 
+### 6.4 Stage E.1 verification command
+
+L3's V.1 patch is promotable only when the charged-reco test slice is
+run with selectors that exercise the synthetic truth-drop, schema, and
+real-output paths named in §6.1:
+
+```bash
+pytest tests/test_charged_reco.py::test_track_candidates_ignore_forbidden_truth_columns \
+       tests/test_charged_reco.py::test_track_candidates_emit_plan_25_schema_and_quality \
+       tests/test_charged_reco.py::test_track_candidates_real_sample_reads_particle_and_tpc_schema
+```
+
+The review note for that L3 patch must quote the command output and the
+V.1 artifact manifest fields `cluster_method`, `hit_membership_key`,
+`truth_grouping_used`, `candidate_quality_state`, and
+`candidate_failure_reason`. If the real-output selector skips because a
+fixture is unavailable, the patch is not promoted; it remains a local
+unit-test-only bridge until a real paired `Particle_output`/`TPC_output`
+fixture is present.
+
+### 6.5 Stage E.1 artifact manifest schema
+
+The V.1 producer must write a small manifest next to the candidate table
+so downstream plans can prove which hit grouping rule was active:
+
+```yaml
+schema_version: plan25_v1_candidates@stage-e1
+dataset_id: <plan-03 dataset id>
+producer: reconstruct_track_candidates
+cluster_method: geometric_cluster | hough_seed | kalman_seed | legacy_track_id_diagnostic
+input_tpc_hash: <sha256 of TPC input table>
+output_candidate_hash: <sha256 of V.1 candidate table>
+hit_sidecar_hash: <sha256 of ordered hit-membership sidecar>
+truth_grouping_used: false
+class_a_columns: [Event_ID, x, y, z, t, eDep, photons, px, py, pz, xHitID, module_ID, step_info, vol_name]
+forbidden_columns_absent: [Track_ID, Parent_ID, Name, origin_vol_name]
+quality_states_allowed: [pass, warn, fail, not_applicable]
+```
+
+The manifest is invalid if `truth_grouping_used` is true for a
+production table or if any forbidden column appears in the recorded
+producer input. Plan 26 and plan 66 consume this manifest before they
+trust V.1 row counts or candidate-quality fractions.
+
 ## 7. Acceptance criteria
 
 - §1 inputs match plan 09 (no Class B in production path).
@@ -276,7 +320,8 @@ real-output chains prove the invariants.
   V.1 expected-delta observables for plan 49 to consume.
 - §6 Stage E.1 handoff is actionable for L3: the target public
   function, current unit/integration tests, remaining test obligation,
-  code-gap checklist, promotion invariants, and mandatory V.1 fields (`candidate_id`, hit indices, anchor,
+  code-gap checklist, promotion invariants, verification command,
+  artifact manifest schema, and mandatory V.1 fields (`candidate_id`, hit indices, anchor,
   direction, hit count, `cluster_method`, `candidate_quality_state`,
   `candidate_failure_reason`, `truth_grouping_used=False`, and
   `hit_membership_key`) are all named before replacement promotion.

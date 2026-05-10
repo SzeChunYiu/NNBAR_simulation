@@ -580,6 +580,23 @@
     },
     {
       "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/track_fit.py"
+      ],
+      "citation": "nnbar_reconstruction/track_fit.py:55-117",
+      "doc": "docs/rebuild_plans/26_subsystem_track_fit_and_pulls.md",
+      "doc_line": 277,
+      "end": 117,
+      "identifier": "fit_track_candidates",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        55
+      ],
+      "source_path": "nnbar_reconstruction/track_fit.py",
+      "start": 55,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
         "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/charged.py"
       ],
       "citation": "nnbar_reconstruction/charged.py:151-228",
@@ -869,6 +886,23 @@
     },
     {
       "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/dedx.py"
+      ],
+      "citation": "nnbar_reconstruction/dedx.py:91-119",
+      "doc": "docs/rebuild_plans/27_subsystem_dedx.md",
+      "doc_line": 289,
+      "end": 119,
+      "identifier": "reconstruct_dedx_table",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        91
+      ],
+      "source_path": "nnbar_reconstruction/dedx.py",
+      "start": 91,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
         "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/charged.py"
       ],
       "citation": "nnbar_reconstruction/charged.py:151-228",
@@ -1137,6 +1171,23 @@
       ],
       "source_path": "nnbar_reconstruction/range_reco.py",
       "start": 28,
+      "status": "ok"
+    },
+    {
+      "candidate_files": [
+        "/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/nnbar_reconstruction/range_reco.py"
+      ],
+      "citation": "nnbar_reconstruction/range_reco.py:78-107",
+      "doc": "docs/rebuild_plans/28_subsystem_range_and_stopping.md",
+      "doc_line": 281,
+      "end": 107,
+      "identifier": "reconstruct_range_table",
+      "message": "signature line falls inside cited range",
+      "signature_lines": [
+        78
+      ],
+      "source_path": "nnbar_reconstruction/range_reco.py",
+      "start": 78,
       "status": "ok"
     },
     {
@@ -4005,9 +4056,9 @@
     "file_not_found": 0,
     "mismatch": 0,
     "missing_identifier": 0,
-    "ok": 235,
+    "ok": 238,
     "skipped": 0,
     "symbol_not_found": 0,
-    "total": 235
+    "total": 238
   }
 }

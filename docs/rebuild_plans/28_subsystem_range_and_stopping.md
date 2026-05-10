@@ -263,6 +263,71 @@ L3 code. They also keep plan 29 charged PID from interpreting missing
 range rows as physics until the failure reason and edge-distance fields
 are present.
 
+### 5.4 Stage E.1 producer/consumer contract
+
+The L3 C.3 patch must make range association reproducible across PID,
+closure, fiducial, and systematics consumers:
+
+| Contract item | Required behavior | Downstream check |
+|---|---|---|
+| input key | consume C.1 candidates and V.2 fit rows by `(event_id, charged_candidate_id)` plus `fit_id` when available | range rows can be traced to the exact direction/covariance row used for projection |
+| output key | emit one C.3 row keyed by `(event_id, charged_candidate_id, range_id)` for each attempted charged candidate | plan 29 PID can join range features without treating missing rows as physics |
+| associated-hit sidecar | write matched scintillator hit ids, projected distances, and Bragg-rank fields keyed by the output key | plan 40/45 closure can audit range and Bragg observables without re-running association |
+| geometry provenance | record plan 60 geometry/profile hash, edge distance, and scintillator profile bin | fiducial and edge-effect systematics can separate detector coverage from PID behavior |
+| source hashes | record C.1 candidate hash, V.2 fit hash, and scintillator input hash in the manifest | plan 47 can prove C.3, C.5, and nuisance artifacts used the same upstream rows |
+| failure taxonomy | emit `range_quality_state` and `range_failure_reason` for no-hit, bad-fit, backward-only, or edge-loss rows | plan 66 DQM and plan 29 PID consume explicit reasons, not null `range_cm` inference |
+
+This contract keeps `reconstruct_range_table`
+(`nnbar_reconstruction/range_reco.py:78-107`) as the Stage E.1 C.3
+producer until L3 replaces the projection implementation behind the
+same keys.
+
+### 5.5 Stage E.1 verification command
+
+L3's C.3 patch is promotable only when the range slice exercises the
+projected-hit unit path and the real-output C.1/V.2→C.3 chain:
+
+```bash
+pytest tests/test_charged_reco.py::test_reconstruct_range_table_projects_scintillator_hits \
+       tests/test_charged_reco.py::test_reconstruct_range_table_real_sample_has_plan_28_schema
+```
+
+The review note for that patch must quote the command output and the
+C.3 artifact manifest fields `range_id`, `association_method`,
+`range_quality_state`, `range_failure_reason`,
+`scintillator_edge_distance_mm`, and `scintillator_profile_bin`. If the
+real-output selector skips because scintillator fixtures are missing,
+C.3 cannot feed plan 29 PID promotion or plan 60 fiducial profiles.
+
+### 5.6 Stage E.1 artifact manifest schema
+
+The C.3 producer must write a manifest that freezes range-association
+identity, geometry provenance, and associated-hit sidecars before PID or
+fiducial artifacts consume range rows:
+
+```yaml
+schema_version: plan28_c3_range@stage-e1
+dataset_id: <plan-03 dataset id>
+producer: reconstruct_range_table
+range_id: <stable range-estimator version>
+association_method: projected_path | legacy_track_id_diagnostic
+input_c1_hash: <sha256 of C.1/V.1 candidate table>
+input_v2_hash: <sha256 of V.2 fit table>
+input_scintillator_hash: <sha256 of scintillator input table>
+geometry_profile_hash: <sha256 of plan-60 geometry/profile sidecar>
+output_range_hash: <sha256 of C.3 range table>
+associated_hit_sidecar_hash: <sha256 of matched-hit sidecar>
+edge_fields_required: [scintillator_edge_distance_mm, scintillator_profile_bin]
+quality_states_allowed: [pass, warn, fail, not_applicable]
+failure_reasons_allowed: [none, no_scintillator_hits, bad_fit_state, backward_only_hits, outside_scintillator_acceptance]
+```
+
+The manifest is invalid if `association_method` is omitted, if the
+geometry profile hash is missing for edge-dependent rows, or if matched
+hits cannot be joined back to `(event_id, charged_candidate_id,
+range_id)`. Plans 29, 45, 60, and 66 consume this manifest before
+trusting range or Bragg-profile observables.
+
 ## 6. Acceptance criteria
 
 - §3 closure passes.
@@ -271,7 +336,8 @@ are present.
   plan 38 C.3/C.5 ladder delta.
 - §5 Stage E.1 handoff is actionable for L3: the target public
   function, current unit/integration tests, remaining test obligation,
-  promotion invariants, and required C.3 fields (`range_id`, `association_method`, `range_cm`,
+  promotion invariants, producer/consumer contract, verification
+  command, artifact manifest schema, and required C.3 fields (`range_id`, `association_method`, `range_cm`,
   `range_edep_mev`, `bragg_peak_position_cm`,
   `range_quality_state`, `range_failure_reason`,
   `scintillator_edge_distance_mm`, `scintillator_profile_bin`, and
