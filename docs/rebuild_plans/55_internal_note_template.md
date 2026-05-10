@@ -104,6 +104,14 @@ l1_note_annex:
         - independent and cumulative cut counts
       evidence_refs:
         - <defence package path or ledger key>
+      review_evidence_links:
+        package_rollup: <plan50-rollup-id>
+        ci_report: <plan53-l1-report-id>
+        glossary_audit: <plan56-audit-id>
+      artifact_hashes:
+        note_annex: sha256:<hash>
+        defence_package: sha256:<hash>
+        ci_report: sha256:<hash>
       caveat_text: null
 ```
 
@@ -113,6 +121,7 @@ Review rules:
 |---|---|
 | annex row names match the §1.1 blocks | note drifts from defence package taxonomy |
 | every `applies` row names a defence overlay id | note has no machine-readable package handoff |
+| every thesis-facing row exposes review-evidence links and artifact hashes | note cannot be reconciled with package, CI, and glossary evidence |
 | every `blocked` row carries `caveat_text` | hidden missing evidence in reviewer-facing prose |
 | every low-count note includes the limit-convention row | Bayesian prior sensitivity omitted from sparse-count claims |
 | every L11 note includes the pile-up caveat row | independent-event limitation omitted from acceptance claims |
@@ -136,6 +145,7 @@ is a small matrix, not a prose judgement, so omissions are visible in CI.
 | rerun reproducibility | any note says an artifact was refreshed | plan-52 rerun manifest row id, execution transcript row id, command-template id, command-template verifier hash, and output hash are recorded |
 | CI transcript | any note is promoted after Stage E.3 starts | plan-53 L1 report id is recorded |
 | glossary consistency | any annex introduces shorthand | plan-56 glossary audit row is recorded |
+| review evidence reconciliation | any annex row supports thesis-facing prose | plan-50 roll-up id, plan-53 report id, plan-56 audit id, and note/package/CI hashes are recorded |
 
 The note may still be circulated internally with incomplete rows, but it
 cannot be used as thesis evidence until every applicable checklist item
@@ -170,6 +180,9 @@ cite plans by ID.
   checklist, including rerun transcript, command-template links, and
   verifier hashes for refreshed artifacts, owner sign-off, and package
   freshness evidence for quoted numbers.
+- Thesis-facing L1 annex rows expose review-evidence links and artifact
+  hashes so plan 53 can reconcile notes against the package, CI, and
+  glossary evidence before promotion.
 
 ## 4. Dependencies
 
