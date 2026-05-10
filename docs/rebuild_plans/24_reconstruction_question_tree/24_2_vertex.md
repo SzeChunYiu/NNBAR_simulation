@@ -338,6 +338,56 @@ Leaf V.5: event vertex estimate → foil-compatible vertex flag
   allowed truth use: validation_only
   downstream consumers: S.1; plans 30, 37, 47
 
+#### V.5 Physics derivation
+
+- **What is physically measured:** V.5 estimates whether the reconstructed V.4
+  event vertex is compatible with the physical annihilation foil volume. The
+  truth-side validation quantity is the generated interaction location;
+  production uses only reconstructed vertex coordinates, covariance, and
+  geometry constants.
+- **Estimator rationale:** the foil-compatibility estimator is a deterministic
+  geometry acceptance gate: transverse radius must lie inside the active foil
+  radius and the reconstructed z coordinate must lie within the foil half-
+  thickness/alignment envelope. This follows directly from the HIBEAM/NNBAR
+  target geometry definition and the plan-16/60 fiducial-volume contract
+  \cite{HIBEAM_NNBAR_at_ESS,Santoro2024NNBARCDR,ParticleDataGroup:2024RPP}.
+- **Statistical character:** false acceptance admits off-foil or poorly
+  reconstructed vertices; false rejection reduces signal efficiency near the
+  foil edge. The dominant uncertainties are V.4 covariance, foil alignment,
+  radius/thickness constants, and edge-effect modelling.
+- **Current implementation anchor:** `apply_foil_acceptance`
+  (`nnbar_reconstruction/vertex_reco.py:157-194`) applies the geometry gate and
+  `_acceptance_reason` (`nnbar_reconstruction/vertex_reco.py:197-204`) records
+  the observable rejection reason.
+
+#### V.5 Logic gaps
+
+1. **Foil radius and half-thickness:** OPEN: source geometry-versioned constants
+   from plan 16 and carry the `foil_geometry_version` into every V.5 row; target
+   resolution date 2026-05-24.
+2. **Edge buffer / fiducial margin:** OPEN: derive from plan-60
+   efficiency-vs-radius and efficiency-vs-z slices before any hard selection;
+   target resolution date 2026-05-31.
+3. **Covariance-aware acceptance:** OPEN: compare hard geometry gates with
+   probability-of-inside-foil gates using V.4 covariance; figure of merit is
+   signal efficiency versus off-foil fake acceptance; target resolution date
+   2026-06-07.
+4. **Acceptance-reason taxonomy:** OPEN: freeze `invalid_vertex`,
+   `outside_foil_radius`, `outside_foil_thickness`, and `inside_foil` in the
+   plan-30 fixture manifest; target resolution date 2026-05-24.
+
+#### V.5 Closure test for the derivation
+
+1. Run V.5 on frozen V.4 vertex rows and plan-16/60 geometry constants with all
+   truth vertex columns absent from the production input.
+2. Persist `foil_compatible`, vertex radius/z, `foil_geometry_version`, and
+   `acceptance_reason` before joining validation labels.
+3. In validation-only scoring, report signal efficiency and off-foil fake
+   acceptance in bins of radius, z, V.4 covariance, and plan-60 edge state.
+4. Pass when the geometry-only V.5 rows are invariant to dropping truth labels
+   and the efficiency-vs-edge curve supplies the plan-43 signal-efficiency
+   acceptance surface.
+
 ### Next measurement (vertex branch)
 
 Truth-free clustering / vertex closure study on signal annihilation

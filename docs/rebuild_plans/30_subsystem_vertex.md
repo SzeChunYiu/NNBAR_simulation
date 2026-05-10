@@ -168,6 +168,13 @@ The Wave 6 V.4 aggregation derivation is maintained in
 to keep this parent plan below the 500-line cap. The split file owns the
 V.4 Physics derivation, Logic gaps, and Closure test subsections.
 
+### 1.9 V.5 derivation split file
+
+The Wave 6 V.5 foil-acceptance derivation is maintained in
+`docs/rebuild_plans/30_subsystem_vertex/30_v5_foil_acceptance.md`
+to keep this parent plan below the 500-line cap. The split file owns the
+V.5 Physics derivation, Logic gaps, and Closure test subsections.
+
 ## 2. Current implementation
 
 `vertex.py` (plan 08 §3.3):
