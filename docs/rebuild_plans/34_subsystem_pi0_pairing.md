@@ -56,14 +56,14 @@ Leaf P.5/P.6: photon objects → π⁰ candidates and accidental tags
 ## 2. Selection per candidate (thesis Ch 8 defaults from
 `reconstruction.py` `ReconstructionConfig`):
 
-| Cut column | Default | Source |
-|---|---|---|
-| `passes_mass_window` | 100 ≤ M ≤ 180 MeV | thesis Ch 8 |
-| `passes_total_energy` | E ≤ 720 MeV | thesis Ch 8 |
-| `passes_scintillator_energy` | Σ_scint ≤ 250 MeV | thesis Ch 8 |
-| `passes_leadglass_energy` | Σ_LG ≤ 980 MeV | thesis Ch 8 |
-| `passes_leadglass_fraction` | LG_fraction ≥ 0.55 | thesis Ch 8 |
-| `passes_opening_angle` | α ≥ 30° | thesis Ch 8 |
+| Cut column | Default | Thesis source | Code citation |
+|---|---|---|---|
+| `passes_mass_window` | 100 ≤ M ≤ 180 MeV | thesis Ch 8 | config `pi0_mass_min/max` (`reconstruction.py:29–35`); flag block `1422–1427` |
+| `passes_total_energy` | E ≤ 720 MeV | thesis Ch 8 | config `pi0_total_energy_max` (`reconstruction.py:29–35`); flag block `1422–1427` |
+| `passes_scintillator_energy` | Σ_scint ≤ 250 MeV | thesis Ch 8 | config `pi0_scint_energy_max` (`reconstruction.py:29–35`); flag block `1422–1427` |
+| `passes_leadglass_energy` | Σ_LG ≤ 980 MeV | thesis Ch 8 | config `pi0_leadglass_energy_max` (`reconstruction.py:29–35`); flag block `1422–1427` |
+| `passes_leadglass_fraction` | LG_fraction ≥ 0.55 | thesis Ch 8 | config `pi0_leadglass_fraction_min` (`reconstruction.py:29–35`); flag block `1422–1427` |
+| `passes_opening_angle` | α ≥ 30° | thesis Ch 8 | config `pi0_opening_angle_min_deg` (`reconstruction.py:29–35`); flag block `1422–1427` |
 
 Strict `passes_selection` = AND of all six.
 
