@@ -167,6 +167,7 @@ l1_overlay_rollup:
   overall_status: ready | blocked | caveated
   required_links:
     reviewer_questions: present | missing
+    owner_signoff: present | missing
     rerun_manifest: present | blocked | missing
     rerun_transcript: present | blocked | missing
     command_template_registry: present | missing
@@ -185,6 +186,7 @@ Promotion rules:
 |---|---|
 | `overall_status: ready` requires no blocked overlays | thesis quote proceeds despite missing L1 evidence |
 | every blocking overlay appears in plan 51 | package blocker has no reviewer-question owner |
+| owner sign-off agrees with plan 51 answered rows | defence package closes a reviewer question without accountable approval |
 | rerun manifest status agrees with plan 52 | package says reproducible when the rerun bundle is blocked |
 | rerun transcript status agrees with plan 52 | package says refreshed artifacts exist without execution evidence |
 | command template registry agrees with plan 52 | package transcript uses unsupported or mutable command semantics |
