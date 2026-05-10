@@ -134,19 +134,56 @@ objective and DEC entry.
 
 ## 3. Optimal cut search
 
-A cut tuple `(t_1, …, t_n)` is "optimal" only relative to an
-objective. Plan 41 names the objective in a DEC entry:
+A cut tuple `(t_1, …, t_n)` is "optimal" only relative to a
+DEC-signed objective. The search may propose new thresholds, but plan
+37 remains the thesis baseline until the proposal passes the test split
+and the plan 47 ledger row is updated.
 
-| Candidate objective | Definition |
-|---|---|
-| **Significance Z₀** | `s / √b` over the signal box |
-| **F1** | balanced precision/recall |
-| **Punzi figure** | `s / (a/2 + √b)` for a target Z = a |
-| **Fixed acceptance** | maximise rejection at fixed signal acceptance |
+### 3.1 Runnable procedure
 
-Search uses train/validation/test split (plan 04 §2): tune on
-validation, freeze, evaluate on test. Reporting the test-set value
-is the only valid quote.
+1. Create deterministic event-level train/validation/test splits from
+   the same `events.csv` inputs used by §1-§2. The split manifest must
+   store dataset id, run id, event id, split label, input-table hash,
+   and seed derived with plan 04 §2 conventions.
+2. Run a grid search over the plan 37 §1 threshold tuple:
+
+   ```bash
+   python -m nnbar_reconstruction.cli cut-search \
+       --signal output/reco/sig_foil_v3/events.csv \
+       --background output/reco/cosmic_cry_essLund_overburdenA_v1/events.csv \
+       --background output/reco/<beam_neutron_dataset>/events.csv \
+       --baseline docs/rebuild_plans/37_subsystem_event_selection.md \
+       --objective <DEC-approved-objective> \
+       --split-manifest output/studies/cut_search/splits.json \
+       --out output/studies/cut_search/
+   ```
+
+3. Tune only on the validation split. Write
+   `validation_grid.parquet`, `best_tuple.validation.json`, and
+   `baseline.validation.json`.
+4. Freeze exactly one tuple, then evaluate it once on the test split;
+   write `best_tuple.test.json`, `baseline.test.json`, and
+   `promotion_decision.json`. The test artifact records whether the
+   candidate beats the licentiate baseline by the objective-specific
+   tolerance in §3.2.
+5. Assert promotion fails unless the output names the DEC entry, the
+   unchanged plan 37 baseline tuple, the frozen candidate tuple, all
+   S.1-S.6 ladder leaves touched, and the plan 47 ledger row to update.
+
+### 3.2 Objective tolerances and promotion gates
+
+| Objective | Test-set tolerance / promotion gate | Rationale citation | Cross-reference |
+|---|---|---|---|
+| Significance Z0 | candidate Z0 must exceed baseline by `max(1% relative, bootstrap 68% half-width)`; if background survivors are zero, quote Feldman-Cousins limit instead of `s/sqrt(b)`. | plan 04 §2 and §5 | S.1-S.6, plan 37, plan 47 §1 |
+| Balanced F1 | candidate balanced F1 must exceed baseline by `max(0.01 absolute, bootstrap 68% half-width)`. | plan 04 §2 | S.2-S.6, plan 37, plan 47 §1 |
+| Punzi figure | candidate Punzi score must exceed baseline by `max(1% relative, bootstrap 68% half-width)` for the DEC-specified target Z. | plan 04 §2 | S.1-S.6, plan 37, plan 46 |
+| Fixed signal acceptance | signal acceptance must be within ±0.01 absolute of the DEC target, then background rejection must exceed baseline by its bootstrap 68% half-width. | plan 04 §2 / Wilson intervals in §4 | S.1-S.6, plan 37, plan 47 §1 |
+
+Candidate objectives allowed for DEC approval are: Significance Z0
+(`s / sqrt(b)` only when nonzero-background assumptions hold), balanced
+F1, Punzi figure, and fixed-acceptance rejection. Any new objective is a
+methodology change and must update plan 05 before a cut-search artifact
+can be accepted.
 
 ## 4. Acceptance criteria
 
