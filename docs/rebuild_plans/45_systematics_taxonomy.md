@@ -152,6 +152,27 @@ matrix is checked mechanically:
    ledger as a missing-correlation flag, even though the interim
    numeric covariance uses `0.0` for that pair.
 
+### 2.2 Machine-readable correlation-pair fixture
+
+The matrix is serialized as canonical unordered pair rows so plan 47 can
+audit covariance inputs without re-parsing the prose table:
+
+| Field | Required content | Review rule |
+|---|---|---|
+| `correlation_pair_id` | stable key such as `N2__N8` | one row per unordered nuisance pair, including diagonals |
+| `nuisance_id_a`, `nuisance_id_b` | IDs from the §1 registry | both IDs must exist exactly once |
+| `seed_value` | `1.0`, `0.0`, or `M0` from §2 | must match both matrix directions |
+| `numeric_interim_value` | numeric value used before paired runs | `M0` maps to `0.0` and requires a flag |
+| `measurement_required` | boolean | true for every `M0` off-diagonal pair |
+| `measurement_result_id` | paired-run result key or null | required before an `M0` pair becomes frozen |
+| `ledger_flag_required` | boolean | true whenever `measurement_required` is true and result is used |
+| `correlation_dec_id` | DEC id authorising the grouping | draft DEC keeps covariance provisional |
+| `pair_status` | `seeded`, `measured`, `frozen`, or `blocked` | only measured/frozen pairs can clear missing-correlation flags |
+
+The pair fixture is rejected if a matrix cell has no matching pair row,
+if a pair row is asymmetric with the table, or if an `M0` pair reaches a
+quoted result without a ledger flag.
+
 DEC stubs:
 
 | DEC id | Convention to sign | Default |
