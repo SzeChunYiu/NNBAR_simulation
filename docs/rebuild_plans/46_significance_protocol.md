@@ -119,6 +119,21 @@ covariance, finite-count discreteness, and unbounded limitations. The
 robustness requirement is that every result row carries its input bundle,
 method decision, confidence level, DEC id, and inherited caveats.
 
+The Wave-6 method derivation ledger is:
+
+| Method leaf | Truth-side quantity | Estimator rationale | Validity domain | Closure assertion |
+|---|---|---|---|---|
+| `Z0.asimov_discovery` | median discovery significance for repeated experiments with selected signal `s` and background `b` | profile-likelihood Asimov approximation gives the large-sample median local significance and is cheap to recompute for validation rows | draft domain `s > 5` and `b > 5`, pending DEC coverage test | worked examples must recompute to `8.68` and `3.37`, and no `b = 0` row may emit a Z value |
+| `limit.feldman_cousins_low_count` | unified confidence interval or upper endpoint for low-count Poisson observations | exact-count ordering preserves coverage when discreteness dominates and prevents zero-survivor rows from becoming exact-zero backgrounds | required when `n_obs <= 5` or `b <= 5` until the handover DEC is signed | zero-survivor validation keeps `2.44 / 244000` as a positive interval endpoint |
+| `limit.cls_high_count` | high-count expected/observed exclusion cross-check with nuisance model | CLs is appropriate only after a binned likelihood and nuisance covariance exist; otherwise the method label is incomplete, not a result | allowed only with `b > 5` and attached pyhf/binned-model input bundle | high-count CLs rows without a model stay `incomplete_without_binned_model` |
+| `bayesian.cross_check` | posterior credible interval used as a sensitivity cross-check, not the primary frequentist limit | posterior integration tests prior sensitivity against the F-C/CLs frequentist decisions described here and plan 64 | appendix/cross-check only until prior DEC is signed | result rows must carry prior id and remain separate from primary F-C/CLs claims |
+
+This ledger makes the statistical method choice itself a reconstructed
+object: the input bundle fixes the counts, the dispatch row fixes the
+valid estimator, and the result row carries only values allowed by that
+dispatch. A reviewer can therefore reject a number by inspecting method
+provenance, even before re-running the calculator.
+
 #### Logic gaps
 
 | Parameter | Status before production | Closure study / target date |
