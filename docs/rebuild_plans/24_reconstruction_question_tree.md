@@ -205,6 +205,21 @@ done
 python -m nnbar_reconstruction.cli --help >/tmp/nnbar_cli_root.help
 ```
 
+The Stage E.1 and software-handoff coverage in item 4 is checked with:
+
+```bash
+for p in 25 26 27 28 29 30; do
+  f=$(ls docs/rebuild_plans/${p}_*.md)
+  grep -q 'Stage E.1 verification command' "$f" || exit 1
+  grep -q 'artifact manifest schema' "$f" || exit 1
+done
+grep -q 'plan41_selection_studies@stage-e1' docs/rebuild_plans/41_n_minus_1_and_roc_studies.md || exit 1
+grep -q 'plan42_unfolding@stage-e1' docs/rebuild_plans/42_unfolding_protocol.md || exit 1
+grep -q 'plan43_signal_efficiency@stage-e1' docs/rebuild_plans/43_signal_efficiency.md || exit 1
+grep -q 'plan60_fiducial_edges@stage-e1' docs/rebuild_plans/60_fiducial_volume_and_edge_effects.md || exit 1
+grep -q '66_data_quality_monitoring@stage-e1' docs/rebuild_plans/66_data_quality_monitoring.md || exit 1
+```
+
 The file-existence and 500-line checks in items 4-5 are run with:
 
 ```bash
