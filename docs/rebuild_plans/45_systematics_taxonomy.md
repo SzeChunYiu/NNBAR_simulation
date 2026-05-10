@@ -339,7 +339,7 @@ Initial evidence-bundle examples:
 |---|---|---|
 | `p45_frozen_covariance_bundle_v0` | N1-N10 registry rows, measured throw pairs, correlation-pair rows, and frozen covariance hash | approve as plan-46 covariance input only when every consumed nuisance is bounded |
 | `p45_draft_throw_incomplete_bundle_v0` | nominal-linked plus/minus throws missing one hash or affected-observable row | keep provisional and exclude from quoted uncertainty until completed |
-| `p45_m0_flagged_bundle_v0` | zero-correlation placeholders, rationale flags, and reviewer signoff rows | allow temporary diagonal covariance only with explicit M0 limitation text |
+| `p45_m0_flagged_bundle_v0` | provisional M0 seed rows, rationale flags, and reviewer sign-off rows | allow temporary diagonal covariance only with explicit M0 limitation text |
 | `p45_unbounded_limitation_bundle_v0` | caveat-only limitations, no numeric ±1σ, defence-package prose, and affected observables | carry to plan 50 rather than assigning a zero-width nuisance |
 
 Evidence bundles separate measured covariance inputs from draft throws,
@@ -368,8 +368,8 @@ Initial reviewer audit cases:
 - Promotion checks prove registry completeness, paired throw evidence,
   consumed correlations, and carried caveats before plan 46 treats the
   covariance as final.
-- Evidence bundles keep frozen covariance, incomplete throws, M0
-  placeholders, and unbounded limitations separate.
+- Evidence bundles keep frozen covariance, incomplete throws, provisional
+  M0 seed rows, and unbounded limitations separate.
 
 ## 5. Risks
 
