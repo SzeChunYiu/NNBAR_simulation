@@ -6,9 +6,9 @@ status: draft
 owner: Sim Production
 depends_on: [00_README, 01_realism_contract, 07_simulation_atomic_walkthrough]
 inputs:
-  - {path: NNBAR_Detector/src/util/ElectricField.cc, schema: field source}
-  - {path: NNBAR_Detector/src/sensitive/TPCSD.cc, schema: TPC SD}
-  - {path: NNBAR_Detector/src/physics/TPCDriftManager.cc, schema: drift simulation}
+  - {path: NNBAR_Detector/src/ElectricField.cc, schema: field source}
+  - {path: NNBAR_Detector/src/Sensitive_Detector/TPCSD.cc, schema: TPC SD}
+  - {path: NNBAR_Detector/src/DetectorConstruction.cc, schema: field-manager attachment}
 outputs:
   - {path: docs/rebuild_plans/17_field_calibration.md, schema: this file}
   - {path: data/registry/calibration/tpc_field_<tag>.yml, schema: per-config field record}
@@ -32,10 +32,11 @@ into every dE/dx-derived observable.
 
 ## 1. Field source
 
-`NNBAR_Detector/src/util/ElectricField.cc` provides the TPC drift
-field (a `G4UniformElectricField`-equivalent). Attached at
-`DetectorConstruction.cc:380–381` to **only `TPC_output[0]` and
-`TPC_output[1]`** — the first two LVs of the 12 TPC modules.
+`NNBAR_Detector/src/ElectricField.cc` provides the TPC drift
+field through `ElectricField::GetFieldValue`. `DetectorConstruction.cc`
+attaches the field manager to **only `TPC_output[0]` and
+`TPC_output[1]`** at the current L3 lines 259--260 — the first two LVs
+of the 12 TPC modules.
 
 This is a known incompleteness. The remaining 10 modules drift in
 the world's null field. Plan 25 (vertex) quantifies the consequence
@@ -56,7 +57,7 @@ edges within 5 mm of the field cage).
 
 ## 3. Drift velocity and W-value
 
-The TPC SD (`TPCSD.cc:102`) uses **W-value = 23.6 eV** to convert
+The TPC SD (`src/Sensitive_Detector/TPCSD.cc`) uses **W-value = 23.6 eV** at the current L3 line 99 to convert
 step `eDep` to electron count via Poisson sampling. The reference
 W-value for the Ar/CO₂ mixture (90/10) is 26–27.4 eV depending on
 the source (PDG; Sauli, *Principles of operation of multiwire
@@ -82,7 +83,7 @@ Production-vs-reference handling:
 
 | Quantity | Value | Role | Rationale |
 |---|---:|---|---|
-| `tpc_w_value_ev.production` | 23.6 eV | default conversion in current samples | identity-default; matches `TPCSD.cc` and existing ledger rows |
+| `tpc_w_value_ev.production` | 23.6 eV | default conversion in current samples | identity-default; matches `src/Sensitive_Detector/TPCSD.cc` and existing ledger rows |
 | `tpc_w_value_ev.reference` | 26.0 eV | closure/reweighting target | rounded Ar/CO₂ literature value, avoids over-precision before gas-mixture validation |
 | `tpc_w_value_ev.upper_reference` | 27.4 eV | systematic envelope endpoint | preserves the high end of the cited reference range |
 
@@ -95,17 +96,18 @@ current production output; the 27.4 eV endpoint is a −13.9% shift. Plan
 dedicated gas-gain calibration narrows the range.
 
 Drift velocity is set indirectly through Geant4's stepper handling;
-the rebuild does not currently override it. If GarfieldGPU is enabled
-(plan 07 §11.1, `WITH_GARFIELD_GPU=ON`), the drift velocity is
-controlled by `TPCDriftManager` parameters which codex-supervisor
-enumerates in v0.2.
+the rebuild does not currently override it. A+ verifier status on
+2026-05-10: no `TPCDriftManager` source file and no `WITH_GARFIELD_GPU`
+code path are present in the L3 worktree, so Garfield/TPC drift-manager
+claims are future TODOs rather than current source facts.
 
 ## 4. Gain and saturation
 
 Geant4 does not natively model gas-gain saturation. The current
 simulation stores the bare ionisation electron count
-(`TPCSD.cc:104`); the reconstruction's `dedx` is computed from this
-count and the step length.
+(`src/Sensitive_Detector/TPCSD.cc`, current L3 line 142 stores the
+count through `SetPhotons`); the reconstruction's `dedx` is computed
+from this count and the step length.
 
 Real-detector gain saturation matters for high-dE/dx tracks
 (stopping protons, low-energy pions). The seam in plan 02
