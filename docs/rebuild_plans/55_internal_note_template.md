@@ -113,6 +113,7 @@ l1_note_annex:
         - DEC-34-PI0-CUT-BASELINE
       review_evidence_links:
         overlay_rollup: <plan50-rollup-id>
+        defence_routing_crosswalk: <plan50-crosswalk-id-or-null>
         owner_signoff_refs: [RQ-L1-EM-P1-CLUSTERING:<owner-hash-or-null>, RQ-L1-EM-P2-DISCRIMINANT:<owner-hash-or-null>, RQ-L1-PI0-CUTS:<owner-hash-or-null>]
         ci_report: <plan53-l1-report-id>
         rerun_manifest: plan52:EM chain closure
@@ -126,6 +127,7 @@ l1_note_annex:
       artifact_hashes:
         note_annex: sha256:<hash>
         defence_package: sha256:<hash-or-null>
+        defence_routing_crosswalk: sha256:<hash-or-null>
         staleness_summary: sha256:<hash-or-null>
         ci_report: sha256:<hash-or-null>
         rerun_manifest: sha256:<hash-or-null>
@@ -147,6 +149,7 @@ l1_note_annex:
         - <defence package path or ledger key>
       review_evidence_links:
         overlay_rollup: <plan50-rollup-id>
+        defence_routing_crosswalk: <plan50-crosswalk-id-or-null>
         owner_signoff_refs: [RQ-L1-SELECTION-CUTFLOW:<owner-hash-or-null>]
         ci_report: <plan53-l1-report-id>
         rerun_manifest: plan52:Ch 10 selection cut-flow
@@ -160,6 +163,7 @@ l1_note_annex:
       artifact_hashes:
         note_annex: sha256:<hash>
         defence_package: sha256:<hash>
+        defence_routing_crosswalk: sha256:<hash-or-null>
         staleness_summary: sha256:<hash>
         ci_report: sha256:<hash>
         rerun_manifest: sha256:<hash-or-null>
@@ -183,6 +187,7 @@ l1_note_annex:
         - DEC-58-PILEUP-NUISANCE
       review_evidence_links:
         overlay_rollup: <plan50-rollup-id>
+        defence_routing_crosswalk: <plan50-crosswalk-id-or-null>
         owner_signoff_refs: [RQ-L1-PILEUP-L11:<owner-hash-or-null>]
         ci_report: <plan53-l1-report-id>
         rerun_manifest: plan52:Pile-up L11 overlay
@@ -196,6 +201,7 @@ l1_note_annex:
       artifact_hashes:
         note_annex: sha256:<hash>
         defence_package: sha256:<hash-or-null>
+        defence_routing_crosswalk: sha256:<hash-or-null>
         staleness_summary: sha256:<hash-or-null>
         ci_report: sha256:<hash-or-null>
         rerun_manifest: sha256:<hash-or-null>
@@ -219,6 +225,7 @@ l1_note_annex:
         - DEC-59-V0-REJECTION
       review_evidence_links:
         overlay_rollup: <plan50-rollup-id>
+        defence_routing_crosswalk: <plan50-crosswalk-id-or-null>
         owner_signoff_refs: [RQ-L1-STRANGE-BARYON:<owner-hash-or-null>]
         ci_report: <plan53-l1-report-id>
         rerun_manifest: plan52:Strange V0 contamination
@@ -232,6 +239,7 @@ l1_note_annex:
       artifact_hashes:
         note_annex: sha256:<hash>
         defence_package: sha256:<hash-or-null>
+        defence_routing_crosswalk: sha256:<hash-or-null>
         staleness_summary: sha256:<hash-or-null>
         ci_report: sha256:<hash-or-null>
         rerun_manifest: sha256:<hash-or-null>
@@ -255,6 +263,7 @@ l1_note_annex:
         - DEC-61-RESOLUTION-BUDGET
       review_evidence_links:
         overlay_rollup: <plan50-rollup-id>
+        defence_routing_crosswalk: <plan50-crosswalk-id-or-null>
         owner_signoff_refs: [RQ-L1-TOF:<owner-hash-or-null>]
         ci_report: <plan53-l1-report-id>
         rerun_manifest: plan52:TOF timing closure
@@ -268,6 +277,7 @@ l1_note_annex:
       artifact_hashes:
         note_annex: sha256:<hash>
         defence_package: sha256:<hash-or-null>
+        defence_routing_crosswalk: sha256:<hash-or-null>
         staleness_summary: sha256:<hash-or-null>
         ci_report: sha256:<hash-or-null>
         rerun_manifest: sha256:<hash-or-null>
@@ -292,6 +302,7 @@ l1_note_annex:
         - DEC-64-SENSITIVITY-THRESHOLDS
       review_evidence_links:
         overlay_rollup: <plan50-rollup-id>
+        defence_routing_crosswalk: <plan50-crosswalk-id-or-null>
         owner_signoff_refs: [RQ-L1-BAYES-LIMIT:<owner-hash-or-null>]
         ci_report: <plan53-l1-report-id>
         rerun_manifest: plan52:Bayesian limit cross-check
@@ -305,6 +316,7 @@ l1_note_annex:
       artifact_hashes:
         note_annex: sha256:<hash>
         defence_package: sha256:<hash-or-null>
+        defence_routing_crosswalk: sha256:<hash-or-null>
         staleness_summary: sha256:<hash-or-null>
         ci_report: sha256:<hash-or-null>
         rerun_manifest: sha256:<hash-or-null>
@@ -328,6 +340,7 @@ l1_note_annex:
         - plan50_unbounded_caveat_overlay
       review_evidence_links:
         overlay_rollup: <plan50-rollup-id>
+        defence_routing_crosswalk: <plan50-crosswalk-id-or-null>
         owner_signoff_refs: [RQ-L1-UNBOUNDED-CAVEATS:<owner-hash-or-null>]
         ci_report: <plan53-l1-report-id>
         rerun_manifest: plan52:Unbounded caveat status
@@ -341,6 +354,7 @@ l1_note_annex:
       artifact_hashes:
         note_annex: sha256:<hash>
         defence_package: sha256:<hash-or-null>
+        defence_routing_crosswalk: sha256:<hash-or-null>
         staleness_summary: sha256:<hash-or-null>
         ci_report: sha256:<hash-or-null>
         rerun_manifest: sha256:<hash-or-null>
@@ -358,8 +372,8 @@ l1_note_annex:
       reviewer_question_ids: [RQ-L1-EM-P1-CLUSTERING, RQ-L1-EM-P2-DISCRIMINANT, RQ-L1-PI0-CUTS, RQ-L1-SELECTION-CUTFLOW, RQ-L1-PILEUP-L11, RQ-L1-STRANGE-BARYON, RQ-L1-TOF, RQ-L1-BAYES-LIMIT, RQ-L1-UNBOUNDED-CAVEATS]
       required_contents: [plan-50 overlay ids match plan-51 questions, plan-52 bundle ids match plan-54 archive pack members, plan-53 report id and plan-56 glossary audit id are current]
       evidence_refs: [l1_defence_routing_crosswalk]
-      review_evidence_links: {overlay_rollup: <plan50-rollup-id>, owner_signoff_refs: [L1-routing-owner:<owner-hash-or-null>], ci_report: <plan53-l1-report-id>, rerun_manifest: plan52:Defence routing, rerun_transcript: plan52:defence_routing:transcript-or-null, command_template_id: blocked_missing_input_v1, command_template_verifier: null, glossary_audit: <plan56-audit-id>, staleness_summary: <plan50-staleness-id>, archive_inventory: <plan54-inventory-id-or-null>, archive_drill: <plan54-drill-id-or-null>}
-      artifact_hashes: {note_annex: sha256:<hash>, defence_package: sha256:<hash-or-null>, staleness_summary: sha256:<hash-or-null>, ci_report: sha256:<hash-or-null>, rerun_manifest: sha256:<hash-or-null>, rerun_transcript: sha256:<hash-or-null>, command_template_verifier: null, glossary_audit: sha256:<hash-or-null>, archive_inventory: sha256:<hash-or-null>, archive_drill: sha256:<hash-or-null>}
+      review_evidence_links: {overlay_rollup: <plan50-rollup-id>, defence_routing_crosswalk: <plan50-crosswalk-id-or-null>, owner_signoff_refs: [L1-routing-owner:<owner-hash-or-null>], ci_report: <plan53-l1-report-id>, rerun_manifest: plan52:Defence routing, rerun_transcript: plan52:defence_routing:transcript-or-null, command_template_id: blocked_missing_input_v1, command_template_verifier: null, glossary_audit: <plan56-audit-id>, staleness_summary: <plan50-staleness-id>, archive_inventory: <plan54-inventory-id-or-null>, archive_drill: <plan54-drill-id-or-null>}
+      artifact_hashes: {note_annex: sha256:<hash>, defence_package: sha256:<hash-or-null>, defence_routing_crosswalk: sha256:<hash-or-null>, staleness_summary: sha256:<hash-or-null>, ci_report: sha256:<hash-or-null>, rerun_manifest: sha256:<hash-or-null>, rerun_transcript: sha256:<hash-or-null>, command_template_verifier: null, glossary_audit: sha256:<hash-or-null>, archive_inventory: sha256:<hash-or-null>, archive_drill: sha256:<hash-or-null>}
       caveat_text: <required when any routing fixture hash drifts>
 ```
 
