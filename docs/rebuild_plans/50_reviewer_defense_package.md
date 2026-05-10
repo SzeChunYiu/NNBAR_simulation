@@ -127,7 +127,7 @@ rows below in addition to the generic §1 blocks.
 | Overlay id | Applies when result uses | Required package fields | Reviewer question answered |
 |---|---|---|---|
 | `em_cluster_truth_blindness` | P.1/P.2/P.3 photon or cluster rows | clusterer method id, Class-B drop hash, closure row ids, selected DEC ids | whether EM reconstruction used truth grouping |
-| `pi0_cut_decomposition` | pi0 or Ch 8/Ch 10 selection rows | six pi0 cut booleans, final AND column, cut-config id, failure-reason schema | whether the pi0 acceptance can be audited cut-by-cut |
+| `pi0_cut_decomposition` | pi0 or Ch 8/Ch 10 selection rows | six pi0 cut booleans, final AND column, cut-config id, failure-reason schema, plan-34 handoff companion id | whether the pi0 acceptance can be audited cut-by-cut |
 | `selection_cutflow_identity` | plan-37 S.1-S.6 rows | canonical `pass_*` column names, cumulative order, independent and cumulative counts | whether the cut-flow is reproducible from current tables |
 | `pileup_l11_status` | any acceptance or background row with L11 open | plan-58 study id, overlay mode, paired cosmic rows, occupancy tails, limitation status | whether pile-up changes the quoted result |
 | `strange_v0_contamination` | beam-neutron or EM fake background rows | plan-59 source node, PDG branching snapshot, V0 rejection closure, residual interval | whether K_S/Lambda/Sigma leakage is bounded |
