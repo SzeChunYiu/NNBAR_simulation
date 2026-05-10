@@ -138,6 +138,8 @@ l1_defence_rerun_manifest:
       refreshes:
         - artifact_id: p1_p7_closure_rows
           output_hash: <sha256>
+        - artifact_id: photon_promotion_examples
+          output_hash: <sha256>
         - artifact_id: photon_pi0_response_and_handoff_summary
           output_hash: <sha256>
       defence_overlay_ids:
