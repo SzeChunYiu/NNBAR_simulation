@@ -273,6 +273,15 @@ The inventory defines the minimum closure components. It does not approve
 fitted values for plan 36/37 until measured §5.1 rows and DEC evidence
 are attached.
 
+Initial fit-closure failure examples:
+
+| `closure_case_id` | Failing pattern | Required status | Review guard |
+|---|---|---|---|
+| `no_controlled_pi0_row` | `sig_foil_v3` row exists but synthetic π⁰ row is absent | `fail` | topology stability alone cannot validate the mass constraint |
+| `convergence_rate_low` | `n_converged / n_candidates < 0.98` | `fail` | non-converged candidates must remain raw and cannot seed plan-37 cuts |
+| `chi2_distribution_bad` | χ² K-S p-value is `<= 0.01` | `fail` | fit probability cannot be used for selection or ranking |
+| `class_b_fit_drift` | fitted values or convergence flags change after truth-label drop | `fail` | truth/provenance leakage blocks all fit-mode DECs |
+
 ### 5.2 Decision-log stubs for fit use
 
 Kinematic fitting changes a downstream four-vector and may add a
