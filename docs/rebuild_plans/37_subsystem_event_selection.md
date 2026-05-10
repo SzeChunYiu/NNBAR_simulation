@@ -14,7 +14,7 @@ acceptance:
 risks:
   - {risk: licentiate threshold values are sample-specific and don't generalise, mitigation: §3 plan 41 N-1 and ROC re-derives optimal cuts on the new sample}
 estimated_effort: L
-last_updated: 2026-05-09
+last_updated: 2026-05-10
 ---
 
 # Subsystem — event selection / cut-flow
@@ -25,21 +25,23 @@ plus its multivariate replacement.
 ## 1. Leaf S.1–S.6 cut-flow schema
 
 Inputs are the plan-36 `events.csv` variables. Outputs are the
-`pass_*` booleans below plus `passes_preliminary_selection`. Plan 08
-identifies `_selection_flags` (`vertex.py:293-319`) as the
-producer and `summarize_events` (`vertex.py:322-447`) as the
-writer. The CLI cumulative order is fixed by `_cutflow` (`cli.py:29-47`, plan 08 §4.1):
+`pass_*` booleans below plus `passes_preliminary_selection`. The
+current L3 source defines numeric cut defaults in
+`ReconstructionConfig` (`reconstruction.py:14-41`), computes the
+booleans in `_selection_flags` (`vertex.py:293-319`), writes the
+event row in `summarize_events` (`vertex.py:322-447`), and reports
+the cumulative order in `_cutflow` (`cli.py:29-47`):
 `pass_scintillator_energy → pass_tpc_foil_track → pass_pion_count →
 pass_invariant_mass → pass_sphericity → pass_scintillator_balance`.
 
 | Leaf | CLI order | Input variable(s) | Produced column | Threshold / rule | Thesis source | Code citation |
 |---|---:|---|---|---|---|---|
-| S.1 | 1 | `scintillator_edep` | `pass_scintillator_energy` | `20 ≤ Σ scintillator eDep ≤ 2000 MeV` | licentiate Ch 10 cut-flow, defaults documented as Ch 9 in plan v0.1 | thresholds in `ReconstructionConfig`; flag in `_selection_flags` (`vertex.py:293-319`); input emitted by `summarize_events` (`vertex.py:322-447`) |
-| S.1 | 2 | `has_foil_tpc_track` | `pass_tpc_foil_track` | at least one reconstructed TPC track projected to the foil | licentiate Ch 10 cut-flow | flag in `_selection_flags` (`vertex.py:293-319`); input emitted by `summarize_events` (`vertex.py:322-447`) |
-| S.2 | 3 | `pion_multiplicity` | `pass_pion_count` | `pion_multiplicity ≥ 1` | licentiate Ch 10 cut-flow | flag in `_selection_flags` (`vertex.py:293-319`); input emitted by `summarize_events` (`vertex.py:322-447`) |
-| S.3 | 4 | `visible_invariant_mass` | `pass_invariant_mass` | finite visible mass `≥ 500 MeV` | licentiate Ch 10 cut-flow | threshold in `ReconstructionConfig`; flag in `_selection_flags` (`vertex.py:293-319`); input emitted by `summarize_events` (`vertex.py:322-447`) |
-| S.4 | 5 | `sphericity` | `pass_sphericity` | finite sphericity `≥ 0.2` | licentiate Ch 10 cut-flow | threshold in `ReconstructionConfig`; flag in `_selection_flags` (`vertex.py:293-319`); input emitted by `summarize_events` (`vertex.py:322-447`) |
-| S.5 | 6 | `upper_scintillator_edep`, `lower_scintillator_edep` | `pass_scintillator_balance` | upper `≤ 320 MeV` and lower `≤ 930 MeV` | licentiate Ch 10 cut-flow | thresholds in `ReconstructionConfig`; flag in `_selection_flags` (`vertex.py:293-319`); inputs emitted by `summarize_events` (`vertex.py:322-447`) |
+| S.1 | 1 | `scintillator_edep` | `pass_scintillator_energy` | `20 ≤ Σ scintillator eDep ≤ 2000 MeV` | licentiate Ch 10 cut-flow; defaults documented as Ch 9 in plan v0.1 | thresholds in `ReconstructionConfig` (`reconstruction.py:14-41`); input row in `summarize_events` (`vertex.py:322-447`); flag in `_selection_flags` (`vertex.py:293-319`) |
+| S.1 | 2 | `has_foil_tpc_track` | `pass_tpc_foil_track` | at least one reconstructed TPC track projected to the foil | licentiate Ch 10 cut-flow | input row in `summarize_events` (`vertex.py:322-447`); flag in `_selection_flags` (`vertex.py:293-319`) |
+| S.2 | 3 | `pion_multiplicity` | `pass_pion_count` | `pion_multiplicity ≥ 1` | licentiate Ch 10 cut-flow | input row in `summarize_events` (`vertex.py:322-447`); flag in `_selection_flags` (`vertex.py:293-319`) |
+| S.3 | 4 | `visible_invariant_mass` | `pass_invariant_mass` | finite visible mass `≥ 500 MeV` | licentiate Ch 10 cut-flow | threshold in `ReconstructionConfig` (`reconstruction.py:14-41`); input row in `summarize_events` (`vertex.py:322-447`); flag in `_selection_flags` (`vertex.py:293-319`) |
+| S.4 | 5 | `sphericity` | `pass_sphericity` | finite sphericity `≥ 0.2` | licentiate Ch 10 cut-flow | threshold in `ReconstructionConfig` (`reconstruction.py:14-41`); input row in `summarize_events` (`vertex.py:322-447`); flag in `_selection_flags` (`vertex.py:293-319`) |
+| S.5 | 6 | `upper_scintillator_edep`, `lower_scintillator_edep` | `pass_scintillator_balance` | upper `≤ 320 MeV` and lower `≤ 930 MeV` | licentiate Ch 10 cut-flow | thresholds in `ReconstructionConfig` (`reconstruction.py:14-41`); input row in `summarize_events` (`vertex.py:322-447`); flag in `_selection_flags` (`vertex.py:293-319`) |
 | S.6 | — | all S.1–S.5 booleans | `passes_preliminary_selection` | logical AND of the six cut booleans | licentiate Ch 10 final preselection | AND in `_selection_flags` (`vertex.py:293-319`); cumulative report in `_cutflow` (`cli.py:29-47`) |
 
 ### 1.1 Per-cut and cumulative accounting
