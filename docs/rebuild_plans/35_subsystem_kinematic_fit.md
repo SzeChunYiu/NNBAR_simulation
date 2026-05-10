@@ -337,6 +337,19 @@ A fitted P.7 quantity can replace a raw value only when these checks are
 complete. Otherwise plan 36/37 consume the raw baseline and keep fit
 outputs as diagnostic sidecars.
 
+Initial evidence-bundle examples:
+
+| `evidence_bundle_id` | Included rows | Reviewer action |
+|---|---|---|
+| `p35_raw_repro_bundle_v0` | raw-only fit rows, not-run status, raw candidate preservation hashes | approve as reproduction baseline for plan 36/37 |
+| `p35_mass_fit_candidate_v0` | covariance inputs, mass-fit closure rows, convergence table, χ² K-S row | candidate for fitted-value promotion after DEC approval |
+| `p35_missing_covariance_blocked_v0` | invalid covariance rows and failure-status accounting | keep raw fallback; block fitted downstream use |
+| `p35_fit_quality_shadow_v0` | fit-quality sidecar plus N-1/ROC references | allow plan-38 comparison but not plan-37 cuts before DEC |
+
+Evidence bundles keep raw preservation, covariance validity, and fit
+quality use separable, preventing a successful fit subset from hiding
+non-converged candidates.
+
 ## 6. Acceptance criteria
 
 - §2 implementation lands; §5 closure passes.
