@@ -74,7 +74,7 @@ intercalibration nuisances or blocked ledger rows.
   and 29, or replace with a detector-calibration requirement; target
   resolution date 2026-06-22.
 - **Fast scintillator yield 11136 photons/MeV and optical yield 0.**
-  Grounding: DEC-2026-05-10-6 and source line evidence in §3.
+  Grounding: DEC-2026-05-10-6 and source evidence in §3.
   `OPEN:` restore a nonzero optical yield with provenance or keep
   optical-mode rows blocked; target resolution date 2026-06-15.
 - **Lead-glass scan energies {50, 100, 200, 500, 1000} MeV and <5%
