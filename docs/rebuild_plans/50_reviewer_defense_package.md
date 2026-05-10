@@ -278,6 +278,7 @@ l1_staleness:
     plan54_archive_drill: <hash-or-null>
     review_artifact_hashes: <hash>
     plan55_note_annex: <hash>
+    plan55_note_annex_fixture: <hash>
     plan56_glossary_audit: <hash>
   status: current | stale | blocked
   stale_reasons: []
@@ -293,7 +294,7 @@ Invalidation rules:
 | plan-53 L1 CI report hash | rerun package audit before thesis-freeze promotion |
 | plan-54 inventory or drill hash | mark archive-facing package status stale until DOI evidence is reconciled |
 | review-artifact hash bundle | mark package stale until package, CI, note, and glossary hashes are reconciled |
-| plan-55 annex row | compare note-facing caveat text with package caveat text |
+| plan-55 annex row or split fixture row | compare note-facing caveat text with package caveat text |
 | plan-56 term sign-off | recheck every overlay that uses the changed term |
 
 `overall_status: ready` is allowed only when `l1_staleness.status` is
