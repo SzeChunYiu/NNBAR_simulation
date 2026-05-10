@@ -50,6 +50,21 @@ Leaf P.7: raw π⁰ candidates → fitted four-vectors and fit quality
   are closure labels only; they must not seed, constrain, or choose a
   production fit.
 
+### 1.1 Covariance contract
+
+The fitter may run only when each photon carries a finite energy
+uncertainty and a finite angular/direction uncertainty from plans 33
+and 40. The first implementation may use a diagonal covariance
+(`σ_E`, `σ_θ`, `σ_φ`) per photon; off-diagonal terms are added only
+after plan 40 validates them. If either photon lacks a covariance,
+emit `fit_converged = false`, `fit_failure_reason =
+"missing_covariance"`, and preserve the raw candidate for plan 36 /
+37 consumers rather than silently substituting truth resolution.
+
+Fit outputs record the covariance version, resolution-model tag, and
+whether the vertex constraint was active so plan 38 can compare raw,
+mass-only, vertex-only, and combined fits on the same candidates.
+
 ## 2. Mass-constrained π⁰ fit
 
 For each pair from plan 34 satisfying basic cuts:
