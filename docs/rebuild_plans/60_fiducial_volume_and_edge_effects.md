@@ -261,6 +261,15 @@ a fiducial producer. Until that producer has a help-verified surface,
 this plan's runnable work stops at table production, validation, and
 schema/manifest assertions.
 
+The current support surface covers only the plan-30 foil subset:
+`apply_foil_acceptance` (`vertex_reco.py:157-194`) and
+`FoilGeometry` (`vertex_reco.py:13-18`) are tested by
+`test_aggregate_and_accept_vertices_use_plan_16_geometry_only`
+(`tests/test_vertex_reco.py:77-100`). That coverage is necessary for
+the V.5 foil row, but it is not sufficient for detector-wide fiducial
+production across TPC containment, scintillator coverage, lead-glass
+coverage, and profile/budget export.
+
 L3/software handoff requirements:
 
 1. The fiducial producer reads `vertices.csv`, `charged.csv`,
@@ -298,7 +307,8 @@ L3/software handoff requirements:
   every signal-efficiency artifact.
 - §10 software handoff is complete: fiducial production, edge reports,
   and budget export have explicit inputs, outputs, failure assertions,
-  provenance fields, and a no-invented-CLI rule.
+  provenance fields, the existing foil-only support surface is cited,
+  and a no-invented-CLI rule is in force.
 
 ## 12. Dependencies
 
