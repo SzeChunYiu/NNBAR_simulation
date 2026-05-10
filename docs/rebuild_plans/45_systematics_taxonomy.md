@@ -320,6 +320,19 @@ Any significance bundle lacking these handoff ids is incomplete because
 it cannot prove which nuisance set, correlations, and unbounded caveats
 were applied to the quoted result.
 
+Initial production-promotion checklist:
+
+| `promotion_check_id` | Evidence required | Blocks promotion when missing |
+|---|---|---|
+| `p45_registry_complete` | nuisance rows N1-N10 with variation kind, ±1σ definition, and affected observables | quoted results cannot prove systematic coverage |
+| `p45_throw_pairs_measured` | nominal-linked plus/minus or envelope throws with hashes | result deltas cannot be attributed to a nuisance |
+| `p45_correlations_accounted` | correlation-pair rows for every consumed nuisance pair | covariance would silently assume missing correlations |
+| `p45_unbounded_caveats_carried` | non-bounded limitations copied into ledger and defence caveats | caveat-only effects could become zero-width nuisances |
+
+A plan-46 input bundle may mark systematics complete only when these
+checks are traceable. Draft throws or M0 correlations without flags keep
+the result provisional.
+
 ## 4. Acceptance criteria
 
 - §1 registry complete; ≥ 10 nuisances.
