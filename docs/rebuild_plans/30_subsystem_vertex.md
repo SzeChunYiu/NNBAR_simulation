@@ -256,7 +256,27 @@ These invariants keep the vertex fixture chain independent from closure
 truth and from the legacy `reconstruct_event_vertices`
 (`nnbar_reconstruction/vertex.py:163-254`) reproduction hook.
 
-### 7.3 Stage E.1 verification command
+### 7.3 Stage E.1 producer/consumer contract
+
+The L3 V.3/V.4/V.5 patch must preserve a deterministic table boundary
+so plans 40, 43, 47, 60, and 66 can consume vertex rows without
+reopening raw tracks or truth-origin labels:
+
+| Contract item | Required behavior | Downstream check |
+|---|---|---|
+| V.3 input key | consume V.2 rows keyed by `(event_id, candidate_id, fit_id)` plus plan-16/60 foil geometry version | projection rows can be traced to the exact fit and geometry state used at the foil plane |
+| V.3 output key | emit projection rows keyed by `(event_id, candidate_id, projection_id)` | plan 40 can count projected tracks and reject missing projections without inspecting raw hits |
+| V.4 aggregation key | aggregate projections by `(event_id, aggregation_method, geometry_sidecar_hash)` | plan 43 and plan 47 can compare event-level vertices across algorithms without mixing geometry versions |
+| V.5 foil key | emit foil-acceptance rows keyed by `(event_id, vertex_id, foil_geometry_version)` | plan 60 fiducial studies can join edge distances and acceptance reasons without recomputing the gate |
+| source hashes | record V.2, V.3, V.4, V.5, and geometry side-car hashes separately | the ledger can prove that vertex, efficiency, and fiducial artifacts share the same upstream rows |
+| failure taxonomy | expose projection, aggregation, and acceptance failure reasons as separate fields | plan 66 DQM reports stage-specific failure fractions instead of inferring causes from null coordinates |
+
+This contract keeps `project_tracks_to_foil`, `aggregate_event_vertices`,
+and `apply_foil_acceptance` (`nnbar_reconstruction/vertex_reco.py:45-194`)
+as the Stage E.1 fixture chain until L3 replaces an implementation
+behind the same keys.
+
+### 7.4 Stage E.1 verification command
 
 L3's V.3/V.4/V.5 patch is promotable only when the vertex-reco slice
 exercises projection rows, geometry-only foil acceptance, and the
@@ -276,7 +296,7 @@ geometry side-car inputs. If the real-output selector skips, the split
 fixture remains a synthetic-only bridge and cannot feed plan 43 or plan
 60 promotion.
 
-### 7.4 Stage E.1 artifact manifest schema
+### 7.5 Stage E.1 artifact manifest schema
 
 The V.3/V.4/V.5 producer chain must write a manifest that freezes
 projection, aggregation, and foil-acceptance provenance before plan 43,
@@ -311,8 +331,8 @@ using foil compatibility or vertex residual rows.
 - §6 closure passes.
 - §7 Stage E.1 handoff is actionable for L3: the legacy reproduction
   hook, split V.3/V.4/V.5 fixture hooks, promotion invariants,
-  verification command, artifact manifest schema, and vertex-reco
-  regression tests are cited; the fixtures remain split
+  producer/consumer contract, verification command, artifact manifest
+  schema, and vertex-reco regression tests are cited; the fixtures remain split
   from closure artifacts; and vertex-reco tests must prove the foil
   gate is invariant to dropping Class B truth columns.
 
