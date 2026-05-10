@@ -213,6 +213,15 @@ appears as a Class C constant uncertainty (plan 04 §6) it does not
 also appear as a nuisance parameter; if it appears as a nuisance, the
 Class C value is the nominal.
 
+Initial single-source conflict examples:
+
+| `conflict_case_id` | Duplicate source pattern | Required resolution | Review guard |
+|---|---|---|---|
+| `scint_yield_classc_vs_N2` | scintillator yield varied as both a Class C constant and nuisance `N2` | keep nominal in Class C and move uncertainty to `N2` throws | plan-47 result cites one uncertainty source only |
+| `leadglass_calib_N3_vs_N9` | lead-glass calibration and optical-yield residual both change photon energy | separate response-slope covariance (`N3`) from optical residual (`N9`) | covariance row must not count the same residual twice |
+| `geometry_alignment_N8_vs_material_N10` | geometry displacement changes material path length and alignment observables | keep alignment in `N8`; put radiation-length/material envelope in `N10` | paired-run metadata states which payload was changed |
+| `beam_flux_N7_vs_rate_source` | beam-neutron per-pulse yield appears in both plan-44 rate source and nuisance `N7` | rate-source DEC defines nominal yield; `N7` varies only around it | plan-46 bundle includes nominal rate plus nuisance throw, not two normalisations |
+
 ### 3.1 Limitation coverage map
 
 Plan 01 §6 limitations are not all numeric nuisances yet. The ledger
