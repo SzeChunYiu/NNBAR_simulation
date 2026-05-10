@@ -314,115 +314,17 @@ the same caveat text and the plan-50 overlay roll-up is not marked
 ```yaml
 l1_glossary_signoff:
   freeze_id: <thesis-freeze-id>
+  selection_defence_refs: &selection_defence_refs [selection_cutflow_identity]
+  selection_note_refs: &selection_note_refs [event_variable_and_cutflow_identity]
+  l1_defence_refs: &l1_defence_refs [em_cluster_truth_blindness, pi0_cut_decomposition, selection_cutflow_identity, pileup_l11_status, strange_v0_contamination, tof_timing_resolution, bayesian_prior_sensitivity, unbounded_caveat_status]
+  l1_note_refs: &l1_note_refs [em_object_chain, event_variable_and_cutflow_identity, pile_up_caveat, strange_background_caveat, timing_tof_cross_check, limit_convention_cross_check, unbounded_caveat_status]
   rows:
-    - term: pass_* columns
-      defence_package_refs:
-        - selection_cutflow_identity
-      note_refs:
-        - event_variable_and_cutflow_identity
-      audit_row_ref: l1_glossary_audit:pass_* columns
-      thesis_status: same | translated | flagged_delta
-      approved_by: <L1-owner-or-null>
-      caveat_text: <required when thesis_status is flagged_delta>
-    - term: command-template verifier hash
-      defence_package_refs:
-        - em_cluster_truth_blindness
-        - selection_cutflow_identity
-      note_refs:
-        - em_object_chain
-        - event_variable_and_cutflow_identity
-      audit_row_ref: l1_glossary_audit:command-template verifier hash
-      thesis_status: same | translated | flagged_delta
-      approved_by: <L1-owner-or-null>
-      caveat_text: <required when thesis_status is flagged_delta>
-    - term: review-evidence links
-      defence_package_refs:
-        - em_cluster_truth_blindness
-        - pi0_cut_decomposition
-        - selection_cutflow_identity
-        - pileup_l11_status
-        - strange_v0_contamination
-        - tof_timing_resolution
-        - bayesian_prior_sensitivity
-        - unbounded_caveat_status
-      note_refs:
-        - em_object_chain
-        - event_variable_and_cutflow_identity
-        - pile_up_caveat
-        - strange_background_caveat
-        - timing_tof_cross_check
-        - limit_convention_cross_check
-        - unbounded_caveat_status
-      audit_row_ref: l1_glossary_audit:review-evidence links
-      thesis_status: same | translated | flagged_delta
-      approved_by: <L1-owner-or-null>
-      caveat_text: <required when thesis_status is flagged_delta>
-    - term: review-artifact hashes
-      defence_package_refs:
-        - em_cluster_truth_blindness
-        - pi0_cut_decomposition
-        - selection_cutflow_identity
-        - pileup_l11_status
-        - strange_v0_contamination
-        - tof_timing_resolution
-        - bayesian_prior_sensitivity
-        - unbounded_caveat_status
-      note_refs:
-        - em_object_chain
-        - event_variable_and_cutflow_identity
-        - pile_up_caveat
-        - strange_background_caveat
-        - timing_tof_cross_check
-        - limit_convention_cross_check
-        - unbounded_caveat_status
-      audit_row_ref: l1_glossary_audit:review-artifact hashes
-      thesis_status: same | translated | flagged_delta
-      approved_by: <L1-owner-or-null>
-      caveat_text: <required when thesis_status is flagged_delta>
-    - term: owner sign-off
-      defence_package_refs:
-        - em_cluster_truth_blindness
-        - pi0_cut_decomposition
-        - selection_cutflow_identity
-        - pileup_l11_status
-        - strange_v0_contamination
-        - tof_timing_resolution
-        - bayesian_prior_sensitivity
-        - unbounded_caveat_status
-      note_refs:
-        - em_object_chain
-        - event_variable_and_cutflow_identity
-        - pile_up_caveat
-        - strange_background_caveat
-        - timing_tof_cross_check
-        - limit_convention_cross_check
-        - unbounded_caveat_status
-      audit_row_ref: l1_glossary_audit:owner sign-off
-      thesis_status: same | translated | flagged_delta
-      approved_by: <L1-owner-or-null>
-      caveat_text: <required when thesis_status is flagged_delta>
-    - term: package freshness
-      defence_package_refs:
-        - em_cluster_truth_blindness
-        - pi0_cut_decomposition
-        - selection_cutflow_identity
-        - pileup_l11_status
-        - strange_v0_contamination
-        - tof_timing_resolution
-        - bayesian_prior_sensitivity
-        - unbounded_caveat_status
-      note_refs:
-        - em_object_chain
-        - event_variable_and_cutflow_identity
-        - pile_up_caveat
-        - strange_background_caveat
-        - timing_tof_cross_check
-        - limit_convention_cross_check
-        - unbounded_caveat_status
-      audit_row_ref: l1_glossary_audit:package freshness
-      thesis_status: same | translated | flagged_delta
-      approved_by: <L1-owner-or-null>
-      caveat_text: <required when thesis_status is flagged_delta>
+    - {term: pass_* columns, defence_package_refs: *selection_defence_refs, note_refs: *selection_note_refs, audit_row_ref: "l1_glossary_audit:pass_* columns", thesis_status: same | translated | flagged_delta, approved_by: <L1-owner-or-null>, caveat_text: <required when thesis_status is flagged_delta>}
+    - {term: command-template verifier hash, defence_package_refs: [em_cluster_truth_blindness, selection_cutflow_identity], note_refs: [em_object_chain, event_variable_and_cutflow_identity], audit_row_ref: l1_glossary_audit:command-template verifier hash, thesis_status: same | translated | flagged_delta, approved_by: <L1-owner-or-null>, caveat_text: <required when thesis_status is flagged_delta>}
+    - {term: review-evidence links, defence_package_refs: *l1_defence_refs, note_refs: *l1_note_refs, audit_row_ref: l1_glossary_audit:review-evidence links, thesis_status: same | translated | flagged_delta, approved_by: <L1-owner-or-null>, caveat_text: <required when thesis_status is flagged_delta>}
+    - {term: review-artifact hashes, defence_package_refs: *l1_defence_refs, note_refs: *l1_note_refs, audit_row_ref: l1_glossary_audit:review-artifact hashes, thesis_status: same | translated | flagged_delta, approved_by: <L1-owner-or-null>, caveat_text: <required when thesis_status is flagged_delta>}
+    - {term: owner sign-off, defence_package_refs: *l1_defence_refs, note_refs: *l1_note_refs, audit_row_ref: l1_glossary_audit:owner sign-off, thesis_status: same | translated | flagged_delta, approved_by: <L1-owner-or-null>, caveat_text: <required when thesis_status is flagged_delta>}
+    - {term: package freshness, defence_package_refs: *l1_defence_refs, note_refs: *l1_note_refs, audit_row_ref: l1_glossary_audit:package freshness, thesis_status: same | translated | flagged_delta, approved_by: <L1-owner-or-null>, caveat_text: <required when thesis_status is flagged_delta>}
 ```
 
 ## 4. Acceptance criteria
