@@ -110,6 +110,7 @@ audit when a seed becomes attached to a concrete ledger result.
   resolved_on: null
   l1_overlay_id: selection_cutflow_identity
   required_artifact_status: missing | blocked | present
+  rerun_command_template_id: validate_reco_cutflow_v1 | null
 ```
 
 Review rules:
@@ -120,6 +121,7 @@ Review rules:
 | `routes_to_gate` includes the owning plan and plan 50 | question answered in prose but absent from defence package |
 | `affects_results` is empty only for unattached seed rows | concrete ledger result avoids package regeneration |
 | `required_artifact_status = present` requires `answer.artifact` | stale answered status without evidence |
+| refreshed-artifact rows name a command template id | reviewer answer cannot replay the verified command contract |
 | rejected questions require a Methodology Council rationale | hard questions are not silently closed |
 
 When a result first cites one of these questions, `affects_results` and
@@ -137,7 +139,7 @@ thesis-facing result.
 | From | To | Required evidence | Forbidden shortcut |
 |---|---|---|---|
 | `open` | `blocked` | missing input named in plan 52 or plan 50 | closing because the artifact is not yet producible |
-| `open` | `answered` | artifact id, ledger row, defence overlay id, rerun manifest/transcript ids when refreshed, and owner sign-off | answering with a plan paragraph only |
+| `open` | `answered` | artifact id, ledger row, defence overlay id, rerun manifest/transcript/template ids when refreshed, and owner sign-off | answering with a plan paragraph only |
 | `blocked` | `open` | upstream input now exists or owner has a rerun date | leaving stale blocker text in the package |
 | `answered` | `open` | new reviewer challenge or changed input hash | editing the answer without reopening review |
 | `answered` | `clarified` | wording-only update with unchanged artifact hash | hiding a numerical change as prose |
@@ -151,12 +153,13 @@ Status-transition review rules:
 | `blocked` rows name the missing upstream owner | row becomes an indefinite deferral |
 | changed input hashes reopen affected questions | stale answers survive reruns |
 | refreshed-artifact answers name the rerun transcript id | registry says answered before execution evidence exists |
+| command-template changes reopen refreshed-artifact answers | answered row keeps old command semantics after plan-52 drift |
 | clarified rows preserve artifact hashes | numerical result changes bypass review |
 
 These rules keep the registry append-only in spirit even when the living
 registry file is rendered as current-state YAML. A reviewer question that
 requires regenerated EM/selection evidence remains `open` or `blocked` until
-both the plan-52 manifest and execution transcript are linked.
+the plan-52 manifest, execution transcript, and command-template id are linked.
 
 ## 3. Update protocol
 
