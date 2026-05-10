@@ -188,6 +188,26 @@ l1_defence_rerun_manifest:
         note_annex: <plan55-annex-id-or-null>
         glossary_audit: <plan56-audit-id>
       blocker: paired pile-up closure artifact is not attached to a concrete result yet
+    - bundle_member: Strange V0 contamination
+      status: blocked
+      owner_signoff_ref: RQ-L1-STRANGE-BARYON:<owner-hash-or-null>
+      required_inputs:
+        - dataset_id: beam_neutron_hibeam_secondaries_v1:lambda_enriched
+          source_hash: null
+      refreshes:
+        - artifact_id: plan59_lambda_enriched_v0_closure
+          output_hash: null
+      defence_overlay_ids:
+        - strange_v0_contamination
+      review_evidence_links:
+        package_rollup: <plan50-rollup-id>
+        staleness_summary: <plan50-staleness-id>
+        ci_report: <plan53-l1-report-id>
+        archive_inventory: <plan54-inventory-id-or-null>
+        archive_drill: <plan54-drill-id-or-null>
+        note_annex: <plan55-annex-id-or-null>
+        glossary_audit: <plan56-audit-id>
+      blocker: Lambda-enriched strange-background closure artifact is not attached to a concrete result yet
     - bundle_member: Unbounded caveat status
       status: blocked
       owner_signoff_ref: RQ-L1-UNBOUNDED-CAVEATS:<owner-hash-or-null>
