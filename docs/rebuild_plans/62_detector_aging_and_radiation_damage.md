@@ -163,7 +163,7 @@ plan 01's upgrade criteria.
 ## 3. Aging constants and citation status
 
 The A+ rule is: a numeric damage constant must have a resolving source
-or remain an `OPEN:` item with a target date. Material identity citations are not automatically
+or remain a dated open item with an explicit target date. Material identity citations are not automatically
 damage constants.
 
 | Constant | Initial value | Citation status | Use |
