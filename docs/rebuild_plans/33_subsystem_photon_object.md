@@ -287,6 +287,15 @@ The inventory defines the minimum closure keys. It is not method
 approval until measured metrics, fragment rates, and the Class-B drop
 hash are attached for the selected photon method.
 
+Initial photon-closure failure examples:
+
+| `closure_case_id` | Failing pattern | Required status | Review guard |
+|---|---|---|---|
+| `missing_origin_fallback_rows` | reconstructed-vertex rows exist but origin-fallback category is absent | `fail` | direction DEC cannot hide sparse-vertex behaviour |
+| `energy_bias_high_bin` | 1000 MeV row has `|energy_bias| >= 1%` | `fail` | linearity claim must remain per-bin, not averaged over bins |
+| `fragment_overmerge_budget` | fragment duplicate rate improves but over-merge rate exceeds §6 | `fail` | merge thresholds cannot trade away π⁰ daughter separation silently |
+| `legacy_energy_alias_diag` | legacy `total_energy` alias matches response but lacks calibrated P.1 membership | `diagnostic_only` | cannot support `DEC-33-ENERGY-METHOD` for production |
+
 ### 6.2 Decision-log stubs for photon-object choices
 
 P.3/P.4 choices feed π⁰ mass, visible mass, and event selection, so
