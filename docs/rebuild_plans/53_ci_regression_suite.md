@@ -122,8 +122,12 @@ l1_defence_ci_report:
       status: pass | fail | warn
       files_checked:
         - docs/rebuild_plans/58_pileup_at_ess_intensity.md
+        - docs/rebuild_plans/59_strange_baryon_contamination.md
+        - docs/rebuild_plans/61_time_of_flight_discrimination.md
+        - docs/rebuild_plans/64_bayesian_limit_cross_check.md
       evidence:
-        line_count: 284
+        line_counts: {58: 284, 59: 290, 61: 272, 64: 249}
+        allowed_line_range: [200, 300]
         stale_citation_matches: 0
         owner_signoff_refs_present: true
         review_evidence_link_keys: [overlay_rollup, owner_signoff_refs, rerun_manifest, rerun_transcript, command_template_ids, command_template_verifier_hashes, staleness_summary, ci_report, archive_inventory, archive_drill, note_annex, glossary_audit]
