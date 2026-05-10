@@ -162,6 +162,24 @@ Leaf P.6: π0 pair candidates → accidental-compatibility veto
   allowed truth use: validation_only
   downstream consumers: P.7, E.9, S.2; plans 34, 35, 36, 37
 
+Leaf P.7: π0 candidates → kinematic-fit corrected candidates
+  inputs (Class A): P.5/P.6 surviving pair candidates, P.3 direction
+                    covariance, P.4 energy uncertainty, V.4 vertex
+                    covariance, and calibration covariance from plan 18
+  forbidden (Class B): truth photon/pi0 four-vectors, source_track_ids,
+                       Track_ID, Parent_ID, Name, Interaction ancestry
+  decision rule: run a constrained fit using reconstructed photon
+                 four-vectors and uncertainties, recording χ² and fit
+                 probability; truth four-vectors are validation targets
+                 only and never seed or constrain the fit.
+  output schema: {event_id: int64, pi0_candidate_id: int64,
+                  fit_mass_mev: float64, fit_chi2: float64,
+                  fit_ndf: int32, fit_probability: float64,
+                  corrected_photon_energies_mev: float64[],
+                  corrected_pi0_p4: float64[4], fit_valid: bool}
+  allowed truth use: validation_only
+  downstream consumers: E.7, E.9, S.2; plans 35, 36, 37
+
 ### Next measurement (photon / π⁰ branch)
 
 Truth-free clustering closure study on `cal_singlegamma_v1` (plan 23)
