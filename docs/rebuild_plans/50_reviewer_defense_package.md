@@ -68,10 +68,14 @@ defence:
     closure_chi2_dof: 1.1
   l1_review_evidence:
     overlay_rollup: <path or package key>
+    owner_signoff_refs: [RQ-L1-SELECTION-CUTFLOW:<owner-hash>]
     rerun_manifest: <path-or-null>
     rerun_transcript: <path-or-null>
     command_template_ids: [validate_reco_cutflow_v1]
     command_template_verifier_hashes: [sha256:<hash>]
+    ci_report: <path-or-null>
+    note_annex: <path-or-null>
+    glossary_audit: <path-or-null>
     staleness_status: current | stale | blocked
 ```
 
@@ -259,8 +263,9 @@ The generator joins ledger rows × dataset manifests × ladder matrices
   command-template registry, and verifier links when refreshed artifacts
   are claimed.
 - Ready L1 packages carry a current §2.4 staleness summary.
-- The package schema exposes `l1_review_evidence` links for overlays,
-  rerun artifacts, command templates, verifier hashes, and staleness status.
+- The package schema exposes `l1_review_evidence` links for overlays, owner
+  sign-off, rerun artifacts, command templates, verifier hashes, CI reports,
+  note annexes, glossary audits, and staleness status.
 - §3 generation automated.
 
 ## 5. Dependencies
