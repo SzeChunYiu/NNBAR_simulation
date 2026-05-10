@@ -305,6 +305,23 @@ Initial variable-source examples:
 Until approval, new E.6 variables and fit-aware E.7 are recorded for
 ladder studies but do not replace the Ch 10 reproduction inputs.
 
+### 5.3 Initial downstream-handoff examples
+
+Plan 36 handoffs must identify which variables are reproduction inputs,
+which are diagnostics, and which validity flags guard selection:
+
+| `handoff_case_id` | Downstream consumer | Required payload | Required guard |
+|---|---|---|---|
+| `ch10_event_vars_to_p37` | plan 37 selection | E.1-E.5 and E.7-E.9 baseline columns plus method and hemisphere ids | only baseline source ids may drive the Ch 10 cut-flow reproduction |
+| `shape_diag_to_ladder` | plan 38/41 ladder studies | Fox-Wolfram moments, thrust, `event_shape_valid`, and sparse reason | diagnostic until event-shape DEC and N-1/ROC evidence are attached |
+| `timing_energy_to_backgrounds` | plan 37 selection and plan 44 background taxonomy | timing-window and out-of-time energy sums by detector component | must reference a timing-annotation method and Class-B drop hash |
+| `fit_aware_mass_shadow` | plan 35/37 comparison studies | raw visible mass, fit-aware visible mass, and fit source status side by side | raw E.7 remains the production field until visible-mass-source DEC approval |
+
+Consumers that flatten these modes into one unlabelled variable set are
+blocked. The event-variable fixture is the boundary surface; downstream
+plans should join by `event_id` and method ids rather than recomputing
+variables from upstream objects with hidden conventions.
+
 ## 6. Acceptance criteria
 
 - §2 table complete; every variable produced.
