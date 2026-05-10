@@ -77,10 +77,10 @@ code-level usage; deltas are flagged.
 | **defence overlay** | Extra plan-50 package block that must be present when a result depends on L1 EM, selection, timing, pile-up, strange-background, or Bayesian-limit evidence. |
 | **unbounded caveat status** | Plan-50 overlay state for EM/selection assumptions that cannot yet be assigned a numeric nuisance; it keeps the limitation visible until plan 45 or the owning study supplies a bound. |
 | **overlay roll-up** | Plan-50 compact status block summarising all L1 defence overlays, blockers, required review links, and current/stale package state for one quoted result. |
-| **review-evidence links** | Plan-50 and plan-51 machine-readable pointers from an L1 answer to the overlay roll-up, CI, note-annex, glossary-audit, rerun, archive, and staleness artifacts. |
-| **review-artifact hashes** | Stable digests carried by plans 50, 51, 52, 53, 54, and 55 for package, CI report, note-annex, glossary-audit, rerun, and staleness artifacts that support an L1 defence answer. |
+| **review-evidence links** | Plan-50 and plan-51 machine-readable pointers from an L1 answer to the overlay roll-up, defence-routing crosswalk, owner sign-off, CI, note-annex, glossary-audit, rerun, archive, and staleness artifacts. |
+| **review-artifact hashes** | Stable digests carried by plans 50, 51, 52, 53, 54, and 55 for package, defence-routing crosswalk, CI report, note-annex, glossary-audit, rerun, archive, and staleness artifacts that support an L1 defence answer. |
 | **L1 archive pack member** | Stable plan-54 evidence-class id in the thesis-freeze archive inventory; plan 53 checks that every EM/selection defence class remains represented before freeze. |
-| **defence routing** | Stable L1 crosswalk tying reviewer-question ids, overlay ids, rerun bundle members, archive pack members, note annex rows, and glossary audit rows; plans 52 and 54 store it as `defence_routing`. |
+| **defence routing** | Stable L1 crosswalk tying reviewer-question ids, overlay ids, rerun bundle members, archive pack members, note annex rows, and glossary audit rows; plan 50 defines the crosswalk and plans 52, 54, and 55 store its route evidence as `defence_routing`. |
 | **owner sign-off** | Plan-51 accountable approval recorded before an L1 reviewer-question answer can stop blocking a thesis-facing result. |
 | **rerun transcript** | Plan-52 execution record proving which reviewer-triggered rerun rows actually ran, with input hashes, output hashes, environment identity, and pass/fail/block status. |
 | **command-template id** | Stable plan-52 identifier for the verified rerun command contract used by a transcript row; it records replay semantics without depending on prose. |
