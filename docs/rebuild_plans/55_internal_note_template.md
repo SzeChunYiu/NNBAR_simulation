@@ -144,6 +144,7 @@ l1_note_annex:
       review_evidence_links:
         package_rollup: <plan50-rollup-id>
         ci_report: <plan53-l1-report-id>
+        rerun_manifest: plan52:Ch 10 selection cut-flow
         command_template_verifier: plan52:validate_reco_cutflow_v1
         glossary_audit: <plan56-audit-id>
         staleness_summary: <plan50-staleness-id>
@@ -154,6 +155,7 @@ l1_note_annex:
         defence_package: sha256:<hash>
         staleness_summary: sha256:<hash>
         ci_report: sha256:<hash>
+        rerun_manifest: sha256:<hash-or-null>
         command_template_verifier: sha256:b3cee4613afed558d4704df3dc5b281271aed768965d79a09603f812496806f0
         glossary_audit: sha256:<hash>
         archive_inventory: sha256:<hash-or-null>
@@ -295,6 +297,7 @@ l1_note_annex:
       review_evidence_links:
         package_rollup: <plan50-rollup-id>
         ci_report: <plan53-l1-report-id>
+        rerun_manifest: plan52:Unbounded caveat status
         glossary_audit: <plan56-audit-id>
         staleness_summary: <plan50-staleness-id>
         archive_inventory: <plan54-inventory-id-or-null>
@@ -304,6 +307,7 @@ l1_note_annex:
         defence_package: sha256:<hash-or-null>
         staleness_summary: sha256:<hash-or-null>
         ci_report: sha256:<hash-or-null>
+        rerun_manifest: sha256:<hash-or-null>
         glossary_audit: sha256:<hash-or-null>
         archive_inventory: sha256:<hash-or-null>
         archive_drill: sha256:<hash-or-null>
