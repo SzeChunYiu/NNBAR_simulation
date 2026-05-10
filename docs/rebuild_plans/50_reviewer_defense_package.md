@@ -4,7 +4,7 @@ title: Reviewer defence package — canonical answer set per result
 version: 0.1
 status: draft
 owner: Reproducibility WG
-depends_on: [00_README, 01_realism_contract, 03_dataset_registry, 38_truth_substitution_ladder, 45_systematics_taxonomy, 46_significance_protocol, 47_reproduction_ledger, 51_reviewer_question_registry, 52_run_orchestration, 53_ci_regression_suite, 54_open_data_archival, 55_internal_note_template, 56_glossary]
+depends_on: [00_README, 01_realism_contract, 03_dataset_registry, 38_truth_substitution_ladder, 45_systematics_taxonomy, 46_significance_protocol, 47_reproduction_ledger, 51_reviewer_question_registry, 52_run_orchestration, 53_ci_regression_suite, 54_open_data_archival, 55_internal_note_template, 55_internal_note_template_l1_annex_fixture, 56_glossary]
 outputs:
   - {path: docs/rebuild_plans/50_reviewer_defense_package.md, schema: this file}
   - {path: output/defense/<row_id>.yml, schema: per-result defence package}

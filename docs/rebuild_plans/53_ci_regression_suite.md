@@ -4,7 +4,7 @@ title: CI regression suite — automated tests on every change
 version: 0.1
 status: draft
 owner: Software Quality
-depends_on: [00_README, 01_realism_contract, 03_dataset_registry, 19_simulation_validation_suite, 47_reproduction_ledger, 50_reviewer_defense_package, 51_reviewer_question_registry, 52_run_orchestration, 54_open_data_archival, 55_internal_note_template, 56_glossary]
+depends_on: [00_README, 01_realism_contract, 03_dataset_registry, 19_simulation_validation_suite, 47_reproduction_ledger, 50_reviewer_defense_package, 51_reviewer_question_registry, 52_run_orchestration, 54_open_data_archival, 55_internal_note_template, 55_internal_note_template_l1_annex_fixture, 56_glossary]
 outputs:
   - {path: docs/rebuild_plans/53_ci_regression_suite.md, schema: this file}
   - {path: .github/workflows/ or .gitlab-ci.yml, schema: pipeline definition}
