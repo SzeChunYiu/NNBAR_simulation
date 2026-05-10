@@ -186,6 +186,41 @@ The roll-up lets the package stay fail-closed: a missing artifact becomes
 what should be refreshed; the rerun transcript records what actually ran,
 and both must agree before `overall_status: ready` is allowed.
 
+
+### 2.4 L1 package staleness invalidation
+
+A defence package can become stale even when all required links still
+exist. L1 packages therefore carry an invalidation summary generated from
+hashes and plan revisions before any `ready` roll-up is accepted.
+
+```yaml
+l1_staleness:
+  package_revision: <rev>
+  checked_against:
+    plan50_overlay_schema: <hash>
+    plan51_question_registry: <hash>
+    plan52_rerun_manifest: <hash>
+    plan52_rerun_transcript: <hash>
+    plan55_note_annex: <hash>
+    plan56_glossary_audit: <hash>
+  status: current | stale | blocked
+  stale_reasons: []
+```
+
+Invalidation rules:
+
+| Changed input | Required package action |
+|---|---|
+| plan-51 question text, route, or status | regenerate affected overlay roll-up and reopen answered rows if artifact hashes changed |
+| plan-52 manifest or transcript hash | mark refreshed-artifact overlays stale until output hashes are rechecked |
+| plan-53 L1 CI report hash | rerun package audit before thesis-freeze promotion |
+| plan-55 annex row | compare note-facing caveat text with package caveat text |
+| plan-56 term sign-off | recheck every overlay that uses the changed term |
+
+`overall_status: ready` is allowed only when `l1_staleness.status` is
+`current`. A stale package is still archived for provenance, but it cannot
+be used as thesis evidence until regenerated.
+
 ## 3. Generation
 
 A defence package is generated automatically by codex-supervisor
@@ -207,6 +242,7 @@ The generator joins ledger rows × dataset manifests × ladder matrices
   result is promoted to thesis-quote status.
 - Ready L1 packages include both plan-52 rerun manifest and transcript
   links when refreshed artifacts are claimed.
+- Ready L1 packages carry a current §2.4 staleness summary.
 - §3 generation automated.
 
 ## 5. Dependencies
