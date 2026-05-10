@@ -354,6 +354,19 @@ blocked from promoting a π⁰-pairing change. The default production handoff
 is `pi0_candidate_pass_to_p35`; the other rows are shadow or validation
 surfaces until their DEC and closure evidence are attached.
 
+Initial production-promotion checklist:
+
+| `promotion_check_id` | Evidence required | Blocks promotion when missing |
+|---|---|---|
+| `p34_candidate_key_stable` | deterministic candidate id from ordered photon ids, pairing method, and cut config | plan 35 cannot join raw, fitted, and failure rows safely |
+| `p34_per_cut_columns_emitted` | six Ch 8 cut booleans plus strict final AND and failure reasons | plan 37 cannot audit the π⁰ selection contribution |
+| `p34_accidental_rate_bounded` | no-π⁰ and wrong-parent accidental rows with finite intervals | P.6 fake rejection remains unquantified |
+| `p34_truth_drop_stable` | pair list, kinematics, and cut hashes match after truth/provenance drop | evaluator labels may be affecting production pairing |
+
+The Ch 8 all-pairs baseline may feed plan 35 only after these checks
+resolve to measured rows. Retuned pair rankings or timing vetoes stay
+shadow-only until their separate DEC and closure evidence pass.
+
 ## 6. Acceptance criteria
 
 - §2 individual passes_* columns + `passes_selection`.
