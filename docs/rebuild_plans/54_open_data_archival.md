@@ -40,6 +40,26 @@ For each thesis-freeze:
 - *README.* Top-level "how to reproduce" pointing at the container
   and the ledger.
 
+### 1.1 L1 EM/selection defence artifact pack
+
+The thesis-freeze archive must preserve the L1 defence overlays as a
+coherent artifact pack so a reviewer can rerun or inspect the EM and
+selection claims without reconstructing the whole plan tree by hand.
+
+| Pack member | Minimum archived artifact | Why it is retained |
+|---|---|---|
+| EM-object chain | plan-31 through plan-35 closure rows, method ids, and Class-B drop-hash summaries | proves photon/pi0 evidence is truth-blind and replayable |
+| Ch 10 cut-flow | plan-37 independent `pass_*` counts and cumulative cut-flow rows | preserves the exact selection identity used by ledger rows |
+| pile-up L11 | plan-58 overlay manifests, occupancy tables, and L11 status rows | shows whether independent-event assumptions are still caveated |
+| strange V0 | plan-59 branching snapshot, V0 candidate summary, and residual intervals | preserves K_S/Lambda/Sigma contamination evidence |
+| TOF timing | plan-61 TOF candidate summaries, resolution budgets, and ROC rows | preserves timing-separation evidence and caveats |
+| Bayesian limits | plan-64 prior-sensitivity table and plan-46 comparison ratios | preserves low-count prior-sensitivity evidence |
+| defence routing | plan-50 overlays, plan-51 question seeds, plan-55 annex, plan-56 glossary terms | lets a future reader map artifacts to reviewer questions |
+
+If a pack member is blocked at freeze, archive the blocked manifest row,
+the missing input name, and the owning plan instead of dropping the row.
+That rule keeps open caveats visible in the DOI record.
+
 ## 2. Reproducibility container
 
 The container builds from a clean base, fetches pinned dependencies
