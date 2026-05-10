@@ -151,6 +151,27 @@ audit when a seed becomes attached to a concrete ledger result.
   rerun_command_template_id: validate_reco_allruns_v1
   rerun_command_template_verifier_hash: sha256:b3cee4613afed558d4704df3dc5b281271aed768965d79a09603f812496806f0
   rerun_command_template_verifier_source: plan52:validate_reco_allruns_v1
+- id: RQ-L1-PI0-CUTS
+  asked_by: anticipated_examiner
+  asked_on: 2026-05-10
+  question: Are the six pi0 selection cuts decomposed into individual pass columns?
+  category: reproducibility
+  affects_results: []
+  routes_to_gate: [34, 37, 47, 50]
+  status: open
+  answer:
+    summary: null
+    artifact: null
+    owner_signoff: null
+    review_evidence_links: null
+    review_artifact_hashes: null
+  defense_package_updated: []
+  resolved_on: null
+  l1_overlay_id: pi0_cut_decomposition
+  required_artifact_status: missing
+  rerun_command_template_id: validate_reco_cutflow_v1
+  rerun_command_template_verifier_hash: sha256:b3cee4613afed558d4704df3dc5b281271aed768965d79a09603f812496806f0
+  rerun_command_template_verifier_source: plan52:validate_reco_cutflow_v1
 ```
 
 Review rules:
