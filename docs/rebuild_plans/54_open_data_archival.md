@@ -54,7 +54,7 @@ selection claims without reconstructing the whole plan tree by hand.
 | strange V0 | plan-59 branching snapshot, V0 candidate summary, and residual intervals | preserves K_S/Lambda/Sigma contamination evidence |
 | TOF timing | plan-61 TOF candidate summaries, resolution budgets, and ROC rows | preserves timing-separation evidence and caveats |
 | Bayesian limits | plan-64 prior-sensitivity table and plan-46 comparison ratios | preserves low-count prior-sensitivity evidence |
-| defence routing | plan-50 overlays, plan-51 question seeds, plan-52 rerun manifests and transcripts, plan-55 annex, plan-56 glossary terms | lets a future reader map artifacts to reviewer questions |
+| defence routing | plan-50 overlays, plan-51 question seeds, plan-52 rerun manifests, transcripts, and command-template registry, plan-55 annex, plan-56 glossary terms | lets a future reader map artifacts to reviewer questions |
 
 If a pack member is blocked at freeze, archive the blocked manifest row,
 the missing input name, and the owning plan instead of dropping the row.
@@ -65,7 +65,8 @@ That rule keeps open caveats visible in the DOI record.
 The archival package includes an `l1_defence_inventory` manifest so the
 Zenodo record can be audited without opening every defence package. The
 manifest is generated at thesis-freeze from plan 50 packages, plan 52
-rerun manifests and execution transcripts, and plan 55 notes.
+rerun manifests, execution transcripts, command-template registry rows, and
+plan 55 notes.
 
 ```yaml
 l1_defence_inventory:
@@ -80,6 +81,7 @@ l1_defence_inventory:
       status: present | blocked | retired | stale
       caveat: null
       staleness_summary_hash: sha256:<hash-or-null>
+      command_template_ids: [validate_reco_cutflow_v1]
 ```
 
 Inventory review rules:
@@ -88,6 +90,7 @@ Inventory review rules:
 |---|---|
 | every §1.1 pack member appears exactly once | DOI omits a reviewer-critical evidence class |
 | `present` rows have at least one hash | archived artifact cannot be integrity-checked |
+| command-template ids are archived with rerun rows | future rerun cannot know which verified command contract applied |
 | `stale` rows keep package and staleness hashes | future readers cannot tell why archived evidence was not quote-ready |
 | `blocked` rows carry a caveat and owning plan | open limitations disappear at freeze |
 | retired parquet rows keep manifests | retention policy removes replay provenance |
