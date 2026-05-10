@@ -112,6 +112,11 @@ audit when a seed becomes attached to a concrete ledger result.
       ci_report: <plan-53 report key>
       note_annex: <plan-55 annex key-or-null>
       glossary_audit: <plan-56 audit key>
+    review_artifact_hashes:
+      package: sha256:<hash>
+      ci_report: sha256:<hash>
+      note_annex: sha256:<hash-or-null>
+      glossary_audit: sha256:<hash>
   defense_package_updated: []
   resolved_on: null
   l1_overlay_id: selection_cutflow_identity
@@ -130,6 +135,7 @@ Review rules:
 | `required_artifact_status = present` requires `answer.artifact` | stale answered status without evidence |
 | `status = answered` requires `answer.owner_signoff` | question closes without accountable reviewer-facing owner |
 | answered rows expose review evidence links | registry answer cannot be traced into package, CI, note, and glossary artifacts |
+| answered rows expose review artifact hashes | answer links can drift to different package/CI/note/glossary evidence |
 | refreshed-artifact rows name a command template id | reviewer answer cannot replay the verified command contract |
 | command-template verifier hash is recorded | reviewer answer trusts a command template without A+ verifier evidence |
 | rejected questions require a Methodology Council rationale | hard questions are not silently closed |
@@ -149,7 +155,7 @@ thesis-facing result.
 | From | To | Required evidence | Forbidden shortcut |
 |---|---|---|---|
 | `open` | `blocked` | missing input named in plan 52 or plan 50 | closing because the artifact is not yet producible |
-| `open` | `answered` | artifact id, ledger row, defence overlay id, rerun manifest/transcript/template ids plus verifier hash when refreshed, and owner sign-off | answering with a plan paragraph only |
+| `open` | `answered` | artifact id, ledger row, defence overlay id, rerun manifest/transcript/template ids plus verifier hash when refreshed, owner sign-off, review-evidence links, and review-artifact hashes | answering with a plan paragraph only |
 | `blocked` | `open` | upstream input now exists or owner has a rerun date | leaving stale blocker text in the package |
 | `answered` | `open` | new reviewer challenge or changed input hash | editing the answer without reopening review |
 | `answered` | `clarified` | wording-only update with unchanged artifact hash | hiding a numerical change as prose |
@@ -162,6 +168,7 @@ Status-transition review rules:
 | `answered` rows name the plan-50 overlay id | answer cannot be found in the defence package |
 | `blocked` rows name the missing upstream owner | row becomes an indefinite deferral |
 | changed input hashes reopen affected questions | stale answers survive reruns |
+| changed review-artifact hashes reopen affected questions | answer keeps pointing at superseded package, CI, note, or glossary evidence |
 | refreshed-artifact answers name the rerun transcript id | registry says answered before execution evidence exists |
 | command-template changes reopen refreshed-artifact answers | answered row keeps old command semantics after plan-52 drift |
 | verifier-hash changes reopen refreshed-artifact answers | answered row keeps stale CLI verifier proof |
