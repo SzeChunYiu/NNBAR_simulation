@@ -8,7 +8,7 @@ depends_on: [00_README, 18_intercalibration, 23_sample_calibration_aux, 24_recon
 outputs:
   - {path: docs/rebuild_plans/28_subsystem_range_and_stopping.md, schema: this file}
 acceptance:
-  - {test: scintillator range estimate vs truth path-length residual < 1 cm, method: per-sample closure, pass_when: pass}
+  - {test: scintillator range estimate on cal_singleproton_50to500MeV_v2 vs validation path-length residual < 1 cm, method: per-sample closure, pass_when: pass}
   - {test: Bragg-peak position resolved within scintillator bar pitch on stopping protons, method: §3 closure, pass_when: pass}
 risks:
   - {risk: scintillator hit pitch limits range resolution, mitigation: §3 documented hardware floor}
@@ -57,14 +57,19 @@ cumulative eDep as a function of distance along the track.
 Currently not used in PID. Plan 28 v0.2 evaluates whether
 Bragg-peak position adds discrimination beyond {range, dE/dx}.
 
-## 3. Closure
+## 3. Closure-test specification
 
-On `cal_singleproton_v1` (plan 23):
-
-- Mean range vs initial KE matches PSTAR proton ranges to within
-  1 cm (or 1 scintillator bar pitch — whichever is larger).
-- Bragg-peak position resolved to within bar pitch on stopping
-  protons.
+1. **Dataset id:** `cal_singleproton_50to500MeV_v2` from plan 03,
+   with stopping-proton slices identified only inside validation.
+2. **Observable:** reconstructed `range_cm`, `range_edep_mev`, and
+   `bragg_peak_position_cm` versus validation path length and initial
+   kinetic-energy bins.
+3. **Fitter / model:** compare mean range to PSTAR proton ranges and
+   fit the cumulative eDep profile to locate the Bragg inflection;
+   truth path length is a validation target, not an estimator input.
+4. **Pass criterion:** mean range agrees within 1 cm or one
+   scintillator bar pitch, whichever is larger; Bragg peak is resolved
+   within one bar pitch for stopping protons.
 
 ## 4. Acceptance criteria
 
