@@ -34,6 +34,20 @@ dE/dx = mean( sorted(eDep / step_length)[k_low : k_high] )
 Cut fractions: drop top 30%, bottom 10% (literature default; revisit
 on calibration sample). Recorded as DEC entry.
 
+Per plan 24 C.2 schema:
+
+| Class A inputs | Forbidden Class B |
+|---|---|
+| C.1 charged-candidate table; TPC step columns `Event_ID`, `eDep`, `TrackLength`, `x`, `y`, `z`, `t`, `photons`, `step_info` | `Name`, `Track_ID`, `Parent_ID`, `origin_vol_name`, `particle_x`, `particle_y`, `particle_z` |
+
+Current implementation citation: `reconstruct_charged_objects`
+(`reconstruction.py:430-700`, plan 08 §3.4) already emits `dedx`,
+but the value is downstream of the current truth-name candidate gate.
+
+Output schema: `{event_id, charged_candidate_id, dedx_mev_per_cm,
+estimator, n_steps_used, path_length_cm, low_truncation_fraction,
+high_truncation_fraction, calibration_source}`.
+
 ## 2. Calibration anchor
 
 Plan 17 W-value (23.6 eV in TPCSD; reference 26-27.4 eV). dE/dx
