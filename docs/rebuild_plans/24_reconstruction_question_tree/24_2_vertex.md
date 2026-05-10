@@ -56,6 +56,55 @@ Leaf V.1: TPC hits → track candidates
   downstream consumers: V.2, V.3, V.4 (this plan); plan 25 (subsystem)
 ```
 
+#### V.1 Physics derivation
+
+- **What is physically measured:** V.1 estimates whether a set of TPC
+  ionisation deposits is a single charged-particle trajectory segment in
+  detector coordinates, before any truth-side `Track_ID` or species label is
+  considered.
+- **Estimator rationale:** in an Ar/CO2 TPC, a charged particle leaves local
+  ionisation clusters whose drifted coordinates sample a continuous path;
+  density/geometric clustering in `(x, y, z, t)` is therefore the first
+  Class-A estimator for candidate membership, with straight-line seeding
+  justified by the no-curvature baseline. This follows the TPC concept in
+  Rubbia's drift-volume description and modern TPC tracking practice
+  \cite{rubbia1977liquid,alice2014performance}; DBSCAN-style density
+  clustering is the candidate non-parametric baseline \cite{Ester:1996DBSCAN}.
+- **Statistical character:** the dominant uncertainty is fake splitting or
+  merging from sparse hits and overlapping tracks; bias enters when the seed
+  uses only first/last coordinates, while variance is controlled by hit count,
+  coordinate resolution, and local hit density.
+- **Citation:** `rubbia1977liquid`, `alice2014performance`, and
+  `Ester:1996DBSCAN` are resolved in the thesis bibliography.
+
+#### V.1 Logic gaps
+
+1. **Minimum hit count = 2:** two finite coordinates are the mathematical
+   minimum for a line seed; keep this as a derived lower bound, but require
+   plan-25 quality flags to mark two-hit candidates as degraded.
+2. **DBSCAN `eps` / time scale:** OPEN: optimise on
+   `cal_singlepion_50to600MeV_v2` and `sig_foil_v3` with efficiency, fake
+   rate, and split/merge fraction as the figure of merit; target resolution
+   date 2026-05-17.
+3. **DBSCAN `min_samples`:** OPEN: scan 2-6 hits with Wilson intervals on the
+   same closure samples and choose the smallest value that keeps fake rate
+   below the plan-25 acceptance band; target resolution date 2026-05-17.
+4. **Hough/Kalman seed bins:** OPEN: defer bin widths and process-noise
+   constants to the plan-49 improvement packet after V.1 baseline closure;
+   target resolution date 2026-05-24.
+
+#### V.1 Closure test for the derivation
+
+1. Run the V.1 candidate builder on `cal_singlepion_50to600MeV_v2` after
+   dropping `Track_ID`, `Parent_ID`, `Name`, and `origin_vol_name` from the
+   production input.
+2. Match frozen candidate hit memberships back to truth only inside a
+   `validation_only` scorer, and compute efficiency, fake rate, and
+   split/merge fractions with plan-04 Wilson intervals.
+3. Pass when the truth-blind candidate table is invariant to dropping Class-B
+   columns and the derived two-hit lower-bound rows are explicitly labelled
+   degraded rather than silently accepted as high-quality tracks.
+
 Leaf V.2: track candidates → fitted track directions
   inputs (Class A): V.1 candidate-track table plus the referenced TPC
                     hit columns (Event_ID, x, y, z, t, eDep, photons,
