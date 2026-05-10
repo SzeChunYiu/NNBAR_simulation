@@ -214,6 +214,27 @@ audit when a seed becomes attached to a concrete ledger result.
   rerun_command_template_id: blocked_missing_input_v1
   rerun_command_template_verifier_hash: null
   rerun_command_template_verifier_source: null
+- id: RQ-L1-STRANGE-BARYON
+  asked_by: anticipated_examiner
+  asked_on: 2026-05-10
+  question: Could K_S, Lambda, or Sigma production in beam-neutron material fake the signal?
+  category: physics
+  affects_results: []
+  routes_to_gate: [14, 22, 44, 50, 59]
+  status: open
+  answer:
+    summary: null
+    artifact: null
+    owner_signoff: null
+    review_evidence_links: null
+    review_artifact_hashes: null
+  defense_package_updated: []
+  resolved_on: null
+  l1_overlay_id: strange_v0_contamination
+  required_artifact_status: missing
+  rerun_command_template_id: blocked_missing_input_v1
+  rerun_command_template_verifier_hash: null
+  rerun_command_template_verifier_source: null
 ```
 
 Review rules:
