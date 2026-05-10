@@ -122,6 +122,22 @@ validated fit.
 5. **Audit hook:** rerun with truth labels removed from photon and π⁰
    inputs. Fitted values, convergence flags, and χ² must be unchanged.
 
+### 5.1 Decision-log stubs for fit use
+
+Kinematic fitting changes a downstream four-vector and may add a
+selection/ranking variable, so plan-05 DEC approval is required before
+any fitted value replaces the raw baseline:
+
+| DEC stub | Decision to freeze | Required evidence before approval |
+|---|---|---|
+| `DEC-35-FIT-MODE` | Choose raw-only, mass-only, vertex-only, or combined mass+vertex as the production P.7 output for plan 36/37 consumers | plan-38 comparison row plus §5 width, pull, convergence, and χ² closure |
+| `DEC-35-COVARIANCE-MODEL` | Freeze diagonal vs full covariance, resolution-model tag, and sparse-covariance fallback | plan-40 pull validation and explicit `missing_covariance` rate by sample |
+| `DEC-35-FIT-QUALITY-USE` | Decide whether `fit_chi2`, `fit_probability`, or convergence flags may enter plan-37 selection | N-1 / ROC evidence from plan 41 and proof that the χ² K-S p-value remains `> 0.01` |
+
+Until these entries are approved, fitted columns are diagnostic or
+ladder-comparison outputs; the raw π⁰ candidate remains the
+reproduction baseline.
+
 ## 6. Acceptance criteria
 
 - §2 implementation lands; §5 closure passes.
