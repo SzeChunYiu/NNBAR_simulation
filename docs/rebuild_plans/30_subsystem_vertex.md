@@ -8,7 +8,7 @@ depends_on: [00_README, 16_geometry_and_alignment, 24_reconstruction_question_tr
 outputs:
   - {path: docs/rebuild_plans/30_subsystem_vertex.md, schema: this file}
 acceptance:
-  - {test: vertex z and r residuals within plan 40 §2 tolerance, method: closure plot, pass_when: pass}
+  - {test: vertex z and r residuals on sig_foil_500MeV_v3 within plan 40 §2 tolerance, method: closure plot, pass_when: pass}
   - {test: Billoir χ² fit benchmarked vs mean-of-projections on ladder leaf V.4, method: plan 38, pass_when: matrix entry recorded}
   - {test: foil-acceptance gate uses geometry from plan 16 (no truth), method: plan 01 audit, pass_when: zero violations}
 risks:
@@ -86,13 +86,18 @@ Class A: a vertex is foil-compatible iff
 `sqrt(Vx² + Vy²) ≤ foil_outer_radius` AND `|Vz| ≤ foil_half_thickness`
 with the geometry constants from plan 16.
 
-## 6. Closure (plan 40 §2)
+## 6. Closure-test specification (plan 40 §2)
 
-Pull distributions on `sig_foil_v3`:
-
-- pull_z = `(z_reco - z_true) / σ_z_reco` — `\|μ\| < 0.1`,
-  width ∈ [0.9, 1.1].
-- pull_r — same.
+1. **Dataset id:** `sig_foil_500MeV_v3` from plan 03.
+2. **Observable:** V.3 projection residuals, V.4 vertex `z` and `r`
+   residuals, and V.5 foil-compatible acceptance efficiency.
+3. **Fitter / matcher:** run the candidate vertex aggregator (mean,
+   Billoir χ², or adaptive fit) and compute residuals against truth
+   vertices only in a `@validation_only` closure function.
+4. **Pass criterion:** `pull_z = (z_reco - z_true) / sigma_z_reco`
+   and `pull_r` both have `|mu| < 0.1` and width in `[0.9, 1.1]`;
+   the foil-acceptance gate must use plan 16 geometry constants, not
+   truth origin labels.
 
 ## 7. Acceptance criteria
 
