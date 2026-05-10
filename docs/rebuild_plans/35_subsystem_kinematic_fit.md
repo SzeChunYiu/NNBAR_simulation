@@ -285,6 +285,15 @@ any fitted value replaces the raw baseline:
 | `DEC-35-COVARIANCE-MODEL` | Freeze diagonal vs full covariance, resolution-model tag, and sparse-covariance fallback | plan-40 pull validation and explicit `missing_covariance` rate by sample |
 | `DEC-35-FIT-QUALITY-USE` | Decide whether `fit_chi2`, `fit_probability`, or convergence flags may enter plan-37 selection | N-1 / ROC evidence from plan 41 and proof that the χ² K-S p-value remains `> 0.01` |
 
+Initial fit-quality-use examples:
+
+| `quality_case_id` | Fit output pattern | Allowed downstream use before DEC approval | Promotion guard |
+|---|---|---|---|
+| `raw_mass_only_baseline` | no fitted columns; raw candidate mass and opening angle only | full plan-36/37 reproduction baseline | none; this is the control row |
+| `mass_fit_quality_diag` | mass-constrained fit converges with finite `fit_chi2` and probability | diagnostic ranking and plan-38 comparison only | cannot become a plan-37 cut without `DEC-35-FIT-QUALITY-USE` evidence |
+| `vertex_fit_quality_diag` | vertex-constrained fit converges but changes event-level kinematics | plan-36 diagnostic variables only | requires closure that fitted four-vectors improve pulls without selection bias |
+| `failed_fit_blocked` | non-converged fit, singular covariance, or missing covariance status | must propagate `fit_status != pass` and keep raw candidate values for reproduction | blocked from any selection/ranking use |
+
 Until these entries are approved, fitted columns are diagnostic or
 ladder-comparison outputs; the raw π⁰ candidate remains the
 reproduction baseline.
