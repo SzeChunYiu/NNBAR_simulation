@@ -64,7 +64,7 @@ a limitation until calibrated.
 
 ### Logic gaps
 
-- **Field-manager coverage.** Grounding: §1 line evidence shows only
+- **Field-manager coverage.** Grounding: §1 source evidence shows only
   `TPC_output[0]` and `TPC_output[1]` currently receive the field
   manager. `OPEN:` attach or explicitly justify all 12 modules before
   freezing a regenerated TPC sample; target resolution date
