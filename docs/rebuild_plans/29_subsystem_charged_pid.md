@@ -33,6 +33,62 @@ Per plan 24 C.1 / C.5 / C.6 schemas:
 | C.5 π/p decision | C.1 candidate table, C.2 dE/dx, C.3 range, C.4 scintillator association, PID thresholds | `Name`, `Track_ID`, `Parent_ID`, `origin_vol_name`, truth PID labels | `{event_id, charged_candidate_id, pid, proton_score, pion_score, thresholds, rule_version, pid_valid, decision_reason}` |
 | C.6 rejection | C.1-C.5 outputs, Class A lead-glass / shower-shape observables, TPC pair topology, hit timing, geometry side-cars | `Name`, `Track_ID`, `Parent_ID`, `origin_vol_name`, `Interaction`, `particle_x/y/z`, truth PID labels | `{event_id, charged_candidate_id, rejected, rejection_flags, primary_reason, pid_before_rejection, pid_after_rejection, rule_version}` |
 
+### 1.1 Leaf schema block — C.1 charged candidate
+
+- **inputs (Class A):** V.1/V.2 track rows plus TPC `Event_ID`,
+  `x`, `y`, `z`, `t`, `eDep`, `photons`, `px`, `py`, `pz`,
+  `xHitID`, `module_ID`, `step_info`, `vol_name`.
+- **forbidden (Class B):** `Name`, `Track_ID`, `Parent_ID`,
+  `origin_vol_name`, `particle_x`, `particle_y`, `particle_z`.
+- **decision rule:** promote any Class A TPC track passing quality and
+  containment cuts into a charged candidate; species names and truth
+  track IDs may not filter the production candidate set.
+- **output schema:** `event_id: int`, `charged_candidate_id: int`,
+  `candidate_id: int`, `anchor_xyz: float[3]`,
+  `direction_xyz: float[3]`, `n_tpc_hits: int`,
+  `track_quality: float`, `charged_candidate_valid: bool`.
+- **allowed truth use:** `validation_only` for candidate efficiency
+  and truth-substitution ladder rows.
+- **downstream consumers:** C.2, C.3, C.5, C.6, plans 32, 38, and 47.
+
+### 1.2 Leaf schema block — C.5 π/p decision
+
+- **inputs (Class A):** C.1 charged candidates, C.2 dE/dx, C.3
+  range/stopping fields, C.4 scintillator association, and signed PID
+  thresholds or likelihood-ratio calibration artifacts.
+- **forbidden (Class B):** `Name`, `Track_ID`, `Parent_ID`,
+  `origin_vol_name`, truth PID labels, and truth kinetic energy.
+- **decision rule:** assign π/p labels from Class A PID observables
+  using the signed threshold or likelihood-ratio rule version; truth
+  labels are allowed only in training/validation splits.
+- **output schema:** `event_id: int`, `charged_candidate_id: int`,
+  `pid: str`, `proton_score: float`, `pion_score: float`,
+  `thresholds: dict`, `rule_version: str`, `pid_valid: bool`,
+  `decision_reason: str`.
+- **allowed truth use:** `labeling` for locked calibration-sample
+  training and `validation_only` for score reporting; never during
+  production scoring.
+- **downstream consumers:** C.6, plans 32, 38, 45, 47, and 57.
+
+### 1.3 Leaf schema block — C.6 rejection
+
+- **inputs (Class A):** C.1-C.5 outputs, lead-glass/shower-shape
+  observables, TPC pair topology, hit timing, geometry side-cars, and
+  conversion-veto state derived from reconstructed vertices.
+- **forbidden (Class B):** `Name`, `Track_ID`, `Parent_ID`,
+  `origin_vol_name`, `Interaction`, `particle_x`, `particle_y`,
+  `particle_z`, and truth PID labels.
+- **decision rule:** apply EM, neutral, and conversion rejection using
+  reconstructed topology and calorimeter observables only; rejected
+  candidates retain the pre-rejection PID for auditability.
+- **output schema:** `event_id: int`, `charged_candidate_id: int`,
+  `rejected: bool`, `rejection_flags: list[str]`,
+  `primary_reason: str | null`, `pid_before_rejection: str`,
+  `pid_after_rejection: str | null`, `rule_version: str`.
+- **allowed truth use:** `validation_only` for rejection efficiency,
+  fake-rate, and ladder scoring after C.6 output is frozen.
+- **downstream consumers:** plans 32, 38, 43, 45, and 47.
+
 Current implementation citation: `reconstruct_charged_objects`
 (`charged.py:149-228`, plan 08 §3.4) owns the current C.1/C.5
 path and emits `pid`, `dedx`, `scintillator_range`, `track_anchor`,
