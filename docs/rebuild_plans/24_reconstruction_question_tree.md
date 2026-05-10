@@ -7,7 +7,7 @@ owner: Methodology Council
 depends_on: [00_README, 01_realism_contract, 07_simulation_atomic_walkthrough, 08_reconstruction_atomic_walkthrough, 09_io_schema_data_dictionary]
 inputs:
   - {path: docs/detector_fundamental_question_tree.md, schema: detector-side companion}
-  - {path: NNBAR_Detector/docs/reconstruction.md, schema: implementation reference}
+  - {path: /Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/docs/reconstruction.md, schema: implementation reference}
 outputs:
   - {path: docs/rebuild_plans/24_reconstruction_question_tree.md, schema: this file}
   - {path: docs/reconstruction_fundamental_question_tree.md, schema: living tree (mirror)}
@@ -155,5 +155,5 @@ identified by review become signed §2–§6 revision additions.
 ## 13. References
 
 - `docs/detector_fundamental_question_tree.md` — direct template.
-- `NNBAR_Detector/docs/reconstruction.md` — implementation reference
-  this tree decomposes.
+- `/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3/docs/reconstruction.md`
+  — implementation reference this tree decomposes.
