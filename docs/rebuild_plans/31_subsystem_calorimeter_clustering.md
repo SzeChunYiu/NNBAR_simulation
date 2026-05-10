@@ -291,6 +291,15 @@ These are stubs, not approved methodology. The approved entries live in
 `docs/governance/DECISION_LOG.md` once the selected implementation and
 closure evidence exist.
 
+Initial downstream-handoff examples:
+
+| `handoff_case_id` | Cluster output pattern | Consumer expectation | Review guard |
+|---|---|---|---|
+| `topological_pass_to_p2` | frozen Class-A cluster rows with stable `cluster_id` and hit membership | plan 32 may compute shower-shape features | requires matching Class-B drop hash and passing §4 closure rows |
+| `diagnostic_track_key_quarantine` | Track_ID-keyed reproduction rows kept for comparison | plan 32/33 may read them only as diagnostic ladder inputs | cannot be labelled as production P.1 membership |
+| `split_merge_boundary_panel` | threshold-scan rows near split/merge decision boundaries | plan 33/34 over-merge audits consume duplicate-rate evidence | threshold DEC must cite the exact scan row ids |
+| `blocked_unstable_membership` | cluster membership changes under provenance drop | no downstream production consumer | plan 38 records the blocked method, but plan 32/33 do not consume it |
+
 ## 5. Acceptance criteria
 
 - §1 violation removed.
