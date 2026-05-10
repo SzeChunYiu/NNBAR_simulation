@@ -109,6 +109,20 @@ production `cluster_id`, `hit_membership_key`, and
 plan 32/33 can join by truth-blind membership rather than by simulated
 track ancestry.
 
+### 2.3 A+ citation audit for current cluster baseline
+
+Current-source claims in §1-§3 were re-checked against the L3 worktree
+before this plan was committed:
+
+| Cited contract | Verifier evidence | Status |
+|---|---|---|
+| compact current cluster/photon row surface | `def reconstruct_photon_objects` resolves at `photon.py:60`, inside the cited `photon.py:60-201` range. | keep citation |
+| energy-weighted centroid helper | `def _weighted_centroid` resolves at `photon.py:28`, inside the cited `photon.py:28-48` range. | keep citation |
+
+Plan 31 does not specify a runtime CLI command, and it does not cite the
+removed legacy split-study files. Any future cluster-study CLI row must
+pass the L3 `--help` verifier before this plan cites it.
+
 ## 3. Replacement candidates and comparison matrix
 
 | Candidate | P.1 decision rule | Current/source citation | Class-A status | Comparison metric | Failure mode to inspect |
