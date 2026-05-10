@@ -86,12 +86,26 @@ Plan 38 ladder leaf P.1 scores each row with identical closure inputs.
 Plan 47 first records the truth-labelled reproduction baseline, then
 quotes the selected Class-A replacement and the residual difference.
 
-## 4. Closure on `cal_singlegamma_v1`
+## 4. Closure-test specification
 
-For γ at fixed E:
-
-- ΔE/E (cluster vs truth gamma KE) < 5% mean; bias < 1%.
-- Cluster centroid within 1 cm of energy-weighted truth deposit.
+1. **Dataset id:** run `cal_singlegamma_v1` from plan 23 at 50,
+   100, 200, 500, and 1000 MeV single-γ settings, with the truth
+   labels used only by the evaluator.
+2. **Observable:** for the selected P.1 candidate, record cluster
+   reconstructed energy, energy response `(E_cluster - E_truth) /
+   E_truth`, cluster centroid residual against the energy-weighted
+   true deposit centroid, number of clusters per event, and the
+   split/merge classification.
+3. **Fitter / estimator:** fit the response distribution in each
+   energy bin with a Gaussian core plus bootstrap uncertainty on the
+   mean; compute centroid residual RMS and split/merge Wilson
+   intervals.
+4. **Pass criterion:** mean `|ΔE/E| < 5%`, absolute response bias
+   `< 1%`, centroid residual RMS `< 1 cm`, and split-or-merge rate
+   `< 2%` in every energy bin.
+5. **Audit hook:** rerun after dropping `Track_ID`, `Parent_ID`,
+   `Name`, `Process`, and `Interaction` columns. Any change in
+   production cluster membership fails the Class-A gate.
 
 ## 5. Acceptance criteria
 
