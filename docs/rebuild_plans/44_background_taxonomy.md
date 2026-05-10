@@ -164,6 +164,18 @@ caveats stayed outside the numeric sum:
 The handoff row is rejected if it includes an unregistered caveat as a
 numeric zero or omits a caveat from the limitation list.
 
+Draft handoff examples:
+
+| `background_sum_id` | `rate_result_ids` | `excluded_caveat_node_ids` | `selection_config_id` | `exposure_label` | `b_expected` | `b_expected_formula` | `included_nuisance_ids` | `rate_source_dec_ids` | `handoff_status` |
+|---|---|---|---|---|---:|---|---|---|---|
+| `background_sum_validation_high_b` | [`validation_background_rate_high_b`] | [] | `validation_ch10_baseline` | `validation_only` | 20 | `validation_background_rate_high_b.expected_rate` | [] | [`validation_only`] | `draft` |
+| `background_sum_registered_blocked` | [`cosmic.muon.rate`, `beam_neutron.direct_beam_neutron.rate`] | [`unmodelled.environmental_gamma`, `unmodelled.detector_internal`, `unmodelled.beampipe_activation`] | `ch10_baseline` | `analysis_exposure_v1` | null | null until rate-source DECs are signed | [`N6`, `N7`] | [`DEC-44-COSMIC-RATE-SOURCE`, `DEC-44-BEAM-RATE-SOURCE`] | `blocked` |
+| `background_sum_zero_survivor_validation` | [`cosmic_muon_zero_survivor`] | [`unmodelled.environmental_gamma`, `unmodelled.detector_internal`, `unmodelled.beampipe_activation`] | `validation_ch10_baseline` | `plan46_zero_survivor_case` | null | `epsilon90` is a limit, not a central expected-rate sum | [] | [`DEC-44-ZERO-SURVIVOR-REPORTING`] | `draft` |
+
+The `validation_*` ids are calculation fixtures for plan 46; they are
+not plan-03 sample registrations and cannot be promoted to analysis
+background rates.
+
 ## 2. Zero-survivor handling
 
 Per plan 04 §5: never quote `0 / N = 0`. Every zero-survivor channel
