@@ -289,6 +289,24 @@ This contract keeps `reconstruct_dedx_table`
 (`nnbar_reconstruction/dedx.py:91-119`) as the Stage E.1 C.2 producer
 until L3 swaps in an implementation that preserves the same keys.
 
+### 6.5 Stage E.1 verification command
+
+L3's C.2 patch is promotable only when the dE/dx slice exercises the
+truncation unit, synthetic candidate membership, and real-output chain:
+
+```bash
+pytest tests/test_charged_reco.py::test_truncated_mean_dedx_drops_plan_27_tails \
+       tests/test_charged_reco.py::test_reconstruct_dedx_table_uses_candidate_hit_membership \
+       tests/test_charged_reco.py::test_reconstruct_dedx_table_real_sample_has_plan_27_schema
+```
+
+The review note for that patch must quote the command output and the
+C.2 artifact manifest fields `estimator_id`, `path_length_source`,
+`truncation_applied`, `dedx_quality_state`, `dedx_failure_reason`, and
+`calibration_source`. If the real-output selector skips, C.2 remains a
+unit-test-only bridge and cannot feed plan 29 PID promotion or plan 45
+calibration nuisances.
+
 ## 7. Acceptance criteria
 
 - §3 closure within 5% across the charged calibration set.
@@ -297,8 +315,8 @@ until L3 swaps in an implementation that preserves the same keys.
   high-dE/dx-quoted result.
 - §6 Stage E.1 handoff is actionable for L3: the target public
   functions, current unit/integration tests, remaining test obligation,
-  promotion invariants, producer/consumer contract, and required C.2
-  fields (`estimator_id`, `dedx_mev_per_cm`,
+  promotion invariants, producer/consumer contract, verification
+  command, and required C.2 fields (`estimator_id`, `dedx_mev_per_cm`,
   `path_length_cm`, `path_length_source`, `n_steps_used`, truncation
   fractions, `truncation_applied`, `dedx_quality_state`,
   `dedx_failure_reason`, `calibration_source`, and contribution sidecar
