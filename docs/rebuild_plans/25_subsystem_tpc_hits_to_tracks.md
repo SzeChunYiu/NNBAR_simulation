@@ -12,7 +12,7 @@ outputs:
   - {path: docs/rebuild_plans/25_subsystem_tpc_hits_to_tracks.md, schema: this file}
 acceptance:
   - {test: leaf V.1 has Class A inputs only, method: realism audit, pass_when: zero Class B reads in the V.1 production path}
-  - {test: track-finding efficiency on cal_singlepion_50to600MeV_v2 ≥ 90% within fiducial, method: per-sample efficiency, pass_when: target met or limitation documented}
+  - {test: track-finding efficiency on cal_singlepion_50to600MeV_v2 ≥ 90% within fiducial, method: per-sample efficiency, pass_when: efficiency plus Wilson interval recorded, or signed limitation links the failing bin to plan 38 V.1 delta}
   - {test: alternative track-finder benchmarked on the ladder (Hough vs Kalman vs current), method: plan 38 IV(V.1), pass_when: matrix entry recorded}
 risks:
   - {risk: current "first/last step" sparse representation loses tracking information, mitigation: §3 alternative finders restore intermediate steps when needed}
@@ -100,8 +100,8 @@ hits) plus stopping-range information.
 
 - §1 inputs match plan 09 (no Class B in production path).
 - §2 current implementation noted; migration item logged.
-- §3 alternative comparison run on ladder when plan 49 picks an
-  improvement target.
+- §3 alternatives each list source, NNBAR adaptation, and plan 38
+  V.1 expected-delta observables for plan 49 to consume.
 
 ## 6. Dependencies
 
