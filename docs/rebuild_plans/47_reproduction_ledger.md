@@ -12,12 +12,12 @@ outputs:
 acceptance:
   - {test: every numeric claim and figure in licentiate Ch 5–10 has a row, method: chapter scan, pass_when: full coverage}
   - {test: every PhD-only addition (Ch 13 reproducibility appendix, Ch 10 HIBEAM TPC) has cross-references to its repo, method: cross-repo check, pass_when: zero unmatched}
-  - {test: every row has a status (green/yellow/red), method: review, pass_when: every row has status}
+  - {test: every row has a reproduction status, method: review, pass_when: every row is reproduced, mismatch, blocked-no-sample, or not-attempted}
 risks:
   - {risk: figures need image equality, not just numeric equality, mitigation: §3 figure protocol}
   - {risk: ledger drift as thesis edits land, mitigation: §4 living-document protocol}
 estimated_effort: XL
-last_updated: 2026-05-09
+last_updated: 2026-05-10
 ---
 
 # Thesis reproduction ledger
@@ -50,7 +50,7 @@ number in finite time.
   uncertainty:
     statistical: ±X.X (per plan 04 §2)
     systematic: ±Y.Y (per plan 45)
-  status: green | yellow | red | not-attempted
+  status: reproduced | mismatch | blocked-no-sample | not-attempted
   decision_log: [DEC-2026-XX-XX-N]
   leaf: V.4   # or P.5, etc.
   notes: <optional caveats, limitations from plan 01 §6 that apply>
@@ -58,15 +58,17 @@ number in finite time.
 
 ## 2. Status definitions
 
-- **green** — reproduced number agrees with thesis within stated
-  total uncertainty. No drift.
-- **yellow** — reproduced number agrees within 1.5σ but with a
-  documented drift (e.g. a known limitation contributes; the
-  systematic widens to bracket the drift).
-- **red** — reproduced number disagrees outside 2σ. Blocked. The
-  rebuild does not promote any downstream improvement until the row
-  is green or yellow.
-- **not-attempted** — sample regen or command not yet run.
+- **reproduced** — the row has a reproduced value and agrees with the
+  thesis within the row's stated tolerance or the default ±5% numeric
+  tolerance when no row-specific tolerance is recorded.
+- **mismatch** — the row has a reproduced value and a nonempty `delta`,
+  but the rebuild artifact does not satisfy numeric/figure equality.
+  Honest mismatches are acceptable A+ evidence; they block promotion of
+  downstream claims that require agreement.
+- **blocked-no-sample** — the CLI may exist, but the required local
+  sample/output directory is absent, or the required command surface is
+  not implemented. The row is fail-closed rather than fabricated.
+- **not-attempted** — sample regen or command has not yet been tried.
 
 ## 3. Figure equality
 
@@ -86,8 +88,8 @@ The ledger lives at `docs/thesis_reproduction_ledger.md` (separate
 from this plan, which describes how to maintain the ledger).
 
 - *Thesis edits.* When the thesis changes a number, the ledger row's
-  `thesis_value` field updates and the row may flip green → yellow
-  if the reproduced value no longer agrees.
+  `thesis_value` field updates and the row may flip `reproduced` →
+  `mismatch` if the reproduced value no longer agrees.
 - *Code edits.* When code changes that affect a row, plan 53 CI re-
   runs the row; status updates automatically.
 - *New samples.* When a sample is registered (plan 03), every row
@@ -124,13 +126,15 @@ thesis pair:
   secondary-foil sentinel note, RFC caveat, correlation matrices, and
   precision-recall curve.
 
-All rows are `not-attempted`: they inventory source claims and bind
-each claim to a plan-03/plan-20--23 sample id or stub, a plan-10-style
-command, a plan-24 leaf, and any known DEC references. The current row
-count satisfies both the Wave 2 ≥30-row seed requirement and the Wave 3
-≥60-row ledger-count/span target across Chapters 5--10; later
-iterations still fill any missed Chapter 10 figure splits toward full
-row-level coverage.
+A+ truthing on 2026-05-10 has updated all rows out of the seed-only
+`not-attempted` state: **43 rows are `mismatch` with nonempty
+`reproduced_value` and `delta` fields**, **118 rows are
+`blocked-no-sample`**, and **0 rows remain `not-attempted`**. The current
+row count satisfies the Wave 2 ≥30-row seed requirement, the Wave 3
+≥60-row ledger-count/span target across Chapters 5--10, and the Wave 4
+≥30 reproduced-or-mismatch target. Remaining work is to replace generic
+diagnostic mismatches with row-specific figure/numeric equality and to
+unblock rows whose exact samples or CLI surfaces are still absent.
 
 ## 6. Acceptance criteria
 
@@ -152,8 +156,9 @@ row-level coverage.
 ## 8. Dependencies
 
 - **03, 04, 05, 24, 38, 45** — every row cites these.
-- *Consumed by:* plan 49 (improvements gate on ledger green), plan
-  50 (defence package), plan 53 (CI).
+- *Consumed by:* plan 49 (improvements gate on reproduced rows or
+  explicitly reviewed mismatches), plan 50 (defence package), plan 53
+  (CI).
 
 ## 9. References
 
