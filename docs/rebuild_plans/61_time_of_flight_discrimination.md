@@ -137,8 +137,10 @@ invalid-reason fields.
 ## 5. Resolution budget
 
 The timing closure report decomposes the width of `tof_residual_ns` into
-terms. Initial values are placeholders until measured or smeared in L3;
-the plan fixes ownership and required artifact fields.
+terms. v0.1 deliberately carries no production numeric resolution. Each
+term starts as an owned open slot and becomes usable only after a measured
+calibration row, a documented smearing model, or a signed external
+calibration import fills the required artifact fields.
 
 | Term | Symbol | Owner | Initial status |
 |---|---|---|---|
@@ -155,6 +157,16 @@ The total nominal variance is stored as:
 
 A result with `sigma_tof_total_ns2 = 0` is blocked because it indicates
 that ideal simulation timing has been mistaken for detector resolution.
+
+| Resolution-field key | Required content before use |
+|---|---|
+| `term_id` | one of the §5 stable symbols |
+| `central_value` / `unit` | measured or imported resolution value with units |
+| `source_artifact_id` | calibration slice, smearing study, or external calibration import |
+| `limitation_ids` | includes `L2` until detector timing jitter is closed |
+| `nuisance_id` | plan-45 timing/calibration nuisance row or null with reason |
+| `decision_dec_id` | signed `DEC-61-RESOLUTION-BUDGET` or successor |
+| `resolution_status` | `open`, `diagnostic`, `candidate`, or `approved` |
 
 ## 6. Rejection and promotion rules
 
@@ -253,8 +265,8 @@ runtime nnbar module command and no source-code line citation.
 
 | Claim | Verifier |
 |---|---|
-| plan 25 track/timing source exists | `grep -n "time\|track" docs/rebuild_plans/25_subsystem_tpc_hits_to_tracks.md` |
-| plan 27 dE/dx / beta closure exists | `grep -n "dE/dx\|beta" docs/rebuild_plans/27_subsystem_dedx.md` |
-| plan 36 E.8 timing variables exist | `grep -n "E.8\|timing" docs/rebuild_plans/36_subsystem_event_variables.md` |
+| plan 25 track/timing source exists | `grep -nE "time|track" docs/rebuild_plans/25_subsystem_tpc_hits_to_tracks.md` |
+| plan 27 dE/dx / beta closure exists | `grep -nE "dE/dx|beta" docs/rebuild_plans/27_subsystem_dedx.md` |
+| plan 36 E.8 timing variables exist | `grep -nE "E.8|timing" docs/rebuild_plans/36_subsystem_event_variables.md` |
 | plan 44 cosmic nodes exist | `grep -n "cosmic_cry_essLund" docs/rebuild_plans/44_background_taxonomy.md` |
 | no stale code citation | no `*.py:<line>` citation appears in this plan |
