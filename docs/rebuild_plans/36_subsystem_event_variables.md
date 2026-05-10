@@ -1,6 +1,6 @@
 ---
 id: 36_subsystem_event_variables
-title: Subsystem — event variables (leaves E.1–E.9)
+title: Subsystem — event variables (leaves E.1-E.9)
 version: 0.1
 status: draft
 owner: Combined Performance
@@ -19,9 +19,9 @@ last_updated: 2026-05-09
 
 # Subsystem — event variables
 
-*Charter.* Owns leaves E.1–E.9. Computes per-event observables that
+*Charter.* Owns leaves E.1-E.9. Computes per-event observables that
 feed the selection (plan 37), the truth-substitution ladder (plan
-38), the analysis-level studies (plans 41–46), and the reviewer
+38), the analysis-level studies (plans 41-46), and the reviewer
 defence package (plan 50).
 
 ## 1. Inputs
@@ -41,15 +41,15 @@ comparison in §5. Current source line references come from plan 08
 
 | Leaf | Output column(s) | Formula / decision rule | Units | Current source citation | Ladder status |
 |---|---|---|---|---|---|
-| E.1 | `calorimeter_edep` | `Σ scintillator eDep + Σ lead-glass eDep` | MeV | `summarize_events` sums raw cal hits (`reconstruction.py:1624–1638`, `1688–1709`) | baseline |
-| E.2 | `upper/lower_scintillator_edep`, `upper/lower_leadglass_edep` | split raw cal energy by `y > 0` / `y < 0` | MeV | hemisphere sums at `reconstruction.py:1624–1638` | baseline |
-| E.3 | `*_longitudinal_energy`, `calorimeter_longitudinal_energy` | `Σ E_i z_i / r_i` | MeV | `_directional_energy` and event rows (`reconstruction.py:244–264`, `1653–1654`, `1710–1715`) | baseline |
+| E.1 | `calorimeter_edep` | `Σ scintillator eDep + Σ lead-glass eDep` | MeV | `summarize_events` sums raw cal hits (`vertex.py:322-444`) | baseline |
+| E.2 | `upper/lower_scintillator_edep`, `upper/lower_leadglass_edep` | split raw cal energy by `y > 0` / `y < 0` | MeV | `summarize_events` hemisphere sums (`vertex.py:322-444`) | baseline |
+| E.3 | `*_longitudinal_energy`, `calorimeter_longitudinal_energy` | `Σ E_i z_i / r_i` | MeV | `_directional_energy` (`vertex.py:48-67`) and `summarize_events` (`vertex.py:322-444`) | baseline |
 | E.4 | `*_transverse_energy`, `calorimeter_transverse_energy` | `Σ E_i sqrt(x_i² + y_i²) / r_i` | MeV | same as E.3 | baseline |
-| E.5 | `sphericity` | `1.5 * (λ₁ + λ₂)` from normalized momentum tensor | dimensionless | `_sphericity` plus event row (`reconstruction.py:1533–1544`, `1728–1729`) | baseline |
+| E.5 | `sphericity` | `1.5 * (λ₁ + λ₂)` from normalized momentum tensor | dimensionless | `_sphericity` (`vertex.py:255-266`) plus `summarize_events` (`vertex.py:322-444`) | baseline |
 | E.6 | `fox_wolfram_h0`, `fox_wolfram_h2`, `thrust` | pairwise Legendre moments and thrust axis over reconstructed objects | dimensionless | new variables; no current columns in plan 08 output schema | added |
-| E.7 | `visible_invariant_mass` | `√((Σ E_i)² - |Σ p_i|²)` from charged + photon four-vectors | MeV | `_visible_invariant_mass` (`reconstruction.py:1547–1570`, `1726`) | baseline |
-| E.8 | `calorimeter_timing_edep`, `calorimeter_out_of_time_edep` plus detector splits | sum hits inside/outside timing windows | MeV | `annotate_timing_windows` (`reconstruction.py:283–358`) and event sums (`1639–1652`, `1697–1709`) | baseline |
-| E.9 | `n_charged_objects`, `n_photon_like`, `n_pi0`, `pion_multiplicity` | counts reconstructed objects and selected π⁰ rows | int | object filtering and row output (`reconstruction.py:1658–1677`, `1716–1724`) | baseline |
+| E.7 | `visible_invariant_mass` | `√((Σ E_i)² - |Σ p_i|²)` from charged + photon four-vectors | MeV | `_visible_invariant_mass` (`vertex.py:269-290`) plus `summarize_events` (`vertex.py:322-444`) | baseline |
+| E.8 | `calorimeter_timing_edep`, `calorimeter_out_of_time_edep` plus detector splits | sum hits inside/outside timing windows | MeV | `annotate_timing_windows` (`vertex.py:86-160`) and `summarize_events` (`vertex.py:322-444`) | baseline |
+| E.9 | `n_charged_objects`, `n_photon_like`, `n_pi0`, `pion_multiplicity` | counts reconstructed objects and selected π⁰ rows | int | `summarize_events` object-count output (`vertex.py:322-444`) | baseline |
 
 Per-leaf **inputs** are the tables in §1; **outputs** are the listed
 `events.csv` columns. E.6 is added by this plan because the licentiate
@@ -88,15 +88,15 @@ when quoting hemispheric numbers.
 
 | Leaf(s) | Candidate | Decision rule | Current/source citation | Class-A status | Comparison metric |
 |---|---|---|---|---|---|
-| E.1/E.2 | **Raw hit sums (current)** | Sum raw scintillator and lead-glass `eDep`, with `y` hemisphere split. | `summarize_events` energy sums (`reconstruction.py:1624–1638`, `1688–1709`). | Production-eligible baseline. | Stability vs calibration changes; N-1 selection impact. |
+| E.1/E.2 | **Raw hit sums (current)** | Sum raw scintillator and lead-glass `eDep`, with `y` hemisphere split. | `summarize_events` energy sums (`vertex.py:322-444`). | Production-eligible baseline. | Stability vs calibration changes; N-1 selection impact. |
 | E.1/E.2 | **Calibrated object sums** | Sum calibrated charged/photon/π⁰ objects rather than raw hits. | Uses plan-33/35 outputs instead of raw hit sums. | Eligible after calibration closure. | Visible-mass bias and selection separation. |
-| E.3/E.4 | **Hit-directional energy (current)** | Use hit position ratios `z/r` and `sqrt(x²+y²)/r`. | `_directional_energy` (`reconstruction.py:244–264`). | Production-eligible. | Agreement with object-vector projection; sensitivity to hit noise. |
-| E.5/E.6 | **Sphericity-only (current thesis)** | Use normalized momentum-tensor eigenvalues. | `_sphericity` (`reconstruction.py:1533–1544`). | Production-eligible. | Cut-flow reproduction and ROC AUC. |
+| E.3/E.4 | **Hit-directional energy (current)** | Use hit position ratios `z/r` and `sqrt(x²+y²)/r`. | `_directional_energy` (`vertex.py:48-67`). | Production-eligible. | Agreement with object-vector projection; sensitivity to hit noise. |
+| E.5/E.6 | **Sphericity-only (current thesis)** | Use normalized momentum-tensor eigenvalues. | `_sphericity` (`vertex.py:255-266`). | Production-eligible. | Cut-flow reproduction and ROC AUC. |
 | E.5/E.6 | **Expanded event-shape set** | Add Fox-Wolfram moments and thrust to sphericity. | New plan-36 variables. | Eligible; no truth inputs. | ROC/N-1 gain over sphericity-only. |
-| E.7 | **Raw visible mass (current)** | Charged fixed masses plus massless photons. | `_visible_invariant_mass` (`reconstruction.py:1547–1570`). | Production-eligible. | Bias/pull vs truth visible mass. |
+| E.7 | **Raw visible mass (current)** | Charged fixed masses plus massless photons. | `_visible_invariant_mass` (`vertex.py:269-290`). | Production-eligible. | Bias/pull vs truth visible mass. |
 | E.7 | **Fit-aware visible mass** | Prefer plan-35 fitted π⁰/photon four-vectors when fit converged. | Consumes plan-35 outputs. | Eligible after fit closure. | Bias/resolution improvement and selection stability. |
-| E.8 | **Fixed timing windows (current)** | Use config timing resolutions and pion β bounds. | `annotate_timing_windows` (`reconstruction.py:283–358`). | Production-eligible with calibrated constants. | In/out-of-time separation and cosmic rejection. |
-| E.9 | **Raw object counts (current)** | Count charged, photon-like, and selected π⁰ rows. | Object filters at `reconstruction.py:1658–1677`, outputs `1716–1724`. | Production-eligible. | Multiplicity closure and sensitivity to upstream object duplicates. |
+| E.8 | **Fixed timing windows (current)** | Use config timing resolutions and pion β bounds. | `annotate_timing_windows` (`vertex.py:86-160`). | Production-eligible with calibrated constants. | In/out-of-time separation and cosmic rejection. |
+| E.9 | **Raw object counts (current)** | Count charged, photon-like, and selected π⁰ rows. | `summarize_events` object-count output (`vertex.py:322-444`). | Production-eligible. | Multiplicity closure and sensitivity to upstream object duplicates. |
 
 Plan 38 should score added variables (especially E.6 and fit-aware E.7)
 against the thesis baseline without deleting the reproduced Ch 10 inputs.
@@ -105,7 +105,7 @@ against the thesis baseline without deleting the reproduced Ch 10 inputs.
 
 1. **Dataset id:** run `sig_foil_v3` for signal-visible-mass closure
    and the plan-41 signal/background samples for N-1 stability of all
-   E.1–E.9 variables. Truth four-vectors are evaluator-only labels.
+   E.1-E.9 variables. Truth four-vectors are evaluator-only labels.
 2. **Observable:** every §2 output column, with primary closure on
    visible invariant mass; additionally monitor hemisphere sums,
    timing in/out-of-window energy, event-shape variables, and object
@@ -115,7 +115,7 @@ against the thesis baseline without deleting the reproduced Ch 10 inputs.
    Kolmogorov or χ² shape comparisons for added E.6 variables and
    Wilson intervals for multiplicity agreement categories.
 4. **Pass criterion:** visible-mass bias `< 50 MeV`, pull width in
-   `[0.8, 1.2]`, all required E.1–E.9 output columns populated, no
+   `[0.8, 1.2]`, all required E.1-E.9 output columns populated, no
    non-finite values outside explicitly allowed sparse cases, and
    E.6 variables recorded in plan 38 before any selection use.
 5. **Audit hook:** rerun with upstream diagnostic truth columns
@@ -144,7 +144,7 @@ ladder studies but do not replace the Ch 10 reproduction inputs.
 - §2 table complete; every variable produced.
 - E.6 Fox-Wolfram and thrust added.
 - §5 closure passes.
-- Plan 38 ladder rows for E.1–E.9 populated.
+- Plan 38 ladder rows for E.1-E.9 populated.
 
 ## 7. Dependencies
 
