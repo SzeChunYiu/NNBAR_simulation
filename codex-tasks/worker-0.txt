@@ -1,0 +1,1 @@
+/goal You are PANE 0, lane beam-background-tpc-occupancy. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/beam-background-tpc-occupancy.md in /Volumes/MyDrive/nnbar/nnbar/simulation, then complete one compact-safe iteration.
