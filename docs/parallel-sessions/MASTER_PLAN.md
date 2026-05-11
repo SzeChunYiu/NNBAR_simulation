@@ -50,7 +50,7 @@ Every codex lane should read this file at start and at finish to check for new t
 |------|--------|------|-------|
 | DESIGN_BRIEF + SPEC + VALIDATION docs | DONE | — | Committed in geant4-gpu repo |
 | **Phase 0 infrastructure** | DONE | g4gpu-phase0 | libG4GPU.so built on LUNARC, test_stub PASS |
-| **Phase 1: Muon physics kernel** | NEXT | g4gpu-phase1 | See docs/parallel-sessions/g4gpu-phase1.md |
+| **Phase 1: Muon physics kernel** | DONE | g4gpu-phase1 | Committed in geant4-gpu `lane/g4gpu-phase1` (`9c3470e`); LUNARC build/test job 3040175 passed `g4gpu_stub`, `g4gpu_muon_range`, and `g4gpu_mcs` with matching local/remote source hashes |
 | Phase 2: Voxel geometry (3DDA) | PLANNED | — | After Phase 1 tests pass |
 | Phase 3: RTX geometry backend | PLANNED | — | Requires OptiX SDK on LUNARC |
 | Phase 4: Optical photon (OptiX) | PLANNED | — | Long-term |
