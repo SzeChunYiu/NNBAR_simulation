@@ -1,2 +1,2 @@
-/goal You are PANE 1, lane vertex-sigma-smearing. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/vertex-sigma-smearing.md in /Volumes/MyDrive/nnbar/nnbar/simulation, then complete one compact-safe iteration.
 /goal You are PANE 1, lane timing-window-regression. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/timing-window-regression.md in /Volumes/MyDrive/nnbar/nnbar/simulation, then complete one compact-safe iteration.
+/goal You are PANE 1, lane vertex-smearing-closure. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/vertex-smearing-closure.md in /Volumes/MyDrive/nnbar/nnbar/simulation, then complete one compact-safe iteration.
