@@ -1,2 +1,0 @@
-/goal You are PANE 2, lane fix-hibeam-evidence-paths. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/fix-hibeam-evidence-paths.md in /Volumes/MyDrive/nnbar/nnbar/simulation, then complete one compact-safe iteration.
-/goal You are PANE 2, lane g4gpu-phase8-survey. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/g4gpu-phase8-survey.md in /Volumes/MyDrive/nnbar/nnbar/simulation, then complete one compact-safe iteration (deterministic methods Section 1 first).
