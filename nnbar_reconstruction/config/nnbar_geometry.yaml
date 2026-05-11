@@ -45,11 +45,11 @@ tpc:
   w_value: 23.6         # eV per electron-ion pair
   drift_velocity: 0.005 # cm/ns (approximate)
 
-# Scintillator detector (5 layers)
+# Scintillator detector (thesis modules: 10 layers)
 scintillator:
   inner_radius: 275.0   # cm (distance from beam axis)
   half_z: 275.0         # cm
-  n_layers: 5
+  n_layers: 10          # Chapter 4/7 scintillator range convention
   n_staves_per_layer: 32
   stave_length: 550.0   # cm
   stave_width: 5.0      # cm

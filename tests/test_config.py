@@ -29,6 +29,7 @@ def test_default_config_discovery_finds_packaged_geometry_config():
     cfg = config_module.load_config(force_reload=True)
     assert cfg["physics"]["pi0_mass"] == pytest.approx(134.977)
     assert cfg["tpc"]["n_layers"] == 20
+    assert cfg["scintillator"]["n_layers"] == 10
 
 
 def test_load_config_accepts_explicit_config_path(tmp_path):
