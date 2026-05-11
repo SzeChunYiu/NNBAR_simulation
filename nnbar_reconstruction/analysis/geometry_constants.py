@@ -1,26 +1,41 @@
 """Audit thesis detector constants against the Python geometry config.
 
 The manifest is intentionally small and evidence-bound: every constant below is
-copied from the checked Chapter 4/5 thesis extracts named in ``source_path``.
+copied from the checked Chapter 4/5 thesis extracts named by ``source_file``.
 C++ geometry remains read-only for this audit unit.
 """
 
 from __future__ import annotations
 
 from dataclasses import dataclass
+import os
 from pathlib import Path
 from typing import Any, Mapping, Sequence
 
 from nnbar_reconstruction.utils.config import load_config
 
-CHAPTER4_SOURCE = (
-    "/Volumes/MyDrive/nnbar/phd thesis/thesis_extracted/"
-    "4_HIBEAM_NNBAR_detector_setup.tex"
-)
-CHAPTER5_SOURCE = (
-    "/Volumes/MyDrive/nnbar/phd thesis/thesis_extracted/"
-    "5_Detector_simulation.tex"
-)
+THESIS_EXTRACT_DIR_ENV = "NNBAR_THESIS_EXTRACT_DIR"
+CHAPTER4_SOURCE_FILE = "4_HIBEAM_NNBAR_detector_setup.tex"
+CHAPTER5_SOURCE_FILE = "5_Detector_simulation.tex"
+
+
+def default_thesis_extract_dir() -> Path:
+    """Return the repo-layout default directory for extracted thesis sources."""
+    simulation_root = Path(__file__).resolve().parents[2]
+    return (simulation_root / ".." / ".." / "phd thesis" / "thesis_extracted").resolve()
+
+
+def thesis_extract_dir() -> Path:
+    """Return the thesis extract directory, honoring the environment override."""
+    override = os.environ.get(THESIS_EXTRACT_DIR_ENV)
+    if override:
+        return Path(override).expanduser().resolve()
+    return default_thesis_extract_dir()
+
+
+def resolve_thesis_source_path(source_file: str) -> Path:
+    """Resolve a thesis source file below the configured extract directory."""
+    return (thesis_extract_dir() / source_file).resolve()
 
 
 @dataclass(frozen=True)
@@ -33,7 +48,7 @@ class ThesisConstant:
         thesis_value: Value verified from the thesis extract.
         thesis_unit: Unit for ``thesis_value``.
         config_unit: Unit used by the current Python config value.
-        source_path: Thesis extract file that contains the value.
+        source_file: Thesis extract filename that contains the value.
         source_note: Short provenance note without line-number claims.
         tolerance: Absolute comparison tolerance after unit normalization.
     """
@@ -43,9 +58,14 @@ class ThesisConstant:
     thesis_value: float | int
     thesis_unit: str
     config_unit: str
-    source_path: str
+    source_file: str
     source_note: str
     tolerance: float = 1e-6
+
+    @property
+    def source_path(self) -> str:
+        """Return the resolved thesis extract path for this constant."""
+        return str(resolve_thesis_source_path(self.source_file))
 
     @property
     def expected(self) -> float | int:
@@ -100,30 +120,30 @@ class GeometryAuditReport:
 
 
 _MANIFEST_ROWS = (
-    ("tpc_type1_width_cm", ("tpc", "type1", "width"), 0.85, "m", "cm", CHAPTER4_SOURCE, "Ch.4: Type-I TPC is 0.85 m x 1.87 m x 2 m."),
-    ("tpc_type1_height_cm", ("tpc", "type1", "height"), 1.87, "m", "cm", CHAPTER4_SOURCE, "Ch.4: Type-I TPC is 0.85 m x 1.87 m x 2 m."),
-    ("tpc_type2_width_cm", ("tpc", "type2", "width"), 2.04, "m", "cm", CHAPTER4_SOURCE, "Ch.4: Type-II TPC is 2.04 m x 0.85 m x 2 m."),
-    ("tpc_type2_height_cm", ("tpc", "type2", "height"), 0.85, "m", "cm", CHAPTER4_SOURCE, "Ch.4: Type-II TPC is 2.04 m x 0.85 m x 2 m."),
-    ("tpc_w_value_ev", ("tpc", "w_value"), 27.4, "eV", "eV", CHAPTER5_SOURCE, "Ch.5: Ar/CO2 composite W value is 27.4 eV."),
-    ("tpc_container_wall_cm", ("tpc", "container_wall_thickness"), 2.0, "mm", "cm", CHAPTER4_SOURCE, "Ch.4: TPC aluminium container thickness is 2 mm."),
-    ("tpc_cell_width_cm", ("tpc", "cell_width"), 1.0, "cm", "cm", CHAPTER5_SOURCE, "Ch.5: TPC readout cells are 1 cm x 1 cm x 2 m."),
-    ("tpc_cell_height_cm", ("tpc", "cell_height"), 1.0, "cm", "cm", CHAPTER5_SOURCE, "Ch.5: TPC readout cells are 1 cm x 1 cm x 2 m."),
-    ("tpc_cell_length_cm", ("tpc", "cell_length"), 2.0, "m", "cm", CHAPTER5_SOURCE, "Ch.5: TPC readout cells are 1 cm x 1 cm x 2 m."),
-    ("scintillator_layer_count", ("scintillator", "n_layers"), 10, "count", "count", CHAPTER4_SOURCE, "Ch.4: a scintillator module contains 10 layers."),
-    ("scintillator_staves_per_layer", ("scintillator", "n_staves_per_layer"), 4, "count", "count", CHAPTER4_SOURCE, "Ch.4: each scintillator layer has four staves."),
-    ("scintillator_stave_width_cm", ("scintillator", "stave_width"), 10.0, "cm", "cm", CHAPTER4_SOURCE, "Ch.4: stave dimensions are 10 cm x 3 cm x 40 cm."),
-    ("scintillator_stave_thickness_cm", ("scintillator", "stave_thickness"), 3.0, "cm", "cm", CHAPTER4_SOURCE, "Ch.4: stave dimensions are 10 cm x 3 cm x 40 cm."),
-    ("scintillator_stave_length_cm", ("scintillator", "stave_length"), 40.0, "cm", "cm", CHAPTER4_SOURCE, "Ch.4: stave dimensions are 10 cm x 3 cm x 40 cm."),
-    ("scintillator_tpc_gap_cm", ("scintillator", "gap_above_tpc"), 5.0, "cm", "cm", CHAPTER4_SOURCE, "Ch.4: scintillator modules sit 5 cm above TPC modules."),
-    ("scintillator_layer_spacing_cm", ("scintillator", "layer_spacing"), 5.0, "cm", "cm", CHAPTER4_SOURCE, "Ch.4: scintillator modules are spaced 5 cm apart."),
-    ("lead_glass_block_width_cm", ("calorimeter", "module_size"), 8.0, "cm", "cm", CHAPTER4_SOURCE, "Ch.4: SF-5 lead-glass blocks are 8 cm x 8 cm x 25 cm."),
-    ("lead_glass_block_height_cm", ("calorimeter", "module_size"), 8.0, "cm", "cm", CHAPTER4_SOURCE, "Ch.4: SF-5 lead-glass blocks are 8 cm x 8 cm x 25 cm."),
-    ("lead_glass_block_length_cm", ("calorimeter", "module_length"), 25.0, "cm", "cm", CHAPTER4_SOURCE, "Ch.4: SF-5 lead-glass blocks are 8 cm x 8 cm x 25 cm."),
-    ("lead_glass_reflectivity_percent", ("calorimeter", "reflectivity"), 90.0, "percent", "percent", CHAPTER5_SOURCE, "Ch.5: lead-glass reflective optical surface assumes 90 percent."),
-    ("cosmic_veto_half_x_cm", ("shield", "half_x"), 3.2, "m", "cm", CHAPTER4_SOURCE, "Ch.4: cosmic-veto envelope is 6.4 m x 6.4 m x 7.2 m."),
-    ("cosmic_veto_half_y_cm", ("shield", "half_y"), 3.2, "m", "cm", CHAPTER4_SOURCE, "Ch.4: cosmic-veto envelope is 6.4 m x 6.4 m x 7.2 m."),
-    ("cosmic_veto_half_z_cm", ("shield", "half_z"), 3.6, "m", "cm", CHAPTER4_SOURCE, "Ch.4: cosmic-veto envelope is 6.4 m x 6.4 m x 7.2 m."),
-    ("passive_shield_thickness_cm", ("shield", "passive_concrete_thickness"), 2.0, "m", "cm", CHAPTER4_SOURCE, "Ch.4: passive concrete shielding is 2 m thick."),
+    ("tpc_type1_width_cm", ("tpc", "type1", "width"), 0.85, "m", "cm", CHAPTER4_SOURCE_FILE, "Ch.4: Type-I TPC is 0.85 m x 1.87 m x 2 m."),
+    ("tpc_type1_height_cm", ("tpc", "type1", "height"), 1.87, "m", "cm", CHAPTER4_SOURCE_FILE, "Ch.4: Type-I TPC is 0.85 m x 1.87 m x 2 m."),
+    ("tpc_type2_width_cm", ("tpc", "type2", "width"), 2.04, "m", "cm", CHAPTER4_SOURCE_FILE, "Ch.4: Type-II TPC is 2.04 m x 0.85 m x 2 m."),
+    ("tpc_type2_height_cm", ("tpc", "type2", "height"), 0.85, "m", "cm", CHAPTER4_SOURCE_FILE, "Ch.4: Type-II TPC is 2.04 m x 0.85 m x 2 m."),
+    ("tpc_w_value_ev", ("tpc", "w_value"), 27.4, "eV", "eV", CHAPTER5_SOURCE_FILE, "Ch.5: Ar/CO2 composite W value is 27.4 eV."),
+    ("tpc_container_wall_cm", ("tpc", "container_wall_thickness"), 2.0, "mm", "cm", CHAPTER4_SOURCE_FILE, "Ch.4: TPC aluminium container thickness is 2 mm."),
+    ("tpc_cell_width_cm", ("tpc", "cell_width"), 1.0, "cm", "cm", CHAPTER5_SOURCE_FILE, "Ch.5: TPC readout cells are 1 cm x 1 cm x 2 m."),
+    ("tpc_cell_height_cm", ("tpc", "cell_height"), 1.0, "cm", "cm", CHAPTER5_SOURCE_FILE, "Ch.5: TPC readout cells are 1 cm x 1 cm x 2 m."),
+    ("tpc_cell_length_cm", ("tpc", "cell_length"), 2.0, "m", "cm", CHAPTER5_SOURCE_FILE, "Ch.5: TPC readout cells are 1 cm x 1 cm x 2 m."),
+    ("scintillator_layer_count", ("scintillator", "n_layers"), 10, "count", "count", CHAPTER4_SOURCE_FILE, "Ch.4: a scintillator module contains 10 layers."),
+    ("scintillator_staves_per_layer", ("scintillator", "n_staves_per_layer"), 4, "count", "count", CHAPTER4_SOURCE_FILE, "Ch.4: each scintillator layer has four staves."),
+    ("scintillator_stave_width_cm", ("scintillator", "stave_width"), 10.0, "cm", "cm", CHAPTER4_SOURCE_FILE, "Ch.4: stave dimensions are 10 cm x 3 cm x 40 cm."),
+    ("scintillator_stave_thickness_cm", ("scintillator", "stave_thickness"), 3.0, "cm", "cm", CHAPTER4_SOURCE_FILE, "Ch.4: stave dimensions are 10 cm x 3 cm x 40 cm."),
+    ("scintillator_stave_length_cm", ("scintillator", "stave_length"), 40.0, "cm", "cm", CHAPTER4_SOURCE_FILE, "Ch.4: stave dimensions are 10 cm x 3 cm x 40 cm."),
+    ("scintillator_tpc_gap_cm", ("scintillator", "gap_above_tpc"), 5.0, "cm", "cm", CHAPTER4_SOURCE_FILE, "Ch.4: scintillator modules sit 5 cm above TPC modules."),
+    ("scintillator_layer_spacing_cm", ("scintillator", "layer_spacing"), 5.0, "cm", "cm", CHAPTER4_SOURCE_FILE, "Ch.4: scintillator modules are spaced 5 cm apart."),
+    ("lead_glass_block_width_cm", ("calorimeter", "module_size"), 8.0, "cm", "cm", CHAPTER4_SOURCE_FILE, "Ch.4: SF-5 lead-glass blocks are 8 cm x 8 cm x 25 cm."),
+    ("lead_glass_block_height_cm", ("calorimeter", "module_size"), 8.0, "cm", "cm", CHAPTER4_SOURCE_FILE, "Ch.4: SF-5 lead-glass blocks are 8 cm x 8 cm x 25 cm."),
+    ("lead_glass_block_length_cm", ("calorimeter", "module_length"), 25.0, "cm", "cm", CHAPTER4_SOURCE_FILE, "Ch.4: SF-5 lead-glass blocks are 8 cm x 8 cm x 25 cm."),
+    ("lead_glass_reflectivity_percent", ("calorimeter", "reflectivity"), 90.0, "percent", "percent", CHAPTER5_SOURCE_FILE, "Ch.5: lead-glass reflective optical surface assumes 90 percent."),
+    ("cosmic_veto_half_x_cm", ("shield", "half_x"), 3.2, "m", "cm", CHAPTER4_SOURCE_FILE, "Ch.4: cosmic-veto envelope is 6.4 m x 6.4 m x 7.2 m."),
+    ("cosmic_veto_half_y_cm", ("shield", "half_y"), 3.2, "m", "cm", CHAPTER4_SOURCE_FILE, "Ch.4: cosmic-veto envelope is 6.4 m x 6.4 m x 7.2 m."),
+    ("cosmic_veto_half_z_cm", ("shield", "half_z"), 3.6, "m", "cm", CHAPTER4_SOURCE_FILE, "Ch.4: cosmic-veto envelope is 6.4 m x 6.4 m x 7.2 m."),
+    ("passive_shield_thickness_cm", ("shield", "passive_concrete_thickness"), 2.0, "m", "cm", CHAPTER4_SOURCE_FILE, "Ch.4: passive concrete shielding is 2 m thick."),
 )
 
 THESIS_DETECTOR_CONSTANTS: tuple[ThesisConstant, ...] = tuple(

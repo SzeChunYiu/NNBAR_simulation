@@ -72,6 +72,28 @@ def test_current_config_audit_is_deterministic_and_exposes_known_drift():
     assert report.counts["missing"] > 0
 
 
+def test_manifest_source_paths_can_use_env_override(monkeypatch, tmp_path):
+    monkeypatch.setenv("NNBAR_THESIS_EXTRACT_DIR", str(tmp_path))
+
+    chapter4_constant = next(
+        constant
+        for constant in THESIS_DETECTOR_CONSTANTS
+        if constant.name == "tpc_type1_width_cm"
+    )
+    chapter5_constant = next(
+        constant
+        for constant in THESIS_DETECTOR_CONSTANTS
+        if constant.name == "tpc_w_value_ev"
+    )
+
+    assert Path(chapter4_constant.source_path) == (
+        tmp_path / "4_HIBEAM_NNBAR_detector_setup.tex"
+    ).resolve()
+    assert Path(chapter5_constant.source_path) == (
+        tmp_path / "5_Detector_simulation.tex"
+    ).resolve()
+
+
 def test_manifest_source_paths_are_existing_thesis_extracts():
     for constant in THESIS_DETECTOR_CONSTANTS:
         assert Path(constant.source_path).exists(), constant.name
