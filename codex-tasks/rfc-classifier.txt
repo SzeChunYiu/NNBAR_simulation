@@ -1,1 +1,1 @@
-/goal You are PANE 1, lane scintillator-layer-count. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/scintillator-layer-count.md, align scintillator range/config to thesis 10-layer convention, add focused regressions, update MASTER_PLAN.
+/goal You are PANE 1, lane charged-pid-tn-calibration. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/charged-pid-tn-calibration.md, complete one compact-safe iteration to calibrate or explicitly block thesis t(n) charged PID, with regressions.
