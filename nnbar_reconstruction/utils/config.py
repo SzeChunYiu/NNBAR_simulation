@@ -17,7 +17,6 @@ Usage:
     tpc_layers = get_config('tpc.n_layers')
 """
 
-import os
 from pathlib import Path
 from typing import Any, Dict, Optional, Union
 
@@ -33,24 +32,31 @@ _config_cache: Optional[Dict[str, Any]] = None
 _config_path: Optional[Path] = None
 
 
-def get_default_config_path() -> Path:
-    """Get the default path to the configuration file."""
-    # Try multiple locations
-    # __file__ is utils/config.py, so parent.parent is nnbar_reconstruction/
-    nnbar_recon_dir = Path(__file__).parent.parent
+def _default_config_candidates() -> tuple[Path, ...]:
+    """Return repo/package-relative default configuration candidates."""
+    # __file__ is utils/config.py, so parent.parent is nnbar_reconstruction/.
+    nnbar_recon_dir = Path(__file__).resolve().parent.parent
 
-    possible_paths = [
+    return (
         nnbar_recon_dir / "config" / "nnbar_geometry.yaml",
         nnbar_recon_dir.parent / "config" / "nnbar_geometry.yaml",
-        Path("/home/billy/nnbar/simulation/nnbar_reconstruction/config/nnbar_geometry.yaml"),
-        Path("/home/billy/nnbar/simulation/config/nnbar_geometry.yaml"),
-    ]
+    )
+
+
+def get_default_config_path() -> Path:
+    """Get the default path to the configuration file.
+
+    Discovery is intentionally limited to paths relative to this package and
+    checkout; machine-specific absolute fallbacks make the loader non-portable.
+    """
+    possible_paths = _default_config_candidates()
 
     for path in possible_paths:
         if path.exists():
             return path
 
-    # Return the expected path even if it doesn't exist
+    # Return the expected packaged path even if it doesn't exist, so callers get
+    # a deterministic FileNotFoundError from load_config().
     return possible_paths[0]
 
 
