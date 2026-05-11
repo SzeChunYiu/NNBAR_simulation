@@ -257,10 +257,25 @@ def reconstruct_charged_object(
     # For now, use calorimeter energy + TPC energy deposit
     total_energy = scint_energy + lg_energy + track.total_energy_dep
 
-    # Momentum magnitude estimate from dE/dx
-    # This is approximate - proper momentum requires more information
-    from .object_identification import momentum_from_dedx
-    momentum_mag = momentum_from_dedx(dedx, 139.57)  # Assume pion
+    # Momentum magnitude estimate from dE/dx is only dimensionally valid for
+    # the legacy MeV/cm eDep/path fallback.  Current electron-count dE/dx is
+    # e-/cm and must not be fed to the Bethe-Bloch MeV/cm inversion.
+    from .charged_pid import CHARGED_PID_TN_UNITS
+    from .object_identification import (
+        LEGACY_DEDX_UNITS_MEV_PER_CM,
+        momentum_from_dedx_if_legacy_mev_per_cm,
+    )
+
+    dedx_units = (
+        CHARGED_PID_TN_UNITS
+        if "electrons" in tpc_data.columns
+        else LEGACY_DEDX_UNITS_MEV_PER_CM
+    )
+    momentum_mag = momentum_from_dedx_if_legacy_mev_per_cm(
+        dedx,
+        139.57,  # pion mass hypothesis for the legacy fallback
+        dedx_units,
+    )
 
     return ChargedObject(
         object_id=object_id,

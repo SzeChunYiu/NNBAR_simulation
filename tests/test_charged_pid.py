@@ -71,3 +71,100 @@ def test_object_identification_wrapper_uses_electron_count_thresholds(monkeypatc
     assert proton_type == ParticleType.PROTON
     assert invalid_type == ParticleType.UNKNOWN
     assert invalid_confidence == 0.0
+
+
+def test_identify_particle_type_does_not_feed_electron_dedx_to_bethe_bloch(monkeypatch):
+    import nnbar_reconstruction.reconstruction.object_identification as object_id
+    from nnbar_reconstruction.reconstruction.charged_pid import threshold_for_scintillator_range
+    from nnbar_reconstruction.reconstruction.object_identification import (
+        ParticleType,
+        identify_particle_type,
+    )
+
+    def fail_if_called(*_args, **_kwargs):
+        raise AssertionError("e-/cm dE/dx must not be inverted as MeV/cm")
+
+    monkeypatch.setattr(object_id, "momentum_from_dedx", fail_if_called)
+
+    pid = identify_particle_type(
+        dedx=threshold_for_scintillator_range(5) + 0.1,
+        scint_range=5,
+        total_energy=120.0,
+        is_charged=True,
+    )
+
+    assert pid.particle_type == ParticleType.PROTON
+    assert pid.momentum_estimate == 0.0
+    assert pid.beta_gamma == 0.0
+
+
+def test_legacy_mev_dedx_momentum_fallback_is_explicit(monkeypatch):
+    import nnbar_reconstruction.reconstruction.object_identification as object_id
+    from nnbar_reconstruction.reconstruction.object_identification import (
+        identify_particle_type,
+    )
+
+    monkeypatch.setattr(object_id, "momentum_from_dedx", lambda dedx, mass: 321.0)
+
+    pid = identify_particle_type(
+        dedx=2.0,
+        scint_range=5,
+        total_energy=120.0,
+        is_charged=True,
+        dedx_units="MeV/cm",
+    )
+
+    assert pid.momentum_estimate == 321.0
+    assert pid.beta_gamma > 0.0
+
+
+def test_reconstruct_charged_object_does_not_invert_electron_dedx(monkeypatch):
+    import numpy as np
+    import pandas as pd
+
+    import nnbar_reconstruction.reconstruction.object_identification as object_id
+    from nnbar_reconstruction.reconstruction.charged_reconstruction import (
+        reconstruct_charged_object,
+    )
+    from nnbar_reconstruction.tracking.track_fitting import Track
+
+    def fail_if_called(*_args, **_kwargs):
+        raise AssertionError("electron-count dE/dx has no MeV/cm momentum inversion")
+
+    monkeypatch.setattr(object_id, "momentum_from_dedx", fail_if_called)
+
+    track = Track(
+        track_id=1,
+        center=np.array([0.5, 0.0, 0.0]),
+        direction=np.array([1.0, 0.0, 0.0]),
+        head=np.array([0.0, 0.0, 0.0]),
+        tail=np.array([1.0, 0.0, 0.0]),
+        length=1.0,
+        n_hits=2,
+        rms_residual=0.0,
+        linearity=1.0,
+        hit_indices=np.array([0, 1]),
+        total_electrons=120.0,
+        total_energy_dep=0.2,
+    )
+    tpc_data = pd.DataFrame(
+        {
+            "x": [0.0, 1.0],
+            "y": [0.0, 0.0],
+            "z": [0.0, 0.0],
+            "Layer_ID": [1, 1],
+            "electrons": [60.0, 60.0],
+            "eDep": [0.1, 0.1],
+        }
+    )
+
+    obj = reconstruct_charged_object(
+        track=track,
+        vertex=np.zeros(3),
+        tpc_data=tpc_data,
+        scint_data=pd.DataFrame(columns=["x", "y", "z", "eDep", "Layer_ID"]),
+        lg_data=pd.DataFrame(columns=["x", "y", "z", "eDep"]),
+        object_id=7,
+    )
+
+    assert obj.momentum_magnitude == 0.0

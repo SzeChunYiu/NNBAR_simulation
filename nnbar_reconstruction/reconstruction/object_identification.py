@@ -19,6 +19,7 @@ from enum import Enum
 
 from ..utils.config import get_particle_id_params
 from .charged_pid import (
+    CHARGED_PID_TN_UNITS,
     ChargedPIDRangeError,
     classify_pion_proton_e_per_cm,
 )
@@ -65,6 +66,21 @@ BETHE_BLOCH_PARAMS = {
     'density': 1.662e-3, # g/cm^3 at STP
     'rho_correction': 0.2,
 }
+
+LEGACY_DEDX_UNITS_MEV_PER_CM = "MeV/cm"
+
+
+def _is_legacy_mev_per_cm(dedx_units: str) -> bool:
+    """Return whether ``dedx_units`` denotes the legacy eDep/path observable."""
+    normalized = dedx_units.replace(" ", "").lower()
+    if normalized in {"mev/cm", "mevpercm", "mevcm^-1", "mevcm-1"}:
+        return True
+    if normalized in {"e-/cm", "electrons/cm", "electronspercm", "e/cm"}:
+        return False
+    raise ValueError(
+        "dedx_units must be 'e-/cm' for the thesis electron-count path "
+        "or 'MeV/cm' for the legacy eDep/path fallback"
+    )
 
 
 def bethe_bloch_dedx(
@@ -146,6 +162,17 @@ def momentum_from_dedx(
     momentum = mass * best_bg
 
     return momentum
+
+
+def momentum_from_dedx_if_legacy_mev_per_cm(
+    dedx: float,
+    mass: float,
+    dedx_units: str = CHARGED_PID_TN_UNITS,
+) -> float:
+    """Estimate momentum only when dE/dx is the legacy MeV/cm observable."""
+    if not _is_legacy_mev_per_cm(dedx_units):
+        return 0.0
+    return momentum_from_dedx(dedx, mass)
 
 
 def identify_pion_proton(
@@ -338,16 +365,22 @@ def identify_particle_type(
     total_energy: float,
     is_charged: bool,
     track_length: float = 0.0,
+    dedx_units: str = CHARGED_PID_TN_UNITS,
 ) -> ParticleID:
     """
     Full particle identification for a reconstructed object.
 
     Args:
-        dedx: Truncated mean dE/dx in MeV/cm.
+        dedx: Truncated mean TPC dE/dx.  The default/current thesis path is
+            e-/cm from ionization electrons.  Pass ``dedx_units="MeV/cm"``
+            only for old eDep/path samples that explicitly need the legacy
+            Bethe-Bloch momentum fallback.
         scint_range: Number of scintillator layers penetrated.
         total_energy: Total deposited energy in MeV.
         is_charged: Whether object left TPC track.
         track_length: TPC track length in cm.
+        dedx_units: ``"e-/cm"`` for the thesis electron-count path or
+            ``"MeV/cm"`` for the legacy eDep/path fallback.
 
     Returns:
         ParticleID result.
@@ -374,8 +407,9 @@ def identify_particle_type(
     else:
         mass = 139.57
 
-    # Estimate momentum from dE/dx
-    momentum = momentum_from_dedx(dedx, mass)
+    # Estimate momentum only for the legacy MeV/cm fallback.  The active
+    # electron-count dE/dx path is intentionally not inverted as MeV/cm.
+    momentum = momentum_from_dedx_if_legacy_mev_per_cm(dedx, mass, dedx_units)
 
     # Calculate βγ
     if mass > 0:
