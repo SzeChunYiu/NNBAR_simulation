@@ -23,8 +23,9 @@ browser-only step. You (the worker) cannot bypass it.
    - Required command after download:
      ```bash
      # On the workstation that downloaded the .sh installer:
-     rsync -av NVIDIA-OptiX-SDK-9.0.0-linux64.sh lunarc:/projects/hep/fs10/shared/nnbar/billy/packages/
-     ssh lunarc 'cd /projects/hep/fs10/shared/nnbar/billy/packages && sh NVIDIA-OptiX-SDK-9.0.0-linux64.sh --skip-license --include-subdir --prefix=.'
+     rtk proxy bash -lc 'ssh -O check lunarc 2>/dev/null && echo "Connected" || /Users/billy/lunarc-init.sh'
+     rtk proxy rsync -av NVIDIA-OptiX-SDK-9.0.0-linux64.sh lunarc:/projects/hep/fs10/shared/nnbar/billy/packages/
+     rtk proxy ssh lunarc 'cd /projects/hep/fs10/shared/nnbar/billy/packages && sh NVIDIA-OptiX-SDK-9.0.0-linux64.sh --skip-license --include-subdir --prefix=.'
      ```
 2. Verify the install plan compiles into a real next step (no ambiguity)
 3. Commit the blocker note
@@ -35,6 +36,7 @@ browser-only step. You (the worker) cannot bypass it.
 Search exhaustively before assuming Path A:
 
 ```bash
+rtk proxy bash -lc 'ssh -O check lunarc 2>/dev/null && echo "Connected" || /Users/billy/lunarc-init.sh'
 rtk proxy ssh lunarc 'find /sw /opt /usr/local /projects /home -name "optix.h" -o -name "OptixSDK*" -o -name "NVIDIA-OptiX*" 2>/dev/null | head -30'
 rtk proxy ssh lunarc 'module spider optix 2>&1 | grep -i optix'
 rtk proxy ssh lunarc 'find /scratch -iname "*optix*" 2>/dev/null | head'

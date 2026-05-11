@@ -79,7 +79,11 @@ validation passes.
 1. Read this spec and `docs/specs/g4gpu-line-by-line-acceleration.md`
 2. Mark `g4gpu-phase5` RUNNING in `docs/parallel-sessions/MASTER_PLAN.md`
 3. Implement one subphase (5a, 5b, 5c, or 5d.N)
-4. Verify on LUNARC: `rtk proxy ssh lunarc "cd /projects/hep/fs10/shared/nnbar/billy/geant4-gpu && cmake --build build -j8 && ctest --test-dir build"`
+4. Verify on LUNARC:
+   ```bash
+   rtk proxy bash -lc 'ssh -O check lunarc 2>/dev/null && echo "Connected" || /Users/billy/lunarc-init.sh'
+   rtk proxy ssh lunarc "cd /projects/hep/fs10/shared/nnbar/billy/geant4-gpu && cmake --build build -j8 && ctest --test-dir build"
+   ```
 5. Commit on `lane/g4gpu-phase5`, push to GitHub
 6. If all subphases done, mark `g4gpu-phase5` DONE; else stop and re-iterate
 

@@ -104,7 +104,9 @@ At the end of every lane goal, the codex agent MUST:
 
 ## Key Facts Every Lane Needs
 
-- LUNARC SSH: `ssh lunarc "cmd"` — pre-multiplexed
+- LUNARC SSH: first run
+  `rtk proxy bash -lc 'ssh -O check lunarc 2>/dev/null && echo "Connected" || /Users/billy/lunarc-init.sh'`,
+  then use `rtk proxy ssh lunarc "cmd"`.
 - SLURM account: `lu2026-2-51` | partition: `lu48` (CPU), `gpua40` (GPU)
 - Source on LUNARC: `/projects/hep/fs10/shared/nnbar/billy/NNBAR_Detector_sim/`
 - Geant4 install: `/projects/hep/fs10/shared/nnbar/billy/packages/hibeam_env/`
