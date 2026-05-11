@@ -1,2 +1,1 @@
 /goal You are PANE 3, lane mcaccel-competitor-benchmarks. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/mcaccel-competitor-benchmarks.md in /Volumes/MyDrive/nnbar/nnbar/simulation, then complete one compact-safe iteration (start with AdePT).
-/goal You are PANE 3, lane mcaccel-openmc-adapter. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/mcaccel-openmc-adapter.md in /Volumes/MyDrive/nnbar/nnbar/simulation, then complete one compact-safe iteration (iteration 1 bootstrap).
