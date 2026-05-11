@@ -11,6 +11,9 @@ supervisor:
 	CODEX_SUPERVISOR_ON_COMPLETE=queue \
 	CODEX_SUPERVISOR_CONTINUOUS_LANES="worker-0 worker-1 worker-2 planner" \
 	CODEX_SUPERVISOR_PLANNER=0 \
+	CODEX_SUPERVISOR_MIN_FREE_RAM_MB=1500 \
+	CODEX_SUPERVISOR_MAX_LOAD_PER_CPU=0.9 \
+	CODEX_SUPERVISOR_MAX_ITERATION_SECS=900 \
 	~/codex-supervisor.sh start --no-attach
 
 supervisor-stop:

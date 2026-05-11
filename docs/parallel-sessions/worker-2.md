@@ -65,4 +65,7 @@ will pick the next queued task automatically.
 - Do NOT touch C++ files or LUNARC infrastructure (pane 0's scope)
 - Do NOT claim tasks already in worker-1.txt (check before claiming)
 - Working directory: `/Volumes/MyDrive/nnbar/nnbar/simulation/`
-- Run tests with: `python -m pytest tests/ -x -q`
+- Run tests with: `python -m pytest tests/ -x -q 2>&1 | tail -20`
+- **Local resource policy**: pytest unit tests are acceptable locally. Do NOT
+  run large data pipelines, ML training, or SLURM jobs locally. Training,
+  large-scale inference, and data generation go to LUNARC.

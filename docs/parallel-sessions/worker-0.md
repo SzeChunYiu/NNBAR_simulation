@@ -43,7 +43,8 @@ take priority.
 2. Commit: `rtk git commit -m "wip: mark <task> RUNNING"`
 3. Read the task's spec file (e.g. `docs/parallel-sessions/g4gpu-phase1.md`)
 4. Implement the task fully per the spec
-5. Run any required verification (build check, test, etc.)
+5. Run any required verification — **ALL builds and tests must run on LUNARC,
+   not locally** (see constraints below)
 6. Commit the implementation
 7. Update MASTER_PLAN.md: `RUNNING` → `DONE`
 8. Commit: `rtk git commit -m "feat(<lane>): <description>"`
@@ -60,6 +61,22 @@ WORKER-0 IDLE: no matching NEXT tasks in MASTER_PLAN.md
 Then stop. The supervisor will resend this prompt when new tasks are added.
 
 ## Important constraints
+
+### Resource policy — no heavy local work
+- **NEVER run cmake, make, g++, nvcc, or any C++/CUDA compiler locally.**
+  This machine is memory-constrained (190 MB free RAM). ALL compilation goes to
+  LUNARC via SSH.
+- **NEVER run SLURM simulations locally.** Use `sbatch` on LUNARC.
+- **NEVER run large data-processing scripts locally.** Run on LUNARC.
+- Python `pytest` (unit tests only, < 30 s) is acceptable locally.
+- Code-editing, git commits, MASTER_PLAN.md updates are always fine locally.
+
+Build pattern (always SSH to LUNARC):
+```bash
+# Sync source first, then build on LUNARC:
+rtk proxy rsync -av /Volumes/MyDrive/nnbar/geant4-gpu/ lunarc:/projects/hep/fs10/shared/nnbar/billy/geant4-gpu/
+rtk proxy ssh lunarc "cd /projects/hep/fs10/shared/nnbar/billy/geant4-gpu && cmake --build build -j8 2>&1 | tail -30"
+```
 
 - Only write files inside the task's specified writable scope
 - Do NOT touch Python files in `nnbar_reconstruction/` (pane 1's scope)
