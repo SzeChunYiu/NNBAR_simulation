@@ -1,2 +1,3 @@
-/goal You are PANE 1, lane tpc-response-boundary-audit. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/tpc-response-boundary-audit.md in /Volumes/MyDrive/nnbar/nnbar/simulation, then complete one compact-safe iteration.
 /goal You are PANE 1, lane thesis-ledger-command-closure. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/thesis-ledger-command-closure.md in /Volumes/MyDrive/nnbar/nnbar/simulation, then complete one compact-safe iteration.
+/goal You are PANE 1, lane hibeam-gnn-feature-contract. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/hibeam-gnn-feature-contract.md in /Volumes/MyDrive/nnbar/nnbar/simulation, then complete one compact-safe iteration.
+/goal You are PANE 1, lane hibeam-vertex-method-closure. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/hibeam-vertex-method-closure.md in /Volumes/MyDrive/nnbar/nnbar/simulation, then complete one compact-safe iteration.
