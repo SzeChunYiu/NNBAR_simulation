@@ -102,6 +102,15 @@ def test_calorimeter_threshold_triggers_with_fewer_than_two_tpc_tracks():
     assert result["total_energy"] == 100.0
 
 
+def test_calorimeter_energy_below_threshold_does_not_trigger_alone():
+    tpc_hits = pd.DataFrame({"t": [100.0], "track_id": [42]})
+    scint_hits = pd.DataFrame({"t": [100.0], "eDep": [99.999]})
+
+    result = rolling_time_window_trigger(tpc_hits, scint_hits, _empty_hits())
+
+    assert result["triggered"] is False
+
+
 def test_default_tpc_trigger_requires_more_than_one_legacy_hit():
     _, _, n_triggers = find_event_time(
         np.array([100.0]),
