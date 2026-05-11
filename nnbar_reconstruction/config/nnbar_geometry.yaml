@@ -135,7 +135,7 @@ reconstruction:
   # Event timing
   trigger_window: 50.0      # ns
   trigger_step: 10.0        # ns
-  min_tpc_tracks: 1
+  min_tpc_tracks: 2      # thesis Ch. 7: more than one TPC track
   min_calo_energy: 100.0    # MeV
 
   # Object reconstruction
