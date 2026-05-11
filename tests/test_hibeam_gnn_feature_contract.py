@@ -1,4 +1,7 @@
+import os
 from pathlib import Path
+
+import pytest
 
 from nnbar_reconstruction.analysis.hibeam_gnn_feature_contract import (
     DEPLOYABLE,
@@ -11,6 +14,56 @@ from nnbar_reconstruction.analysis.hibeam_gnn_feature_contract import (
     audit_preparation_script_text,
     audit_result_manifest,
 )
+
+
+HIBEAM_ARTICLE_TEX_ENV = "NNBAR_HIBEAM_ARTICLE_TEX"
+REPO_ROOT = Path(__file__).resolve().parents[1]
+PREP_SCRIPT_PATHS = (
+    Path("nnbar_reconstruction/training/prepare_training_data.py"),
+    Path("nnbar_reconstruction/training/prepare_psignal_from_gun.py"),
+)
+
+
+@pytest.fixture
+def hibeam_article_text():
+    article_path = os.environ.get(HIBEAM_ARTICLE_TEX_ENV)
+    if not article_path:
+        pytest.skip(f"Set {HIBEAM_ARTICLE_TEX_ENV} to audit optional HIBEAM article")
+
+    article = Path(article_path).expanduser()
+    if not article.is_file():
+        pytest.skip(f"{HIBEAM_ARTICLE_TEX_ENV} does not point to a file: {article}")
+
+    return article.read_text()
+
+
+@pytest.fixture
+def hibeam_prep_script_text():
+    missing = []
+    text_parts = []
+    for relative_path in PREP_SCRIPT_PATHS:
+        path = REPO_ROOT / relative_path
+        if not path.is_file():
+            missing.append(str(relative_path))
+            continue
+        text_parts.append(path.read_text())
+
+    if missing:
+        pytest.skip("Missing optional HIBEAM prep evidence files: " + ", ".join(missing))
+
+    return "\n".join(text_parts)
+
+
+def test_tests_do_not_embed_machine_specific_hibeam_paper_paths():
+    forbidden_prefixes = (
+        "/" + "Volumes" + "/MyDrive/nnbar/papers",
+        "/" + "Users" + "/",
+        "/" + "home" + "/billy",
+    )
+    source = Path(__file__).read_text()
+
+    for forbidden_prefix in forbidden_prefixes:
+        assert forbidden_prefix not in source
 
 
 def _deployable_schema():
@@ -113,20 +166,16 @@ def test_paper_todo_and_placeholder_metrics_are_blockers():
     assert "article_placeholder_metric" in audit.blockers
 
 
-def test_current_article_and_prep_scripts_surface_fail_closed_blockers():
-    article = Path("/Volumes/MyDrive/nnbar/papers/overleaf-696757e2/main.tex")
-    prep_scripts = [
-        Path("nnbar_reconstruction/training/prepare_training_data.py"),
-        Path("nnbar_reconstruction/training/prepare_psignal_from_gun.py"),
-    ]
-
-    article_audit = audit_article_text(article.read_text())
-    prep_audit = audit_preparation_script_text(
-        "\n".join(path.read_text() for path in prep_scripts)
-    )
+def test_supplied_article_text_surfaces_fail_closed_blockers(hibeam_article_text):
+    article_audit = audit_article_text(hibeam_article_text)
 
     assert article_audit.ready is False
     assert "article_todo_marker" in article_audit.blockers
+
+
+def test_current_prep_scripts_surface_fail_closed_blockers(hibeam_prep_script_text):
+    prep_audit = audit_preparation_script_text(hibeam_prep_script_text)
+
     assert prep_audit.ready is False
     assert any(
         blocker.startswith("oracle_training_source:") for blocker in prep_audit.blockers
