@@ -1,1 +1,0 @@
-/goal You are PANE 2, lane fix-hibeam-gnn-paths. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/fix-hibeam-gnn-paths.md in /Volumes/MyDrive/nnbar/nnbar/simulation, then complete one compact-safe iteration.
