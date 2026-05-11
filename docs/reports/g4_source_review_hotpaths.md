@@ -1,6 +1,6 @@
 # Geant4 source review — hot paths
 
-Status: partial, compact-safe iteration 1 of 5. This iteration covers hot path 1, Physics Interaction Length (PIL).
+Status: partial, compact-safe iteration 2 of 5. Iteration 1 covered hot path 1, Physics Interaction Length (PIL); iteration 2 covers hot path 2, geometry navigation.
 
 ## Source provenance and lane notes
 
@@ -8,6 +8,7 @@ Status: partial, compact-safe iteration 1 of 5. This iteration covers hot path 1
 - The LUNARC install exposes headers, libraries, examples, and EasyBuild metadata, but no extracted `source/` tree for the Geant4 implementation files. To avoid editing or building anything on LUNARC, this review used the official upstream Geant4 GitLab archive tag `v11.2.2` downloaded read-only to `/tmp/geant4-v11.2.2`.
 - Spec correction: `source/processes/management/src/G4SteppingManager2.cc` is not present in tag `v11.2.2`; the stepping implementation is `source/tracking/src/G4SteppingManager.cc`.
 - Isolation policy check: this report is documentation-only. No files under `NNBAR_Detector/`, `nnbar_reconstruction/`, `scripts/`, `lunarc/`, `slurm/`, or `macro/` were modified.
+- Iteration 2 reused the same read-only upstream Geant4 tag `v11.2.2` source tree and did not build or run simulations.
 
 ## 1. PIL — Physics Interaction Length
 
@@ -227,18 +228,169 @@ Status: partial, compact-safe iteration 1 of 5. This iteration covers hot path 1
 
 **Reference**: Futamura 1971/1983; Hölzle, Chambers & Ungar 1991.
 
-## Next implementations from PIL review
 
-1. `g4gpu-phase5d-jit-poststep-gpil` — highest dispatch win with bit-exact validation.
-2. `g4gpu-phase5d-physicsvector-binmap` — attacks the shared cross-section lookup inner loop.
-3. `g4gpu-phase5d-physicsvector-interp-precompute` — simple CPU fallback win if rounding policy is settled.
-4. `g4gpu-phase5d-em-gpil-state-cache` — high EM-specific leverage with clear guard conditions.
-5. `g4gpu-phase5d-jit-alongstep-gpil` — mirrors PostStep specialization for charged tracks.
-6. `g4gpu-phase5d-flat-lambda-view` — low-risk data-layout cache for table lookup.
-7. `g4gpu-phase5d-em-lambda-shape-specialization` — removes invariant branch ladders.
-8. `g4gpu-phase5d-gpil-force-fastpath` — small but safe hot/cold branch split.
-9. `g4gpu-phase5d-active-tracking-hooks` — helps short-track/high-secondary events.
-10. `g4gpu-phase6-secondary-track-pool` — larger ownership audit, but important for DoIt-heavy showers.
+## 2. GEO — geometry navigation
+
+### GEO-01 — `source/geometry/navigation/src/G4Navigator.cc:749-948` — per-step navigator dispatch switch
+
+**Current snippet**: `switch( CharacteriseDaughters(motherLogical) )`
+
+**What is slow**: every geometry-limited step classifies daughter layout, branches between normal/voxel/parameterised/regular/external navigators, and then passes the same state bundle through a virtual-ish subnavigator boundary. Most detector regions have stable daughter character after geometry close.
+
+**Optimization**: cache a compact `NavigationKind` descriptor per logical volume during geometry initialization and dispatch through a generated/direct function pointer table. A JIT-specialized transport loop can inline the common voxel and normal cases while preserving exact fallback paths for replicas, parameterisations, and external navigators.
+
+**Expected speedup**: 1.05--1.2x on `G4Navigator::ComputeStep` dispatch overhead; larger in fine-grained geometries with many short steps and few daughter-layout changes.
+
+**Validation strategy**: instrument vanilla and optimized builds to log `(top logical volume, navigation kind, proposed step, chosen step, entering/exiting flags, blocked volume)` for fixed seeds. Require byte-for-byte identical logs across normal, voxel, replica, parameterised, regular, and external test geometries.
+
+**Proposed task**: `g4gpu-phase5e-navigation-kind-specialization`
+
+**Standard technique**: partial evaluation and hot-path dispatch-table specialization.
+
+**Reference**: Futamura 1971/1983; Aho, Sethi & Ullman 1986.
+
+### GEO-02 — `source/geometry/navigation/src/G4NormalNavigation.cc:63-182` and `source/geometry/navigation/src/G4VoxelNavigation.cc:87-206` — daughter transform construction inside candidate loops
+
+**Current snippet**: `G4AffineTransform sampleTf(...); sampleTf.Invert();`
+
+**What is slow**: the daughter loop reconstructs and inverts a transform for every candidate volume before calling `DistanceToIn`; the voxel path repeats the same pattern for each contained volume. Placement rotations/translations are immutable after geometry close, so these inverse transforms are stable.
+
+**Optimization**: precompute immutable mother-to-daughter affine transforms and compact solid pointers in a per-logical-volume navigation cache. The step loop then loads a descriptor and transforms point/direction without constructing or inverting `G4AffineTransform` objects.
+
+**Expected speedup**: 1.1--1.4x in daughter-candidate loops, depending on rotation density and daughter count; highest for calorimeter/tile geometries with many placements per mother.
+
+**Validation strategy**: for every daughter, compare precomputed `TransformPoint`/`TransformAxis` output to the current on-the-fly inversion across deterministic point/direction grids. Then replay fixed-seed geometry steps and require identical selected daughter and step length.
+
+**Proposed task**: `g4gpu-phase5e-transform-descriptor-cache`
+
+**Standard technique**: loop-invariant code motion, immutable descriptor caching, and structure splitting.
+
+**Reference**: Aho, Sethi & Ullman 1986; Khuong & Morin 2015.
+
+### GEO-03 — `source/geometry/navigation/src/G4VoxelNavigation.cc:473-611` — voxel-boundary march recomputes points and divides per depth
+
+**Current snippet**: `targetPoint = localPoint+localDirection*currentDistance;`
+
+**What is slow**: `LocateNextVoxel` recomputes the target point for each voxel depth, reloads header metadata, and divides by the direction component to find the next boundary. This is effectively a scalar digital differential analyzer with repeated setup.
+
+**Optimization**: convert the voxel walk to a true 3DDA-style state: keep per-depth `tMax`, `tDelta`, axis, node number, min extent, and inverse direction in a small stack frame. Crossing a voxel then updates one scalar by addition instead of recomputing a full point and division.
+
+**Expected speedup**: 1.2--1.6x inside voxel-boundary traversal; total geometry gain depends on how often steps are geometry- rather than physics-limited.
+
+**Validation strategy**: replay vanilla voxel walks and compare `(depth, node number, boundary distance, voxel node pointer)` at every transition. Include zero/near-zero direction components and boundary-tolerance cases.
+
+**Proposed task**: `g4gpu-phase5e-voxel-dda-state`
+
+**Standard technique**: Amanatides-Woo DDA traversal and strength reduction.
+
+**Reference**: Amanatides & Woo 1987; Aho, Sethi & Ullman 1986.
+
+### GEO-04 — `source/geometry/navigation/src/G4VoxelSafety.cc:210-549` — recursive safety scan over neighboring voxel slices
+
+**Current snippet**: `do { ... } while (...)`
+
+**What is slow**: `SafetyForVoxelHeader` walks neighboring slices one at a time, recursively visits headers, updates `distUp`/`distDown`, and repeatedly compares squared distances against a changing interest radius. The code even notes that the distance-limit calculation can be hoisted.
+
+**Optimization**: precompute per-header neighbor ranges and interval metadata so safety queries can enumerate only slices whose axis interval intersects the current safety radius. Hoist `distMaxInterest*distMaxInterest`, store squared edge distances, and flatten the recursion into an explicit stack to reduce call overhead.
+
+**Expected speedup**: 1.1--1.5x for safety-heavy navigation, especially when safety is queried frequently by field/MSC step limitation and when voxel headers are deep.
+
+**Validation strategy**: generate deterministic points across every slice edge and compare vanilla versus optimized safety value, visited daughter set, and early-stop depth. The optimized safety must never overestimate the true safety; exact equality is required for the descriptor-only version.
+
+**Proposed task**: `g4gpu-phase5e-voxel-safety-range-cache`
+
+**Standard technique**: interval pruning, invariant hoisting, and recursion-to-iteration conversion.
+
+**Reference**: Aho, Sethi & Ullman 1986; Preparata & Shamos 1985.
+
+### GEO-05 — `source/geometry/management/src/G4SmartVoxelHeader.cc:741-1046` and `source/geometry/management/src/G4SmartVoxelHeader.cc:1064-1118` — uniform smart-voxel slicing ignores traversal cost
+
+**Current snippet**: `G4double noNodesExactD = ...`
+
+**What is slow**: smart-voxel construction chooses uniform slice counts from mother width, minimum daughter width, and a mean occupancy quality. It does not optimize a traversal cost such as expected candidates tested per ray/step, so irregular detector regions can still produce high-occupancy slices.
+
+**Optimization**: add an optional SAH-style builder for static geometry: evaluate split candidates by expected traversal plus candidate-test cost, then emit the existing `G4SmartVoxelHeader`/proxy representation or a sidecar BVH descriptor. Keep current smart-voxel output as the compatibility fallback.
+
+**Expected speedup**: 1.2--2.0x on geometry navigation in irregular or clustered detector layouts; negligible for already regular voxel grids.
+
+**Validation strategy**: build both structures from the same closed geometry, then exhaustively compare `LocateGlobalPointAndSetup`, `ComputeStep`, and `ComputeSafety` outputs for sampled points/rays. Physics validation is bit-exact because only candidate ordering/pruning changes.
+
+**Proposed task**: `g4gpu-phase6-sah-geometry-builder`
+
+**Standard technique**: surface-area heuristic spatial acceleration.
+
+**Reference**: MacDonald & Booth 1990; Wald, Boulos & Shirley 2007.
+
+### GEO-06 — `source/geometry/solids/CSG/src/G4Box.cc:320-347` and `source/geometry/solids/CSG/src/G4Box.cc:372-429` — scalar slab tests branch on every axis
+
+**Current snippet**: `G4double invx = (v.x() == 0) ? DBL_MAX : -1./v.x();`
+
+**What is slow**: box entry/exit distances execute scalar per-axis branches, divisions, `std::copysign`, and normal selection. Axis-aligned boxes are common in calorimeters, world volumes, shielding blocks, and voxelized phantoms.
+
+**Optimization**: use a robust branch-minimized ray-box slab routine with precomputed reciprocal direction and sign masks. Provide scalar, AVX2/AVX-512, and NEON variants for batches of candidate boxes in the CPU fallback; keep the exact scalar path available for strict-debug mode.
+
+**Expected speedup**: 1.15--1.8x for box solid intersection batches; total-event gain is geometry-dependent but broad across HEP and medical phantoms.
+
+**Validation strategy**: exhaustive boundary/tolerance tests over face/edge/corner starts, zero direction components, and inside/outside points. Compare exact return distance and normal for scalar mode; SIMD mode can require documented ulp tolerances only if operation order changes.
+
+**Proposed task**: `g4gpu-phase5e-box-slab-simd`
+
+**Standard technique**: branchless ray-box slab intersection and SIMD packet traversal.
+
+**Reference**: Williams, Barrus, Morley & Shirley 2005; Wald, Boulos & Shirley 2007.
+
+### GEO-07 — `source/geometry/solids/CSG/src/G4Tubs.cc:708-1055` — tube intersection branch ladder duplicates phi/radius cases
+
+**Current snippet**: `if ( !fPhiFullTube )`
+
+**What is slow**: `G4Tubs::DistanceToIn(p,v)` mixes z-plane, outer-radius, inner-radius, and two phi-plane checks in one long branch ladder. Full tubes and phi-segmented tubes have very different hot paths, but both carry conditionals and repeated `sqrt`/division work.
+
+**Optimization**: split full-cylinder and phi-segmented tubes into specialized routines selected at construction or geometry close. Precompute invariant reciprocals/trig descriptors and use a small robust quadratic helper shared by inner/outer radius cases.
+
+**Expected speedup**: 1.1--1.5x for tube intersection calls, with highest gains in beampipes, cylindrical shielding, TPC vessels, and medical beamline geometries.
+
+**Validation strategy**: sweep z, radius, phi, and direction across tolerance boundaries for full, hollow, and segmented tubes. Require identical `DistanceToIn`/`DistanceToOut` distances and normals in strict mode before enabling any reordered arithmetic.
+
+**Proposed task**: `g4gpu-phase5e-tubs-specialized-intersections`
+
+**Standard technique**: function multiversioning, invariant precomputation, and robust quadratic evaluation.
+
+**Reference**: Aho, Sethi & Ullman 1986; Williams, Barrus, Morley & Shirley 2005.
+
+### GEO-08 — `source/geometry/management/src/G4TouchableHistory.cc:46-92` — touchable transform access uses lazy thread-local scratch
+
+**Current snippet**: `static G4ThreadLocal G4ThreeVector* ctrans = nullptr;`
+
+**What is slow**: nonzero-depth translation and rotation access lazily allocates thread-local scratch objects and recomputes net transform components from navigation history. Touchable queries occur in sensitive detectors and hit creation, so this shows up as geometry-adjacent overhead even after the step is found.
+
+**Optimization**: replace heap-backed thread-local scratch with value `thread_local` storage, and add a compact cached transform descriptor to `G4TouchableHistory` for depths requested during hit processing. The cache must invalidate only when navigation history changes.
+
+**Expected speedup**: 1.05--1.2x for touchable-heavy hit collection; modest for pure transport but useful in calorimeter and optical-photon workloads with many sensitive-detector calls.
+
+**Validation strategy**: compare `GetTranslation(depth)` and `GetRotation(depth)` for every depth of recorded touchable histories before and after caching. Run fixed-seed sensitive-detector examples and require identical hit positions, copy numbers, and volume IDs.
+
+**Proposed task**: `g4gpu-phase5e-touchable-transform-cache`
+
+**Standard technique**: allocation removal and memoization with explicit invalidation.
+
+**Reference**: Wilson, Johnstone, Neely & Boles 1995; Aho, Sethi & Ullman 1986.
+
+## Next implementations from source review so far
+
+1. `g4gpu-phase5d-jit-poststep-gpil` — highest PIL dispatch win with bit-exact validation.
+2. `g4gpu-phase5e-transform-descriptor-cache` — removes repeated affine inversion in daughter candidate loops.
+3. `g4gpu-phase5e-voxel-dda-state` — converts voxel boundary traversal to additive DDA state.
+4. `g4gpu-phase5e-box-slab-simd` — broad upstreamable CSG solid intersection win.
+5. `g4gpu-phase6-sah-geometry-builder` — larger algorithmic geometry acceleration after Phase 5 baselines.
+6. `g4gpu-phase5d-physicsvector-binmap` — attacks the shared cross-section lookup inner loop.
+7. `g4gpu-phase5d-physicsvector-interp-precompute` — simple CPU fallback win if rounding policy is settled.
+8. `g4gpu-phase5d-em-gpil-state-cache` — high EM-specific leverage with clear guard conditions.
+9. `g4gpu-phase5d-jit-alongstep-gpil` — mirrors PostStep specialization for charged tracks.
+10. `g4gpu-phase5d-flat-lambda-view` — low-risk data-layout cache for table lookup.
+11. `g4gpu-phase5d-em-lambda-shape-specialization` — removes invariant branch ladders.
+12. `g4gpu-phase5d-gpil-force-fastpath` — small but safe hot/cold branch split.
+13. `g4gpu-phase5d-active-tracking-hooks` — helps short-track/high-secondary events.
+14. `g4gpu-phase6-secondary-track-pool` — larger ownership audit, but important for DoIt-heavy showers.
 
 ## References
 
@@ -248,3 +400,8 @@ Status: partial, compact-safe iteration 1 of 5. This iteration covers hot path 1
 - Hölzle, Chambers & Ungar, "Optimizing Dynamically-Typed Object-Oriented Languages With Polymorphic Inline Caches", ECOOP 1991 — inline caches and devirtualization using runtime type feedback.
 - Khuong & Morin, "Array Layouts for Comparison-Based Searching", 2015 — Eytzinger/implicit-B-tree search layouts and branch-free search.
 - Wilson, Johnstone, Neely & Boles, "Dynamic Storage Allocation: A Survey and Critical Review", IWMM 1995 — allocation cost model and pool/arena design tradeoffs.
+- Amanatides & Woo, "A Fast Voxel Traversal Algorithm for Ray Tracing", Eurographics 1987 — additive DDA traversal through regular grids.
+- MacDonald & Booth, "Heuristics for Ray Tracing Using Space Subdivision", 1990 — surface-area heuristic for spatial acceleration structures.
+- Preparata & Shamos, *Computational Geometry: An Introduction*, 1985 — interval and spatial-search pruning foundations.
+- Wald, Boulos & Shirley, "Ray Tracing Deformable Scenes using Dynamic Bounding Volume Hierarchies", 2007 — BVH traversal and packet/coherent ray tracing design.
+- Williams, Barrus, Morley & Shirley, "An Efficient and Robust Ray-Box Intersection Algorithm", *Journal of Graphics Tools*, 2005 — robust slab-based ray-box intersection.
