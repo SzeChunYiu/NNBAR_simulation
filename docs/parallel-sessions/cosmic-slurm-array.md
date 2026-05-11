@@ -109,7 +109,7 @@ squeue -u scyiu -o '%.10i %.18j %.8T %.10M'
 
 ## Stop condition
 
-Current handoff (2026-05-11 10:26 CEST): the 27-bin matrix patch was
+Current handoff (2026-05-11 10:39 CEST): the 27-bin matrix patch was
 committed in nested `NNBAR_Detector` on `main` and `lane/cosmic-slurm-array`
 as `a344a47` (`fix(slurm): cover gamma cosmic bin 4`). The missing gamma
 bin4 recovery was already submitted as job `3040275_10`. Do **not** submit a
@@ -120,17 +120,16 @@ or formerly-blocking tasks at this check: `3040180_13`, `3040259_0`,
 `3040259_1`, `3040259_2`, `3040259_3`, `3040259_6`, `3040259_7`,
 `3040259_10`, and `3040259_11`.
 
-Progress notes from log headers/tails at this check: `squeue -j
-3040180,3040259,3040275 --array` and `sacct` show the same seven remaining
-RUNNING blockers. Latest log event maxima from `tail -5000` are:
-`3040180_24` proton bin4 (~786k events), `3040180_25` proton bin5 (~2.6k;
-slow), `3040259_4` mu- bin4 (~367k), `3040259_5` mu- bin5 (~3.3k; slow),
-`3040259_8` gamma bin2 (~742k), `3040259_9` gamma bin3 (~301k), and
-`3040275_10` gamma bin4 (~63k). `3040275_10` is the only gamma bin4
-recovery and must not be
-resubmitted while RUNNING. `3040180_25` and `3040259_5` remain the known slow
-high-energy jobs; wait for completion, failure, or cancellation before taking
-recovery action.
+Progress notes from this check: `squeue -j 3040180,3040259,3040275 --array`
+and `sacct` show the same seven remaining RUNNING blockers. Latest
+trailing-log event maxima are: `3040180_24` proton bin4 (~806k events),
+`3040180_25` proton bin5 (~3.1k; slow), `3040259_4` mu- bin4 (~409k),
+`3040259_5` mu- bin5 (~3.3k; slow), `3040259_8` gamma bin2 (~827k),
+`3040259_9` gamma bin3 (~337k), and `3040275_10` gamma bin4 (~70k).
+`3040275_10` is the only gamma bin4 recovery and must not be resubmitted
+while RUNNING. `3040180_25` and `3040259_5` remain the known slow high-energy
+jobs; wait for completion, failure, or cancellation before taking recovery
+action.
 
 Stop when the 27-bin nonzero matrix is covered and accounted for:
 1. Monitor `3040180`, `3040259`, and `3040275` with `squeue`/`sacct`.
