@@ -1,7 +1,8 @@
 # G4GPU ↔ NNBAR Simulation Isolation Policy
 
-**Status:** Mandatory. Applies to all lanes (worker-0, worker-1, worker-2,
-planner) and all SLURM/build automation.
+**Status:** Mandatory. Applies to all active lanes (`worker-0`, `worker-1`,
+`worker-2`, `worker-3`, `worker-4`, and `planner`) and all SLURM/build
+automation.
 
 ## The rule
 
@@ -107,8 +108,11 @@ pipeline. Full stop.
 
 ## Audit responsibility
 
-Every lane is responsible for not breaking this rule. The planner runs a
-recurring `g4gpu-isolation-audit` task that:
+Every active lane is responsible for not breaking this rule. Worker-3 and
+worker-4 may work on G4GPU/Geant4 acceleration only inside their isolated
+implementation/review scopes; worker-0 through worker-2 and the planner must
+keep NNBAR production code and data on the vanilla-Geant4 path. The planner
+runs a recurring `g4gpu-isolation-audit` task that:
 - greps NNBAR_Detector for any G4GPU reference;
 - inspects every SLURM script in `lunarc/` for binaries outside the vanilla
   build tree;
