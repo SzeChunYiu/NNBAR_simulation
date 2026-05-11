@@ -1,0 +1,137 @@
+-- The C compiler identification is GNU 13.1.0
+-- The CXX compiler identification is GNU 13.1.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /cvmfs/sft.cern.ch/lcg/releases/gcc/13.1.0-b3d18/x86_64-el9/bin/gcc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /cvmfs/sft.cern.ch/lcg/releases/gcc/13.1.0-b3d18/x86_64-el9/bin/g++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- The CUDA compiler identification is NVIDIA 12.8.61
+-- Detecting CUDA compiler ABI info
+-- Detecting CUDA compiler ABI info - done
+-- Check for working CUDA compiler: /sw/easybuild_milan/software/CUDA/12.8.0/bin/nvcc - skipped
+-- Detecting CUDA compile features
+-- Detecting CUDA compile features - done
+-- [32mCUDA backend enabled[m
+-- AdePT SteppingAction: [32mNONE [m
+-- Found CUDAToolkit: /sw/easybuild_milan/software/CUDA/12.8.0/targets/x86_64-linux/include (found version "12.8.61")
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+-- Found Threads: TRUE
+-- Using VecCore version [36m0.8.2[m
+-- Found XercesC: /cvmfs/sft-nightlies.cern.ch/lcg/views/devAdePT/Mon/x86_64-el9-gcc13-opt/lib/libxerces-c.so (found version "3.3.0")
+-- Performing Test CUDA_RDC_LINKER_SUPPORTS_Z_UNDEFS
+-- Performing Test CUDA_RDC_LINKER_SUPPORTS_Z_UNDEFS - Success
+-- Performing Test CUDA_RDC_LINKER_SUPPORTS_ALLOW_SHLIB_UNDEFINED
+-- Performing Test CUDA_RDC_LINKER_SUPPORTS_ALLOW_SHLIB_UNDEFINED - Success
+-- Using VecGeom version [36m2.0.0[m
+-- [32mUsing double precision in RK integration[m
+-- [32mUsing the solid model in VecGeom[m
+-- Found EXPAT: /sw/easybuild_milan/software/expat/2.5.0-GCCcore-13.2.0/lib/libexpat.so (found suitable version "2.5.0", minimum required is "2.5.0")
+-- Found XercesC: /cvmfs/sft-nightlies.cern.ch/lcg/views/devAdePT/Mon/x86_64-el9-gcc13-opt/lib/libxerces-c.so (found suitable version "3.3.0", minimum required is "3.3.0")
+-- Found X11: /usr/include
+-- Looking for XOpenDisplay in /usr/lib64/libX11.so;/usr/lib64/libXext.so
+-- Looking for XOpenDisplay in /usr/lib64/libX11.so;/usr/lib64/libXext.so - found
+-- Looking for gethostbyname
+-- Looking for gethostbyname - found
+-- Looking for connect
+-- Looking for connect - found
+-- Looking for remove
+-- Looking for remove - found
+-- Looking for shmat
+-- Looking for shmat - found
+-- Looking for IceConnectionNumber in ICE
+-- Looking for IceConnectionNumber in ICE - found
+-- Found Motif: /usr/lib64/libXm.so
+-- Found OpenGL: /usr/lib64/libOpenGL.so
+-- Found Geant4: /cvmfs/sft-nightlies.cern.ch/lcg/views/devAdePT/Mon/x86_64-el9-gcc13-opt/lib64/cmake/Geant4/Geant4Config.cmake (found version "11.4.1")
+-- Using Geant4 version [36m11.4.1[m from /cvmfs/sft-nightlies.cern.ch/lcg/views/devAdePT/Mon/x86_64-el9-gcc13-opt/include/Geant4
+-- AdePT library type: [32mSHARED[m (taken from Geant4)
+-- Performing Test AdePT_HAS_G4VTRACKINGMANAGER
+-- Performing Test AdePT_HAS_G4VTRACKINGMANAGER - Success
+-- HepMC3 found /cvmfs/sft-nightlies.cern.ch/lcg/views/devAdePT/Mon/x86_64-el9-gcc13-opt/include
+-- Using FetchContent to build G4VG as part of AdePT
+-- Found Geant4: /cvmfs/sft-nightlies.cern.ch/lcg/views/devAdePT/Mon/x86_64-el9-gcc13-opt/lib64/cmake/Geant4/Geant4Config.cmake (found suitable version "11.4.1", minimum required is "11.4.1")
+-- G4HepEm found /cvmfs/sft-nightlies.cern.ch/lcg/views/devAdePT/Mon/x86_64-el9-gcc13-opt/include/G4HepEm
+-- Configuring done (18.1s)
+CMake Warning at build-lunarc-a40-config-probe/_deps/g4vg-src/cmake/external/CudaRdcUtils.cmake:513 (add_library):
+  Cannot generate a safe runtime search path for target Transport because
+  files in some directories may conflict with libraries in implicit
+  directories:
+
+    runtime library [libcudart.so.12] in /sw/easybuild_milan/software/CUDA/12.8.0/lib may be hidden by files in:
+      /cvmfs/sft-nightlies.cern.ch/lcg/views/devAdePT/Mon/x86_64-el9-gcc13-opt/lib64
+
+  Some of these libraries may not be found correctly.
+Call Stack (most recent call first):
+  CMakeLists.txt:519 (cuda_rdc_add_library)
+
+
+CMake Warning at build-lunarc-a40-config-probe/_deps/g4vg-src/cmake/external/CudaRdcUtils.cmake:569 (add_library):
+  Cannot generate a safe runtime search path for target Transport_final
+  because files in some directories may conflict with libraries in implicit
+  directories:
+
+    runtime library [libcudart.so.12] in /sw/easybuild_milan/software/CUDA/12.8.0/lib may be hidden by files in:
+      /cvmfs/sft-nightlies.cern.ch/lcg/views/devAdePT/Mon/x86_64-el9-gcc13-opt/lib64
+
+  Some of these libraries may not be found correctly.
+Call Stack (most recent call first):
+  CMakeLists.txt:519 (cuda_rdc_add_library)
+
+
+CMake Warning at build-lunarc-a40-config-probe/_deps/g4vg-src/cmake/external/CudaRdcUtils.cmake:513 (add_library):
+  Cannot generate a safe runtime search path for target G4Integration because
+  files in some directories may conflict with libraries in implicit
+  directories:
+
+    runtime library [libcudart.so.12] in /sw/easybuild_milan/software/CUDA/12.8.0/lib may be hidden by files in:
+      /cvmfs/sft-nightlies.cern.ch/lcg/views/devAdePT/Mon/x86_64-el9-gcc13-opt/lib64
+
+  Some of these libraries may not be found correctly.
+Call Stack (most recent call first):
+  CMakeLists.txt:594 (cuda_rdc_add_library)
+
+
+CMake Warning at build-lunarc-a40-config-probe/_deps/g4vg-src/cmake/external/CudaRdcUtils.cmake:569 (add_library):
+  Cannot generate a safe runtime search path for target G4Integration_final
+  because files in some directories may conflict with libraries in implicit
+  directories:
+
+    runtime library [libcudart.so.12] in /sw/easybuild_milan/software/CUDA/12.8.0/lib may be hidden by files in:
+      /cvmfs/sft-nightlies.cern.ch/lcg/views/devAdePT/Mon/x86_64-el9-gcc13-opt/lib64
+
+  Some of these libraries may not be found correctly.
+Call Stack (most recent call first):
+  CMakeLists.txt:594 (cuda_rdc_add_library)
+
+
+CMake Warning at build-lunarc-a40-config-probe/_deps/g4vg-src/cmake/external/CudaRdcUtils.cmake:461 (add_library):
+  Cannot generate a safe runtime search path for target g4vg because files in
+  some directories may conflict with libraries in implicit directories:
+
+    runtime library [libcudart.so.12] in /sw/easybuild_milan/software/CUDA/12.8.0/lib may be hidden by files in:
+      /cvmfs/sft-nightlies.cern.ch/lcg/views/devAdePT/Mon/x86_64-el9-gcc13-opt/lib64
+
+  Some of these libraries may not be found correctly.
+Call Stack (most recent call first):
+  build-lunarc-a40-config-probe/_deps/g4vg-src/src/CMakeLists.txt:63 (cuda_rdc_add_library)
+
+
+CMake Warning at examples/Example1/CMakeLists.txt:46 (add_executable):
+  Cannot generate a safe runtime search path for target example1 because
+  files in some directories may conflict with libraries in implicit
+  directories:
+
+    runtime library [libcudart.so.12] in /sw/easybuild_milan/software/CUDA/12.8.0/lib may be hidden by files in:
+      /cvmfs/sft-nightlies.cern.ch/lcg/views/devAdePT/Mon/x86_64-el9-gcc13-opt/lib64
+
+  Some of these libraries may not be found correctly.
+
+
+-- Generating done (1.8s)
+-- Build files have been written to: /projects/hep/fs10/shared/nnbar/billy/mcaccel-competitors/AdePT/build-lunarc-a40-config-probe

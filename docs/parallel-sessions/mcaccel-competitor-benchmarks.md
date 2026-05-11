@@ -69,6 +69,26 @@ take the next one. This is intentionally spread across multiple iterations.
 
 ## Iteration log
 
+### 2026-05-11 — AdePT compact dependency blocker (worker-3)
+
+- Added `benchmarks/competitors/adept/build.sh` for an A40-only AdePT
+  Example1/TestEm3 compact run with fixed seeds, provenance capture, and
+  parquet summary output.
+- Preserved the successful LUNARC configure probe evidence showing AdePT commit
+  `47694da970baebf8a7e5d7454910aac2313f33e3` can configure against CUDA 12.8,
+  Geant4 11.4.1, G4HepEm, HepMC3, VecCore, and VecGeom via the CERN
+  `devAdePT` LCG view.
+- Submitted policy-partition job 3041518 on `gpua40`; it was estimated for
+  2026-05-12 09:51:19 and was cancelled after the immediate smoke job exposed
+  the setup blocker.
+- Submitted smoke job 3041525 on idle `gpua40i`; it failed in 17 seconds before
+  configure/build/run because no `devAdePT` setup path was readable from the
+  GPU allocation.
+
+OPEN: rerun AdePT on `gpua40` after the CERN `devAdePT` CVMFS view is visible
+from GPU nodes, or after a project-local AdePT dependency stack is cached under
+`/projects/hep/fs10/shared/nnbar/billy/mcaccel-competitors/adept/`.
+
 ### 2026-05-11 — Celeritas compact baseline (pane 4)
 
 - AdePT intentionally left to worker-3; this pane selected Celeritas.

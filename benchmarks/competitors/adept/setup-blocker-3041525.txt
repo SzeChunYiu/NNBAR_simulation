@@ -1,0 +1,25 @@
+AdePT compact baseline blocker — 2026-05-11
+
+Task: run AdePT Example1/TestEm3 compact baseline on one LUNARC A40.
+
+Evidence collected:
+- LUNARC login/configure probe previously succeeded against AdePT commit
+  47694da970baebf8a7e5d7454910aac2313f33e3 using the devAdePT LCG view
+  `/cvmfs/sft-nightlies.cern.ch/lcg/views/devAdePT/Mon/x86_64-el9-gcc13-opt/`;
+  see `logs/adept_source_probe.txt` and `logs/adept_config_probe.log`.
+- The first GPU job, 3041291 on `gpua40i`, failed before build/run because
+  `/cvmfs/sft.cern.ch/lcg/views/devAdePT/latest/x86_64-el9-gcc13-opt/setup.sh`
+  was not visible from the compute allocation; see `logs/adept_probe_3041291.err`.
+- Worker-3 submitted policy-partition job 3041518 on `gpua40`, but it was
+  estimated for 2026-05-12 09:51:19 and was cancelled after the immediate
+  smoke job showed the setup blocker.
+- Worker-3 submitted smoke job 3041525 on idle `gpua40i` using the corrected
+  script with the nightlies path first. It failed in 17 seconds with
+  `ERROR: no readable devAdePT LCG setup.sh found`; see
+  `logs/adept_smoke_3041525.err` and `logs/adept_jobs_3041518_3041525_sacct.txt`.
+
+OPEN: AdePT needs a GPU-node-visible dependency stack. Either make the CERN
+`devAdePT` CVMFS view visible on LUNARC GPU nodes, or build/cache the required
+AdePT dependencies (Geant4 11.4.1, G4HepEm, VecCore, VecGeom, HepMC3, XercesC)
+under `/projects/hep/fs10/shared/nnbar/billy/mcaccel-competitors/adept/` before
+rerunning `benchmarks/competitors/adept/build.sh` on `gpua40`.
