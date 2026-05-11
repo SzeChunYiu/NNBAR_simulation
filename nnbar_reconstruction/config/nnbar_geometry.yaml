@@ -1,0 +1,191 @@
+# =============================================================================
+# NNBAR Detector Geometry and Reconstruction Configuration
+# Shared between C++ (GEANT4 simulation) and Python (reconstruction)
+# All lengths in cm, times in ns, energies in MeV
+# =============================================================================
+
+# Physics constants
+physics:
+  c_light: 29.9792458  # cm/ns (speed of light)
+  nucleon_mass: 938.272  # MeV/c^2
+  pion_mass: 139.570    # MeV/c^2 (charged pion)
+  pi0_mass: 134.977     # MeV/c^2 (neutral pion)
+  proton_mass: 938.272  # MeV/c^2
+  electron_mass: 0.511  # MeV/c^2
+
+# Beampipe geometry
+beampipe:
+  inner_radius: 112.0   # cm
+  outer_radius: 114.0   # cm
+  thickness: 2.0        # cm
+  half_z: 250.0         # cm
+
+# TPC geometry (octagonal structure)
+tpc:
+  # Type I modules (vertical orientation)
+  type1:
+    width: 85.4         # cm
+    height: 199.4       # cm
+    x_position: 156.9   # cm (center)
+    y_position: 99.7    # cm (center)
+
+  # Type II modules (horizontal orientation)
+  type2:
+    width: 228.4        # cm
+    height: 85.4        # cm
+    y_position: 156.7   # cm (center)
+
+  # Common TPC parameters
+  drift_length: 85.0    # cm
+  half_z: 126.0         # cm
+  n_layers: 20          # number of readout layers
+  n_modules: 8          # octagonal arrangement
+
+  # Ionization parameters
+  w_value: 23.6         # eV per electron-ion pair
+  drift_velocity: 0.005 # cm/ns (approximate)
+
+# Scintillator detector (5 layers)
+scintillator:
+  inner_radius: 275.0   # cm (distance from beam axis)
+  half_z: 275.0         # cm
+  n_layers: 5
+  n_staves_per_layer: 32
+  stave_length: 550.0   # cm
+  stave_width: 5.0      # cm
+  stave_thickness: 2.0  # cm
+
+  # Light yield and transport
+  light_yield: 11136    # photons/MeV
+  attenuation_length: 200.0  # cm (approximate)
+  timing_resolution: 1.0     # ns
+
+# Lead glass calorimeter
+calorimeter:
+  # Side modules
+  side_distance: 275.0  # cm from beam axis
+  # Front/back modules
+  fb_distance: 335.0    # cm from target
+  half_y: 300.0         # cm
+
+  # Module dimensions
+  module_size: 15.0     # cm (square cross-section)
+  module_length: 45.0   # cm (radiation lengths)
+
+  # Cerenkov parameters
+  refractive_index: 1.62
+  cerenkov_threshold: 0.617  # beta threshold
+  timing_resolution: 2.0     # ns
+
+# Cosmic ray shielding
+shield:
+  half_x: 550.0         # cm
+  half_y: 275.0         # cm
+  half_z: 335.0         # cm
+
+# Target (carbon foil)
+target:
+  z_position: 0.0       # cm (defines vertex plane)
+  radius: 50.0          # cm
+  thickness: 0.01       # cm
+
+# =============================================================================
+# Reconstruction Parameters
+# =============================================================================
+
+clustering:
+  # DBSCAN parameters in cylindrical coordinates
+  phi_weight: 5.0       # weight for angular separation
+  z_weight: 1.0         # weight for z separation
+  alpha: 1.5            # epsilon multiplier
+  k: 6                  # k-NN for adaptive epsilon
+  min_samples: 3        # minimum cluster size
+
+  # Multi-scale parameters
+  scales:
+    - eps: 0.35
+      min_samples: 3
+      scale_xyz: [5.0, 5.0, 5.0]
+    - eps: 0.55
+      min_samples: 4
+      scale_xyz: [10.0, 10.0, 10.0]
+    - eps: 0.80
+      min_samples: 5
+      scale_xyz: [20.0, 20.0, 20.0]
+
+tracking:
+  min_track_length: 15.0    # cm (thesis requirement)
+  min_hits_per_track: 5
+  max_rms_residual: 2.0     # cm
+  merge_angle_threshold: 0.99  # cos(angle) for merging
+  merge_gap_threshold: 1.2     # cm
+
+vertex:
+  # Classical method parameters
+  max_projection_distance: 200.0  # cm from target
+  weight_by_angle: true
+
+  # GNN parameters
+  hidden_dim: 128
+  n_layers: 3
+  n_heads: 4
+  dropout: 0.1
+
+reconstruction:
+  # Event timing
+  trigger_window: 50.0      # ns
+  trigger_step: 10.0        # ns
+  min_tpc_tracks: 1
+  min_calo_energy: 100.0    # MeV
+
+  # Object reconstruction
+  cone_angle: 25.0          # degrees for energy collection
+  dedx_truncation: 0.6      # use lower 60% for truncated mean
+
+  # Timing windows (sigma multiplier)
+  timing_sigma_mult: 2.0
+
+particle_id:
+  # dE/dx thresholds for pion/proton separation
+  # t(n) = a + b*n where n = scintillator range
+  dedx_threshold_a: 2.5     # MeV/cm
+  dedx_threshold_b: 0.1     # MeV/cm per layer
+
+  # Electron pair identification
+  epair_distance: 5.0       # cm (TPC entry point separation)
+
+  # Pi0 identification
+  pi0_mass_min: 100.0       # MeV
+  pi0_mass_max: 180.0       # MeV
+  pi0_energy_max: 720.0     # MeV
+  pi0_scint_max: 250.0      # MeV
+  pi0_lg_max: 980.0         # MeV
+  pi0_lg_fraction_min: 0.55
+  pi0_opening_angle_min: 30.0  # degrees
+
+event_selection:
+  # Cuts from thesis Table 9.1
+  scint_energy_min: 20.0    # MeV
+  scint_energy_max: 2000.0  # MeV
+  min_tpc_tracks: 1
+  min_pions: 1
+  invariant_mass_min: 500.0 # MeV (0.5 GeV)
+  sphericity_min: 0.2
+
+# =============================================================================
+# Training Configuration (for GNN)
+# =============================================================================
+
+training:
+  batch_size: 64
+  max_epochs: 50
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  loss_function: logcosh
+  optimizer: adamw
+  scheduler: cosine_warmup
+  warmup_ratio: 0.1
+  gradient_clip: 1.0
+  amp: true
+  patience: 10
+  num_workers: 8
