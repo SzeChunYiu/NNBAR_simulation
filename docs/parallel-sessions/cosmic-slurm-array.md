@@ -109,7 +109,7 @@ squeue -u scyiu -o '%.10i %.18j %.8T %.10M'
 
 ## Stop condition
 
-Current handoff (2026-05-11 09:52 CEST): the 27-bin matrix patch was
+Current handoff (2026-05-11 10:10 CEST): the 27-bin matrix patch was
 committed in nested `NNBAR_Detector` on `main` and `lane/cosmic-slurm-array`
 as `a344a47` (`fix(slurm): cover gamma cosmic bin 4`). The missing gamma
 bin4 recovery was already submitted as job `3040275_10`. Do **not** submit a
@@ -122,11 +122,11 @@ or formerly-blocking tasks at this check: `3040180_13`, `3040259_0`,
 
 Progress notes from log headers/tails at this check: `squeue -j
 3040180,3040259,3040275 --array` and `sacct` show the same seven remaining
-RUNNING blockers. Latest log EVENT maxima are: `3040180_24` proton bin4
-(~729k events), `3040180_25` proton bin5 (~1.4k; slow/stale), `3040259_4`
-mu- bin4 (~256k), `3040259_5` mu- bin5 (~1.3k; slow/stale), `3040259_8`
-gamma bin2 (~519k), `3040259_9` gamma bin3 (~210k), and `3040275_10` gamma
-bin4 (~41k). `3040275_10` is the only gamma bin4 recovery and must not be
+RUNNING blockers. Latest log event maxima are: `3040180_24` proton bin4
+(~763k events), `3040180_25` proton bin5 (~3.2k; slow), `3040259_4`
+mu- bin4 (~320k), `3040259_5` mu- bin5 (~3.3k; slow), `3040259_8`
+gamma bin2 (~646k), `3040259_9` gamma bin3 (~263k), and `3040275_10` gamma
+bin4 (~53k). `3040275_10` is the only gamma bin4 recovery and must not be
 resubmitted while RUNNING. `3040180_25` and `3040259_5` remain the known slow
 high-energy jobs; wait for completion, failure, or cancellation before taking
 recovery action.
