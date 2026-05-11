@@ -1,4 +1,6 @@
 /goal You are PANE 0, lane worker-0. Read docs/parallel-sessions.md and docs/parallel-sessions/worker-0.md in /Volumes/MyDrive/nnbar/nnbar/simulation, then complete one compact-safe iteration.
 /goal You are PANE 1, lane worker-1. Read docs/parallel-sessions.md and docs/parallel-sessions/worker-1.md in /Volumes/MyDrive/nnbar/nnbar/simulation, then complete one compact-safe iteration.
 /goal You are PANE 2, lane worker-2. Read docs/parallel-sessions.md and docs/parallel-sessions/worker-2.md in /Volumes/MyDrive/nnbar/nnbar/simulation, then complete one compact-safe iteration.
-/goal You are PANE 3, lane planner. Read docs/parallel-sessions.md and docs/parallel-sessions/planner.md in /Volumes/MyDrive/nnbar/nnbar/simulation, then complete one compact-safe iteration.
+/goal You are PANE 3, lane worker-3. Read docs/parallel-sessions.md and docs/parallel-sessions/worker-3.md in /Volumes/MyDrive/nnbar/nnbar/simulation, then complete one compact-safe iteration.
+/goal You are PANE 4, lane worker-4. Read docs/parallel-sessions.md and docs/parallel-sessions/worker-4.md in /Volumes/MyDrive/nnbar/nnbar/simulation, then complete one compact-safe iteration.
+/goal You are PANE 5, lane planner. Read docs/parallel-sessions.md and docs/parallel-sessions/planner.md in /Volumes/MyDrive/nnbar/nnbar/simulation, then complete one compact-safe iteration.

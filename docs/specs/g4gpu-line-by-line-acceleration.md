@@ -1,5 +1,15 @@
 # G4GPU — Line-by-Line Acceleration Strategy
 
+## Top-level rule: ISOLATION FROM NNBAR
+
+G4GPU is a **separate exploratory project**. The NNBAR thesis pipeline does
+not — and will not — depend on G4GPU until the physics-parity gate (defined
+in `docs/policies/g4gpu-isolation.md`) passes for the specific physics being
+migrated. Every kernel, every benchmark, every result described below lives
+strictly inside the G4GPU repo (`/Volumes/MyDrive/nnbar/geant4-gpu/` locally,
+mirror on LUNARC). No code or build configuration crosses the boundary into
+`NNBAR_Detector/` or `nnbar_reconstruction/`.
+
 **Goal**: a Geant4-compatible Monte Carlo backend that nobody else can beat on
 throughput, latency, accuracy, *or* developer ergonomics. We attack every layer
 of the transport pipeline, not just GPU offload.
@@ -153,6 +163,9 @@ finite-difference baseline at 100× the speed.
 
 These are not phases; they apply throughout.
 
+0. **Isolation invariant**: G4GPU never touches the NNBAR production pipeline
+   until the physics-parity gate passes for the specific physics being
+   migrated. The recurring `g4gpu-isolation-audit` task verifies this.
 1. **Validation parity**: every kernel ships with a Geant4 reference test.
    The CI matrix runs the benchmark suite on every commit and fails on
    distribution drift beyond tolerance.
