@@ -91,7 +91,7 @@ def test_placeholder_hibeam_paper_tokens_are_blockers():
 def test_unhashed_archive_member_and_unpinned_local_path_are_blockers():
     item = _complete_item().with_updates(
         archive_digest="",
-        pinned_ref="/Volumes/MyDrive/nnbar/local/results.json",
+        pinned_ref="file:local/results.json",
     )
 
     audit = audit_hibeam_evidence_archive(
