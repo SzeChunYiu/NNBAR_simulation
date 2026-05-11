@@ -80,9 +80,9 @@ Every codex lane should read this file at start and at finish to check for new t
 | **Phase 0 infrastructure** | DONE | g4gpu-phase0 | libG4GPU.so built on LUNARC, test_stub PASS |
 | **Phase 1: Muon physics kernel** | DONE | g4gpu-phase1 | Committed in geant4-gpu `lane/g4gpu-phase1` (`9c3470e`); LUNARC build/test job 3040175 passed `g4gpu_stub`, `g4gpu_muon_range`, and `g4gpu_mcs` with matching local/remote source hashes |
 | Phase 2: Voxel geometry (3DDA) | DONE | g4gpu-phase2 | Committed and pushed in geant4-gpu `lane/g4gpu-phase2` (`dbb6c54`): `VoxelGeometry.cc` builds a Geant4-sampled material/volume grid, `VoxelGeometry.cu` provides the 3DDA device boundary march, and `MuonStepKernel.cu` uses the active voxel grid for geometry-aware step limits/material transitions. Verification: LUNARC build with `GCC/13.2.0` + `CUDA/12.8.0` succeeded; GPU SLURM job 3040708 ran `ctest --test-dir build --output-on-failure` with 4/4 passing (`g4gpu_stub`, `g4gpu_voxel_geometry`, `g4gpu_muon_range`, `g4gpu_mcs`). |
-| Phase 3: RTX geometry backend | BLOCKED | g4gpu-phase3 | Blocked on OptiX SDK install — see `docs/parallel-sessions/g4gpu-optix-unblock.md` |
+| Phase 3: RTX geometry backend | BLOCKED | g4gpu-phase3 | BLOCKED — see `docs/blockers/optix-sdk-download.md` for the manual NVIDIA OptiX 9 SDK download/install action. |
 | Phase 4: Optical photon (Opticks integration) | PLANNED | — | Wrap Simon Blyth's Opticks instead of rebuilding |
-| OptiX SDK install on LUNARC | RUNNING | g4gpu-optix-unblock | See `docs/parallel-sessions/g4gpu-optix-unblock.md` |
+| OptiX SDK install on LUNARC | DONE | g4gpu-optix-unblock | Path B did not find an installed SDK/header/module; Path A blocker note committed at `docs/blockers/optix-sdk-download.md` with guarded RTK transfer/install/verification commands. |
 | **Phase 5: Benchmark suite + L0 microarchitecture wins** | NEXT | g4gpu-phase5 | See `docs/parallel-sessions/g4gpu-phase5.md`; measurement framework + AVX/NEON wins on CPU fallback |
 | **Phase 6: L1 algorithmic redesign (SoA tracks)** | PLANNED | — | Depends on Phase 5; see `docs/specs/g4gpu-line-by-line-acceleration.md` |
 | **Phase 7: L2 tri-compute integration** | PLANNED | — | Depends on Phase 3 + Phase 6 |
