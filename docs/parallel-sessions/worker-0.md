@@ -1,0 +1,69 @@
+# Lane: worker-0 (C++ / GPU / LUNARC worker)
+
+## Scope
+
+This pane handles: C++ code, CUDA kernels, LUNARC builds, SLURM scripts,
+G4GPU phases, CRY integration, detector simulation infrastructure.
+
+It does NOT write Python analysis code (that is pane 1's scope).
+
+## Every iteration
+
+### Step 1 — Check for a running task
+
+Read `docs/parallel-sessions/MASTER_PLAN.md`. If any task is marked `RUNNING`
+and falls within this pane's scope (C++/GPU/LUNARC), check whether it is:
+
+- **Blocked on external work** (e.g. SLURM jobs running on LUNARC, jobs in queue,
+  waiting for hardware): update the Notes field with current status, commit with
+  `git commit -m "docs(worker-0): refresh <task> blockers"`, then **proceed to
+  Step 2** and pick a NEXT task from a different lane (do not idle).
+- **Actionable** (there is code to write, a build to run, a script to fix): finish
+  it, mark DONE, stop.
+
+Never spend more than one commit updating a blocked task's notes — that is not
+progress. Move on to real implementation work immediately.
+
+### Step 2 — Pick the next task
+
+Find the first row in MASTER_PLAN.md with status `NEXT` that matches this
+pane's scope. Tasks with an explicit spec file in `docs/parallel-sessions/`
+take priority.
+
+**Scope keywords (any of these = pane 0 territory):**
+- C++, CUDA, `.cu`, `.cc`, `.hh`, CMakeLists
+- LUNARC, SLURM, build, rsync, `ssh lunarc`
+- G4GPU, geant4-gpu, VoxelGeometry, MuonKernel, RTX, OptiX, optical photon
+- CRY, cosmic generator, binary rebuild
+- `NNBAR_Detector/`, `geant4-gpu/`
+
+### Step 3 — Claim and implement
+
+1. Update MASTER_PLAN.md: change task status from `NEXT` → `RUNNING`
+2. Commit: `git commit -m "wip: mark <task> RUNNING"`
+3. Read the task's spec file (e.g. `docs/parallel-sessions/g4gpu-phase1.md`)
+4. Implement the task fully per the spec
+5. Run any required verification (build check, test, etc.)
+6. Commit the implementation
+7. Update MASTER_PLAN.md: `RUNNING` → `DONE`
+8. Commit: `git commit -m "feat(<lane>): <description>"`
+
+### Step 4 — Stop condition
+
+After marking DONE, **stop**. The supervisor will resend this prompt and you
+will pick the next NEXT task automatically.
+
+If no NEXT task matches this pane's scope, write to stdout:
+```
+WORKER-0 IDLE: no matching NEXT tasks in MASTER_PLAN.md
+```
+Then stop. The supervisor will resend this prompt when new tasks are added.
+
+## Important constraints
+
+- Only write files inside the task's specified writable scope
+- Do NOT touch Python files in `nnbar_reconstruction/` (pane 1's scope)
+- LUNARC SSH is pre-multiplexed: `ssh lunarc "cmd"` works directly
+- SLURM account: `lu2026-2-51` | partition: `lu48` (CPU), `gpua40` (GPU)
+- geant4-gpu repo: `/Volumes/MyDrive/nnbar/geant4-gpu/`
+- NNBAR_Detector on LUNARC: `/projects/hep/fs10/shared/nnbar/billy/NNBAR_Detector_sim/`
