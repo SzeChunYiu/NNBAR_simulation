@@ -41,7 +41,8 @@ Every codex lane should read this file at start and at finish to check for new t
 | π⁰ lead-glass fraction cut verification | DONE | pi0-verification | Ch.8 has 60% local optimum and 55% final optimized cut; canonical constants/tests added |
 | Opening angle threshold (30°) | DONE | pi0-verification | Ch.8 has 25° local optimum and 30° final optimized cut; canonical constants/tests added |
 | Ch.9 event-variable formula regression | DONE | ch9-event-variables | Momentum-tensor sphericity now weights by |p|^2, longitudinal energy preserves sign, and event-variable/cutflow/RFC pytest regressions pass |
-| Thesis Table 9.1 default cutflow integration | DONE | ch9-cutflow-integration | Default Python selection now uses canonical Table 9.1 cut order/constants, with filtered upper/lower scintillator energies computed from Ch.7 timing windows; focused and full pytest suites pass. Exact `sig_foil_v3`/`cosmic_cry_essLund_v1` samples remain absent, so thesis survival fractions are still blocked. |
+| Thesis Table 9.1 default cutflow integration | DONE | ch9-cutflow-integration | Committed in `f757b97`/`330ef29`: default Python selection uses canonical Table 9.1 order/constants and filtered upper/lower scintillator energies from Ch.7 timing windows; focused/full pytest pass (18/18, 34/34). Exact `sig_foil_v3`/`cosmic_cry_essLund_v1` samples remain absent, so survival fractions remain blocked. |
+| Config loader portability regression | RUNNING | config-portability | Review follow-up from `330ef29`: `nnbar_reconstruction/utils/config.py` added machine-specific `/home/billy/...` fallback paths; remove hardcoded local paths and add repo-relative config discovery regression. See `docs/parallel-sessions/config-portability.md` |
 | Material budget analysis script | PLANNED | — | Low priority — analysis only |
 
 ---
