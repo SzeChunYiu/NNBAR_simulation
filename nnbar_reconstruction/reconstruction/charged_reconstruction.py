@@ -15,6 +15,7 @@ import pandas as pd
 
 from ..tracking.track_fitting import Track, compute_track_dedx
 from ..utils.config import get_config, get_reconstruction_params
+from .electron_pair import apply_electron_pair_labels
 from ..utils.coordinates import (
     points_in_cone,
     compute_momentum_direction,
@@ -347,6 +348,10 @@ def identify_charged_particles(
 
         obj.particle_type = ptype.name
         obj.pid_confidence = confidence
+
+    # Ch.8/plan-24 C.6: conversion-like e+/e- topology is a charged-object
+    # rejection category, so pair rows must not flow into pion/proton counts.
+    apply_electron_pair_labels(objects)
 
     return objects
 
