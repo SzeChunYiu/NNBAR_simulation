@@ -25,7 +25,7 @@ Every codex lane should read this file at start and at finish to check for new t
 | Build binary with Geant4 + MCPL | DONE | lunarc-build | job 3039997 |
 | Signal run 1000 events | DONE | — | job 3040024, Parquet output verified |
 | **CRY cosmic generator C++** | DONE | cry-integration | Built with `-DWITH_CRY=ON` on LUNARC job 3040120; 10k muon bin-0 test job 3040121 produced Parquet with `weight` column |
-| **CRY SLURM array (30 jobs)** | NEXT | — | Unblocked by CRY C++ integration; submit `slurm/run_cosmic.slurm` for full production |
+| **CRY SLURM array (26 jobs)** | RUNNING | cosmic-slurm-array | `NNBAR_Detector/slurm/run_cosmic_array.slurm` + submit wrapper committed; LUNARC array job 3040180 active, retry job 3040259 queued for failed tasks 0-11 |
 | Cosmic weight computation script | DONE | cosmic-weight-analysis | `cosmic_weights.py` + `combine_cosmic_background.py` merged; tests/test_cosmic_weights.py passes |
 
 ---
