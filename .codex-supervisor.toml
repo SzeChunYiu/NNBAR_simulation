@@ -1,0 +1,68 @@
+# csup project config — read by ~/bin/csup and ~/bin/csup-dashboard.
+# nnbar simulation lives on MyDrive locally (heavy GEANT4 builds + recon data),
+# but the active codex-supervisor execution has migrated to LUNARC as of
+# 2026-05-11. The local [hosts."mac-mini"] block is retained for historical
+# reference; the four LUNARC host blocks below are authoritative for new work.
+
+schema_version = 1
+
+[project]
+name = "nnbar"
+description = "NNBAR simulation, reconstruction, and G4GPU R&D. 20-pane LUNARC layout: 7 recon + 7 sim + 4 g4gpu + 2 review."
+
+# ---- Mac local (legacy / dashboard only) ------------------------------------
+
+[hosts."mac-mini"]
+prompts = "scripts/codex-supervisor/nnbar-gpu-batch-prompts.txt"
+session = "nnbar-gpu-batch"
+tasks_dir = "codex-tasks"
+
+# ---- LUNARC sessions (authoritative) ---------------------------------------
+# Project_dir on LUNARC: /projects/hep/fs10/shared/nnbar/billy/NNBAR_Detector_sim
+# Each host runs ONE tmux session inside the holder.sbatch allocation.
+# Prompts files and tasks_dir paths are relative to project_dir on LUNARC.
+
+[hosts."recon-lunarc"]
+project_dir = "/projects/hep/fs10/shared/nnbar/billy/NNBAR_Detector_sim"
+prompts = "codex-prompts-recon.txt"
+tasks_dir = "codex-tasks/recon"
+session = "nnbar-recon-lunarc"
+role = "remote-executor"
+sync_policy = "git-only"
+
+[hosts."sim-lunarc"]
+project_dir = "/projects/hep/fs10/shared/nnbar/billy/NNBAR_Detector_sim"
+prompts = "codex-prompts-sim.txt"
+tasks_dir = "codex-tasks/sim"
+session = "nnbar-sim-lunarc"
+role = "remote-executor"
+sync_policy = "git-only"
+
+[hosts."g4gpu-lunarc"]
+project_dir = "/projects/hep/fs10/shared/nnbar/billy/NNBAR_Detector_sim"
+prompts = "codex-prompts-g4gpu.txt"
+tasks_dir = "codex-tasks/g4gpu"
+session = "nnbar-g4gpu-lunarc"
+role = "remote-executor"
+sync_policy = "git-only"
+
+[hosts."review-lunarc"]
+project_dir = "/projects/hep/fs10/shared/nnbar/billy/NNBAR_Detector_sim"
+prompts = "codex-prompts-review.txt"
+tasks_dir = "codex-tasks/review"
+session = "nnbar-review-lunarc"
+role = "remote-executor"
+sync_policy = "git-only"
+
+[hosts."meta-lunarc"]
+# Project-wide meta session: 1 DEBUGGER + 1 VALIDATOR-PLANNER pane.
+# Cross-cutting only — never implements other lanes' tasks. Mirrors the
+# babbloo `lunarc-meta` convention. CODEX_SUPERVISOR_DEBUGGER=0 /
+# VALIDATOR=0 stays default (lanes are explicit /goal lines, not
+# auto-injected).
+project_dir = "/projects/hep/fs10/shared/nnbar/billy/NNBAR_Detector_sim"
+prompts = "codex-prompts-meta.txt"
+tasks_dir = "codex-tasks/meta"
+session = "nnbar-meta-lunarc"
+role = "meta"
+sync_policy = "git-only"

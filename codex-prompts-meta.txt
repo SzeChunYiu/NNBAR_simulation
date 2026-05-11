@@ -1,0 +1,6 @@
+# nnbar-meta-lunarc — 2 panes — DEBUGGER + VALIDATOR-PLANNER
+# Cross-cutting only. Never implements other lanes' tasks. See babbloo
+# project for the convention this mirrors.
+
+/goal You are PANE 0, lane DEBUGGER. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/debugger.md, then iterate per the protocol until rate-limited.
+/goal You are PANE 1, lane VALIDATOR. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/validator-planner.md, then iterate per the protocol until rate-limited.
