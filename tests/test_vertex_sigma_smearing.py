@@ -83,3 +83,54 @@ def test_empirical_fallback_still_works_without_theta_sigma_table():
     assert result.n_tracks == 2
     assert np.isclose(result.track_weights.sum(), 1.0)
     assert np.all(result.track_weights > 0.0)
+
+
+def test_seeded_projected_smearing_closure_matches_injected_sigma_pull():
+    """Toy closure for Ch.7 sigma(theta)=d0bar projected-position weights.
+
+    The table is deliberately synthetic: it validates the weighting contract
+    without digitizing thesis plot values.  The 0.20 pull-width tolerance covers
+    finite-toy fluctuations, not detector-resolution systematics.
+    """
+
+    rng = np.random.default_rng(7307)
+    true_vertex = np.array([12.0, -7.0, 0.0])
+    theta_degs = [10.0, 35.0, 75.0, 115.0, 155.0]
+    sigma_by_bin = [1.2, 2.0, 3.0, 4.5, 6.0, 4.5, 3.0, 2.0, 1.2]
+    sigmas = np.array([
+        theta_binned_projected_sigma_cm(_track(theta), sigma_by_bin)
+        for theta in theta_degs
+    ])
+    expected_estimator_sigma = math.sqrt(1.0 / np.sum(1.0 / sigmas**2))
+
+    residuals = []
+    for event_id in range(320):
+        tracks = []
+        for track_offset, (theta, sigma) in enumerate(zip(theta_degs, sigmas)):
+            smear_xy = rng.normal(loc=0.0, scale=sigma, size=2)
+            projection = true_vertex + np.array([smear_xy[0], smear_xy[1], 0.0])
+            tracks.append(
+                _track(
+                    theta,
+                    projection=projection,
+                    track_id=event_id * len(theta_degs) + track_offset,
+                )
+            )
+
+        result = weighted_vertex_reconstruction(
+            tracks,
+            weight_by_r_head=False,
+            theta_sigma_table_cm=sigma_by_bin,
+        )
+
+        assert result.is_valid
+        residuals.append(result.position[:2] - true_vertex[:2])
+
+    pulls = np.asarray(residuals) / expected_estimator_sigma
+
+    np.testing.assert_allclose(np.mean(pulls, axis=0), [0.0, 0.0], atol=0.15)
+    np.testing.assert_allclose(
+        np.sqrt(np.mean(pulls**2, axis=0)),
+        [1.0, 1.0],
+        atol=0.20,
+    )
