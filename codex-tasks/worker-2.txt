@@ -1,0 +1,1 @@
+/goal You are PANE 2, lane fix-hibeam-evidence-paths. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/fix-hibeam-evidence-paths.md in /Volumes/MyDrive/nnbar/nnbar/simulation, then complete one compact-safe iteration.
