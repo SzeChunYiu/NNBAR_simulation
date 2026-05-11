@@ -53,8 +53,9 @@ cat codex-tasks/worker-1.txt 2>/dev/null
 
 1. Read the PROPOSED TASKS section in `docs/parallel-sessions/MASTER_PLAN.md`
 2. Count how many lines are in `codex-tasks/worker-1.txt`
-3. If worker-1.txt has fewer than 2 lines, pick the top 2 `High` priority tasks from
-   the PROPOSED table (prefer Python/reconstruction tasks for worker-1)
+3. If worker-1.txt + worker-2.txt combined have fewer than 4 lines, pick the top 4
+   `High` priority tasks from the PROPOSED table. Alternate: even-numbered tasks to
+   worker-1.txt, odd-numbered to worker-2.txt
 4. For each chosen task:
    a. Write a spec file: `docs/parallel-sessions/<short-name>.md` (≤400 lines)
       Include: goal, file(s) to create/edit, implementation steps, test command, stop condition
@@ -129,8 +130,10 @@ Next worker tasks: [list]
 Append tasks to these files to direct workers:
 - `codex-tasks/worker-0.txt` — pane 0 (C++/GPU/LUNARC work)
 - `codex-tasks/worker-1.txt` — pane 1 (Python/analysis/reconstruction work)
+- `codex-tasks/worker-2.txt` — pane 2 (Python/analysis — secondary, same scope as worker-1)
 
-Always use these two files. Create spec `.md` files in `docs/parallel-sessions/` for task details.
+Spread Python tasks evenly across worker-1.txt and worker-2.txt to maximize parallelism.
+Create spec `.md` files in `docs/parallel-sessions/` for task details.
 
 ## Important constraints
 
