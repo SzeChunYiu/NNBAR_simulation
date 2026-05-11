@@ -1,12 +1,12 @@
-"""Canonical event cutflow constants from the thesis event-selection chapter."""
+"""Canonical event cutflow constants from thesis Ch. 9 Table 9.1."""
 
 from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import Iterable
 
-# Thesis Ch.10 preliminary event-selection table, in sequential order.
-CH10_CUTFLOW_ORDER = (
+# Thesis Ch. 9 preliminary event-selection table, in sequential order.
+CH9_CUTFLOW_ORDER = (
     "scintillator_energy",
     "tpc_tracks",
     "pion_count",
@@ -14,6 +14,9 @@ CH10_CUTFLOW_ORDER = (
     "sphericity",
     "filtered_scintillator_balance",
 )
+
+# Backward-compatible alias retained for existing regression tests/imports.
+CH10_CUTFLOW_ORDER = CH9_CUTFLOW_ORDER
 
 SCINTILLATOR_ENERGY_WINDOW_MEV = (20.0, 2000.0)
 MIN_TPC_TRACKS_TO_VERTEX = 1
@@ -26,7 +29,7 @@ FILTERED_SCINTILLATOR_LOWER_MAX_MEV = 930.0
 
 @dataclass(frozen=True)
 class EventCutObservables:
-    """Minimal observables required by the Ch.10 cutflow table."""
+    """Minimal observables required by the Ch. 9 Table 9.1 cutflow."""
 
     scintillator_energy_mev: float
     tpc_tracks_to_vertex: int
@@ -39,7 +42,7 @@ class EventCutObservables:
 
 @dataclass(frozen=True)
 class CutflowResult:
-    """Result of applying the Ch.10 event-selection cuts."""
+    """Result of applying the Ch. 9 Table 9.1 event-selection cuts."""
 
     passed: bool
     cut_results: dict[str, bool]
@@ -49,7 +52,7 @@ class CutflowResult:
 
 
 def apply_ch10_cutflow(event: EventCutObservables) -> CutflowResult:
-    """Apply thesis Ch.10 cuts in table order."""
+    """Apply thesis Ch. 9 Table 9.1 cuts in table order."""
 
     scint_min, scint_max = SCINTILLATOR_ENERGY_WINDOW_MEV
     checks = (
@@ -74,7 +77,7 @@ def apply_ch10_cutflow(event: EventCutObservables) -> CutflowResult:
         cut_results=cut_results,
         first_failed_cut=first_failed,
         n_cuts_passed=n_passed,
-        n_cuts_total=len(CH10_CUTFLOW_ORDER),
+        n_cuts_total=len(CH9_CUTFLOW_ORDER),
     )
 
 

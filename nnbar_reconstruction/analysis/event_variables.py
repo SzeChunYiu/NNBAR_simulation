@@ -12,7 +12,7 @@ Implements Chapter 9 from thesis:
 from __future__ import annotations
 
 import numpy as np
-from typing import Dict, List, TYPE_CHECKING
+from typing import Dict, List, Optional, TYPE_CHECKING
 from dataclasses import dataclass
 
 from ..utils.coordinates import (
@@ -55,6 +55,8 @@ class EventVariables:
     # Vertex quality
     vertex_r: float                 # Radial distance of vertex from z-axis
     n_tracks_to_vertex: int         # Tracks used in vertex reconstruction
+    filtered_scintillator_upper_mev: float = 0.0  # Out-of-time scintillator energy for y > 0
+    filtered_scintillator_lower_mev: float = 0.0  # Out-of-time scintillator energy for y < 0
 
     def to_dict(self) -> Dict:
         """Convert to dictionary."""
@@ -74,7 +76,24 @@ class EventVariables:
             'n_protons': self.n_protons,
             'vertex_r': self.vertex_r,
             'n_tracks_to_vertex': self.n_tracks_to_vertex,
+            'filtered_scintillator_upper_mev': self.filtered_scintillator_upper_mev,
+            'filtered_scintillator_lower_mev': self.filtered_scintillator_lower_mev,
         }
+
+
+def event_variables_to_cut_observables(ev: EventVariables):
+    """Convert rich event variables into the canonical Ch. 9 cutflow inputs."""
+    from ..reconstruction.cutflow import EventCutObservables
+
+    return EventCutObservables(
+        scintillator_energy_mev=ev.scint_energy,
+        tpc_tracks_to_vertex=ev.n_tracks_to_vertex,
+        pion_count=ev.n_pions,
+        invariant_mass_mev=ev.invariant_mass,
+        sphericity=ev.sphericity,
+        filtered_scintillator_upper_mev=ev.filtered_scintillator_upper_mev,
+        filtered_scintillator_lower_mev=ev.filtered_scintillator_lower_mev,
+    )
 
 
 def compute_invariant_mass(
@@ -368,6 +387,8 @@ def compute_event_variables(
     neutral_objects: List[NeutralObject],
     vertex: np.ndarray,
     n_tracks_to_vertex: int = 0,
+    scintillator_hits: Optional["pd.DataFrame"] = None,
+    t0: float = 0.0,
 ) -> EventVariables:
     """
     Compute all event-level variables.
@@ -377,6 +398,8 @@ def compute_event_variables(
         neutral_objects: List of reconstructed neutral particles.
         vertex: Reconstructed vertex position.
         n_tracks_to_vertex: Number of tracks used in vertex reconstruction.
+        scintillator_hits: Optional raw scintillator hits with x/y/z/t/eDep columns.
+        t0: Event start time used for timing-window filtered energies.
 
     Returns:
         EventVariables dataclass.
@@ -411,6 +434,21 @@ def compute_event_variables(
     # Vertex quality
     vertex_r = np.sqrt(vertex[0]**2 + vertex[1]**2)
 
+    filtered_upper = 0.0
+    filtered_lower = 0.0
+    if scintillator_hits is not None:
+        from ..reconstruction.timing_window import (
+            compute_filtered_scintillator_hemisphere_energies,
+        )
+
+        filtered = compute_filtered_scintillator_hemisphere_energies(
+            scintillator_hits,
+            vertex=vertex,
+            t0=t0,
+        )
+        filtered_upper = filtered.upper_mev
+        filtered_lower = filtered.lower_mev
+
     return EventVariables(
         invariant_mass=inv_mass,
         sphericity=sphericity,
@@ -427,6 +465,8 @@ def compute_event_variables(
         n_protons=counts['protons'],
         vertex_r=vertex_r,
         n_tracks_to_vertex=n_tracks_to_vertex,
+        filtered_scintillator_upper_mev=filtered_upper,
+        filtered_scintillator_lower_mev=filtered_lower,
     )
 
 
