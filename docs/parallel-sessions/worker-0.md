@@ -16,7 +16,7 @@ and falls within this pane's scope (C++/GPU/LUNARC), check whether it is:
 
 - **Blocked on external work** (e.g. SLURM jobs running on LUNARC, jobs in queue,
   waiting for hardware): update the Notes field with current status, commit with
-  `git commit -m "docs(worker-0): refresh <task> blockers"`, then **proceed to
+  `rtk git commit -m "docs(worker-0): refresh <task> blockers"`, then **proceed to
   Step 2** and pick a NEXT task from a different lane (do not idle).
 - **Actionable** (there is code to write, a build to run, a script to fix): finish
   it, mark DONE, stop.
@@ -32,7 +32,7 @@ take priority.
 
 **Scope keywords (any of these = pane 0 territory):**
 - C++, CUDA, `.cu`, `.cc`, `.hh`, CMakeLists
-- LUNARC, SLURM, build, rsync, `ssh lunarc`
+- LUNARC, SLURM, build, rsync, guarded LUNARC SSH
 - G4GPU, geant4-gpu, VoxelGeometry, MuonKernel, RTX, OptiX, optical photon
 - CRY, cosmic generator, binary rebuild
 - `NNBAR_Detector/`, `geant4-gpu/`
@@ -40,13 +40,13 @@ take priority.
 ### Step 3 — Claim and implement
 
 1. Update MASTER_PLAN.md: change task status from `NEXT` → `RUNNING`
-2. Commit: `git commit -m "wip: mark <task> RUNNING"`
+2. Commit: `rtk git commit -m "wip: mark <task> RUNNING"`
 3. Read the task's spec file (e.g. `docs/parallel-sessions/g4gpu-phase1.md`)
 4. Implement the task fully per the spec
 5. Run any required verification (build check, test, etc.)
 6. Commit the implementation
 7. Update MASTER_PLAN.md: `RUNNING` → `DONE`
-8. Commit: `git commit -m "feat(<lane>): <description>"`
+8. Commit: `rtk git commit -m "feat(<lane>): <description>"`
 
 ### Step 4 — Stop condition
 
@@ -63,7 +63,14 @@ Then stop. The supervisor will resend this prompt when new tasks are added.
 
 - Only write files inside the task's specified writable scope
 - Do NOT touch Python files in `nnbar_reconstruction/` (pane 1's scope)
-- LUNARC SSH is pre-multiplexed: `ssh lunarc "cmd"` works directly
+- Before any LUNARC command, check or initialize the multiplexed socket:
+  ```bash
+  rtk proxy bash -lc "ssh -O check lunarc 2>/dev/null && echo Connected || /Users/billy/lunarc-init.sh"
+  ```
+- Run LUNARC SSH commands through RTK after the guard, for example:
+  ```bash
+  rtk proxy ssh lunarc "squeue -u scyiu -o '%.10i %.18j %.8T %.10M'"
+  ```
 - SLURM account: `lu2026-2-51` | partition: `lu48` (CPU), `gpua40` (GPU)
 - geant4-gpu repo: `/Volumes/MyDrive/nnbar/geant4-gpu/`
 - NNBAR_Detector on LUNARC: `/projects/hep/fs10/shared/nnbar/billy/NNBAR_Detector_sim/`
