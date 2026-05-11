@@ -109,7 +109,7 @@ squeue -u scyiu -o '%.10i %.18j %.8T %.10M'
 
 ## Stop condition
 
-Current handoff (2026-05-11 11:31 CEST): the 27-bin matrix patch was
+Current handoff (2026-05-11 11:38 CEST): the 27-bin matrix patch was
 committed in nested `NNBAR_Detector` on `main` and `lane/cosmic-slurm-array`
 as `a344a47` (`fix(slurm): cover gamma cosmic bin 4`). The missing gamma
 bin4 recovery was already submitted as job `3040275_10`. Do **not** submit a
@@ -121,11 +121,11 @@ or formerly-blocking tasks remain: `3040180_13`, `3040259_0`,
 `3040259_8`, `3040259_10`, and `3040259_11`.
 
 Progress notes from this check: `squeue -j 3040180,3040259,3040275 --array`
-still shows six remaining RUNNING blockers. `sacct` still reports the same
-six RUNNING jobs, with 3040180_24/25 at 09:17:51, 3040259_4/5/9 at
-03:00:16, and 3040275_10 at 02:48:55 elapsed. Fresh log tails reached
-`3040180_24` proton bin4 (~886k events), `3040259_4` mu- bin4 (~574k),
-`3040259_9` gamma bin3 (~470k), and `3040275_10` gamma bin4 (~101k). The
+and `sacct -X -j 3040180,3040259,3040275` still show six RUNNING jobs, with
+`3040180_24`/`3040180_25` at 09:24:35, `3040259_4`/`3040259_5`/`3040259_9`
+at 03:07:00, and `3040275_10` at 02:55:39 elapsed. Fresh log tails reached
+`3040180_24` proton bin4 (~898k events), `3040259_4` mu- bin4 (~594k),
+`3040259_9` gamma bin3 (~487k), and `3040275_10` gamma bin4 (~105k). The
 high-energy jobs `3040180_25` proton bin5 and `3040259_5` mu- bin5 remained
 RUNNING with 12-hour limits, but their stdout files were stale/slow
 (`cosmic-3040180_25.out` mtime 02:20 CEST with visible summaries only around
