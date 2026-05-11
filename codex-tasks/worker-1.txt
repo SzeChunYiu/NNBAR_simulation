@@ -1,0 +1,2 @@
+/goal You are PANE 1, lane event-variable-electron-pair-count. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/event-variable-electron-pair-count.md in /Volumes/MyDrive/nnbar/nnbar/simulation, then complete one compact-safe iteration.
+/goal You are PANE 1, lane rfc-feature-provenance. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/rfc-feature-provenance.md in /Volumes/MyDrive/nnbar/nnbar/simulation, then complete one compact-safe iteration.

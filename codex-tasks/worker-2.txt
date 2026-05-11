@@ -1,0 +1,2 @@
+/goal You are PANE 2, lane pion-multiplicity-closure. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/pion-multiplicity-closure.md in /Volumes/MyDrive/nnbar/nnbar/simulation, then complete one compact-safe iteration.
+/goal You are PANE 2, lane magnetic-field-boundary. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/magnetic-field-boundary.md in /Volumes/MyDrive/nnbar/nnbar/simulation, then complete one compact-safe iteration.
