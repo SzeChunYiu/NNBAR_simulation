@@ -1,0 +1,2 @@
+/goal You are PANE 0, lane g4gpu-optix-unblock. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/g4gpu-optix-unblock.md in /Volumes/MyDrive/nnbar/nnbar/simulation, then complete one compact-safe iteration.
+/goal You are PANE 0, lane g4gpu-phase5. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/g4gpu-phase5.md in /Volumes/MyDrive/nnbar/nnbar/simulation, then complete one compact-safe iteration (start with Subphase 5a benchmark suite).
