@@ -85,7 +85,7 @@ Every codex lane should read this file at start and at finish to check for new t
 | Phase 3: RTX geometry backend | BLOCKED | g4gpu-phase3 | BLOCKED — see `docs/blockers/optix-sdk-download.md` for the manual NVIDIA OptiX 9 SDK download/install action. |
 | Phase 4: Optical photon (Opticks integration) | PLANNED | — | Wrap Simon Blyth's Opticks instead of rebuilding |
 | OptiX SDK install on LUNARC | DONE | g4gpu-optix-unblock | Path B did not find an installed SDK/header/module; Path A blocker note committed at `docs/blockers/optix-sdk-download.md` with guarded RTK transfer/install/verification commands. |
-| **Phase 5: Benchmark suite + L0 microarchitecture wins** | NEXT | g4gpu-phase5 | See `docs/parallel-sessions/g4gpu-phase5.md`; measurement framework + AVX/NEON wins on CPU fallback |
+| **Phase 5: Benchmark suite + L0 microarchitecture wins** | RUNNING | g4gpu-phase5 | See `docs/parallel-sessions/g4gpu-phase5.md`; Subphase 5a benchmark suite claimed by worker-3 on 2026-05-11; measurement framework + AVX/NEON wins on CPU fallback |
 | **Phase 6: L1 algorithmic redesign (SoA tracks)** | PLANNED | — | Depends on Phase 5; see `docs/specs/g4gpu-line-by-line-acceleration.md` |
 | **Phase 7: L2 tri-compute integration** | PLANNED | — | Depends on Phase 3 + Phase 6 |
 | **Phase 8 algorithm survey (deterministic + ML)** | NEXT | g4gpu-phase8-survey | See `docs/parallel-sessions/g4gpu-phase8-survey.md`; CS/math methods not yet applied to Geant4 — validation-friendly first |

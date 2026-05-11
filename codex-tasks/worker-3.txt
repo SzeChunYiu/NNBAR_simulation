@@ -1,1 +1,0 @@
-/goal You are PANE 3, lane g4gpu-phase5. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/g4gpu-phase5.md in /Volumes/MyDrive/nnbar/nnbar/simulation, then complete one compact-safe iteration (Subphase 5a benchmark suite).
