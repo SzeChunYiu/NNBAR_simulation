@@ -109,25 +109,25 @@ squeue -u scyiu -o '%.10i %.18j %.8T %.10M'
 
 ## Stop condition
 
-Current handoff (2026-05-11 10:45 CEST): the 27-bin matrix patch was
+Current handoff (2026-05-11 10:51 CEST): the 27-bin matrix patch was
 committed in nested `NNBAR_Detector` on `main` and `lane/cosmic-slurm-array`
 as `a344a47` (`fix(slurm): cover gamma cosmic bin 4`). The missing gamma
 bin4 recovery was already submitted as job `3040275_10`. Do **not** submit a
 duplicate unless `sacct` proves that job failed or was cancelled. Remaining
 running blockers at this check: `3040180_24`, `3040180_25`, `3040259_4`,
 `3040259_5`, `3040259_8`, `3040259_9`, and `3040275_10`. Completed retry
-or formerly-blocking tasks at this check: `3040180_13`, `3040259_0`,
+or formerly-blocking tasks remain: `3040180_13`, `3040259_0`,
 `3040259_1`, `3040259_2`, `3040259_3`, `3040259_6`, `3040259_7`,
 `3040259_10`, and `3040259_11`.
 
 Progress notes from this check: `squeue -j 3040180,3040259,3040275 --array`
 and `sacct` show the same seven remaining RUNNING blockers. Elapsed times
-were `3040180_24/25` 8:32:11, `3040259_4/5/8/9` 2:14:36, and `3040275_10`
-2:03:15 at the check. Latest trailing-log event maxima are: `3040180_24`
-proton bin4 (~815k events), `3040180_25` proton bin5 (~2.6k; slow),
-`3040259_4` mu- bin4 (~427k), `3040259_5` mu- bin5 (~1.3k; slow),
-`3040259_8` gamma bin2 (~866k), `3040259_9` gamma bin3 (~353k), and
-`3040275_10` gamma bin4 (~74k).
+were `3040180_24/25` 8:37:34, `3040259_4/5/8/9` 2:19:59, and `3040275_10`
+2:08:38 at the check. Latest trailing-log event maxima are: `3040180_24`
+proton bin4 (~822k events), `3040180_25` proton bin5 (~2.6k; slow),
+`3040259_4` mu- bin4 (~444k), `3040259_5` mu- bin5 (~1.3k; slow),
+`3040259_8` gamma bin2 (~897k), `3040259_9` gamma bin3 (~366k), and
+`3040275_10` gamma bin4 (~76.6k).
 `3040275_10` is the only gamma bin4 recovery and must not be resubmitted
 while RUNNING. `3040180_25` and `3040259_5` remain the known slow high-energy
 jobs; wait for completion, failure, or cancellation before taking recovery
