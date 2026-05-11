@@ -10,10 +10,10 @@ Implements Section 7.1 from thesis:
 """
 
 import numpy as np
-from typing import Tuple, Optional, Dict, List
+from typing import Tuple, Optional, Dict
 import pandas as pd
 
-from ..utils.config import get_config, get_reconstruction_params
+from ..utils.config import get_reconstruction_params
 
 
 def _count_unique_track_ids(track_ids: np.ndarray) -> int:
@@ -94,6 +94,7 @@ def find_event_time(
     best_t0 = t_min
     best_energy = 0.0
     n_triggers = 0
+    found_trigger = False
 
     t = t_min
     while t <= t_max:
@@ -118,7 +119,8 @@ def find_event_time(
             # Total energy in window (include TPC ionization if available)
             total_energy = calo_energy
 
-            if total_energy > best_energy:
+            if not found_trigger or total_energy > best_energy:
+                found_trigger = True
                 best_energy = total_energy
                 best_t0 = t
 

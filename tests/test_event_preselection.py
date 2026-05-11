@@ -50,6 +50,20 @@ def test_two_distinct_tpc_tracks_in_same_window_trigger():
     assert result["n_trigger_windows"] > 0
 
 
+def test_tpc_only_trigger_selects_window_containing_tracks():
+    tpc_hits = pd.DataFrame(
+        {
+            "t": [100.0, 105.0, 110.0, 115.0],
+            "track_id": [10, 10, 11, 11],
+        }
+    )
+
+    result = rolling_time_window_trigger(tpc_hits, _empty_hits(), _empty_hits())
+
+    assert result["triggered"] is True
+    assert result["tpc_mask"].sum() == 4
+
+
 def test_track_id_capitalization_is_supported():
     tpc_hits = pd.DataFrame(
         {
