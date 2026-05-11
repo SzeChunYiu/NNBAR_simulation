@@ -20,7 +20,8 @@ If binary doesn't have CRY support, write "BLOCKED: waiting for cry-integration 
 
 - `docs/parallel-sessions/MASTER_PLAN.md`
 - `docs/parallel-sessions/cry-integration.md` — the weight formula and N_{i,j} table
-- `/Volumes/MyDrive/nnbar/nnbar/simulation/NNBAR_Detector/NNBAR_Detector_sim/slurm/run_signal.slurm` — template for run script
+- `NNBAR_Detector/slurm/run_cosmic_array.slurm` — current submitted
+  array script; local file existence verified on 2026-05-11
 
 ## Job matrix (27 jobs — skip only N_{i,j}=0)
 
@@ -108,7 +109,7 @@ squeue -u scyiu -o '%.10i %.18j %.8T %.10M'
 
 ## Stop condition
 
-Current handoff (2026-05-11 09:39 CEST): the 27-bin matrix patch was
+Current handoff (2026-05-11 09:49 CEST): the 27-bin matrix patch was
 committed in nested `NNBAR_Detector` on `main` and `lane/cosmic-slurm-array`
 as `a344a47` (`fix(slurm): cover gamma cosmic bin 4`). The missing gamma
 bin4 recovery was already submitted as job `3040275_10`. Do **not** submit a
@@ -119,19 +120,16 @@ or formerly-blocking tasks at this check: `3040180_13`, `3040259_0`,
 `3040259_1`, `3040259_2`, `3040259_3`, `3040259_6`, `3040259_7`,
 `3040259_10`, and `3040259_11`.
 
-Progress notes from log headers/tails at this check: `squeue`/`sacct` show
-`3040180_13` COMPLETED (07:13:49, exit 0:0) and `3040259_3` COMPLETED
-(01:07:57, exit 0:0). Both logs contain `Finalization complete` plus
-`Run completed`, and Parquet outputs exist under
-`build_lunarc/output/cosmic_e-_bin3` and
-`build_lunarc/output/cosmic_mu-_bin3`. Remaining RUNNING bins and log-tail
-progress are: `3040180_24` proton bin4 (~707k events), `3040180_25` proton
-bin5 (~2.6k; slow/stale), `3040259_4` mu- bin4 (~215k), `3040259_5` mu-
-bin5 (~1.3k; slow/stale), `3040259_8` gamma bin2 (~434k), `3040259_9`
-gamma bin3 (~175k), and `3040275_10` gamma bin4 (~34k). `3040275_10` is the
-only gamma bin4 recovery and must not be resubmitted while RUNNING.
-`3040180_25` and `3040259_5` remain the known slow high-energy jobs; wait for
-completion, failure, or cancellation before taking recovery action.
+Progress notes from log headers/tails at this check: `squeue -j
+3040180,3040259,3040275 --array` and `sacct` show the same seven remaining
+RUNNING blockers. Latest log EVENT maxima are: `3040180_24` proton bin4
+(~726k events), `3040180_25` proton bin5 (~1.4k; slow/stale), `3040259_4`
+mu- bin4 (~250k), `3040259_5` mu- bin5 (~1.3k; slow/stale), `3040259_8`
+gamma bin2 (~508k), `3040259_9` gamma bin3 (~205k), and `3040275_10` gamma
+bin4 (~40k). `3040275_10` is the only gamma bin4 recovery and must not be
+resubmitted while RUNNING. `3040180_25` and `3040259_5` remain the known slow
+high-energy jobs; wait for completion, failure, or cancellation before taking
+recovery action.
 
 Stop when the 27-bin nonzero matrix is covered and accounted for:
 1. Monitor `3040180`, `3040259`, and `3040275` with `squeue`/`sacct`.
