@@ -19,6 +19,14 @@ source line and a database entry ID as its target.
 - `docs/policies/g4gpu-isolation.md` (what is in scope for review vs. what
   is off limits)
 
+Progress note (2026-05-11): the legacy free-form report
+`docs/reports/g4_source_review_hotpaths.md` already covers hot path 1 (PIL)
+and hot path 2 (geometry navigation). Do not repeat those sections in the
+next compact iteration. From the next iteration onward, create/append
+structured entries in `docs/reports/bottleneck_database_geant4.md`, starting
+with hot path 3 (physics sampling / DoIt), unless the queue explicitly asks
+for a separate legacy-entry conversion pass.
+
 ## Locate Geant4 source
 
 ```bash
@@ -51,11 +59,11 @@ Bandieramonte et al. EPJ 2024) and our own intuition from the strategy doc.
 Files to read:
 - `source/processes/management/src/G4VProcess.cc`
 - `source/processes/management/src/G4ProcessManager.cc`
-- `source/processes/management/src/G4SteppingManager2.cc` (the inner step
-  loop)
-- `source/processes/management/src/G4SteppingManager.cc`
+- `source/tracking/src/G4SteppingManager.cc` (the inner step loop; Geant4
+  11.2.2 does not contain `G4SteppingManager2.cc`)
 - `source/processes/electromagnetic/utils/src/G4VEnergyLossProcess.cc`
-- `source/global/management/src/G4PhysicsVector.cc` (cross-section
+- `source/global/management/src/G4PhysicsVector.cc` and
+  `source/global/management/include/G4PhysicsVector.icc` (cross-section
   interpolation — the hot inner loop)
 
 Annotate:
@@ -68,9 +76,11 @@ Annotate:
 
 Files to read:
 - `source/geometry/navigation/src/G4Navigator.cc`
-- `source/geometry/navigation/src/G4SmartVoxelHeader.cc`
+- `source/geometry/management/src/G4SmartVoxelHeader.cc`
 - `source/geometry/navigation/src/G4VoxelNavigation.cc`
-- `source/geometry/management/src/G4VTouchable.cc` (and history class)
+- `source/geometry/management/include/G4VTouchable.hh`,
+  `source/geometry/management/src/G4TouchableHistory.cc`, and
+  `source/geometry/management/include/G4TouchableHistory.icc`
 - `source/geometry/management/src/G4VPhysicalVolume.cc`
 - `source/geometry/solids/CSG/src/G4Box.cc::DistanceToIn/Out` (representative
   surface tests)
@@ -87,9 +97,10 @@ Annotate:
 Files to read:
 - `source/processes/electromagnetic/standard/src/G4MollerBhabhaModel.cc`
 - `source/processes/electromagnetic/standard/src/G4SeltzerBergerModel.cc`
-- `source/processes/hadronic/models/parton_string/src/G4FTFModel.cc`
+- `source/processes/hadronic/models/parton_string/diffraction/src/G4FTFModel.cc`
 - `source/processes/hadronic/models/cascade/cascade/src/G4CascadeInterface.cc`
-- Random sampling utilities: `source/global/HEPRandom/src/HepJamesRandom.cc`
+- Random sampling utilities: `source/externals/clhep/src/JamesRandom.cc`
+  and `source/externals/clhep/include/CLHEP/Random/JamesRandom.h`
 - `source/track/src/G4ParticleChange.cc` (allocation churn)
 
 Annotate:
@@ -105,7 +116,7 @@ Files to read:
 - `source/track/src/G4Step.cc`
 - `source/tracking/src/G4TrackingManager.cc`
 - `source/event/src/G4StackManager.cc`
-- `source/event/src/G4StackedTrack.cc`
+- `source/event/include/G4StackedTrack.hh`
 
 Annotate:
 - AoS-vs-SoA opportunities
@@ -116,9 +127,9 @@ Annotate:
 ### 5. Hit collection / SD (~10%)
 
 Files to read:
-- `source/digits_hits/utils/src/G4SDManager.cc`
+- `source/digits_hits/detector/src/G4SDManager.cc`
 - `source/digits_hits/detector/src/G4VSensitiveDetector.cc`
-- `source/digits_hits/utils/src/G4HCofThisEvent.cc`
+- `source/digits_hits/hits/src/G4HCofThisEvent.cc`
 
 Annotate:
 - `std::map<G4String, G4HCofThisEvent*>` lookups (perfect-hash candidate)
@@ -139,7 +150,7 @@ Legacy free-form output:
 ```
 ## 1. PIL
 
-### G4SteppingManager2.cc:123-145 — virtual call cascade
+### source/tracking/src/G4SteppingManager.cc:449-512 — virtual call cascade
 **Current**: every step iterates over all processes via virtual call
 **Optimization**: JIT-specialize the loop for the current particle's
 process list, eliding never-active processes
@@ -162,7 +173,7 @@ task name.
 1. Read this spec, the strategy doc, the isolation policy
 2. Mark `g4-source-review` RUNNING in MASTER_PLAN.md
 3. Locate Geant4 source; if blocked, write blocker note and stop
-4. Read hot path 1 (PIL) and annotate ~10 opportunities
+4. Read the next uncovered hot path and annotate ~10 opportunities
 5. Commit the partial report
 6. Stop and let the next iteration cover hot path 2, etc.
 
