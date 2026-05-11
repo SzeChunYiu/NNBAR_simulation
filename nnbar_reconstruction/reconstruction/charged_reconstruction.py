@@ -34,8 +34,8 @@ class ChargedObject:
     momentum_magnitude: float       # |p| estimate (MeV/c)
 
     # dE/dx
-    dedx_truncated: float           # Truncated mean dE/dx (MeV/cm)
-    dedx_layers: np.ndarray         # Per-layer dE/dx values
+    dedx_truncated: float           # Truncated TPC dE/dx (e-/cm; legacy MeV/cm fallback)
+    dedx_layers: np.ndarray         # Per-layer TPC dE/dx values in same units
 
     # Calorimeter
     scint_energy: float             # Energy in scintillator (MeV)
@@ -82,8 +82,11 @@ def calculate_truncated_dedx(
     """
     Calculate truncated mean dE/dx for a track.
 
-    Implements Eq. 7.5 from thesis:
-    dE/dx = N_e / delta_x per layer, then truncated mean of lower 60%
+    Implements the Chapter 7 thesis convention: use ionization electrons
+    divided by layer path length, then the lower-60% truncated mean. The
+    returned unit is e-/cm when the TPC table has an ``electrons`` column;
+    samples without that column use the documented legacy eDep/path fallback
+    in MeV/cm.
 
     Args:
         track: Track object.
@@ -366,4 +369,4 @@ if __name__ == "__main__":
     print("Charged Object Reconstruction:")
     print(f"  Energy: {obj.energy:.1f} MeV")
     print(f"  Momentum direction: {obj.momentum}")
-    print(f"  dE/dx: {obj.dedx_truncated:.2f} MeV/cm")
+    print(f"  dE/dx: {obj.dedx_truncated:.2f} e-/cm (legacy MeV/cm if no electrons)")
