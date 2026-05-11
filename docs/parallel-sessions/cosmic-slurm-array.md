@@ -109,7 +109,7 @@ squeue -u scyiu -o '%.10i %.18j %.8T %.10M'
 
 ## Stop condition
 
-Current handoff (2026-05-11 11:25 CEST): the 27-bin matrix patch was
+Current handoff (2026-05-11 11:31 CEST): the 27-bin matrix patch was
 committed in nested `NNBAR_Detector` on `main` and `lane/cosmic-slurm-array`
 as `a344a47` (`fix(slurm): cover gamma cosmic bin 4`). The missing gamma
 bin4 recovery was already submitted as job `3040275_10`. Do **not** submit a
@@ -122,16 +122,15 @@ or formerly-blocking tasks remain: `3040180_13`, `3040259_0`,
 
 Progress notes from this check: `squeue -j 3040180,3040259,3040275 --array`
 still shows six remaining RUNNING blockers. `sacct` still reports the same
-six RUNNING jobs and `3040259_8` COMPLETED in 02:36:27. Elapsed times were
-`3040180_24/25` 9:11:29, `3040259_4/5/9` 2:53:54, and `3040275_10`
-2:42:33 at the check. Fresh log tails reached `3040180_24` proton bin4
-(~879k events), `3040259_4` mu- bin4 (~551k), `3040259_9` gamma bin3
-(~454k), and `3040275_10` gamma bin4 (~97k). The high-energy jobs
-`3040180_25` proton bin5 and `3040259_5` mu- bin5 remained RUNNING with
-`scontrol` Reason=None and 12-hour limits, but their stdout files were
-stale/slow (`cosmic-3040180_25.out` mtime 02:20 CEST with only O(10^3)
-visible events; `cosmic-3040259_5.out` mtime 08:34 CEST with O(10^2--10^3)
-visible events).
+six RUNNING jobs, with 3040180_24/25 at 09:17:51, 3040259_4/5/9 at
+03:00:16, and 3040275_10 at 02:48:55 elapsed. Fresh log tails reached
+`3040180_24` proton bin4 (~886k events), `3040259_4` mu- bin4 (~574k),
+`3040259_9` gamma bin3 (~470k), and `3040275_10` gamma bin4 (~101k). The
+high-energy jobs `3040180_25` proton bin5 and `3040259_5` mu- bin5 remained
+RUNNING with 12-hour limits, but their stdout files were stale/slow
+(`cosmic-3040180_25.out` mtime 02:20 CEST with visible summaries only around
+1.3k events; `cosmic-3040259_5.out` mtime 08:34 CEST with visible summaries
+only around 1.3k events).
 `3040275_10` is the only gamma bin4 recovery and must not be resubmitted
 while RUNNING. `3040180_25` and `3040259_5` remain the known slow high-energy
 jobs; wait for completion, failure, or cancellation before taking recovery
