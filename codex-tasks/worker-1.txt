@@ -1,2 +1,1 @@
 /goal You are PANE 1, lane fix-geometry-manifest-paths. Read docs/parallel-sessions/MASTER_PLAN.md, remove hardcoded thesis extract absolute paths from nnbar_reconstruction/analysis/geometry_constants.py, make tests portable, then run focused/full pytest.
-/goal You are PANE 1, lane tpc-w-value-policy-audit. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/tpc-w-value-policy-audit.md in /Volumes/MyDrive/nnbar/nnbar/simulation, then complete one compact-safe iteration.
