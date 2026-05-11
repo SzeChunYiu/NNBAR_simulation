@@ -66,3 +66,21 @@ Read first: `docs/specs/g4gpu-line-by-line-acceleration.md`.
 
 After committing one competitor's results, stop and let the next iteration
 take the next one. This is intentionally spread across multiple iterations.
+
+## Iteration log
+
+### 2026-05-11 — Celeritas compact baseline (pane 4)
+
+- AdePT intentionally left to worker-3; this pane selected Celeritas.
+- Created `benchmarks/competitors/celeritas/build.sh` and
+  `benchmarks/competitors/run_all.sh` scaffolding.
+- LUNARC configure probe for upstream Celeritas succeeded with CUDA 12.8,
+  Geant4 11.2.2, and ORANGE geometry; HepMC3 and VecGeom were not found in
+  the compact environment.
+- Submitted SLURM job 3041282 to `gpua40` for a one-A40 `celer-sim` simple-cms
+  gamma primary run; `scontrol` reported `PENDING (Resources)` with estimated
+  start `2026-05-12T09:51:19`; remote results target is
+  `/projects/hep/fs10/shared/nnbar/billy/mcaccel_competitors/celeritas/results/results.parquet`.
+
+OPEN: Full Celeritas reference coverage still needs TestEm3/Hadr04/ZDC-style
+inputs with HepMC3/VecGeom or a precise blocker report.

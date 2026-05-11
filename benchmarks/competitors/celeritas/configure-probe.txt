@@ -1,0 +1,29 @@
+# Celeritas LUNARC configure probe
+timestamp_local=2026-05-11T14:24:29+0200
+source_commit=b685181081b54240ffc4bfd9ceab495c9a5fe4e6
+source_describe=b685181
+probe_build_dir=/projects/hep/fs10/shared/nnbar/billy/mcaccel_competitors/celeritas/build-probe
+--- configure summary ---
+-- Set CELERITAS_USE_covfie=OFF based on package availability
+-- Set CELERITAS_USE_DD4hep=OFF based on package availability
+-- Set CELERITAS_USE_Geant4=ON based on package availability
+-- Set CELERITAS_USE_HepMC3=OFF based on package availability
+-- Set CELERITAS_USE_LArSoft=OFF based on package availability
+-- Set CELERITAS_USE_OpenMP=ON based on package availability
+-- Set CELERITAS_USE_PNG=ON based on package availability
+-- Set CELERITAS_USE_VecGeom=OFF based on package availability
+-- Set CELERITAS_CORE_GEO=ORANGE
+-- The CUDA compiler identification is NVIDIA 12.8.61
+-- Found Geant4: /projects/hep/fs10/shared/nnbar/billy/packages/hibeam_env/lib/cmake/Geant4/Geant4Config.cmake (found version "11.2.2")
+-- Found nlohmann_json: /projects/hep/fs10/shared/nnbar/billy/packages/hibeam_env/share/cmake/nlohmann_json/nlohmann_jsonConfig.cmake (found suitable version "3.11.3", minimum required is "3.7.0")
+-- Found Python: /projects/hep/fs10/shared/nnbar/billy/packages/hibeam_env/bin/python3.11 (found suitable version "3.11.14", minimum required is "3.9") found components: Interpreter
+-- Found GTest: /projects/hep/fs10/shared/nnbar/billy/packages/hibeam_env/lib/cmake/GTest/GTestConfig.cmake (found suitable version "1.15.2", minimum required is "1.10")
+-- Configuring done (9.2s)
+-- Generating done (1.7s)
+-- Build files have been written to: /projects/hep/fs10/shared/nnbar/billy/mcaccel_competitors/celeritas/build-probe
+--- queue evidence ---
+JobId=3041282 JobName=mcaccel-celeritas
+   JobState=PENDING Reason=Resources Dependency=(null)
+   StartTime=2026-05-12T09:51:19 EndTime=2026-05-12T11:51:19 Deadline=N/A
+   Partition=gpua40 AllocNode:Sid=cosmos1:1450820
+   ReqTRES=cpu=16,mem=64G,node=1,billing=16,gres/gpu=1,gres/gpu:a40=1
