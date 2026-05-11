@@ -40,6 +40,7 @@ Every codex lane should read this file at start and at finish to check for new t
 | Random Forest Classifier | DONE | rfc-classifier | RFCClassifier + train_rfc.py merged |
 | π⁰ lead-glass fraction cut verification | DONE | pi0-verification | Ch.8 has 60% local optimum and 55% final optimized cut; canonical constants/tests added |
 | Opening angle threshold (30°) | DONE | pi0-verification | Ch.8 has 25° local optimum and 30° final optimized cut; canonical constants/tests added |
+| Ch.9 event-variable formula regression | RUNNING | ch9-event-variables | Claiming formula regression lane; fix p-weighted sphericity and signed longitudinal-energy formulas with pytest regressions before cutflow/RFC rely on these observables |
 | Material budget analysis script | PLANNED | — | Low priority — analysis only |
 
 ---
