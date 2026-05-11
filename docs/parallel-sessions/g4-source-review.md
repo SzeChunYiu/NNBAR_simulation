@@ -2,17 +2,22 @@
 
 ## Goal
 
-Read Geant4 11.2.2 source line by line in its hot paths and produce a
-concrete, file:line-cited optimization report. Output:
-`docs/reports/g4_source_review_hotpaths.md`.
+Read Geant4 11.2.2 source line by line in its profiled hot 20% and emit
+entries into the bottleneck database
+`docs/reports/bottleneck_database_geant4.md` per the methodology in
+`docs/specs/mcaccel-bottleneck-methodology.md`.
 
-This is the empirical foundation for Phases 5d (L0 wins), 6 (L1 algorithms),
-and 8 (deterministic CS methods). Without this review, optimizations are
-speculative. After this review, every Phase 5d/6/8 task should cite a
-specific Geant4 source line as its target.
+This is the empirical foundation for *every* Phase 5+ implementation task.
+Without this review, optimizations are speculative. After this review,
+every implementation task on worker-3's queue cites a specific Geant4
+source line and a database entry ID as its target.
 
-Read first: `docs/specs/g4gpu-line-by-line-acceleration.md`,
-`docs/policies/g4gpu-isolation.md`.
+**Mandatory reading before iterating:**
+- `docs/specs/mcaccel-bottleneck-methodology.md` (the loop and the 10
+  categories — every annotation must use this format)
+- `docs/specs/g4gpu-line-by-line-acceleration.md` (broader strategy)
+- `docs/policies/g4gpu-isolation.md` (what is in scope for review vs. what
+  is off limits)
 
 ## Locate Geant4 source
 
@@ -121,7 +126,15 @@ Annotate:
 
 ## Output format
 
-`docs/reports/g4_source_review_hotpaths.md` with one section per hot path:
+**The output is the bottleneck database** (one file per code), not a
+free-form report. Append entries to
+`docs/reports/bottleneck_database_geant4.md` using the exact format from
+`docs/specs/mcaccel-bottleneck-methodology.md`. Each entry has a unique
+ID `BD-geant4-NNN` and the ten required fields (File, Lines, Hot-path %,
+Category, Current pattern, Why slow, Proposed fix, Expected speedup,
+Validation, Implementation target).
+
+Legacy free-form output:
 
 ```
 ## 1. PIL
