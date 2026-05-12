@@ -201,6 +201,7 @@ def test_watchdog_once_scans_holder_job_with_fake_ssh(tmp_path: Path) -> None:
         "#!/usr/bin/env bash\n"
         "case \"$*\" in\n"
         "  *squeue*) echo 12345 ;;\n"
+        "  *list-panes*) echo 'flatpak: libmount mismatch' >&2 ;;\n"
         "esac\n"
         "exit 0\n",
         encoding="utf-8",
@@ -220,6 +221,7 @@ def test_watchdog_once_scans_holder_job_with_fake_ssh(tmp_path: Path) -> None:
 
     assert result.returncode == 0
     assert "mapfile: command not found" not in result.stderr
+    assert "flatpak:" not in result.stderr
 
 
 def test_watchdog_once_skips_unavailable_tmux_session(tmp_path: Path) -> None:

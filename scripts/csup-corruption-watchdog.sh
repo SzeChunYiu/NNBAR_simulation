@@ -71,9 +71,19 @@ ensure_lunarc_socket() {
   LUNARC_SOCKET_READY=1
 }
 
+filter_lunarc_stderr() {
+  local line
+  while IFS= read -r line; do
+    case "$line" in
+      flatpak:*libmount*) ;;
+      *) printf '%s\n' "$line" >&2 ;;
+    esac
+  done
+}
+
 ssh_lunarc() {
   ensure_lunarc_socket
-  ssh lunarc "$@"
+  ssh lunarc "$@" 2> >(filter_lunarc_stderr)
 }
 
 # Find the LUNARC nnbar-csup jobid (so srun --jobid can land on the node)
