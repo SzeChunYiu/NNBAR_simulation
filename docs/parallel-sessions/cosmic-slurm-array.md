@@ -338,3 +338,19 @@ future explicitly queued thread/seed probe compares the failed seed paths at
 `THREADS=1` and `THREADS=4` with a no-submit-by-default guard. Do not run
 `cosmic_proton_bin5_recovery.sbatch` or any old proton-bin5 recovery script.
 
+
+### Current handoff (2026-05-12 08:34 CEST)
+
+Worker-0 prepared the future proton-bin5 thread/seed probe wrapper without
+submitting a diagnostic job. The guarded script is committed in the nested
+`NNBAR_Detector` repo as `b9a7989` and staged on LUNARC at
+`slurm/cosmic_proton_bin5_thread_probe.sbatch`. It replays the failed
+`3046812_1`, `_2`, `_5`, and `_6` seed/cap paths at `THREADS=1` and
+`THREADS=4`, writes only to `output/cosmic_proton_bin5/thread_probe_*`, and
+exits with code 2 unless `PROTON_BIN5_THREAD_PROBE_APPROVED=YES` is set.
+
+Verification was syntax/guard/test-only only: local and remote `bash -n`
+passed, the guard test exited 2, static seed/thread checks passed, and
+`sbatch --test-only --array=0-7 slurm/cosmic_proton_bin5_thread_probe.sbatch`
+returned pseudo-job `3047483`; `squeue`/`sacct` for `3047483` found no real job.
+Do not run the probe until a later approved lane explicitly sets the guard.
