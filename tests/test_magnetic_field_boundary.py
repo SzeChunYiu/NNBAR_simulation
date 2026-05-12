@@ -43,6 +43,40 @@ def test_charge_sign_and_momentum_from_curvature_claims_fail_closed():
     assert "validated magnetic-field scenario" in blocker_text
 
 
+def test_positive_may_be_quoted_charge_sign_claim_fails_closed():
+    report = audit_magnetic_field_boundary(
+        {
+            "bad-quotation": (
+                "In the no B-field baseline, charge sign may be quoted from "
+                "curvature."
+            )
+        }
+    )
+
+    assert report.ready is False
+    assert {blocker.code for blocker in report.blockers} == {
+        "forbidden_magnetic_claim"
+    }
+    assert report.blockers[0].snippet == (
+        "In the no B-field baseline, charge sign may be quoted from curvature."
+    )
+
+
+def test_negated_may_not_be_quoted_charge_sign_claim_is_accepted():
+    report = audit_magnetic_field_boundary(
+        {
+            "safe-quotation": (
+                "In the no B-field baseline, charge sign may not be quoted "
+                "from curvature."
+            )
+        }
+    )
+
+    assert report.ready is True
+    assert report.blockers == ()
+    assert report.deferred_provenance_present is True
+
+
 def test_deferred_scenario_and_systematics_language_is_acceptable_provenance():
     report = audit_magnetic_field_boundary(
         {

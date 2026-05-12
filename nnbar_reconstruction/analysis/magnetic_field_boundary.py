@@ -47,7 +47,6 @@ _DEFERRED_PATTERNS = (
     re.compile(r"\buntil a? ?magnetic[- ]field scenario exists\b", re.IGNORECASE),
     re.compile(r"\bout of current scope\b", re.IGNORECASE),
     re.compile(r"\bmay not be quoted\b", re.IGNORECASE),
-    re.compile(r"\bmay be quoted\b", re.IGNORECASE),
     re.compile(r"\breject such claims\b", re.IGNORECASE),
     re.compile(r"\bnon-baseline option\b", re.IGNORECASE),
     re.compile(r"\blimitation L9\b", re.IGNORECASE),
@@ -66,21 +65,34 @@ _FORBIDDEN_PATTERNS = (
     ),
 )
 
+_CLAIM_TERM = (
+    r"(?:charge[- ]sign|magnetic[- ]momentum|curvature[- ]momentum|"
+    r"momentum(?: measurement)?\s+from\s+curvature)"
+)
+
 _SAFE_CLAIM_PATTERNS = (
-    re.compile(r"\bno\b", re.IGNORECASE),
-    re.compile(r"\bnot\b", re.IGNORECASE),
-    re.compile(r"\bwithout\b", re.IGNORECASE),
-    re.compile(r"\beliminates?\b", re.IGNORECASE),
-    re.compile(r"\bdefer(?:red)?\b", re.IGNORECASE),
-    re.compile(r"\buntil\b", re.IGNORECASE),
-    re.compile(r"\bout of current scope\b", re.IGNORECASE),
-    re.compile(r"\bmay not be quoted\b", re.IGNORECASE),
-    re.compile(r"\bmay be quoted\b", re.IGNORECASE),
-    re.compile(r"\breject\b", re.IGNORECASE),
-    re.compile(r"\bdoes not include\b", re.IGNORECASE),
-    re.compile(r"\bcannot\b", re.IGNORECASE),
-    re.compile(r"\bnon-baseline\b", re.IGNORECASE),
-    re.compile(r"\bnot directly applicable\b", re.IGNORECASE),
+    re.compile(rf"\bmay\s+not\s+be\s+quoted\b", re.IGNORECASE),
+    re.compile(rf"\bno\s+{_CLAIM_TERM}(?:\s+or\s+{_CLAIM_TERM})?", re.IGNORECASE),
+    re.compile(
+        rf"\b{_CLAIM_TERM}\b[^.\n]{{0,80}}\b"
+        r"(?:is|are|can|may|must|should)?\s*"
+        r"(?:not|never|cannot|can't)\b[^.\n]{0,80}\b"
+        r"(?:quoted|claimed|measured|reconstructed|estimated|used)\b",
+        re.IGNORECASE,
+    ),
+    re.compile(rf"\b(?:does\s+)?not\s+include\b[^.\n]{{0,100}}\b{_CLAIM_TERM}\b", re.IGNORECASE),
+    re.compile(
+        rf"\b(?:defer(?:red)?|out[_ -]of(?: current)?[_ -]scope|non-baseline option|"
+        rf"not directly applicable|reject(?:s|ed)?(?: such)? claims?)\b"
+        rf"[^.\n]{{0,120}}\b{_CLAIM_TERM}\b",
+        re.IGNORECASE,
+    ),
+    re.compile(
+        rf"\b{_CLAIM_TERM}\b[^.\n]{{0,120}}\b"
+        rf"(?:defer(?:red)?|out[_ -]of(?: current)?[_ -]scope|non-baseline option|"
+        rf"not directly applicable|reject(?:s|ed)?(?: such)? claims?)\b",
+        re.IGNORECASE,
+    ),
 )
 
 
