@@ -1,0 +1,1 @@
+/goal write docs/reports/g4_bottleneck_database_ion_elastic.md — structured Geant4 v11.2.2 source review shard for ion elastic scattering (G4IonElasticPhysics, G4NuclNuclDiffuseElastic, G4UHadronElasticProcess) and nuclear fragmentation. BD-geant4-111 through BD-geant4-120. Must not repeat BD-001--110. Format matches existing shards.

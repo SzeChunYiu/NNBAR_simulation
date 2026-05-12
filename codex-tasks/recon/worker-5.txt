@@ -1,0 +1,1 @@
+/goal implement nnbar_reconstruction/analysis/cosmic_background_rate_audit.py — fail-closed audit for combine_cosmic_background.py: verifies all 27 CRY bins present, weighted sum normalization, livetime-corrected rate, blockers for missing bins (gamma_bin4 shards vs root stub pattern); focused tests; no SLURM. Thesis ref: Ch.9 cosmic background estimate

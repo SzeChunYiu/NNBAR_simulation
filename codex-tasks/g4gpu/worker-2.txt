@@ -1,0 +1,1 @@
+/goal write docs/reports/g4_bottleneck_database_decay_stopping.md — structured Geant4 v11.2.2 source review shard for decay physics (G4DecayPhysics, G4RadioactiveDecay) and stopping physics (G4StoppingPhysics, G4MuonMinusCapture). BD-geant4-091 through BD-geant4-100. Must not repeat BD-001--090. Format matches existing shards.

@@ -1,0 +1,1 @@
+/goal create NNBAR_Detector/slurm/signal_50k.sbatch + NNBAR_Detector/macro/studies/signal_mcpl_50k.mac per docs/parallel-sessions/signal-50k-run.md — read existing macros and main.cc CLI flags first, write + bash-n validate, rsync to LUNARC, sbatch submit, confirm in squeue. Output must go to sig_foil_v3/

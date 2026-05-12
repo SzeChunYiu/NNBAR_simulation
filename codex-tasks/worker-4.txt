@@ -1,2 +1,3 @@
-/goal You are PANE 4, lane g4-source-review. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/g4-source-review.md and docs/specs/mcaccel-bottleneck-methodology.md in /Volumes/MyDrive/nnbar/nnbar/simulation, then complete one compact-safe iteration (bottleneck-database format; next hot path is physics sampling DoIt).
-/goal You are PANE 4, lane openmc-line-reference-fix. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/openmc-line-reference-fix.md in /Volumes/MyDrive/nnbar/nnbar/simulation, then complete one compact-safe iteration.
+# MIGRATED 2026-05-11: this queue is INACTIVE.
+# Active queues live on LUNARC under NNBAR_Detector_sim/codex-tasks/{recon,sim,g4gpu,review}/.
+# See docs/parallel-sessions/MASTER_PLAN.md and .codex-supervisor.toml.

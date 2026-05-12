@@ -1,0 +1,1 @@
+/goal audit G4UserLimits coverage in NNBAR_Detector/src/detector/ — verify every sensitive volume (TPC, Carbon foil, Beampipe, Silicon) has G4UserLimits with a finite max-step limit; RC-2 fixed LeadGlass+Scintillator. Write docs/reports/g4userlimits_audit.md listing each volume, current limit or MISSING, and recommended fix. No code changes unless critical stall risk found.

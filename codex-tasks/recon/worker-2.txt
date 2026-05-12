@@ -1,0 +1,1 @@
+/goal implement nnbar_reconstruction/analysis/pi0_vertex_response_audit.py — reads pi0_reco_{E}mev.parquet grouped by truth_vertex_r_cm, outputs efficiency/mass-peak/sigma vs radius summary with blockers; pure Python, synthetic-data tests only, no SLURM. Spec: docs/parallel-sessions/pi0-parametric-studies.md §Study 1 output schema

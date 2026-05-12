@@ -1,0 +1,1 @@
+/goal write docs/reports/g4_bottleneck_database_hadronic_proton.md — structured Geant4 v11.2.2 source review shard for hadronic proton/ion physics: G4ProtonInelasticProcess, G4BinaryLightIonReaction, G4INCLXXInterface, G4IntraNucleiCascader, cross-section interpolation. BD-geant4-081 through BD-geant4-090. Must not repeat BD-001--080. Format matches existing shards.

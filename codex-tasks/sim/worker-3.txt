@@ -1,0 +1,1 @@
+/goal create NNBAR_Detector/macro/studies/pi0_foil_energy_scan_ext.mac + NNBAR_Detector/slurm/pi0_energy_scan_ext.sbatch extending pi0 mono studies to 100/200/300/400/500 MeV at r=0 (200 events each); bash-n validate script; rsync to LUNARC; sbatch submit. Outputs to build_lunarc/output/pi0_mono_{E}mev/ matching existing naming convention

@@ -1,0 +1,1 @@
+/goal implement nnbar_reconstruction/analysis/sensitivity_closure_audit.py — fail-closed audit checking all sensitivity ingredients (signal eff, cosmic rate, beam background, zero-survivor Poisson limit) have required columns/registry entries; blockers for each missing piece; focused tests; no SLURM. Thesis ref: Ch.9/10 sensitivity calculation

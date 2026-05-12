@@ -1,0 +1,1 @@
+/goal implement nnbar_reconstruction/analysis/cutflow_closure_audit.py — verifies all 9 Table 9.1 cuts exist in event_selection.py with correct thresholds, correct order, correct observable names; focused tests check each cut individually and as a chain; no simulation, no SLURM. Thesis ref: Ch.9 Table 9.1

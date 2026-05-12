@@ -1,0 +1,1 @@
+/goal create NNBAR_Detector/macro/studies/pi0_multiplicity_{1,2,3}pi0.mac + NNBAR_Detector/slurm/pi0_multiplicity_study.sbatch (3-task SLURM array, 500 events each, 150 MeV, uses existing /calibration/signal_particles pi0 pi0 command); bash-n validate; rsync; sbatch submit. Outputs to build_lunarc/output/pi0_multiplicity_N/
