@@ -10,7 +10,7 @@ or an `OPEN:` blocker.
 
 | Project | Benchmark | Status | Hardware | Wall time (s) | Throughput | Evidence |
 |---|---|---:|---|---:|---:|---|
-| Celeritas | compact `celer-sim` simple-cms gamma primary run | OPEN | LUNARC `gpua40`, 1x A40 | blocked | blocked | SLURM job 3041282 ran on `cg05` and failed with exit `127:0` after the build succeeded but the script looked for `build-a40/app/celer-sim/celer-sim` instead of the produced `build-a40/bin/celer-sim`; local script `benchmarks/competitors/celeritas/build.sh` now has the corrected executable path and an explicit missing-executable guard, but no timing result is captured until rerun. |
+| Celeritas | compact `celer-sim` simple-cms gamma primary run | QUEUED | LUNARC `gpua40`, 1x A40 | pending | pending | Corrected script copy `/projects/hep/fs10/shared/nnbar/billy/mcaccel_competitors/celeritas/build-fixed-20260512.sh` was submitted as SLURM job 3047497 on 2026-05-12T08:45:15; `scontrol show job` reports `PENDING`, `Reason=Resources`, `TimeLimit=02:00:00`, and command path above. Prior job 3041282 failed with exit `127:0` on the stale executable path. |
 | AdePT | Example1/TestEm3 compact EM workload | OPEN | LUNARC `gpua40`, 1x A40 target | blocked | blocked | `benchmarks/competitors/adept/build.sh`; login configure probe succeeded, but GPU-node jobs 3041291/3041525 could not read the CERN `devAdePT` CVMFS view; see `benchmarks/competitors/adept/setup-blocker-3041525.txt` |
 | Opticks | OpNovice2-like optical | OPEN | A100 target | — | — | Not attempted yet. |
 | VecGeom | CPU navigation harness | OPEN | Xeon target | — | — | Not attempted yet. |
@@ -40,9 +40,17 @@ Remote evidence shows configure completed, `cmake --build` linked
 `bin/celer-sim`, and the failure came from invoking the stale
 `app/celer-sim/celer-sim` path. The local build script has been patched to use
 `build-a40/bin/celer-sim` and to fail with an explicit executable search if the
-path changes again. No local or non-LUNARC benchmark was run as a substitute;
-the Celeritas timing row remains `OPEN` until the corrected script is
-resubmitted on LUNARC and `results.parquet` is produced.
+path changes again. No local or non-LUNARC benchmark was run as a substitute.
+
+Rerun submission: the corrected local script was copied to LUNARC as
+`/projects/hep/fs10/shared/nnbar/billy/mcaccel_competitors/celeritas/build-fixed-20260512.sh`.
+`sbatch --test-only` returned pseudo job 3047496 with an estimated start on
+`cg03`, and the real `sbatch` submission returned job 3047497. Immediate
+`scontrol show job 3047497` evidence at 2026-05-12T08:45 CEST reported
+`JobState=PENDING`, `Reason=Resources`, `StartTime=Unknown`, `TimeLimit=02:00:00`,
+`TresPerNode=gres/gpu:a40:1`, and command path `build-fixed-20260512.sh`.
+The Celeritas timing row remains `QUEUED` until job 3047497 completes and
+`results.parquet` is produced and read back.
 
 ## AdePT compact iteration notes
 
