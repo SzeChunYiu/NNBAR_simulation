@@ -299,3 +299,28 @@ while `3046812` is active. Inspect `3046812` logs/outputs after the full array
 exits, then design any next recovery explicitly; separate mu- bin5 and gamma
 bin4 recovery specs are still needed for `3040259_5` and `3040275_10`.
 
+### Current handoff (2026-05-12 08:12 CEST)
+
+Guarded LUNARC refresh (`rtk proxy bash -lc "ssh -O check lunarc ..."`, then
+`squeue -j 3046812 --array`, `sacct -X`, output inventory, and log tails)
+found proton-bin5 diagnostic/recovery array `3046812` has fully exited; no
+active duplicate proton-bin5 job remains in `squeue`:
+
+- `3046812_0`, `_3`, and `_4` completed with exit `0:0`; `_1` and `_2` timed
+  out at `06:00:16` and `06:00:13`; `_5` and `_6` failed with exit `0:15`
+  after `00:55:44` and `00:54:40`.
+- Root `build_lunarc/output/cosmic_proton_bin5/Particle_output_0.parquet`
+  remains a 4-byte invalid stub.
+- Diagnostic non-stub outputs are still limited to `second_diagnostic_cap100_rep0`
+  (12025 bytes), `second_diagnostic_cap250_rep1` (23758 bytes), and
+  `second_diagnostic_cap500_rep0` (43563 bytes); the first recovery shard files
+  and cap100 rep1 / cap250 rep0 / cap500 rep1 / cap1000 rep0 remain 4-byte stubs.
+- Stdout tails still stop at events 96 (`_1`), 243 (`_2`), 491 (`_5`), and
+  962 (`_6`); stderr adds only the `_1`/`_2` time-limit cancellations and no
+  new fatal message for `_5`/`_6` beyond Geant4/SLURM failure status.
+
+Stop/next-action rule: do not submit a new proton-bin5 job from the old
+recovery scripts. The next proton-bin5 iteration must write a fresh,
+explicitly authorized recovery design that accounts for the cap/seed-dependent
+stall/failure pattern above before any `sbatch` submission.
+
