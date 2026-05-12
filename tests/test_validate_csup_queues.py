@@ -132,3 +132,21 @@ def test_over_word_limit_prompt_lines_are_rejected(tmp_path: Path) -> None:
     assert result.returncode == 1
     assert "codex-prompts-demo.txt:1" in result.stdout
     assert "word cap is 50" in result.stdout
+
+
+def test_unknown_flag_is_rejected_before_validation(tmp_path: Path) -> None:
+    """Typos in validator flags must not look like a clean queue scan."""
+    scripts_dir = tmp_path / "scripts"
+    scripts_dir.mkdir()
+    shutil.copy2(SCRIPT, scripts_dir / SCRIPT.name)
+
+    result = subprocess.run(
+        ["bash", str(scripts_dir / SCRIPT.name), "--bogus"],
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+
+    assert result.returncode == 2
+    assert "unknown arg: --bogus" in result.stdout
+    assert "OK: every prompt line passes" not in result.stdout

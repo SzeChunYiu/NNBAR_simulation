@@ -28,7 +28,12 @@ REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$REPO_ROOT"
 
 FIX_MODE=0
-[[ "${1:-}" == "--fix" ]] && FIX_MODE=1
+while (( $# > 0 )); do
+  case "$1" in
+    --fix) FIX_MODE=1; shift ;;
+    *)     echo "unknown arg: $1"; exit 2 ;;
+  esac
+done
 
 fail_count=0
 file_count=0
