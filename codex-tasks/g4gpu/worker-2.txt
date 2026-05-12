@@ -1,1 +1,0 @@
-/goal You are PANE 2, lane g4gpu-neutron-kernel. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/g4gpu-neutron-kernel.md in /Volumes/MyDrive/nnbar/nnbar/simulation, then complete one compact-safe iteration.
