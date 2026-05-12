@@ -1,1 +1,0 @@
-/goal write docs/reports/bottleneck_database_openmc_transport.md — structured OpenMC v0.15.3 source review shard for the Monte Carlo transport loop: source sampling, geometry tracking (universe/cell search), surface crossing, collision sampling. BD-openmc-013 through BD-openmc-022. Must not repeat BD-openmc-001--012. Format matches docs/reports/bottleneck_database_openmc.md
