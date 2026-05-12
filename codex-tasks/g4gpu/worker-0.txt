@@ -1,1 +1,0 @@
-/goal implement benchmarks/harness/hardware.py per docs/specs/benchmark-harness.md §Implementation task 5: hardware fingerprint (reads /proc/cpuinfo, nvidia-smi, SLURM env vars) with focused local-mock test
