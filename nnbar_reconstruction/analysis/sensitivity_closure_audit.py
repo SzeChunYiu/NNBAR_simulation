@@ -79,13 +79,34 @@ class SensitivityClosureAudit:
 
     Args:
         ready: True only when every required ingredient is present and numeric.
-        ingredients: Mapping from canonical ingredient name to evidence status.
+        signal_efficiency: Evidence status for the signal efficiency input.
+        cosmic_rate: Evidence status for the cosmic-background rate input.
+        beam_background_rate: Evidence status for the beam-background rate input.
+        livetime: Evidence status for the exposure livetime input.
+        zero_survivor_mean_upper_limit: Evidence status for the zero-survivor
+            Poisson mean upper-limit input.
         blockers: Explicit fail-closed blockers.
     """
 
     ready: bool
-    ingredients: Mapping[str, SensitivityIngredientEvidence]
+    signal_efficiency: SensitivityIngredientEvidence
+    cosmic_rate: SensitivityIngredientEvidence
+    beam_background_rate: SensitivityIngredientEvidence
+    livetime: SensitivityIngredientEvidence
+    zero_survivor_mean_upper_limit: SensitivityIngredientEvidence
     blockers: tuple[SensitivityClosureBlocker, ...]
+
+    @property
+    def ingredients(self) -> Mapping[str, SensitivityIngredientEvidence]:
+        """Return ingredient evidence keyed by canonical ingredient name."""
+
+        return {
+            "signal_efficiency": self.signal_efficiency,
+            "cosmic_rate": self.cosmic_rate,
+            "beam_background_rate": self.beam_background_rate,
+            "livetime": self.livetime,
+            "zero_survivor_mean_upper_limit": self.zero_survivor_mean_upper_limit,
+        }
 
 
 def audit_sensitivity_closure(
@@ -123,7 +144,11 @@ def audit_sensitivity_closure(
     blocker_tuple = tuple(blockers)
     return SensitivityClosureAudit(
         ready=not blocker_tuple,
-        ingredients=ingredients,
+        signal_efficiency=ingredients["signal_efficiency"],
+        cosmic_rate=ingredients["cosmic_rate"],
+        beam_background_rate=ingredients["beam_background_rate"],
+        livetime=ingredients["livetime"],
+        zero_survivor_mean_upper_limit=ingredients["zero_survivor_mean_upper_limit"],
         blockers=blocker_tuple,
     )
 

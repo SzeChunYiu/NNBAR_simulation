@@ -36,10 +36,11 @@ def test_complete_synthetic_explicit_columns_are_ready():
 
     assert report.ready is True
     assert report.blockers == ()
-    assert report.ingredients["signal_efficiency"].value == 0.42
-    assert report.ingredients["cosmic_rate"].source == "explicit_column:cosmic_background_rate"
-    assert report.ingredients["livetime"].column == "livetime_seconds"
-    assert report.ingredients["zero_survivor_mean_upper_limit"].present is True
+    assert report.signal_efficiency.value == 0.42
+    assert report.cosmic_rate.source == "explicit_column:cosmic_background_rate"
+    assert report.livetime.column == "livetime_seconds"
+    assert report.zero_survivor_mean_upper_limit.present is True
+    assert report.ingredients["beam_background_rate"] is report.beam_background_rate
 
 
 def test_registry_records_can_supply_sensitivity_ingredients():
