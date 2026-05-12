@@ -1,1 +1,0 @@
-/goal You are PANE 1, lane benchmark-harness-schema-parity-test-fix. Read docs/specs/benchmark-harness.md and docs/parallel-sessions/benchmark-harness-schema-parity-test-fix.md, then complete one compact-safe iteration.
