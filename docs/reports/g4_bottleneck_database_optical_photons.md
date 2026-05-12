@@ -39,7 +39,7 @@ No speedup or priority promotion is claimed here; every `Hot-path %` remains `OP
 | Lines | 659-720 |
 | Hot-path % (profile-measured) | Optical rough-surface boundary sampling: per-line self% `OPEN:` pending surface-model perf. |
 | Category | 4 — Mathematical |
-| Current pattern | Snippet: `do { alpha = G4RandGauss::shoot(...); sinAlpha = std::sin(alpha); } while(...)`, then random `phi`, `std::cos`, `std::sin`, `rotateUz`; the polish branch samples a cube until `smear.mag2() <= 1.0`. |
+| Current pattern | Snippet: `alpha    = G4RandGauss::shoot(0.0, sigma_alpha)`, `sinAlpha = std::sin(alpha)`, then `} while(G4UniformRand() * f_max > sinAlpha || alpha >= halfpi);`; random `phi` feeds `std::cos`, `std::sin`, `facetNormal.rotateUz(normal)`, and the polish branch retries while `smear.mag2() > 1.0`. |
 | Why slow | Rough-surface paths pay unpredictable rejection counts, multiple scalar transcendentals, and normalization/rotation work per bounce; this is branch- and RNG-heavy for optical simulations with diffuse or ground finishes. |
 | Proposed fix | Precompute per-`sigma_alpha` alias/CDF tables for the truncated `g(alpha) sin(alpha)` distribution and provide a direct sphere-cap sampler for the polish branch; keep rejection code as the validation oracle. |
 | Expected speedup | 1.2-2.0x in rough-boundary normal sampling; wall-clock impact depends on fraction of optical photons hitting ground/LUT/DAVIS surfaces. |
@@ -56,7 +56,7 @@ No speedup or priority promotion is claimed here; every `Hot-path %` remains `OP
 | Lines | 820-891 |
 | Hot-path % (profile-measured) | Optical LUT/DAVIS boundary model: per-line self% `OPEN:` pending LUT-surface perf. |
 | Category | 2 — Algorithm |
-| Current pattern | Snippet: `thetaIndex = G4RandFlat::shootInt(...)`, `phiIndex = G4RandFlat::shootInt(...)`, then `GetAngularDistributionValue(...)` inside a `do/while(!G4BooleanRand(...))` loop before rotating momentum/polarization. |
+| Current pattern | Snippet: `thetaIndex = (G4int)G4RandFlat::shootInt(thetaIndexMax - 1);`, `phiIndex   = (G4int)G4RandFlat::shootInt(phiIndexMax - 1);`, then `angularDistVal = fOpticalSurface->GetAngularDistributionValue(` inside a loop ending `} while(!G4BooleanRand(angularDistVal));` before rotating momentum/polarization. |
 | Why slow | Acceptance-rejection over 2D angular bins has data-dependent loop counts and random table accesses; a low-probability bin distribution can burn many RNG calls and cache misses per reflected photon. |
 | Proposed fix | Build per-incident-angle alias tables for `(theta, phi)` bins at optical-surface initialization and sample one bin in O(1), with the legacy rejection sampler retained behind a bit-compatible flag. |
 | Expected speedup | 1.5-4x for LUT reflection sampling on surfaces with sparse angular distributions; negligible on non-LUT finishes. |
@@ -141,7 +141,7 @@ No speedup or priority promotion is claimed here; every `Hot-path %` remains `OP
 | Lines | 638-651 |
 | Hot-path % (profile-measured) | Scintillation finite-rise timing: per-line self% `OPEN:` pending finite-rise material perf. |
 | Category | 4 — Mathematical |
-| Current pattern | Snippet: `t = -tau2 * G4Log(1.0 - G4UniformRand())` inside a `do/while (G4UniformRand() > (1.0 - G4Exp(-t/tau1)))` loop. |
+| Current pattern | Snippet: `t  = -1.0 * tau2 * G4Log(1.0 - G4UniformRand());` inside a loop ending `while (G4UniformRand() > (1.0 - G4Exp(-t/tau1)));`. |
 | Why slow | Rejection counts are data-dependent and each failed sample pays logarithm/exponential work; finite-rise scintillators can call this once per generated optical photon. |
 | Proposed fix | Add a direct inverse-CDF or pretabulated-CDF sampler for common `(tau1, tau2)` pairs, selected from the material emission descriptor, with the rejection sampler retained for uncommon values. |
 | Expected speedup | 1.5-3x for finite-rise time sampling; wall-clock impact scales with scintillation photon count and finite-rise material usage. |
