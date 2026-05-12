@@ -79,3 +79,32 @@ def test_combine_cosmic_background_counts_reused_event_ids_per_run(tmp_path):
     assert summary["weighted_events_by_particle"]["mu-"] == pytest.approx(
         get_weight(0, 0) + get_weight(1, 0)
     )
+
+
+def test_combine_cosmic_background_counts_reused_event_ids_per_shard(tmp_path):
+    """Event IDs can restart in separate parquet shards from the same run."""
+    from nnbar_reconstruction.data_pipeline.cosmic_weights import get_weight
+    from scripts.combine_cosmic_background import combine_cosmic_background
+
+    cosmic_root = tmp_path / "cosmic"
+    run_dir = cosmic_root / "cosmic_gamma_bin4"
+    run_dir.mkdir(parents=True)
+    for shard, edep in enumerate((10.0, 20.0)):
+        pd.DataFrame({"Event_ID": [0], "edep": [edep]}).to_parquet(
+            run_dir / f"TPC_output_{shard}.parquet",
+            index=False,
+        )
+
+    combined, summary = combine_cosmic_background(
+        cosmic_root,
+        tmp_path / "combined.parquet",
+        "TPC",
+    )
+
+    expected = get_weight(4, 1)
+    assert summary["n_events_by_particle"] == {"gamma": 2}
+    assert summary["weighted_events_by_particle"]["gamma"] == pytest.approx(2 * expected)
+    assert set(combined["cosmic_source_file"]) == {
+        "TPC_output_0.parquet",
+        "TPC_output_1.parquet",
+    }
