@@ -1,1 +1,0 @@
-/goal You are PANE 1, lane cosmic-bin5-rc1-threshold-activation. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/cosmic-bin5-rc1-threshold-activation.md, then complete one compact-safe iteration.
