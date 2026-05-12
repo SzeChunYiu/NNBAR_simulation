@@ -1,1 +1,0 @@
-/goal implement nnbar_reconstruction/analysis/pi0_reco_driver.py and update discover_pi0_sample per docs/parallel-sessions/pi0-reco-driver.md — focused tests + no SLURM
