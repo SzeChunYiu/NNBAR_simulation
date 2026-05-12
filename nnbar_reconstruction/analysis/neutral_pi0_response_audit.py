@@ -117,6 +117,10 @@ def discover_pi0_sample(energy_mev: int, search_root: str | Path) -> Path | None
     ]
     if not candidates:
         return None
+    # Prefer reco driver output over raw Particle_output when both are staged.
+    reco = [path for path in candidates if "reco" in path.relative_to(root).as_posix().lower()]
+    if reco:
+        return sorted(reco, key=str)[0]
     return sorted(candidates, key=lambda path: ("particle_output" not in path.name.lower(), str(path)))[0]
 
 
