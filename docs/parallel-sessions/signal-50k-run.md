@@ -89,14 +89,18 @@ ls -lh "${OUTPUT_DIR}/"*.parquet 2>/dev/null || echo "No parquet files found"
 
 ## Key notes for codex
 
-1. Check the binary's actual CLI flags before writing the script. Run:
-   `ssh lunarc "cd /projects/hep/fs10/shared/nnbar/billy/NNNAR_Detector_sim/build_lunarc && ./nnbar-detector-simulation.bin --help 2>&1 | head -30"`
-   
+1. Check the binary's actual CLI flags before writing the script. First
+   guard the LUNARC SSH control socket:
+   `rtk proxy bash -lc 'ssh -O check lunarc 2>/dev/null && echo Connected || /Users/billy/lunarc-init.sh'`
+
+   Then run:
+   `rtk proxy ssh lunarc "cd /projects/hep/fs10/shared/nnbar/billy/NNBAR_Detector_sim/build_lunarc && ./nnbar-detector-simulation.bin --help 2>&1 | head -30"`
+
    The actual flags may differ — look at `src/main.cc` for the argument parsing.
    The macro-based invocation may be: `./nnbar-detector-simulation.bin -m macro/mcpl_signal.mac`
 
 2. Check existing MCPL macros:
-   `find NNBAR_Detector/macro -name "*mcpl*" -o -name "*signal*" | grep -v build`
+   `rtk proxy bash -lc 'find NNBAR_Detector/macro -name "*mcpl*" -o -name "*signal*" | grep -v build'`
 
 3. The output folder name must be `sig_foil_v3` so `signal_kinematics_audit.py` finds it.
 
@@ -124,10 +128,11 @@ the existing binary on LUNARC).
 
 ```bash
 # Check Parquet non-stub and row count
-ssh lunarc "python3 -c \"
+rtk proxy bash -lc 'ssh -O check lunarc 2>/dev/null && echo Connected || /Users/billy/lunarc-init.sh'
+rtk proxy ssh lunarc "python3 -c \"
 import pyarrow.parquet as pq
 import pathlib
-d = pathlib.Path('/projects/hep/fs10/shared/nnbar/billy/NNNAR_Detector_sim/build_lunarc/output/sig_foil_v3')
+d = pathlib.Path('/projects/hep/fs10/shared/nnbar/billy/NNBAR_Detector_sim/build_lunarc/output/sig_foil_v3')
 for f in sorted(d.glob('*.parquet')):
     t = pq.read_table(f)
     print(f.name, t.num_rows, 'rows', f.stat().st_size, 'bytes')
