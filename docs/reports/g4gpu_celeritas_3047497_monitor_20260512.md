@@ -179,3 +179,54 @@ Disposition remains unchanged: keep the Celeritas rerun in external scheduler
 wait, keep `MCAccel competitor benchmarks` in `RUNNING`, and do not create
 `docs/reports/celeritas_benchmark_3047497.md` until `results/results.parquet`
 exists or the job reaches a terminal state with stdout/stderr to preserve.
+
+## Refresh: 2026-05-12 12:19 CEST
+
+The LUNARC socket guard refreshed the persistent socket and verified it before
+the read-only SSH status queries. Job 3047497 remains pending; no benchmark
+result exists and no new job was submitted.
+
+```text
+REMOTE_DATE=2026-05-12 12:19:10 CEST
+
+JOBID      NAME                    STATE        TIME   TIME_LIMIT  NODES  NODELIST(REASON)  QOS
+3047497    mcaccel-celeritas       PENDING      0:00   2:00:00     1      (Priority)        normal
+
+JobID|JobName|State|Elapsed|Start|End|ExitCode|NodeList
+3047497|mcaccel-celeritas|PENDING|00:00:00|Unknown|Unknown|0:0|None assigned
+
+JobState=PENDING
+Reason=Priority
+ExitCode=0:0
+RunTime=00:00:00
+TimeLimit=02:00:00
+SubmitTime=2026-05-12T08:45:15
+EligibleTime=2026-05-12T08:45:15
+StartTime=2026-05-13T21:58:30
+EndTime=2026-05-13T23:58:30
+Partition=gpua40
+SchedNodeList=cg03
+NumNodes=1
+Command=/projects/hep/fs10/shared/nnbar/billy/mcaccel_competitors/celeritas/build-fixed-20260512.sh
+WorkDir=/projects/hep/fs10/shared/nnbar/billy/mcaccel_competitors/celeritas
+StdErr=/projects/hep/fs10/shared/nnbar/billy/mcaccel_competitors/celeritas/slurm/celeritas-3047497.err
+StdOut=/projects/hep/fs10/shared/nnbar/billy/mcaccel_competitors/celeritas/slurm/celeritas-3047497.out
+```
+
+The active-job filter showed job 3047497 and the historical V7 shakedown
+3047502 still pending on `Priority`; no Celeritas job has allocated a GPU node.
+
+Remote file checks:
+
+```text
+-rwx--x--x 1 scyiu hep 6894 May 12 08:40 build-fixed-20260512.sh
+aa02355926582c49846661482cb9d8ede87b698ad263d23e62229492636e4104  build-fixed-20260512.sh
+MISSING slurm/celeritas-3047497.out
+MISSING slurm/celeritas-3047497.err
+MISSING results/results.parquet
+```
+
+Disposition remains unchanged: keep the Celeritas rerun in external scheduler
+wait, keep `MCAccel competitor benchmarks` in `RUNNING`, and do not create
+`docs/reports/celeritas_benchmark_3047497.md` until `results/results.parquet`
+exists or the job reaches a terminal state with stdout/stderr to preserve.
