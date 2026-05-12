@@ -148,6 +148,50 @@ def test_watchdog_reuses_lunarc_control_socket_within_one_sweep(
     assert socket_checks == ["-O check lunarc"]
 
 
+def test_watchdog_checks_corruption_patterns_once_per_pane(tmp_path: Path) -> None:
+    """A clean pane should require one regex scan, not one grep per pattern."""
+    fake_bin = tmp_path / "bin"
+    fake_bin.mkdir()
+    grep_log = tmp_path / "grep.log"
+
+    fake_scripts = {
+        "ssh": (
+            "#!/usr/bin/env bash\n"
+            "case \"$*\" in\n"
+            "  '-O check lunarc') exit 0 ;;\n"
+            "  *squeue*) echo 12345; exit 0 ;;\n"
+            "  *list-panes*) echo 0; exit 0 ;;\n"
+            "  *capture-pane*) echo 'pane clean'; exit 0 ;;\n"
+            "esac\n"
+            "exit 0\n"
+        ),
+        "grep": (
+            "#!/usr/bin/env bash\n"
+            "if [[ \"$1\" == '-Eq' ]]; then printf '%s\\n' \"$2\" >> \"$GREP_LOG\"; fi\n"
+            "exec /usr/bin/grep \"$@\"\n"
+        ),
+    }
+    for name, content in fake_scripts.items():
+        path = fake_bin / name
+        path.write_text(content, encoding="utf-8")
+        path.chmod(0o755)
+
+    env = os.environ.copy()
+    env.update({"PATH": f"{fake_bin}{os.pathsep}{env['PATH']}", "GREP_LOG": str(grep_log)})
+
+    result = subprocess.run(
+        ["bash", str(SCRIPT), "--once"],
+        text=True,
+        capture_output=True,
+        check=False,
+        env=env,
+    )
+
+    pattern_checks = grep_log.read_text(encoding="utf-8").splitlines()
+    assert result.returncode == 0
+    assert len(pattern_checks) == len(_watchdog_prompt_map())
+
+
 def test_watchdog_once_scans_holder_job_with_fake_ssh(tmp_path: Path) -> None:
     """The watchdog should run its scan loop under macOS /bin/bash 3.2."""
     fake_bin = tmp_path / "bin"

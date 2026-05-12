@@ -54,6 +54,14 @@ CORRUPTION_PATTERNS=(
   'invalid_request_error.*model'
   '(^|[[:space:]])/g([^[:alpha:]]|$)'
 )
+CORRUPTION_RE=""
+for pat in "${CORRUPTION_PATTERNS[@]}"; do
+  if [[ -z "$CORRUPTION_RE" ]]; then
+    CORRUPTION_RE="($pat)"
+  else
+    CORRUPTION_RE="$CORRUPTION_RE|($pat)"
+  fi
+done
 
 LUNARC_SOCKET_READY=0
 
@@ -130,12 +138,9 @@ run_once() {
         continue
       fi
       local corrupt=0
-      for pat in "${CORRUPTION_PATTERNS[@]}"; do
-        if printf '%s' "$cap" | grep -Eq "$pat"; then
-          corrupt=1
-          break
-        fi
-      done
+      if printf '%s' "$cap" | grep -Eq "$CORRUPTION_RE"; then
+        corrupt=1
+      fi
       if (( corrupt )); then
         # tmux pane_index may be one-based on LUNARC; map by list position.
         local prompt="${LINES[$prompt_idx]:-}"
