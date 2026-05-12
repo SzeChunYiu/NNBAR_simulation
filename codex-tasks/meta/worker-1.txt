@@ -1,0 +1,1 @@
+/goal write docs/specs/paper-section-1-introduction.md through paper-section-4-catalogue.md: stub each with required evidence list and figure/table placeholders per docs/specs/paper-methodology.md §Paper structure

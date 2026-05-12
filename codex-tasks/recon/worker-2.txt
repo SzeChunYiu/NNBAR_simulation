@@ -1,0 +1,1 @@
+/goal rsync build_lunarc/output/pi0_mono_{50,150,250}mev to local and run neutral_pi0_response_audit.py to close three sample_missing blockers; update MASTER_PLAN neutral-object-pi0-mass-response row

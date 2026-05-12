@@ -1,0 +1,1 @@
+/goal implement benchmarks/harness schema and parity modules per docs/specs/benchmark-harness.md §Implementation tasks 1-2: schema.py (Parquet row dataclass + pyarrow schema) and parity.py (KS gate, scipy, focused tests)
