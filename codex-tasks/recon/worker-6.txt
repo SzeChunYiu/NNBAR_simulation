@@ -1,1 +1,1 @@
-/goal implement nnbar_reconstruction/analysis/pi0_multiplicity_response_audit.py — fail-closed audit for multi-pi0 events (1,2,3 pi0s): checks reco efficiency degradation, invariant mass confusion rate, opening-angle separation; blockers for missing multi-pi0 samples; synthetic pileup tests; no SLURM. Thesis ref: Ch.8 pi0 ID in multi-particle events
+/goal You are PANE 6, lane pi0-multiplicity-response-audit. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/pi0-multiplicity-response-audit.md, then complete one compact-safe iteration.
