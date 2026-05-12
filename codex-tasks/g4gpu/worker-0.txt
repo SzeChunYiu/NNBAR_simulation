@@ -1,1 +1,0 @@
-/goal implement G4GPU Phase 3 RTX geometry backend per docs/parallel-sessions/g4gpu-phase3.md — OptiX 9.0 SDK is at /projects/hep/fs10/shared/nnbar/billy/packages/optix-9.0 on LUNARC, OPTIX_READY verified; implement full RTXGeometry with BVH build and ray-boundary query

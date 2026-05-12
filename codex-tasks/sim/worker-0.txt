@@ -1,1 +1,0 @@
-/goal build NNBAR_Detector on LUNARC and run verification test with failing seeds per docs/parallel-sessions/cosmic-bin5-stall-fix.md §Verification after fix
