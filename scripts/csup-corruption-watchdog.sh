@@ -76,9 +76,11 @@ get_jobid() {
 # Re-inject prompt for a single pane via bracketed paste.
 reinject() {
   local jobid="$1" session="$2" pane_idx="$3" prompt="$4"
+  local prompt_b64
+  prompt_b64=$(printf '%s' "$prompt" | base64 | tr -d '\n')
   ssh_lunarc "srun --jobid='$jobid' --overlap bash -lc '
     BUF=\$(mktemp /tmp/csup-reinject.XXXXXX)
-    printf %s \"$prompt\" > \"\$BUF\"
+    printf '\''%s'\'' '\''$prompt_b64'\'' | base64 -d > \"\$BUF\"
     tmux send-keys -t \"$session:.$pane_idx\" Escape 2>/dev/null
     sleep 0.3
     tmux send-keys -t \"$session:.$pane_idx\" C-u 2>/dev/null

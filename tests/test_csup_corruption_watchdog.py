@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import base64
 import os
 import re
 import subprocess
@@ -19,6 +20,17 @@ def _watchdog_prompt_map() -> dict[str, str]:
     return dict(
         re.findall(r'"([A-Za-z0-9_.-]+)=([A-Za-z0-9_.-]+\.txt)"', text)
     )
+
+
+def _decoded_reinject_prompts(ssh_log: str) -> list[str]:
+    payloads = re.findall(
+        r"printf '\\''%s'\\'' '\\''([A-Za-z0-9+/=]+)'\\'' \| base64 -d",
+        ssh_log,
+    )
+    return [
+        base64.b64decode(payload).decode("utf-8")
+        for payload in payloads
+    ]
 
 
 def test_watchdog_covers_every_lunarc_prompt_session() -> None:
@@ -229,7 +241,52 @@ def test_watchdog_reinjects_pane_zero_prompt(tmp_path: Path) -> None:
 
     assert result.returncode == 0
     assert "no prompt at index -1" not in result.stdout
-    assert "PANE 0" in ssh_log.read_text(encoding="utf-8")
+    decoded_prompts = _decoded_reinject_prompts(ssh_log.read_text(encoding="utf-8"))
+    assert any("PANE 0" in prompt for prompt in decoded_prompts)
+
+
+def test_watchdog_reinjects_prompt_without_literal_shell_payload(
+    tmp_path: Path,
+) -> None:
+    """Prompt text should not be interpolated directly into the remote shell."""
+    fake_bin = tmp_path / "bin"
+    fake_bin.mkdir()
+    ssh_log = tmp_path / "ssh.log"
+    fake_ssh = fake_bin / "ssh"
+    fake_ssh.write_text(
+        "#!/usr/bin/env bash\n"
+        "case \"$*\" in\n"
+        "  *squeue*) echo 12345 ;;\n"
+        "  *list-panes*) echo 0 ;;\n"
+        "  *capture-pane*) echo '/model goal You are PANE' ;;\n"
+        "  *) printf '%s\\n' \"$*\" >> \"$SSH_LOG\" ;;\n"
+        "esac\n"
+        "exit 0\n",
+        encoding="utf-8",
+    )
+    fake_ssh.chmod(0o755)
+
+    env = os.environ.copy()
+    env["PATH"] = f"{fake_bin}{os.pathsep}{env['PATH']}"
+    env["SSH_LOG"] = str(ssh_log)
+
+    result = subprocess.run(
+        ["bash", str(SCRIPT), "--once"],
+        text=True,
+        capture_output=True,
+        check=False,
+        env=env,
+    )
+
+    canonical_prompt = next(
+        line for line in (REPO_ROOT / "codex-prompts-recon.txt").read_text().splitlines()
+        if line.startswith("/goal")
+    )
+    reinject_commands = ssh_log.read_text(encoding="utf-8")
+
+    assert result.returncode == 0
+    assert canonical_prompt not in reinject_commands
+    assert canonical_prompt in _decoded_reinject_prompts(reinject_commands)
 
 
 def test_watchdog_maps_one_based_tmux_panes_by_position(tmp_path: Path) -> None:
@@ -264,9 +321,13 @@ def test_watchdog_maps_one_based_tmux_panes_by_position(tmp_path: Path) -> None:
     )
 
     reinject_commands = ssh_log.read_text(encoding="utf-8")
+    decoded_prompts = _decoded_reinject_prompts(reinject_commands)
     assert result.returncode == 0
-    assert "PANE 0, lane planner-recon" in reinject_commands
-    assert "PANE 1, lane event-variable-electron-pair-count" not in reinject_commands
+    assert any("PANE 0, lane planner-recon" in prompt for prompt in decoded_prompts)
+    assert not any(
+        "PANE 1, lane event-variable-electron-pair-count" in prompt
+        for prompt in decoded_prompts
+    )
 
 
 def test_watchdog_detects_invalid_request_error_regex(tmp_path: Path) -> None:
@@ -301,7 +362,8 @@ def test_watchdog_detects_invalid_request_error_regex(tmp_path: Path) -> None:
     )
 
     assert result.returncode == 0
-    assert "PANE 0" in ssh_log.read_text(encoding="utf-8")
+    decoded_prompts = _decoded_reinject_prompts(ssh_log.read_text(encoding="utf-8"))
+    assert any("PANE 0" in prompt for prompt in decoded_prompts)
 
 
 def test_watchdog_detects_documented_truncated_goal_command(tmp_path: Path) -> None:
@@ -336,4 +398,5 @@ def test_watchdog_detects_documented_truncated_goal_command(tmp_path: Path) -> N
     )
 
     assert result.returncode == 0
-    assert "PANE 0" in ssh_log.read_text(encoding="utf-8")
+    decoded_prompts = _decoded_reinject_prompts(ssh_log.read_text(encoding="utf-8"))
+    assert any("PANE 0" in prompt for prompt in decoded_prompts)
