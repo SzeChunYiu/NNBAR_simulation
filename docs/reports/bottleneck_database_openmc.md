@@ -9,6 +9,9 @@ cross-section lookup/interpolation plus the adjacent secondary samplers named in
 - Source tree read on LUNARC only: `/projects/hep/fs10/shared/nnbar/billy/openmc`.
 - `git fetch --tags` on 2026-05-11 reported latest stable tag `v0.15.3`; the
   working tree is detached at `v0.15.3` (`HEAD` `27e38e894`).
+- Line-reference verifier refresh on 2026-05-12 confirmed
+  `calculate_urr_xs` starts at line 871 in `src/nuclide.cpp`; BD-openmc-007
+  now cites a range that encloses that signature.
 - No local OpenMC build, local clone, NNBAR code, or production data was touched.
 - The hot-path percentage is inherited from the lane spec's published OpenMC
   profiling basis: cross-section lookup and interpolation accounts for roughly
@@ -151,7 +154,7 @@ cross-section lookup/interpolation plus the adjacent secondary samplers named in
 | Field | Value |
 |-------|-------|
 | File | `src/nuclide.cpp` |
-| Lines | 879-950 |
+| Lines | 871-950 |
 | Hot-path % (profile-measured) | Cross-section lookup/interpolation family: 35--50% aggregate OpenMC CE transport CPU; URR self% `OPEN:` pending benchmark in resonance-heavy materials. |
 | Category | 4 — Mathematical |
 | Current pattern | `calculate_urr_xs` lower-bounds the energy, upper-bounds two CDF rows, then either linearly interpolates or performs log-log interpolation with repeated `std::log`/`std::exp` calls. |
