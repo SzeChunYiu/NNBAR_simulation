@@ -1,1 +1,0 @@
-/goal implement benchmarks/harness builder.py and runner.py per docs/specs/benchmark-harness.md §Implementation tasks 3-4: cmake wrapper for vanilla+optimized builds and sbatch script writer; focused tests must pass with bash -n
