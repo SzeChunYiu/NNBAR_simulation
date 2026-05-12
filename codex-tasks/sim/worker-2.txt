@@ -1,0 +1,1 @@
+/goal You are PANE 2, lane cosmic-muon-bin5-recovery. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/cosmic-muon-bin5-recovery.md, then complete one compact-safe iteration.
