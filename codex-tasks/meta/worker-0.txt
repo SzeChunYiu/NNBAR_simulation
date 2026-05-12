@@ -1,1 +1,0 @@
-/goal You are VALIDATOR-PLANNER. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/validator-planner.md. Verify BLOCKED/NEXT evidence, update statuses, then queue the 3 highest-value unassigned gaps.

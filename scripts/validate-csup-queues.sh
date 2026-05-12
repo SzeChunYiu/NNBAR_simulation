@@ -75,6 +75,13 @@ scan_file() {
         why="lane label '$lane_token' contains invalid characters"
       fi
     fi
+    if [[ -z "$why" && "$f" == "codex-tasks/meta/worker-0.txt" ]] \
+      && [[ "$line" =~ (VALIDATOR|validator-planner[.]md) ]]; then
+      why="meta worker-0 is DEBUGGER-only; route VALIDATOR work to worker-1"
+    elif [[ -z "$why" && "$f" == "codex-tasks/meta/worker-1.txt" ]] \
+      && [[ "$line" =~ (DEBUGGER|debugger[.]md) ]]; then
+      why="meta worker-1 is VALIDATOR-only; route DEBUGGER work to worker-0"
+    fi
 
     if [[ -n "$why" ]]; then
       fail_count=$((fail_count + 1))

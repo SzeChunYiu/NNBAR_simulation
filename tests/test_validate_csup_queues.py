@@ -150,3 +150,38 @@ def test_unknown_flag_is_rejected_before_validation(tmp_path: Path) -> None:
     assert result.returncode == 2
     assert "unknown arg: --bogus" in result.stdout
     assert "OK: every prompt line passes" not in result.stdout
+
+
+def test_meta_debugger_queue_rejects_validator_prompt(tmp_path: Path) -> None:
+    """The project-wide DEBUGGER queue must not receive VALIDATOR work."""
+    scripts_dir = tmp_path / "scripts"
+    queue_dir = tmp_path / "codex-tasks" / "meta"
+    scripts_dir.mkdir()
+    queue_dir.mkdir(parents=True)
+    shutil.copy2(SCRIPT, scripts_dir / SCRIPT.name)
+
+    (tmp_path / "codex-prompts-meta.txt").write_text(
+        "/goal You are PANE 0, lane DEBUGGER. Read docs/parallel-sessions/debugger.md.\n"
+        "/goal You are PANE 1, lane VALIDATOR. Read docs/parallel-sessions/validator-planner.md.\n",
+        encoding="utf-8",
+    )
+    (queue_dir / "worker-0.txt").write_text(
+        "/goal You are VALIDATOR-PLANNER. Read docs/parallel-sessions/validator-planner.md.\n",
+        encoding="utf-8",
+    )
+    (queue_dir / "worker-1.txt").write_text(
+        "/goal You are PANE 1, lane VALIDATOR. Read docs/parallel-sessions/validator-planner.md.\n",
+        encoding="utf-8",
+    )
+
+    result = subprocess.run(
+        ["bash", str(scripts_dir / SCRIPT.name)],
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+
+    assert result.returncode == 1
+    assert "codex-tasks/meta/worker-0.txt:1" in result.stdout
+    assert "meta worker-0 is DEBUGGER-only" in result.stdout
+    assert "failures: 1" in result.stdout

@@ -1,1 +1,2 @@
+/goal You are VALIDATOR-PLANNER. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/validator-planner.md. Verify BLOCKED/NEXT evidence, update statuses, then queue the 3 highest-value unassigned gaps.
 /goal write docs/specs/paper-section-1-introduction.md through paper-section-4-catalogue.md: stub each with required evidence list and figure/table placeholders per docs/specs/paper-methodology.md §Paper structure
