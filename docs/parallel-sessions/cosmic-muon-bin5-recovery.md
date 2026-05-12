@@ -72,3 +72,30 @@ Stop after one of these outcomes:
   blocked by a named condition; or
 - exactly one mu- bin5-only recovery wrapper/job is prepared or submitted with
   job ID, command, and no proton-bin5 interaction.
+
+## Current guarded decision (2026-05-12 08:08 CEST)
+
+Evidence gathered with the required LUNARC socket guard:
+
+- Original array task `3040259_5` is `TIMEOUT` with elapsed `12:00:26`; the
+  root `build_lunarc/output/cosmic_mu-_bin5/Particle_output_0.parquet` remains
+  a 4-byte invalid stub.
+- `squeue -u $USER` filtered for mu/cosmic/bin5 returned no active duplicate
+  mu- bin5 recovery job.
+- A previous mu- only diagnostic wrapper already exists on LUNARC at
+  `slurm/cosmic_mu_minus_bin5_diagnostic.sbatch`; it is scoped to
+  `particleIdx=0`, `particle=mu-`, `energyBin=5`, `50--200 GeV`, and
+  `16 * 1000` diagnostic events.
+- Diagnostic array `3045338_0-15` completed only shards
+  `3,4,7,9,11,12,14`, each with an 83732-byte
+  `Particle_output_0.parquet`; the other nine shards timed out at one hour and
+  left 4-byte stubs. Log tails for timed-out shards reached roughly events
+  `968--999` before SLURM time-limit cancellation, so the blocker is classified
+  as a seed/shard-dependent late-event or finalization stall rather than a
+  missing input file.
+
+Decision: mark the lane `BLOCKED` rather than submit another job in this
+iteration. The next recovery design must account for the diagnostic stall
+pattern before launching a production mu- bin5 recovery and must continue to
+avoid any proton-bin5 interaction while proton recovery remains separately
+managed.
