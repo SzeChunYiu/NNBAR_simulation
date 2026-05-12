@@ -13,10 +13,11 @@
 #
 # 1. Line MUST start with /goal followed by whitespace or end-of-line.
 # 2. Line MUST reference at least one *.md file (the lane spec).
-# 3. Line MUST be <= 500 chars (codex TUI safety).
-# 4. Line MUST NOT contain stray ASCII control chars (anything < 0x20 except
+# 3. Line MUST be <= 50 words (codex-supervisor compact prompt contract).
+# 4. Line MUST be <= 500 chars (codex TUI safety).
+# 5. Line MUST NOT contain stray ASCII control chars (anything < 0x20 except
 #    whitespace, anything in 0x7F-0x9F).
-# 5. Lane label (extracted from "lane <name>") MUST match [A-Za-z0-9_.-]+ so
+# 6. Lane label (extracted from "lane <name>") MUST match [A-Za-z0-9_.-]+ so
 #    pop_next_task's filename lookup is well-formed.
 #
 # Exit codes: 0 = clean, 1 = at least one failure.
@@ -32,6 +33,7 @@ FIX_MODE=0
 fail_count=0
 file_count=0
 line_count=0
+PROMPT_MAX_WORDS="${PROMPT_MAX_WORDS:-50}"
 
 scan_file() {
   local f="$1"
@@ -45,11 +47,17 @@ scan_file() {
     [[ "$line" =~ ^[[:space:]]*# ]] && continue
     line_count=$((line_count + 1))
 
-    local why=""
+    local why="" word_count=0
     if ! [[ "$line" =~ ^/goal([[:space:]]|$) ]]; then
       why="must start with /goal"
     elif ! [[ "$line" =~ \.md ]]; then
       why="must reference at least one .md file"
+    elif (( PROMPT_MAX_WORDS > 0 )) && {
+      read -r -a words <<< "$line"
+      word_count="${#words[@]}"
+      (( word_count > PROMPT_MAX_WORDS ))
+    }; then
+      why="has ${word_count} words; word cap is ${PROMPT_MAX_WORDS}"
     elif (( ${#line} > 500 )); then
       why="line is ${#line} chars; cap is 500"
     elif [[ "$line" =~ [[:cntrl:]] ]] && ! [[ "$line" =~ ^[[:print:][:space:]]+$ ]]; then

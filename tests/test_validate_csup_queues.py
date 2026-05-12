@@ -101,3 +101,34 @@ def test_whitespace_only_queue_lines_are_ignored(tmp_path: Path) -> None:
     assert result.returncode == 0, result.stdout
     assert "prompt lines checked: 2" in result.stdout
     assert "failures: 0" in result.stdout
+
+
+def test_over_word_limit_prompt_lines_are_rejected(tmp_path: Path) -> None:
+    """Queue lint must mirror the supervisor's compact /goal word cap."""
+    scripts_dir = tmp_path / "scripts"
+    scripts_dir.mkdir()
+    shutil.copy2(SCRIPT, scripts_dir / SCRIPT.name)
+
+    long_prompt = " ".join(
+        [
+            "/goal",
+            "Read",
+            "docs/parallel-sessions/demo.md",
+            *[f"word{i}" for i in range(48)],
+        ]
+    )
+    (tmp_path / "codex-prompts-demo.txt").write_text(
+        f"{long_prompt}\n",
+        encoding="utf-8",
+    )
+
+    result = subprocess.run(
+        ["bash", str(scripts_dir / SCRIPT.name)],
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+
+    assert result.returncode == 1
+    assert "codex-prompts-demo.txt:1" in result.stdout
+    assert "word cap is 50" in result.stdout
