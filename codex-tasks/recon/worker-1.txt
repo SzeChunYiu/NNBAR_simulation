@@ -1,1 +1,0 @@
-/goal You are PANE 1, lane lg-energy-containment. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/lg-energy-containment.md, then complete one compact-safe iteration.
