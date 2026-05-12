@@ -1,1 +1,0 @@
-/goal add signal_vertex_x/y/z and signal_vertex_disk_radius UI commands to PrimaryGeneratorAction per docs/parallel-sessions/pi0-vertex-scan-cpp.md — C++ edits + 8 macros, no SLURM
