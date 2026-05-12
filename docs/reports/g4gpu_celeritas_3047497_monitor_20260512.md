@@ -134,3 +134,48 @@ MISSING results/results.parquet
 Disposition remains unchanged: keep the Celeritas rerun in `QUEUED`/external
 scheduler wait, keep `MCAccel competitor benchmarks` in `RUNNING`, and do not
 collect or promote timing until `results/results.parquet` exists.
+
+## Refresh: 2026-05-12 12:05 CEST
+
+The LUNARC socket guard first failed open on a stale multiplexed connection
+(`Session open refused by peer`), so the persistent socket was refreshed with
+`/Users/billy/lunarc-init.sh` and then verified `Connected` before the read-only
+SSH status queries. Job 3047497 remains pending; no benchmark result exists and
+no new job was submitted.
+
+```text
+JOBID      NAME                    STATE        TIME   TIME_LIMIT  NODES  NODELIST(REASON)  QOS
+3047497    mcaccel-celeritas       PENDING      0:00   2:00:00     1      (Priority)        overrun
+
+JobID|JobName|State|Elapsed|Start|End|ExitCode|NodeList
+3047497|mcaccel-celeritas|PENDING|00:00:00|Unknown|Unknown|0:0|None assigned
+
+JobState=PENDING
+Reason=Priority
+ExitCode=0:0
+RunTime=00:00:00
+TimeLimit=02:00:00
+SubmitTime=2026-05-12T08:45:15
+StartTime=2026-05-13T21:58:30
+EndTime=2026-05-13T23:58:30
+Partition=gpua40
+SchedNodeList=cg03
+Command=/projects/hep/fs10/shared/nnbar/billy/mcaccel_competitors/celeritas/build-fixed-20260512.sh
+StdErr=/projects/hep/fs10/shared/nnbar/billy/mcaccel_competitors/celeritas/slurm/celeritas-3047497.err
+StdOut=/projects/hep/fs10/shared/nnbar/billy/mcaccel_competitors/celeritas/slurm/celeritas-3047497.out
+```
+
+Remote file checks:
+
+```text
+-rwx--x--x 1 scyiu hep 6894 May 12 08:40 build-fixed-20260512.sh
+aa02355926582c49846661482cb9d8ede87b698ad263d23e62229492636e4104  build-fixed-20260512.sh
+MISSING slurm/celeritas-3047497.out
+MISSING slurm/celeritas-3047497.err
+MISSING results/results.parquet
+```
+
+Disposition remains unchanged: keep the Celeritas rerun in external scheduler
+wait, keep `MCAccel competitor benchmarks` in `RUNNING`, and do not create
+`docs/reports/celeritas_benchmark_3047497.md` until `results/results.parquet`
+exists or the job reaches a terminal state with stdout/stderr to preserve.
