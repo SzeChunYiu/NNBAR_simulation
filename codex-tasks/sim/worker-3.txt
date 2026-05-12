@@ -1,1 +1,0 @@
-/goal You are PANE 3, lane cosmic-gamma-bin4-recovery. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/cosmic-gamma-bin4-recovery.md, then complete one compact-safe iteration.
