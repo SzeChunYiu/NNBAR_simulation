@@ -41,6 +41,10 @@ _DIRECT_VOLUME_COLUMNS = (
 )
 _EVENT_COLUMNS = ("event_id", "Event_ID", "event", "eventID")
 _ORDER_COLUMNS = ("step_id", "Step_ID", "step", "time", "Time")
+_INTERACTION_VOLUME_COLUMNS = ("Current_Vol", "current_vol", "current_volume", "CurrentVolume")
+_INTERACTION_PROCESS_COLUMNS = ("Proc", "proc", "process", "Process")
+_INTERACTION_PARTICLE_COLUMNS = ("Name", "name", "particle", "Particle", "particle_name")
+_INTERACTION_TIME_COLUMNS = ("t", "time", "Time")
 
 
 @dataclass(frozen=True)
@@ -95,7 +99,18 @@ def discover_photon_sample(search_root: str | Path) -> Path | None:
     if not root.exists():
         return None
 
-    candidates = sorted(path for path in root.rglob("*.parquet") if _looks_like_100mev_photon(path))
+    candidates = sorted(
+        path
+        for path in root.rglob("*.parquet")
+        if not path.name.startswith("._") and _looks_like_100mev_photon(path)
+    )
+    interaction_candidates = [
+        path
+        for path in candidates
+        if path.name == "Interaction_output_0.parquet" and _looks_like_100mev_photon(path.parent)
+    ]
+    if interaction_candidates:
+        return interaction_candidates[0]
     return candidates[0] if candidates else None
 
 
@@ -197,7 +212,7 @@ def _first_interaction_labels(frame: pd.DataFrame) -> tuple[list[str], str | Non
 
     volume_column = _first_present(frame.columns, _DIRECT_VOLUME_COLUMNS)
     if volume_column is None:
-        return [], "No first-interaction subdetector/volume column was found in the photon parquet."
+        return _interaction_conversion_labels(frame)
 
     reduced = frame
     event_column = _first_present(frame.columns, _EVENT_COLUMNS)
@@ -208,6 +223,40 @@ def _first_interaction_labels(frame: pd.DataFrame) -> tuple[list[str], str | Non
         reduced = reduced.drop_duplicates(subset=[event_column], keep="first")
 
     labels = [_canonical_volume(value) for value in reduced[volume_column].dropna()]
+    return labels, None
+
+
+def _interaction_conversion_labels(frame: pd.DataFrame) -> tuple[list[str], str | None]:
+    """Extract conversion labels from Geant4 ``Interaction_output`` rows."""
+
+    event_column = _first_present(frame.columns, _EVENT_COLUMNS)
+    process_column = _first_present(frame.columns, _INTERACTION_PROCESS_COLUMNS)
+    particle_column = _first_present(frame.columns, _INTERACTION_PARTICLE_COLUMNS)
+    volume_column = _first_present(frame.columns, _INTERACTION_VOLUME_COLUMNS)
+    time_column = _first_present(frame.columns, _INTERACTION_TIME_COLUMNS)
+    required = {
+        "event": event_column,
+        "process": process_column,
+        "particle": particle_column,
+        "volume": volume_column,
+        "time": time_column,
+    }
+    missing = [name for name, column in required.items() if column is None]
+    if missing:
+        return [], "No first-interaction subdetector/volume column was found in the photon parquet."
+
+    conv_rows = frame[
+        frame[process_column].astype(str).str.strip().str.casefold().eq("conv")
+        & frame[particle_column].astype(str).str.strip().isin({"e+", "e-"})
+    ]
+    if conv_rows.empty:
+        return [], None
+
+    first_rows = (
+        conv_rows.sort_values([event_column, time_column])
+        .drop_duplicates(subset=[event_column], keep="first")
+    )
+    labels = [_canonical_volume(value) for value in first_rows[volume_column].dropna()]
     return labels, None
 
 
@@ -234,7 +283,7 @@ def _canonical_volume(value: object) -> str:
         return "beampipe"
     if compact in {"si", "silicon"} or "silicon" in compact:
         return "silicon"
-    if compact == "tpc" or "timeprojectionchamber" in compact:
+    if "tpc" in compact or "timeprojectionchamber" in compact:
         return "tpc"
     return compact
 

@@ -7,6 +7,7 @@ import pandas as pd
 from nnbar_reconstruction.analysis.photon_conversion_audit import (
     THESIS_CH5_CONVERSION_FRACTIONS,
     audit_conversion_fractions,
+    discover_photon_sample,
     run_audit,
 )
 
@@ -68,3 +69,35 @@ def test_fraction_mismatch_reports_one_blocker_with_offending_volume(tmp_path):
     assert _codes(report) == ["conversion_fractions_unverified"]
     assert "leadglass" in report.blockers[0].reason
     assert "silicon" in report.blockers[0].reason
+
+
+def test_interaction_parquet_uses_earliest_conversion_volume_per_event(tmp_path):
+    sample_dir = tmp_path / "photon_100MeV_conversion"
+    sample_dir.mkdir()
+    interaction_path = sample_dir / "Interaction_output_0.parquet"
+    pd.DataFrame(
+        [
+            {"Event_ID": 100, "Name": "gamma", "Proc": "msc", "Current_Vol": "Silicon", "t": 0.1},
+            {"Event_ID": 100, "Name": "e+", "Proc": "conv", "Current_Vol": "LeadGlassPV", "t": 10.0},
+            {"Event_ID": 100, "Name": "e-", "Proc": "conv", "Current_Vol": "Beampipe_5_wall_PV", "t": 2.0},
+            {"Event_ID": 101, "Name": "e+", "Proc": "conv", "Current_Vol": "TPCPV", "t": 1.0},
+            {"Event_ID": 101, "Name": "e-", "Proc": "conv", "Current_Vol": "siliconPV_1", "t": 9.0},
+            {"Event_ID": 102, "Name": "e+", "Proc": "conv", "Current_Vol": "Scint_barPV_H", "t": 5.0},
+            {"Event_ID": 102, "Name": "e-", "Proc": "conv", "Current_Vol": "LeadGlassPV", "t": 3.0},
+            {"Event_ID": 103, "Name": "e+", "Proc": "conv", "Current_Vol": "siliconPV_2", "t": 4.0},
+            {"Event_ID": 103, "Name": "e-", "Proc": "conv", "Current_Vol": "Scint_FB_barPV_V", "t": 0.5},
+        ]
+    ).to_parquet(interaction_path, index=False)
+
+    report = audit_conversion_fractions(interaction_path, tolerance=1.0)
+
+    assert discover_photon_sample(tmp_path) == interaction_path
+    assert report.ready is True
+    assert report.total_photons == 4
+    assert report.fractions == {
+        "silicon": 0.0,
+        "beampipe": 0.25,
+        "tpc": 0.25,
+        "scintillator": 0.25,
+        "leadglass": 0.25,
+    }
