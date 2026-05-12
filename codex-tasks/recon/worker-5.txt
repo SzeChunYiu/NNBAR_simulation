@@ -1,1 +1,0 @@
-/goal You are PANE 5, lane cosmic-background-rate-audit. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/cosmic-background-rate-audit.md, then complete one compact-safe iteration.
