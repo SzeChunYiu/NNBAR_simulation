@@ -194,3 +194,62 @@ MISSING results/results.parquet
 Disposition unchanged: keep `MCAccel competitor benchmarks` in `RUNNING`; this
 iteration submitted no new job, ran no build/test executable, and did not touch
 NNBAR production paths.
+
+
+## Refresh: 2026-05-12 13:54 CEST
+
+Job 3047497 remains scheduler-pending on `Priority`. The LUNARC socket guard
+reported `SOCKET=Connected` before the read-only SSH checks. No stdout, stderr,
+or `results/results.parquet` exists, so no Celeritas baseline timing has been
+captured or promoted.
+
+```text
+REMOTE_DATE=2026-05-12 13:54:21 CEST
+
+JOBID      NAME                    STATE        TIME   TIME_LIMIT  NODES  NODELIST(REASON)  QOS
+3047497    mcaccel-celeritas       PENDING      0:00   2:00:00     1      (Priority)        parrun
+
+Active G4GPU-related jobs:
+3047497    mcaccel-celeritas       PENDING      0:00     2:00:00   1      (Priority)        parrun
+3047502    g4gpu-v7-shake          PENDING      0:00     2:00:00   1      (Priority)        parrun
+3047628    mcaccel-sup             RUNNING      3:10:09  5-00:00:00 1     cx08              normal
+3047941    mcaccel-sup             RUNNING      1:10:26  5-00:00:00 1     cx12              parrun
+3047906    mcaccel-sup             RUNNING      1:15:48  5-00:00:00 1     cx04              parrun
+
+JobID|JobName|State|Elapsed|Start|End|ExitCode|NodeList
+3047497|mcaccel-celeritas|PENDING|00:00:00|Unknown|Unknown|0:0|None assigned
+
+JobName=mcaccel-celeritas
+Account=lu2026-2-51
+QOS=parrun
+JobState=PENDING
+Reason=Priority
+ExitCode=0:0
+RunTime=00:00:00
+TimeLimit=02:00:00
+SubmitTime=2026-05-12T08:45:15
+EligibleTime=2026-05-12T08:45:15
+StartTime=2026-05-13T21:58:30
+EndTime=2026-05-13T23:58:30
+Partition=gpua40
+SchedNodeList=cg03
+NumNodes=1
+Command=/projects/hep/fs10/shared/nnbar/billy/mcaccel_competitors/celeritas/build-fixed-20260512.sh
+WorkDir=/projects/hep/fs10/shared/nnbar/billy/mcaccel_competitors/celeritas
+StdErr=/projects/hep/fs10/shared/nnbar/billy/mcaccel_competitors/celeritas/slurm/celeritas-3047497.err
+StdOut=/projects/hep/fs10/shared/nnbar/billy/mcaccel_competitors/celeritas/slurm/celeritas-3047497.out
+```
+
+Remote file checks:
+
+```text
+-rwx--x--x 1 scyiu hep 6894 May 12 08:40 build-fixed-20260512.sh
+aa02355926582c49846661482cb9d8ede87b698ad263d23e62229492636e4104  build-fixed-20260512.sh
+MISSING slurm/celeritas-3047497.out
+MISSING slurm/celeritas-3047497.err
+MISSING results/results.parquet
+```
+
+Disposition unchanged: keep `MCAccel competitor benchmarks` in `RUNNING`; this
+iteration submitted no new job, ran no build/test executable, and did not touch
+NNBAR production paths.
