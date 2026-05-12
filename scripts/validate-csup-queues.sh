@@ -88,7 +88,11 @@ scan_file() {
       printf '  FAIL %s:%d  %s\n    >> %s\n' "$f" "$n" "$why" "${line:0:120}"
       if (( FIX_MODE )); then
         # Comment the line out in place
-        sed -i.bak "${n}s|^|# AUTO-COMMENTED (validator: $why): |" "$f"
+        local safe_why="$why"
+        safe_why="${safe_why//\\/\\\\}"
+        safe_why="${safe_why//&/\\&}"
+        safe_why="${safe_why//|/\\|}"
+        sed -i.bak "${n}s|^|# AUTO-COMMENTED (validator: $safe_why): |" "$f"
         printf '    (commented out in --fix mode)\n'
       fi
     fi
