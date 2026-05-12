@@ -12,6 +12,7 @@ Implements Chapter 9 from thesis:
 from __future__ import annotations
 
 import numpy as np
+import pandas as pd
 from typing import Dict, List, Optional, TYPE_CHECKING
 from dataclasses import dataclass
 

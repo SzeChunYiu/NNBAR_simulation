@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 from types import SimpleNamespace
+from typing import get_type_hints
 
 import numpy as np
 
+from nnbar_reconstruction.analysis import event_variables as event_variables_module
 from nnbar_reconstruction.analysis.event_variables import (
     compute_event_variables,
     compute_longitudinal_energy,
@@ -121,3 +123,15 @@ def test_event_variables_reports_electron_pair_blocker_without_tpc_entries():
     assert ev_dict["n_electron_pairs"] == 0
     assert ev_dict["electron_pair_count_blocked"] is True
     assert ev_dict["electron_pair_blocker_reason"] == "missing_tpc_entry"
+
+
+def test_compute_event_variables_type_hints_resolve_scintillator_dataframe():
+    """Runtime type-hint introspection should resolve optional scintillator hits."""
+    globalns = {
+        **vars(event_variables_module),
+        "ChargedObject": object,
+        "NeutralObject": object,
+    }
+    hints = get_type_hints(compute_event_variables, globalns=globalns)
+
+    assert "scintillator_hits" in hints
