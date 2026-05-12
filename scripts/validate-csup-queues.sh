@@ -45,7 +45,7 @@ scan_file() {
   [ -f "$f" ] || return 0
   file_count=$((file_count + 1))
   local n=0
-  while IFS= read -r line; do
+  while IFS= read -r line || [[ -n "$line" ]]; do
     n=$((n + 1))
     # Skip blank lines and comments
     [[ "$line" =~ ^[[:space:]]*$ ]] && continue
