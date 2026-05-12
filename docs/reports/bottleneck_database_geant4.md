@@ -1,11 +1,12 @@
 # Geant4 bottleneck database — structured hot paths
 
-Status: compact-safe worker-4 iterations 3--4. This is the structured Geant4
+Status: compact-safe worker-4 iterations 3--5. This is the structured Geant4
 bottleneck database required by `docs/parallel-sessions/g4-source-review.md`.
 Legacy free-form iterations already covered PIL and geometry in
 `docs/reports/g4_source_review_hotpaths.md`; this file starts with hot path 3
-(physics sampling / DoIt) and appends hot path 4 (track / step / stack
-management).
+(physics sampling / DoIt) and appends hot path 4 (track / step / stack).
+The hot path 5 hit-collection / sensitive-detector continuation shard is
+`docs/reports/g4_bottleneck_database_hits_sd.md` to respect the 500-line cap.
 
 ## Source provenance and profile basis
 
