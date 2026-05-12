@@ -1,10 +1,11 @@
-# Geant4 bottleneck database — physics sampling / DoIt hot path
+# Geant4 bottleneck database — structured hot paths
 
-Status: compact-safe worker-4 iteration 3. This starts the structured Geant4
+Status: compact-safe worker-4 iterations 3--4. This is the structured Geant4
 bottleneck database required by `docs/parallel-sessions/g4-source-review.md`.
 Legacy free-form iterations already covered PIL and geometry in
-`docs/reports/g4_source_review_hotpaths.md`; this file therefore starts with
-hot path 3, physics sampling / DoIt.
+`docs/reports/g4_source_review_hotpaths.md`; this file starts with hot path 3
+(physics sampling / DoIt) and appends hot path 4 (track / step / stack
+management).
 
 ## Source provenance and profile basis
 
@@ -36,6 +37,9 @@ hot path 3, physics sampling / DoIt.
 - O'Neill 2014, PCG random-number generators.
 - Blackman and Vigna 2018, scrambled linear pseudorandom generators.
 - Trefethen 2013, *Approximation Theory and Approximation Practice*.
+- Martin Thompson 2011, mechanical-sympathy data-oriented queue design.
+- Herlihy and Shavit 2012, *The Art of Multiprocessor Programming*.
+- Intel 2024, *64 and IA-32 Architectures Optimization Reference Manual*.
 
 ---
 
@@ -282,3 +286,206 @@ hot path 3, physics sampling / DoIt.
    confirm retry frequency.
 10. `g4-sb-brem-quadrature-cache` (BD-geant4-005) — likely setup/table speed,
     lower priority until perf shows runtime impact.
+
+## Track / Step / Stack management hot path
+
+This compact iteration covers hot path 4 from
+`docs/parallel-sessions/g4-source-review.md`: `G4Track.cc`, `G4Step.cc`,
+`G4TrackingManager.cc`, `G4StackManager.cc`, and `G4StackedTrack.hh`.
+Hot-path weight is the lane-spec estimate of about 15% aggregate Geant4 CPU;
+per-entry self-percentages remain `OPEN:` until Phase 5 perf maps samples to
+exact lines. The iteration is documentation-only and keeps G4GPU isolated from
+NNBAR production code.
+
+### BD-geant4-014  G4Track cloning deep-copies dynamic-particle state through the heap
+
+| Field | Value |
+|-------|-------|
+| File | `source/track/src/G4Track.cc` |
+| Lines | 83-149 |
+| Hot-path % (profile-measured) | Track-management family: per-line self% `OPEN:` pending allocation/perf trace. |
+| Category | 6 — Memory allocation |
+| Current pattern | `operator=` copies scalar AoS fields, deletes the current dynamic particle, then creates a new `G4DynamicParticle` copy and clears auxiliary state. |
+| Why slow | Cloning/splitting tracks pays heap traffic and scattered dynamic-particle memory exactly where secondary-heavy events already pressure the allocator. |
+| Proposed fix | Add a per-event `G4DynamicParticle` arena and move-aware clone path that preserves current ownership semantics while avoiding general heap allocation for track copies. |
+| Expected speedup | 1.1-1.4x in clone-heavy biasing/splitting workloads; stronger when combined with BD-geant4-013 track pooling. |
+| Validation | Fixed-seed comparisons of copied momentum, polarization, vertex fields, status flags, and auxiliary-info absence; allocation trace should show no general-heap dynamic-particle clone on the optimized path. |
+| Implementation target | `g4gpu-phase6-track-pool-secondary-handoff` plus upstream Geant4 allocator MR. |
+| Citation | Stroustrup 2012. |
+| Status | OPEN |
+
+### BD-geant4-015  Optical-photon velocity recalculates material-property lookups on step boundaries
+
+| Field | Value |
+|-------|-------|
+| File | `source/track/src/G4Track.cc` |
+| Lines | 160-205 |
+| Hot-path % (profile-measured) | Optical tracking family: per-line self% `OPEN:` pending OpNovice2/NNBAR scintillator perf. |
+| Category | 3 — Data structure |
+| Current pattern | `CalculateVelocityForOpticalPhoton` chases touchable/material/property pointers, refreshes `GROUPVEL`, and calls the property-vector interpolation when material or momentum changes. |
+| Why slow | Optical photons revisit the same materials many times, but the hot step path still traverses object graphs and uses a generic property-vector lookup instead of a compact material-indexed cache. |
+| Proposed fix | Build a material-indexed optical velocity cache with immutable `GROUPVEL` handles and last-bin hints per optical track; retain the generic path for mutable material-property tables. |
+| Expected speedup | 1.1-1.5x for optical-photon tracking sections; wall-clock impact depends on scintillator/lead-glass optical load. |
+| Validation | Compare velocity, time-of-flight, and boundary-crossing timestamps against vanilla for fixed optical seeds; require bit-identical results when the same interpolation routine is used. |
+| Implementation target | `g4gpu-phase5d-optical-groupvel-cache`. |
+| Citation | Intel Optimization Manual 2024; Stroustrup 2012. |
+| Status | OPEN |
+
+### BD-geant4-016  Auxiliary track information uses a per-track std::map allocation
+
+| Field | Value |
+|-------|-------|
+| File | `source/track/src/G4Track.cc` |
+| Lines | 209-270 |
+| Hot-path % (profile-measured) | Auxiliary/biasing track state: per-line self% `OPEN:` pending workload trace. |
+| Category | 3 — Data structure |
+| Current pattern | Auxiliary information is lazily stored in a heap-allocated `std::map<G4int, ...>`, with tree lookup, erasure, and full deletion during track cleanup. |
+| Why slow | Model IDs are small integers, but each touched track pays a node-based container and extra heap lifetime management; this also blocks compact SoA track representation. |
+| Proposed fix | Replace the common path with a small fixed-capacity vector or dense slot table keyed by model ID, falling back to `std::map` only for sparse/large extension IDs. |
+| Expected speedup | 1.2-2x for auxiliary-heavy biasing/scoring workflows; negligible overhead when no auxiliary info is present. |
+| Validation | Unit tests for set/get/remove/clear semantics over valid and invalid model IDs, plus fixed-seed biasing runs comparing all attached auxiliary payloads. |
+| Implementation target | `geant4-fork` upstream MR `g4-track-auxinfo-smallslots`. |
+| Citation | Stroustrup 2012. |
+| Status | OPEN |
+
+### BD-geant4-017  G4Step owns step points and secondary vectors through per-object heap allocations
+
+| Field | Value |
+|-------|-------|
+| File | `source/track/src/G4Step.cc` |
+| Lines | 38-103 |
+| Hot-path % (profile-measured) | Step-object lifecycle: per-line self% `OPEN:` pending allocation/perf trace. |
+| Category | 6 — Memory allocation |
+| Current pattern | The constructor allocates pre/post step points and the current-secondary vector; copy construction allocates step points, a secondary vector, and a fresh current-secondary vector. |
+| Why slow | The most frequently touched tracking object is split across multiple heap objects, increasing cache misses and allocator samples before physics or geometry work begins. |
+| Proposed fix | Inline pre/post step points and use an embedded small-vector for current secondaries, with ABI-compatible accessors or a pooled compatibility wrapper for legacy callers. |
+| Expected speedup | 1.1-1.3x in step setup/copy profiles and lower L1/L2 miss rate in the tracking loop. |
+| Validation | ABI/API compatibility tests, fixed-seed step-point dumps, and allocation tracing requiring zero general-heap step-point allocations in optimized builds. |
+| Implementation target | `g4gpu-phase6-step-inline-storage`. |
+| Citation | Data-oriented design; Intel Optimization Manual 2024. |
+| Status | OPEN |
+
+### BD-geant4-018  GetSecondaryInCurrentStep rebuilds a vector view on every query
+
+| Field | Value |
+|-------|-------|
+| File | `source/track/src/G4Step.cc` |
+| Lines | 202-210 |
+| Hot-path % (profile-measured) | Secondary-inspection path: per-line self% `OPEN:` pending sensitive-detector/user-action perf. |
+| Category | 3 — Data structure |
+| Current pattern | `GetSecondaryInCurrentStep` clears `secondaryInCurrentStep`, loops from `nSecondaryByLastStep` to `fSecondary->size()`, and pushes pointers into another vector. |
+| Why slow | The requested data is already a contiguous suffix of `fSecondary`; copying pointers into a side vector burns cycles and can reallocate under high multiplicity. |
+| Proposed fix | Expose a non-owning span/range over the suffix while preserving the legacy vector-return API through a lazy compatibility cache. |
+| Expected speedup | 1.2-2x for user actions or sensitive detectors that inspect secondaries every step; small but broad wall-clock gain in secondary-heavy events. |
+| Validation | Regression tests for pointer order/lifetime and fixed-seed comparisons of user-action secondary observations. |
+| Implementation target | `geant4-fork` upstream MR `g4-step-secondary-span`. |
+| Citation | Stroustrup 2012. |
+| Status | OPEN |
+
+### BD-geant4-019  TrackingManager processes one AoS track to completion before scheduling the next
+
+| Field | Value |
+|-------|-------|
+| File | `source/tracking/src/G4TrackingManager.cc` |
+| Lines | 61-162 |
+| Hot-path % (profile-measured) | Track/step management: about 15% aggregate Geant4 CPU per lane-spec basis; per-line self% `OPEN:` pending perf. |
+| Category | 3 — Data structure |
+| Current pattern | `ProcessOneTrack` gets process counts, attaches one `G4Step`, calls process `StartTracking`, then runs a scalar while loop until the current track dies. |
+| Why slow | Particle-by-particle AoS scheduling prevents SIMD/vector batches, keeps process and geometry dispatch cold for each track, and delays secondary scheduling until the track completes. |
+| Proposed fix | Add an opt-in packet scheduler that groups alive tracks by particle/material/process signature, while the default path remains exact scalar Geant4. |
+| Expected speedup | 1.5-3x in CPU packet mode and a prerequisite for Phase 6 SoA/GPU handoff; wall-clock impact depends on track multiplicity and grouping stability. |
+| Validation | Run scalar and packet modes with deterministic ordering disabled/enabled; require bit-exact fixed-seed output in scalar-compat mode and KS agreement for reordered packet mode. |
+| Implementation target | `g4gpu-phase6-track-soa-packet-scheduler`. |
+| Citation | Martin Thompson 2011; Herlihy and Shavit 2012. |
+| Status | OPEN |
+
+### BD-geant4-020  Trajectory bookkeeping leaves runtime branches and optional allocation near the step loop
+
+| Field | Value |
+|-------|-------|
+| File | `source/tracking/src/G4TrackingManager.cc` |
+| Lines | 61-162 |
+| Hot-path % (profile-measured) | Tracking/trajectory family: per-line self% `OPEN:` pending trajectory-enabled and disabled perf. |
+| Category | 5 — Control flow |
+| Current pattern | `StoreTrajectory` selects a trajectory implementation before stepping, and the loop tests `StoreTrajectory != 0` before appending every step. |
+| Why slow | Production runs usually disable trajectory storage, but the generic routine still carries a runtime branch in the hottest tracking loop; enabled runs allocate and virtual-dispatch per track/step. |
+| Proposed fix | Split no-trajectory, simple-trajectory, and rich-trajectory specializations at run-manager setup so the no-trajectory path has no per-step trajectory branch. |
+| Expected speedup | 1-3% wall-clock in no-trajectory production runs if the branch appears in perf; larger local gain for trajectory-heavy debug runs with pooled trajectory storage. |
+| Validation | Bit-exact step/trajectory output in enabled modes and identical event output in no-trajectory mode, with perf confirming branch removal. |
+| Implementation target | `geant4-fork` upstream MR `g4-tracking-trajectory-specialization`. |
+| Citation | Futamura 1971/1983; Hoelzle, Chambers, and Ungar 1991. |
+| Status | OPEN |
+
+### BD-geant4-021  PushOneTrack pays default classification and optional user callback per secondary
+
+| Field | Value |
+|-------|-------|
+| File | `source/event/src/G4StackManager.cc` |
+| Lines | 87-164 |
+| Hot-path % (profile-measured) | Stack-management family: per-line self% `OPEN:` pending secondary-heavy perf. |
+| Category | 5 — Control flow |
+| Current pattern | Every pushed track checks particle metadata, computes default classification, may call `ClassifyNewTrack`, handles exception severity, constructs a `G4StackedTrack`, and dispatches through `SortOut`. |
+| Why slow | The common case is urgent/no user override, yet it pays generic classification and branchy policy checks for every secondary track. |
+| Proposed fix | Install a fast path for the default urgent policy with a guard that deoptimizes when user stacking actions or non-default classifications are registered. |
+| Expected speedup | 1.1-1.4x in high-secondary stack insertion; combines with track-pool entries to reduce stack overhead after DoIt. |
+| Validation | Fixed-seed tests across default, user-classified, waiting, postpone, and kill policies; prove the fast path is disabled whenever user policy can change classification. |
+| Implementation target | `g4gpu-phase6-stack-fast-default-classifier`. |
+| Citation | Hoelzle, Chambers, and Ungar 1991. |
+| Status | OPEN |
+
+### BD-geant4-022  Stack stage promotion moves whole stacks through LIFO containers
+
+| Field | Value |
+|-------|-------|
+| File | `source/event/src/G4StackManager.cc` |
+| Lines | 166-230 |
+| Hot-path % (profile-measured) | Stack pop/stage promotion: per-line self% `OPEN:` pending perf on shower workloads. |
+| Category | 7 — Concurrency |
+| Current pattern | `PopNextTrack` repeatedly transfers waiting stacks to urgent stacks, cascades additional waiting stacks, invokes `NewStage`, then pops one `G4StackedTrack`. |
+| Why slow | Stage promotion is global and serial, preserves LIFO ordering, and prevents per-species/per-region queues or work stealing that would improve cache locality and parallel scheduling. |
+| Proposed fix | Introduce policy-backed ready queues keyed by particle class or region, with a compatibility mode that reproduces existing LIFO stage boundaries. |
+| Expected speedup | 1.2-2x for stack-heavy events and enables multi-thread packet scheduling; exact gain depends on secondary burst structure. |
+| Validation | Compare default LIFO pop order exactly; in policy mode, compare physics distributions and event-level conservation with explicit non-bit-exact provenance. |
+| Implementation target | `g4gpu-phase6-per-species-ready-queues`. |
+| Citation | Herlihy and Shavit 2012; Martin Thompson 2011. |
+| Status | OPEN |
+
+### BD-geant4-023  ReClassify and postponed-event preparation rewalk and reclassify entire stacks
+
+| Field | Value |
+|-------|-------|
+| File | `source/event/src/G4StackManager.cc` |
+| Lines | 233-337 |
+| Hot-path % (profile-measured) | Stack reclassification/postpone family: per-line self% `OPEN:` pending biasing/postpone workload trace. |
+| Category | 2 — Algorithm |
+| Current pattern | `ReClassify` and `PrepareNewEvent` transfer all tracks to a temporary stack, pop each one, recompute classification, mutate IDs/status, then push through `SortOut`. |
+| Why slow | A policy change or event boundary performs O(n) pointer churn and repeats classification even when only a small subset can change. |
+| Proposed fix | Track dirty classification predicates and maintain per-class queues so reclassification touches only affected tracks; use batch ID/status updates for postponed tracks. |
+| Expected speedup | 1.5-3x for reclassification-heavy biasing or postpone workflows; no regression for ordinary events. |
+| Validation | Exhaustive policy tests comparing stack membership/order before and after reclassification, plus fixed-seed postponed-event runs. |
+| Implementation target | `geant4-fork` upstream MR `g4-stack-dirty-reclassification`. |
+| Citation | Cormen et al.; Martin Thompson 2011. |
+| Status | OPEN |
+
+## Next implementations after Track / Step / Stack iteration
+
+1. `g4gpu-phase6-track-pool-secondary-handoff` (BD-geant4-013/014) — broad
+   allocation win at the DoIt-to-stack boundary with bit-exact validation.
+2. `g4gpu-phase6-track-soa-packet-scheduler` (BD-geant4-019) — highest L1
+   redesign leverage, prerequisite for per-species queues and GPU handoff.
+3. `g4gpu-phase6-step-inline-storage` (BD-geant4-017) — compact ABI-aware
+   step-object locality win.
+4. `g4gpu-phase6-stack-fast-default-classifier` (BD-geant4-021) — low-risk
+   guarded fast path for the common no-user-stacking case.
+5. `g4gpu-phase6-per-species-ready-queues` (BD-geant4-022) — scheduling win
+   that becomes more valuable after packet/SoA work.
+6. `geant4-fork:g4-step-secondary-span` (BD-geant4-018) — small upstreamable
+   API-compatible improvement for secondary observers.
+7. `g4gpu-phase5d-rng-batch-flatarray` (BD-geant4-012) — cross-cutting RNG
+   throughput with bit-exact legacy mode.
+8. `g4gpu-phase5d-optical-groupvel-cache` (BD-geant4-015) — important if
+   OpNovice2/NNBAR optical profiles show material-property lookup hot.
+9. `g4gpu-phase8a-brem-inverse-cdf` (BD-geant4-004) — high local speedup,
+   requires distribution-level validation.
+10. `geant4-fork:g4-stack-dirty-reclassification` (BD-geant4-023) — useful for
+    biasing/postpone workloads after profile confirmation.
