@@ -1,6 +1,6 @@
 # MCAccel competitor benchmark baseline
 
-Last updated: 2026-05-11
+Last updated: 2026-05-12
 
 This report is the side-by-side baseline ledger for competitor measurements on
 identical LUNARC hardware. Each row is either a captured result with provenance
@@ -10,7 +10,7 @@ or an `OPEN:` blocker.
 
 | Project | Benchmark | Status | Hardware | Wall time (s) | Throughput | Evidence |
 |---|---|---:|---|---:|---:|---|
-| Celeritas | compact `celer-sim` simple-cms gamma primary run | QUEUED | LUNARC `gpua40`, 1x A40 | pending | pending | SLURM job 3041282, `PENDING (Resources)`, estimated start 2026-05-12 09:51:19; local script `benchmarks/competitors/celeritas/build.sh`; probe artifact `benchmarks/competitors/celeritas/configure-probe.txt` |
+| Celeritas | compact `celer-sim` simple-cms gamma primary run | OPEN | LUNARC `gpua40`, 1x A40 | blocked | blocked | SLURM job 3041282 ran on `cg05` and failed with exit `127:0` after the build succeeded but the script looked for `build-a40/app/celer-sim/celer-sim` instead of the produced `build-a40/bin/celer-sim`; local script `benchmarks/competitors/celeritas/build.sh` now has the corrected executable path and an explicit missing-executable guard, but no timing result is captured until rerun. |
 | AdePT | Example1/TestEm3 compact EM workload | OPEN | LUNARC `gpua40`, 1x A40 target | blocked | blocked | `benchmarks/competitors/adept/build.sh`; login configure probe succeeded, but GPU-node jobs 3041291/3041525 could not read the CERN `devAdePT` CVMFS view; see `benchmarks/competitors/adept/setup-blocker-3041525.txt` |
 | Opticks | OpNovice2-like optical | OPEN | A100 target | — | — | Not attempted yet. |
 | VecGeom | CPU navigation harness | OPEN | Xeon target | — | — | Not attempted yet. |
@@ -34,7 +34,15 @@ OPEN: Promote Celeritas to the lane's full reference row only after a follow-up
 enables the upstream TestEm3/Hadr04/ZDC-style inputs (or documents a precise
 blocker) with HepMC3/VecGeom support and captures the same parquet schema.
 
-Queue blocker: `scontrol show job 3041282` reported `StartTime=2026-05-12T09:51:19` and `Reason=Resources`; no local or non-LUNARC benchmark was run as a substitute.
+Queue closeout: SLURM job 3041282 ran on `cg05` from
+2026-05-11T19:30:30 to 2026-05-11T19:32:16 and failed with exit `127:0`.
+Remote evidence shows configure completed, `cmake --build` linked
+`bin/celer-sim`, and the failure came from invoking the stale
+`app/celer-sim/celer-sim` path. The local build script has been patched to use
+`build-a40/bin/celer-sim` and to fail with an explicit executable search if the
+path changes again. No local or non-LUNARC benchmark was run as a substitute;
+the Celeritas timing row remains `OPEN` until the corrected script is
+resubmitted on LUNARC and `results.parquet` is produced.
 
 ## AdePT compact iteration notes
 

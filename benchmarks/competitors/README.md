@@ -12,7 +12,7 @@ Primary upstream references used for this scaffold:
 | Project | Status | LUNARC script | Benchmark target | Notes |
 |---|---|---|---|---|
 | AdePT | OPEN | `adept/build.sh` | Example1/TestEm3 compact EM workload | Configure probe succeeded from the LUNARC login environment, but GPU-node jobs 3041291 and 3041525 could not read the CERN `devAdePT` CVMFS view. See `adept/setup-blocker-3041525.txt`; rerun after a GPU-visible dependency stack is available. |
-| Celeritas | RUNNING | `celeritas/build.sh` | compact `celer-sim` simple-cms gamma workload | SLURM job 3041282 submitted on 2026-05-11 to `gpua40`; scheduler reported `PENDING (Resources)` with estimated start 2026-05-12 09:51:19. Full TestEm3/Hadr04/ZDC is still `OPEN:` until HepMC3/VecGeom/reference inputs are enabled. |
+| Celeritas | OPEN | `celeritas/build.sh` | compact `celer-sim` simple-cms gamma workload | SLURM job 3041282 ran on `cg05` and failed with exit `127:0` because the script used a stale `app/celer-sim/celer-sim` executable path while the build produced `bin/celer-sim`; the script path is corrected locally, but the A40 run must be resubmitted before a baseline is captured. Full TestEm3/Hadr04/ZDC is still `OPEN:` until HepMC3/VecGeom/reference inputs are enabled. |
 | Opticks | TODO | — | OpNovice2-like optical | Not started in this iteration. |
 | VecGeom | TODO | — | CPU navigation harness | Not started in this iteration. |
 | GeantV | TODO | — | legacy TaskBench | Not started in this iteration. |

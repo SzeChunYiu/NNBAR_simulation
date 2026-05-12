@@ -86,7 +86,12 @@ cmake -S "$SRC" -B "$BUILD" -GNinja \
 cmake --build "$BUILD" --target celer-sim --parallel "${SLURM_CPUS_PER_TASK:-16}" \
   > "$RESULTS/build-celer-sim.log" 2>&1
 
-EXE="$BUILD/app/celer-sim/celer-sim"
+EXE="$BUILD/bin/celer-sim"
+if [ ! -x "$EXE" ]; then
+  echo "ERROR: celer-sim executable not found at $EXE" >&2
+  find "$BUILD" -maxdepth 3 -type f -name celer-sim -ls >&2 || true
+  exit 127
+fi
 "$EXE" --config > "$RESULTS/celer-sim-config.json"
 "$EXE" --device > "$RESULTS/celer-sim-device.json"
 

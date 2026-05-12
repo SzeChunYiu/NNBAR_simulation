@@ -104,3 +104,16 @@ from GPU nodes, or after a project-local AdePT dependency stack is cached under
 
 OPEN: Full Celeritas reference coverage still needs TestEm3/Hadr04/ZDC-style
 inputs with HepMC3/VecGeom or a precise blocker report.
+
+### 2026-05-12 — Celeritas queued-job closeout (pane 4)
+
+- Checked SLURM job 3041282 after it left the queue; `sacct` reports
+  `FAILED`, elapsed `00:01:46`, exit `127:0`, node `cg05`.
+- Remote logs show configure completed and `cmake --build` linked
+  `build-a40/bin/celer-sim`, but the script attempted to run the stale
+  `build-a40/app/celer-sim/celer-sim` path.
+- Patched `benchmarks/competitors/celeritas/build.sh` to use the produced
+  `bin/celer-sim` path and added an explicit missing-executable guard.
+- No new SLURM job was submitted in this closeout iteration; the Celeritas
+  timing baseline remains `OPEN` until the corrected script is resubmitted on
+  LUNARC and `results.parquet` is produced.
