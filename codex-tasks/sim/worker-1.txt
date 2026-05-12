@@ -1,1 +1,0 @@
-/goal You are PANE 1, lane cosmic-slurm-array-doc-split. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/cosmic-slurm-array-doc-split.md, then complete one compact-safe iteration.
