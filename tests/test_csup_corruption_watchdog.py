@@ -92,6 +92,50 @@ def test_watchdog_checks_lunarc_control_socket_before_remote_scan(
     assert ssh_log.read_text(encoding="utf-8").splitlines()[0] == "-O check lunarc"
 
 
+def test_watchdog_reuses_lunarc_control_socket_within_one_sweep(
+    tmp_path: Path,
+) -> None:
+    """A single watchdog sweep should not re-check the socket before every ssh."""
+    fake_bin = tmp_path / "bin"
+    fake_bin.mkdir()
+    ssh_log = tmp_path / "ssh.log"
+    fake_ssh = fake_bin / "ssh"
+    fake_ssh.write_text(
+        "#!/usr/bin/env bash\n"
+        "printf '%s\\n' \"$*\" >> \"$SSH_LOG\"\n"
+        "case \"$*\" in\n"
+        "  '-O check lunarc') exit 0 ;;\n"
+        "  *squeue*) echo 12345; exit 0 ;;\n"
+        "  *list-panes*) echo 0; exit 0 ;;\n"
+        "  *capture-pane*) echo 'pane clean'; exit 0 ;;\n"
+        "esac\n"
+        "exit 0\n",
+        encoding="utf-8",
+    )
+    fake_ssh.chmod(0o755)
+
+    env = os.environ.copy()
+    env["PATH"] = f"{fake_bin}{os.pathsep}{env['PATH']}"
+    env["SSH_LOG"] = str(ssh_log)
+
+    result = subprocess.run(
+        ["bash", str(SCRIPT), "--once"],
+        text=True,
+        capture_output=True,
+        check=False,
+        env=env,
+    )
+
+    socket_checks = [
+        line
+        for line in ssh_log.read_text(encoding="utf-8").splitlines()
+        if line == "-O check lunarc"
+    ]
+
+    assert result.returncode == 0
+    assert socket_checks == ["-O check lunarc"]
+
+
 def test_watchdog_once_scans_holder_job_with_fake_ssh(tmp_path: Path) -> None:
     """The watchdog should run its scan loop under macOS /bin/bash 3.2."""
     fake_bin = tmp_path / "bin"

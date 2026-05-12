@@ -54,8 +54,12 @@ CORRUPTION_PATTERNS=(
   'invalid_request_error.*model'
 )
 
+LUNARC_SOCKET_READY=0
+
 ensure_lunarc_socket() {
+  [[ "$LUNARC_SOCKET_READY" == "1" ]] && return 0
   ssh -O check lunarc >/dev/null 2>&1 || /Users/billy/lunarc-init.sh
+  LUNARC_SOCKET_READY=1
 }
 
 ssh_lunarc() {
@@ -88,6 +92,8 @@ reinject() {
 
 run_once() {
   local jobid
+  LUNARC_SOCKET_READY=0
+  ensure_lunarc_socket
   jobid=$(get_jobid)
   if [[ -z "$jobid" ]]; then
     echo "no RUNNING nnbar-csup holder; skipping"
