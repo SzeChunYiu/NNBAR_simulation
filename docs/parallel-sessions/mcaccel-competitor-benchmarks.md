@@ -117,3 +117,13 @@ inputs with HepMC3/VecGeom or a precise blocker report.
 - No new SLURM job was submitted in this closeout iteration; the Celeritas
   timing baseline remains `OPEN` until the corrected script is resubmitted on
   LUNARC and `results.parquet` is produced.
+
+### 2026-05-12 — Celeritas rerun pending refresh (worker-3)
+
+- Guarded LUNARC check at 2026-05-12T09:02 CEST found corrected rerun job
+  3047497 still `PENDING` on `Resources`, with `StartTime=2026-05-12T12:01:31`
+  and `SchedNodeList=cg06`.
+- No stdout/stderr logs existed for job 3047497 yet, and no remote
+  `results/results.parquet` was present.
+- No new SLURM job was submitted; the Celeritas row stays `QUEUED` until job
+  3047497 completes and the parquet result can be read back.
