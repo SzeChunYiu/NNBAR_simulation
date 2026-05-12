@@ -5,6 +5,7 @@ from types import SimpleNamespace
 import numpy as np
 
 from nnbar_reconstruction.analysis.event_variables import (
+    compute_event_variables,
     compute_longitudinal_energy,
     compute_transverse_energy,
 )
@@ -12,6 +13,19 @@ from nnbar_reconstruction.utils.coordinates import (
     compute_sphericity,
     compute_total_invariant_mass,
 )
+
+
+def _charged_for_event(entry=(0.0, 0.0, 0.0), particle_type="PION_PLUS"):
+    return SimpleNamespace(
+        energy=100.0,
+        momentum=np.array([1.0, 0.0, 0.0]),
+        momentum_magnitude=100.0,
+        scint_energy=10.0,
+        lg_energy=20.0,
+        track=SimpleNamespace(center=np.array([0.0, 1.0, 1.0])),
+        tpc_entry=None if entry is None else np.array(entry, dtype=float),
+        particle_type=particle_type,
+    )
 
 
 def test_sphericity_uses_momentum_magnitudes_not_unit_directions():
@@ -73,3 +87,37 @@ def test_transverse_energy_smoke_case_reports_mev_and_clips_directions():
     )
 
     np.testing.assert_allclose(transverse_mev, 50.0)
+
+
+def test_event_variables_to_dict_exposes_electron_pair_count():
+    charged = [
+        _charged_for_event([0.0, 0.0, 0.0], particle_type="ELECTRON_PAIR"),
+        _charged_for_event([3.0, 4.0, 0.0], particle_type="ELECTRON_PAIR_MEMBER"),
+    ]
+
+    ev_dict = compute_event_variables(
+        charged,
+        neutral_objects=[],
+        vertex=np.zeros(3),
+    ).to_dict()
+
+    assert ev_dict["n_electron_pairs"] == 1
+    assert ev_dict["electron_pair_count_blocked"] is False
+    assert ev_dict["electron_pair_blocker_reason"] == ""
+
+
+def test_event_variables_reports_electron_pair_blocker_without_tpc_entries():
+    charged = [
+        _charged_for_event(entry=None, particle_type="PION_PLUS"),
+        _charged_for_event(entry=None, particle_type="PION_MINUS"),
+    ]
+
+    ev_dict = compute_event_variables(
+        charged,
+        neutral_objects=[],
+        vertex=np.zeros(3),
+    ).to_dict()
+
+    assert ev_dict["n_electron_pairs"] == 0
+    assert ev_dict["electron_pair_count_blocked"] is True
+    assert ev_dict["electron_pair_blocker_reason"] == "missing_tpc_entry"
