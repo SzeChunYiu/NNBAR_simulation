@@ -1,0 +1,1 @@
+/goal You are PANE 2, lane g4gpu-phase5d-jit-poststep-gpil. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/g4gpu-phase5d-jit-poststep-gpil.md, then complete one compact-safe iteration.
