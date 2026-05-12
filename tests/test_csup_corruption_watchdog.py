@@ -148,8 +148,10 @@ def test_watchdog_reuses_lunarc_control_socket_within_one_sweep(
     assert socket_checks == ["-O check lunarc"]
 
 
-def test_watchdog_checks_corruption_patterns_once_per_pane(tmp_path: Path) -> None:
-    """A clean pane should require one regex scan, not one grep per pattern."""
+def test_watchdog_checks_corruption_patterns_without_external_grep(
+    tmp_path: Path,
+) -> None:
+    """A clean pane scan should not fork external grep for regex checks."""
     fake_bin = tmp_path / "bin"
     fake_bin.mkdir()
     grep_log = tmp_path / "grep.log"
@@ -187,9 +189,8 @@ def test_watchdog_checks_corruption_patterns_once_per_pane(tmp_path: Path) -> No
         env=env,
     )
 
-    pattern_checks = grep_log.read_text(encoding="utf-8").splitlines()
     assert result.returncode == 0
-    assert len(pattern_checks) == len(_watchdog_prompt_map())
+    assert not grep_log.exists() or grep_log.read_text(encoding="utf-8") == ""
 
 
 def test_watchdog_once_scans_holder_job_with_fake_ssh(tmp_path: Path) -> None:

@@ -147,11 +147,7 @@ run_once() {
         echo "  [$session pane $idx] unable to capture pane; skipping"
         continue
       fi
-      local corrupt=0
-      if printf '%s' "$cap" | grep -Eq "$CORRUPTION_RE"; then
-        corrupt=1
-      fi
-      if (( corrupt )); then
+      if [[ "$cap" =~ $CORRUPTION_RE ]]; then
         # tmux pane_index may be one-based on LUNARC; map by list position.
         local prompt="${LINES[$prompt_idx]:-}"
         if [[ -z "$prompt" ]]; then
