@@ -1,1 +1,0 @@
-/goal You are PANE 1, lane benchmark-harness-reference-flag-guard. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/benchmark-harness-reference-flag-guard.md, then complete one compact-safe iteration.
