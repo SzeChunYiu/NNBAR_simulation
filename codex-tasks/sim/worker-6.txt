@@ -1,1 +1,0 @@
-/goal audit NNBAR_Detector/src/core/SteppingAction.cc + EventAction.cc for any remaining global G4AutoLock mutexes beyond the RC-3 fix already applied — write docs/reports/threading_mutex_audit.md listing every mutex, its scope, whether it serializes all threads, and whether it can be eliminated or made thread-local. No code changes unless obvious race; this is a read-only audit.
