@@ -32,3 +32,10 @@ def test_coordinate_utilities_stay_below_pre_addition_guard():
     for path in paths:
         line_count = len(path.read_text().splitlines())
         assert line_count <= 450, f"{path} has {line_count} lines"
+
+
+def test_event_selection_stays_below_pre_addition_guard():
+    path = Path("nnbar_reconstruction/analysis/event_selection.py")
+    line_count = len(path.read_text().splitlines())
+
+    assert line_count <= 450, f"{path} has {line_count} lines"
