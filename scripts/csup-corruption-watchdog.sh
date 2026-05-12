@@ -54,15 +54,24 @@ CORRUPTION_PATTERNS=(
   'invalid_request_error.*model'
 )
 
+ensure_lunarc_socket() {
+  ssh -O check lunarc >/dev/null 2>&1 || /Users/billy/lunarc-init.sh
+}
+
+ssh_lunarc() {
+  ensure_lunarc_socket
+  ssh lunarc "$@"
+}
+
 # Find the LUNARC nnbar-csup jobid (so srun --jobid can land on the node)
 get_jobid() {
-  ssh lunarc "squeue -h -u \$USER -n nnbar-csup -t RUNNING -o '%i' 2>/dev/null | head -1"
+  ssh_lunarc "squeue -h -u \$USER -n nnbar-csup -t RUNNING -o '%i' 2>/dev/null | head -1"
 }
 
 # Re-inject prompt for a single pane via bracketed paste.
 reinject() {
   local jobid="$1" session="$2" pane_idx="$3" prompt="$4"
-  ssh lunarc "srun --jobid='$jobid' --overlap bash -lc '
+  ssh_lunarc "srun --jobid='$jobid' --overlap bash -lc '
     BUF=\$(mktemp /tmp/csup-reinject.XXXXXX)
     printf %s \"$prompt\" > \"\$BUF\"
     tmux send-keys -t \"$session:.$pane_idx\" Escape 2>/dev/null
@@ -96,7 +105,7 @@ run_once() {
 
     # Capture all panes in the session
     local panes_raw
-    if ! panes_raw=$(ssh lunarc "srun --jobid='$jobid' --overlap bash -lc 'tmux list-panes -t $session -F \"#{pane_index}\" 2>/dev/null'"); then
+    if ! panes_raw=$(ssh_lunarc "srun --jobid='$jobid' --overlap bash -lc 'tmux list-panes -t $session -F \"#{pane_index}\" 2>/dev/null'"); then
       echo "  [$session] unable to list panes; skipping"
       continue
     fi
@@ -104,7 +113,7 @@ run_once() {
     while read -r idx; do
       [[ -z "$idx" ]] && continue
       local cap
-      if ! cap=$(ssh lunarc "srun --jobid='$jobid' --overlap bash -lc 'tmux capture-pane -t \"$session:.$idx\" -p -S -80 2>/dev/null'"); then
+      if ! cap=$(ssh_lunarc "srun --jobid='$jobid' --overlap bash -lc 'tmux capture-pane -t \"$session:.$idx\" -p -S -80 2>/dev/null'"); then
         echo "  [$session pane $idx] unable to capture pane; skipping"
         continue
       fi

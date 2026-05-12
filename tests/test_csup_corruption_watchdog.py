@@ -56,6 +56,42 @@ def test_watchdog_once_handles_empty_holder_job_with_fake_ssh(tmp_path: Path) ->
     assert "no RUNNING nnbar-csup holder; skipping" in result.stdout
 
 
+def test_watchdog_checks_lunarc_control_socket_before_remote_scan(
+    tmp_path: Path,
+) -> None:
+    """The watchdog should guard operational ssh lunarc calls with socket check."""
+    fake_bin = tmp_path / "bin"
+    fake_bin.mkdir()
+    ssh_log = tmp_path / "ssh.log"
+    fake_ssh = fake_bin / "ssh"
+    fake_ssh.write_text(
+        "#!/usr/bin/env bash\n"
+        "printf '%s\\n' \"$*\" >> \"$SSH_LOG\"\n"
+        "case \"$*\" in\n"
+        "  '-O check lunarc') exit 0 ;;\n"
+        "  *squeue*) exit 0 ;;\n"
+        "esac\n"
+        "exit 0\n",
+        encoding="utf-8",
+    )
+    fake_ssh.chmod(0o755)
+
+    env = os.environ.copy()
+    env["PATH"] = f"{fake_bin}{os.pathsep}{env['PATH']}"
+    env["SSH_LOG"] = str(ssh_log)
+
+    result = subprocess.run(
+        ["bash", str(SCRIPT), "--once"],
+        text=True,
+        capture_output=True,
+        check=False,
+        env=env,
+    )
+
+    assert result.returncode == 0
+    assert ssh_log.read_text(encoding="utf-8").splitlines()[0] == "-O check lunarc"
+
+
 def test_watchdog_once_scans_holder_job_with_fake_ssh(tmp_path: Path) -> None:
     """The watchdog should run its scan loop under macOS /bin/bash 3.2."""
     fake_bin = tmp_path / "bin"
@@ -94,6 +130,7 @@ def test_watchdog_once_skips_unavailable_tmux_session(tmp_path: Path) -> None:
     fake_ssh.write_text(
         "#!/usr/bin/env bash\n"
         "case \"$*\" in\n"
+        "  '-O check lunarc') exit 0 ;;\n"
         "  *squeue*) echo 12345; exit 0 ;;\n"
         "  *) echo 'srun: error: task exited' >&2; exit 1 ;;\n"
         "esac\n",
