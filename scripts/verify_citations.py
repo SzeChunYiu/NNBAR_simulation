@@ -26,6 +26,11 @@ DECLARATION_RE = re.compile(r"^(?:async\s+)?(?:def|class)\s+([A-Za-z_][A-Za-z0-9
 IGNORED_DIRS = {".git", "__pycache__", ".pytest_cache", ".mypy_cache", "externals"}
 
 
+def is_appledouble_sidecar(path: Path) -> bool:
+    """Return True for macOS AppleDouble resource-fork sidecar files."""
+    return path.name.startswith("._")
+
+
 class CitationItem(NamedTuple):
     """One citation verification result."""
     doc: str
@@ -81,7 +86,10 @@ def default_doc_paths(simulation_root: Path) -> list[Path]:
     patterns = ["docs/rebuild_plans/**/*.md", "docs/parallel-sessions/*.md"]
     docs: list[Path] = []
     for pattern in patterns:
-        docs.extend(sorted(simulation_root.glob(pattern)))
+        docs.extend(
+            path for path in sorted(simulation_root.glob(pattern))
+            if not is_appledouble_sidecar(path)
+        )
     return docs
 
 
@@ -451,8 +459,11 @@ def expand_doc_inputs(paths: list[Path]) -> list[Path]:
     docs: list[Path] = []
     for path in paths:
         if path.is_dir():
-            docs.extend(sorted(path.rglob("*.md")))
-        else:
+            docs.extend(
+                candidate for candidate in sorted(path.rglob("*.md"))
+                if not is_appledouble_sidecar(candidate)
+            )
+        elif not is_appledouble_sidecar(path):
             docs.append(path)
     return docs
 
