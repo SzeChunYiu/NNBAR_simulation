@@ -1,1 +1,0 @@
-/goal fix photon_conversion_audit.py to use Interaction_output_0.parquet (Proc=conv, first t per Event_ID, map Current_Vol) per docs/parallel-sessions/photon-conversion-interaction-fix.md — focused test + no side effects
