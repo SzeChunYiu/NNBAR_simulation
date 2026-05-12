@@ -1,1 +1,0 @@
-/goal You are PANE 3, lane sensitivity-closure-audit. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/sensitivity-closure-audit.md, then complete one compact-safe iteration.
