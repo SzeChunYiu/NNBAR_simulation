@@ -427,3 +427,16 @@ Stop/next-action rule: do not submit any production proton-bin5 recovery while
 `3047491` has active or pending tasks. A later result-inspection lane must wait
 until the array exits, then inspect final `sacct`, logs, and `thread_probe_*`
 row counts before designing any production recovery.
+
+### Result-inspection claim status (2026-05-12 08:52 CEST)
+
+Worker-0 claimed the `cosmic-proton-bin5-thread-probe-results` follow-up, but
+`3047491` had not exited yet. Fresh guarded scheduler evidence showed
+`3047491_4` and `_5` RUNNING on `cn135` at about 2 minutes, `_6` and `_7`
+PENDING on `JobArrayTaskLimit`, `_0` and `_2` COMPLETED, and `_1`/`_3` FAILED
+with exit `0:9`. The result inspection therefore remains `RUNNING` without any
+production recovery submission or output mutation.
+
+Stop/next-action rule: wait for `_4`--`_7` to leave the queue, then inspect
+final `sacct`, logs, and `thread_probe_*` Parquet row counts before any recovery
+design.
