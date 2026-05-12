@@ -70,6 +70,30 @@ def test_missing_and_todo_fields_surface_structured_blockers():
     assert f"missing_status:{third}" in audit.blockers
 
 
+def test_metric_dictionaries_without_values_fail_closed():
+    rows = _complete_rows()
+    sigma_family = REQUIRED_METHOD_FAMILIES[0].name
+    epsilon_family = REQUIRED_METHOD_FAMILIES[1].name
+    rows[0] = dict(rows[0], sigma_r={"definition": "no numeric value"})
+    rows[1] = dict(rows[1], epsilon={"definition": "no numeric value"})
+
+    audit = audit_acts_tracking_evidence(rows)
+
+    assert audit.ready is False
+    assert f"missing_metric_value:{sigma_family}:sigma_r" in audit.blockers
+    assert f"missing_metric_value:{epsilon_family}:epsilon" in audit.blockers
+
+
+def test_scalar_metric_values_remain_valid():
+    rows = _complete_rows()
+    rows[0] = dict(rows[0], sigma_r=1.5, epsilon="0.97")
+
+    audit = audit_acts_tracking_evidence(rows)
+
+    assert audit.ready is True
+    assert audit.blockers == ()
+
+
 def test_missing_required_family_fails_closed():
     dropped = REQUIRED_METHOD_FAMILIES[-1].name
     rows = [row for row in _complete_rows() if row["method_family"] != dropped]

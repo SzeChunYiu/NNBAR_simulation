@@ -291,6 +291,10 @@ def _require_split(value: Any, family: str, blockers: list[str]) -> None:
 def _require_metric(value: Any, family: str, key: str, blockers: list[str]) -> None:
     if _contains_todo(value):
         blockers.append(f"todo_marker:{family}:{key}")
+    if isinstance(value, Mapping):
+        if "value" not in value or _is_blank(value.get("value")):
+            blockers.append(f"missing_metric_value:{family}:{key}")
+        return
     if _is_blank(value):
         blockers.append(f"missing_{key}:{family}")
 
