@@ -246,3 +246,30 @@ Stop/next-action rule remains: do **not** submit another proton-bin5 recovery
 while `3046812` is active. Inspect `3046812` logs/outputs after the full array
 exits, then design any next recovery explicitly; separate mu- bin5 and gamma
 bin4 recovery specs are still needed for `3040259_5` and `3040275_10`.
+
+### Current handoff (2026-05-12 07:32 CEST)
+
+Guarded LUNARC refresh (`rtk proxy bash -lc "ssh -O check lunarc ..."`, then
+`squeue -j 3046812 --array`, `sacct -X -j 3046812`, root stub stat, and output
+inventory) found proton-bin5 diagnostic/recovery array `3046812` still active,
+so no new proton-bin5 submission is authorized:
+
+- `3046812_0`, `_3`, and `_4` completed with exit `0:0`.
+- `3046812_1` and `_2` timed out at `06:00:16` and `06:00:13`.
+- `3046812_5` and `_6` were running on `cn018` for `00:24:09` and `00:23:05`
+  at this check.
+- Root `build_lunarc/output/cosmic_proton_bin5/Particle_output_0.parquet`
+  remains a 4-byte invalid stub.
+- Diagnostic non-stub outputs remain limited to `second_diagnostic_cap100_rep0`
+  (12025 bytes), `second_diagnostic_cap250_rep1` (23758 bytes), and
+  `second_diagnostic_cap500_rep0` (43563 bytes). The root file, first recovery
+  `shard0`--`shard3`, `second_diagnostic_cap100_rep1`,
+  `second_diagnostic_cap250_rep0`, `second_diagnostic_cap500_rep1`, and
+  `second_diagnostic_cap1000_rep0` are still 4-byte stubs.
+- `3040180_25` proton bin5, `3040259_5` mu- bin5, and `3040275_10` gamma bin4
+  remain `TIMEOUT`; canceled duplicate `3047155_0-3` remains canceled.
+
+Stop/next-action rule remains: do **not** submit another proton-bin5 recovery
+while `3046812` is active. Inspect `3046812` logs/outputs after the full array
+exits, then design any next recovery explicitly; separate mu- bin5 and gamma
+bin4 recovery specs are still needed for `3040259_5` and `3040275_10`.
