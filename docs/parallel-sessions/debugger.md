@@ -10,9 +10,14 @@ optimization issue per compact-safe iteration.
 
 1. Read `docs/parallel-sessions/MASTER_PLAN.md` to see the current
    project state, then scan the active LUNARC sessions:
-   - `tmux capture-pane -p -S -80` for one pane in each of the four
-     supervisor sessions OR read its log under
-     `csup-nnbar-*.log`.
+   - First guard the local control socket:
+     `rtk proxy bash -lc 'ssh -O check lunarc 2>/dev/null && echo Connected || /Users/billy/lunarc-init.sh'`.
+   - The active tmux sessions live inside the `nnbar-csup` holder job on
+     `cn018`, not on the login node.  Get the holder with
+     `rtk proxy ssh lunarc "squeue -h -u \$USER -n nnbar-csup -t RUNNING -o '%i' | head -1"`,
+     then run `tmux capture-pane -p -S -80` through
+     `srun --jobid=<jobid> --overlap bash -lc '...'` for one pane in each
+     supervisor session OR read its log under `csup-nnbar-*.log`.
 2. Pick **one** smallest-scope debug/optimization slice — a slow test, a
    logging gap, a flaky assertion, a missing index, an unnecessary
    re-computation, a wrong env-var name, a duplicate path constant, etc.
