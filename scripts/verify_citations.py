@@ -208,7 +208,7 @@ def signature_regex(identifier: str, suffix: str) -> re.Pattern[str]:
         constant_assignment = rf"|^\s*{name}\s*(?::[^=]+)?=" if identifier.isupper() else ""
         return re.compile(rf"^\s*(?:async\s+)?(?:def|class)\s+{name}\b{constant_assignment}")
     return re.compile(
-        rf"^\s*(?:[A-Za-z_][\w:<>,~*&\s]+\s+)+{name}\s*\("
+        rf"^\s*(?:class|struct)\s+{name}\b|^\s*(?:[A-Za-z_][\w:<>,~*&\s]+\s+)+{name}\s*\("
         rf"|^\s*{name}::[A-Za-z_~][\w~]*\s*\("
     )
 
