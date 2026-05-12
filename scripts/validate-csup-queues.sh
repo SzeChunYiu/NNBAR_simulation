@@ -87,7 +87,7 @@ if [ -d codex-tasks ]; then
   # subshell, losing fail_count/file_count updates before the final summary.
   while IFS= read -r f; do
     scan_file "$f"
-  done < <(find codex-tasks -mindepth 2 -maxdepth 2 -name '*.txt' -print 2>/dev/null | sort)
+  done < <(find codex-tasks -mindepth 2 -maxdepth 2 -name '*.txt' ! -name '._*' -print 2>/dev/null | sort)
 fi
 
 printf '\n=== summary ===\n'
