@@ -1,1 +1,0 @@
-/goal You are PANE 4, lane cutflow-closure-audit. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/cutflow-closure-audit.md, then complete one compact-safe iteration.
