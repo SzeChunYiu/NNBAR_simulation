@@ -10,7 +10,7 @@ or an `OPEN:` blocker.
 
 | Project | Benchmark | Status | Hardware | Wall time (s) | Throughput | Evidence |
 |---|---|---:|---|---:|---:|---|
-| Celeritas | compact `celer-sim` simple-cms gamma primary run | QUEUED | LUNARC `gpua40`, 1x A40 | pending | pending | Corrected script copy `/projects/hep/fs10/shared/nnbar/billy/mcaccel_competitors/celeritas/build-fixed-20260512.sh` was submitted as SLURM job 3047497 on 2026-05-12T08:45:15; latest 2026-05-12T09:55 CEST refresh reports `PENDING`, `Reason=Resources`, `StartTime=2026-05-12T12:01:31`, no 3047497 logs, and no `results.parquet`. Prior job 3041282 failed with exit `127:0` on the stale executable path. |
+| Celeritas | compact `celer-sim` simple-cms gamma primary run | QUEUED | LUNARC `gpua40`, 1x A40 | pending | pending | Corrected script copy `/projects/hep/fs10/shared/nnbar/billy/mcaccel_competitors/celeritas/build-fixed-20260512.sh` was submitted as SLURM job 3047497 on 2026-05-12T08:45:15; latest 2026-05-12T10:40 CEST refresh reports `PENDING`, `Reason=Priority`, `StartTime=2026-05-13T07:58:30`, no 3047497 logs, and no `results.parquet`. Prior job 3041282 failed with exit `127:0` on the stale executable path. |
 | AdePT | Example1/TestEm3 compact EM workload | OPEN | LUNARC `gpua40`, 1x A40 target | blocked | blocked | `benchmarks/competitors/adept/build.sh`; login configure probe succeeded, but GPU-node jobs 3041291/3041525 could not read the CERN `devAdePT` CVMFS view; see `benchmarks/competitors/adept/setup-blocker-3041525.txt` |
 | Opticks | OpNovice2-like optical | OPEN | A100 target | — | — | Not attempted yet. |
 | VecGeom | CPU navigation harness | OPEN | Xeon target | — | — | Not attempted yet. |
@@ -63,6 +63,14 @@ still reports `Start=Unknown`, `End=Unknown`, and `NodeList=None assigned`.
 `scontrol` still estimates `StartTime=2026-05-12T12:01:31` on `cg06` and
 points to command `build-fixed-20260512.sh`; no `celeritas-3047497.out`/`.err`
 logs or remote `results/results.parquet` exist. No new job was submitted.
+
+Priority refresh: guarded LUNARC check at 2026-05-12T10:40 CEST found
+job 3047497 still `PENDING` on `Priority` with `TIME=0:00`; `sacct -X`
+still reports `Start=Unknown`, `End=Unknown`, and `NodeList=None assigned`.
+`scontrol` estimates `StartTime=2026-05-13T07:58:30`, `EndTime=2026-05-13T09:58:30`,
+`SchedNodeList=cg06`, command `build-fixed-20260512.sh`, and stdout/stderr
+paths under `slurm/celeritas-3047497.{out,err}`; no 3047497 logs or remote
+`results/results.parquet` exist. No new job was submitted.
 
 ## AdePT compact iteration notes
 
