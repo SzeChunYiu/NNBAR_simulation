@@ -1,1 +1,0 @@
-/goal You are PANE 1, lane cosmic-proton-bin5-thread-probe-results. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/cosmic-proton-bin5-thread-probe-results.md, then complete one compact-safe iteration.
