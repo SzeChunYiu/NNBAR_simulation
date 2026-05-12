@@ -408,3 +408,22 @@ PY"
 Stop/next-action rule: do not submit any production proton-bin5 recovery until
 a later lane inspects `3047491` `sacct`, logs, and row counts and explains the
 thread/seed behavior.
+
+### Current handoff (2026-05-12 08:50 CEST)
+
+Guarded LUNARC refresh found the proton-bin5 thread/seed diagnostic array
+`3047491` is still active, so no production proton-bin5 recovery is authorized
+and no SLURM job was submitted in this status-refresh iteration:
+
+- `squeue -j 3047491 --array` reported `3047491_4` and `_5` RUNNING on
+  `cn135` at about `0:12`, with `_6` and `_7` PENDING on `JobArrayTaskLimit`.
+- `sacct -X -j 3047491` reported `_0` COMPLETED (`0:0`), `_1` FAILED
+  (`0:9` after `00:09:28`), `_2` COMPLETED (`0:0`), `_3` FAILED (`0:9`
+  after `00:06:02`), `_4`/`_5` RUNNING, and `_6`/`_7` PENDING.
+- The Celeritas competitor job `3047497` is unrelated and remained PENDING on
+  `Resources`; holder jobs `3041294` and `3041795` remained RUNNING.
+
+Stop/next-action rule: do not submit any production proton-bin5 recovery while
+`3047491` has active or pending tasks. A later result-inspection lane must wait
+until the array exits, then inspect final `sacct`, logs, and `thread_probe_*`
+row counts before designing any production recovery.
