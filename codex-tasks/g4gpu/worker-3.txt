@@ -1,1 +1,0 @@
-/goal write docs/reports/g4_bottleneck_database_tracking_manager.md — structured Geant4 v11.2.2 source review shard for G4TrackingManager, G4Trajectory, G4Step stack-management and memory allocation patterns. BD-geant4-101 through BD-geant4-110. Must not repeat BD-001--100. Format matches existing shards in docs/reports/g4_bottleneck_database_*.md
