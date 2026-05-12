@@ -1,0 +1,1 @@
+/goal characterize LG hit cluster topology for pi0_mono_150mev per docs/parallel-sessions/lg-cluster-topology.md. Compute cluster separation, eDep-weighted CoM, spatial spread. Write docs/reports/lg_cluster_topology_150mev.md.
