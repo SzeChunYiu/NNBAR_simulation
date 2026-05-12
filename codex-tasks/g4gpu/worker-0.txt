@@ -1,1 +1,0 @@
-/goal You are PANE 0, lane g4-bottleneck-hadronic-proton. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/g4-bottleneck-hadronic-proton.md, then complete one compact-safe iteration.
