@@ -1,1 +1,1 @@
-/goal implement benchmarks/harness schema and parity modules per docs/specs/benchmark-harness.md §Implementation tasks 1-2: schema.py (Parquet row dataclass + pyarrow schema) and parity.py (KS gate, scipy, focused tests)
+/goal You are PANE 1, lane benchmark-harness-schema-parity-test-fix. Read docs/specs/benchmark-harness.md and docs/parallel-sessions/benchmark-harness-schema-parity-test-fix.md, then complete one compact-safe iteration.

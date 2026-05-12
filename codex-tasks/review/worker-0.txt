@@ -1,1 +1,0 @@
-/goal You are PANE 0, lane g4-optical-line-ref-fix. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/g4-optical-line-ref-fix.md, then complete one compact-safe iteration.
