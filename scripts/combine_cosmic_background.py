@@ -106,15 +106,11 @@ def _load_subsystem_parquet(run_dir: Path, subsystem_name: str) -> pd.DataFrame 
 
 def _summarize(combined: pd.DataFrame) -> dict[str, Any]:
     if "Event_ID" in combined:
+        unique_events = combined.drop_duplicates(["cosmic_run", "Event_ID"])
         event_counts = (
-            combined.groupby("cosmic_particle")["Event_ID"].nunique().astype(int).to_dict()
+            unique_events.groupby("cosmic_particle").size().astype(int).to_dict()
         )
-        weighted_events = (
-            combined.drop_duplicates(["cosmic_run", "Event_ID"])
-            .groupby("cosmic_particle")["weight"]
-            .sum()
-            .to_dict()
-        )
+        weighted_events = unique_events.groupby("cosmic_particle")["weight"].sum().to_dict()
     else:
         event_counts = combined.groupby("cosmic_particle").size().astype(int).to_dict()
         weighted_events = combined.groupby("cosmic_particle")["weight"].sum().to_dict()
