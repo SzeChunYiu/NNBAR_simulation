@@ -146,3 +146,29 @@ Stop when the 27-bin nonzero matrix is covered and accounted for:
 Write "DONE: cosmic array/recovery JOBID(s) submitted, 27 nonzero bins covered"
 only if every submitted task is complete or explicitly handed off; otherwise
 leave `MASTER_PLAN.md` `RUNNING` with the remaining job IDs.
+
+### Current handoff (2026-05-12 06:16 CEST)
+
+Guarded LUNARC refresh (`ssh -O check`, `squeue`, `sacct -X`, log tails, and
+stub stat) found no active original 3040180/3040259/3040275 tasks. The updated
+state is:
+
+- Completed since the prior handoff: `3040259_9` gamma bin3.
+- Timed out since the prior handoff: `3040259_5` mu- bin5 and `3040275_10`
+  gamma bin4; `3040180_25` proton bin5 remains the original 12 h timeout.
+- Proton bin5 root output is still a 4-byte invalid Parquet stub at
+  `build_lunarc/output/cosmic_proton_bin5/Particle_output_0.parquet`.
+- A first four-shard proton-bin5 recovery, `3041797_0-3`, already ran and all
+  four shards timed out at 06:00:29.
+- A second guarded diagnostic/recovery array, `3046812`, is already active:
+  `_0` completed, `_1` and `_2` were running, and `_3`--`_6` were pending at
+  this check.
+- Worker-0 accidentally submitted a duplicate four-shard array, `3047155`,
+  after `sbatch --test-only` passed but before noticing `3046812`; it was
+  immediately canceled (`3047155_0-3` show `CANCELLED by 6350` after 9 s).
+
+Stop/next-action rule: do **not** submit another proton-bin5 recovery while
+`3046812` is active. The next compact iteration should inspect the 3046812
+logs/outputs when it exits, then decide whether proton bin5 needs another
+explicitly authorized recovery design. Separate follow-up specs are also needed
+for the timed-out mu- bin5 (`3040259_5`) and gamma bin4 (`3040275_10`) bins.
