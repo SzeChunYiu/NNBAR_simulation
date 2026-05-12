@@ -1,1 +1,1 @@
-/goal rsync build_lunarc/output/photon_100MeV_conversion to local and run photon_conversion_audit.py to close sample_missing blockers; update MASTER_PLAN photon-conversion-map row
+/goal per docs/parallel-sessions/photon-conversion-map.md rsync build_lunarc/output/photon_100MeV_conversion to local and run photon_conversion_audit.py to close sample_missing blockers; update MASTER_PLAN photon-conversion-map row
