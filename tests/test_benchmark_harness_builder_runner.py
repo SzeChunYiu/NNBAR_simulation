@@ -1,5 +1,6 @@
 import os
 import subprocess
+import sys
 from pathlib import Path
 
 import pytest
@@ -138,3 +139,52 @@ def test_submit_sbatch_dry_run_returns_script_without_calling_sbatch(tmp_path):
 
     assert script_text.startswith("#!/bin/bash")
     assert os.fspath(script_path) not in script_text
+
+
+def test_run_cli_help_exits_zero():
+    result = subprocess.run(
+        [sys.executable, "-m", "benchmarks.harness.run", "--help"],
+        capture_output=True,
+        text=True,
+    )
+
+    assert result.returncode == 0, result.stderr
+    assert "Benchmark harness" in result.stdout
+    assert "--submit" in result.stdout
+
+
+def test_run_cli_dry_run_w1_pl1_h3_prints_valid_sbatch():
+    result = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "benchmarks.harness.run",
+            "--opt-id",
+            "BD-geant4-032",
+            "--opt-branch",
+            "lane/bd-geant4-032",
+            "--workload",
+            "W1",
+            "--physics-list",
+            "PL1",
+            "--hw",
+            "H3",
+            "--n-seeds",
+            "1",
+            "--n-events",
+            "100",
+        ],
+        capture_output=True,
+        text=True,
+    )
+
+    assert result.returncode == 0, result.stderr
+    assert result.stdout.startswith("#!/bin/bash")
+    assert "#SBATCH --partition=lu48" in result.stdout
+    assert "module load GCC/13.2.0 CUDA/12.8.0" in result.stdout
+    assert "benchmarks/raw/BD-geant4-032/W1/seed_1_vanilla.txt" in result.stdout
+    assert "python -m benchmarks.harness.run --collect" in result.stdout
+    assert "--physics-list PL1" in result.stdout
+
+    bash_check = subprocess.run(["bash", "-n"], input=result.stdout, capture_output=True, text=True)
+    assert bash_check.returncode == 0, bash_check.stderr
