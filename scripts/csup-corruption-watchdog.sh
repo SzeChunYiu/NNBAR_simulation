@@ -52,6 +52,7 @@ CORRUPTION_PATTERNS=(
   '/model goal You are PANE'
   'model: String should have at most 256'
   'invalid_request_error.*model'
+  '(^|[[:space:]])/g([^[:alpha:]]|$)'
 )
 
 LUNARC_SOCKET_READY=0
