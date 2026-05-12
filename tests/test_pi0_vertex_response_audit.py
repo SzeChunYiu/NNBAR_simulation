@@ -123,5 +123,18 @@ def test_missing_expected_radius_bin_blocks_even_when_present_bins_are_valid(tmp
     assert "5" in blockers["radius_bin_missing"].reason
 
 
+def test_radius_bin_with_no_reconstructed_candidates_blocks_response(tmp_path):
+    sample = _write_vertex_reco(
+        tmp_path / "pi0_reco_response" / "pi0_reco_150mev.parquet",
+        [_row(0.0, 1, reconstructed=False), _row(0.0, 2, reconstructed=False)],
+    )
+
+    report = audit_pi0_vertex_response(sample, 150, expected_radii_cm=(0.0,))
+
+    assert not report.ready
+    assert "radius_bin_no_reco" in _codes(report)
+    assert report.radius_bins[0].n_reconstructed == 0
+
+
 def test_study1_default_radii_match_parametric_scan_spec():
     assert STUDY1_RADII_CM == (0.0, 5.0, 10.0, 15.0, 20.0, 25.0, 30.0)

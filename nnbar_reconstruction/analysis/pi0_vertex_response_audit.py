@@ -247,6 +247,14 @@ def _summarize_radius_group(
     n_events = int(len(group))
     n_reconstructed = int(reconstructed.sum())
     reco_group = group.loc[reconstructed]
+    if n_events > 0 and n_reconstructed == 0:
+        blockers.append(
+            _blocker(
+                "radius_bin_no_reco",
+                energy_mev,
+                f"Radius {radius_cm:g} cm has {n_events} events but zero reconstructed π⁰ candidates.",
+            )
+        )
     mass_peak, mass_sigma = _mass_summary(radius_cm, reco_group, energy_mev, blockers)
     return RadiusResponseBin(
         radius_cm=radius_cm,
