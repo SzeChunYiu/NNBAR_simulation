@@ -37,6 +37,7 @@ without editing the near-cap main database
 - MacDonald and Booth 1990, surface-area heuristic for BVH construction.
 - Wald et al. 2007, fast SAH-based BVH construction.
 - Williams et al. 2005, robust ray-box intersection.
+- Herlihy and Shavit 2012, thread-local/concurrent object design.
 
 ---
 
