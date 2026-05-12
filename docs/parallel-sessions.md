@@ -1,31 +1,37 @@
 # Parallel codex sessions — coordination protocol
 
-This repo is currently run by the `nnbar-gpu-batch` codex-supervisor batch:
-**six continuous panes** (`worker-0`, `worker-1`, `worker-2`, `worker-3`,
-`worker-4`, and `planner`) launched from
-`scripts/codex-supervisor/nnbar-gpu-batch-prompts.txt` by `make supervisor`.
-The older Wave-6 `L0`--`L3` plan lanes are kept below as historical context
-for plan-audit work only; they are not the active supervisor topology.
+This repo is currently run by the LUNARC `codex-supervisor` layout described in
+`docs/parallel-sessions/MASTER_PLAN.md`: **five tmux sessions / 22 panes**
+(`recon`, `sim`, `g4gpu`, `review`, and `meta`) launched from the
+`codex-prompts-*.txt` files at the repo root. The older local
+`nnbar-gpu-batch` six-pane layout and Wave-6 `L0`--`L3` plan lanes are kept
+below only as historical context for plan-audit work; they are not the active
+supervisor topology.
 
 **Read this file at the start of every iteration** — assume the protocol may
 have evolved since you last looked.
 
-## Active continuous lanes
+## Active LUNARC sessions
 
-All active panes work from `/Volumes/MyDrive/nnbar/nnbar/simulation/` unless a
-lane spec explicitly names an external repo (for example the isolated
-`geant4-gpu` or `geant4-fork` trees). Queue files are one-line FIFO prompts;
-a worker that pops a queue entry should commit that pop with its `RUNNING`
-claim so another pane does not duplicate the task.
+All active panes work from the LUNARC checkout
+`/projects/hep/fs10/shared/nnbar/billy/NNBAR_Detector_sim/` unless a lane spec
+explicitly names an external repo (for example the isolated `geant4-gpu` or
+`geant4-fork` trees). The local checkout mirrors coordination docs and prompt
+files. Queue files are one-line FIFO `/goal` prompts under
+`codex-tasks/<session>/`; the legacy local `codex-tasks/worker-{0..4}.txt`
+files are migrated/inert and must not receive new active work.
 
-| Pane | Lane | Spec | Queue file | Writable scope |
-| ---- | ---- | ---- | ---------- | -------------- |
-| 0 | `worker-0` | `docs/parallel-sessions/worker-0.md` | `codex-tasks/worker-0.txt` | C++/CUDA/LUNARC/SLURM and NNBAR detector infrastructure named by the task; no Python analysis code. |
-| 1 | `worker-1` | `docs/parallel-sessions/worker-1.md` | planner-assigned or `codex-tasks/worker-1.txt` | Python reconstruction/analysis under `nnbar_reconstruction/`, tests, and task docs. |
-| 2 | `worker-2` | `docs/parallel-sessions/worker-2.md` | `codex-tasks/worker-2.txt` | Same Python/analysis/docs scope as worker-1, but only tasks assigned via its queue or unassigned compatible `NEXT` rows. |
-| 3 | `worker-3` | `docs/parallel-sessions/worker-3.md` | `codex-tasks/worker-3.txt` | Isolated G4GPU/Geant4 implementation work in `geant4-gpu`/`geant4-fork`, plus G4GPU status/spec/report docs. |
-| 4 | `worker-4` | `docs/parallel-sessions/worker-4.md` | `codex-tasks/worker-4.txt` | Isolated Geant4 source review, surveys, and reports; no NNBAR production code. |
-| 5 | `planner` | `docs/parallel-sessions/planner.md` | writes worker queues | Reviews completed commits, maintains `MASTER_PLAN.md`, writes lane specs, and queues follow-up work. |
+| Session | Panes | Prompt file | Queue dir | Ownership summary |
+| ------- | ----- | ----------- | --------- | ----------------- |
+| `nnbar-recon-lunarc` | 7 | `codex-prompts-recon.txt` | `codex-tasks/recon/` | Python reconstruction/audit lanes; pane 0 is `planner-recon`. |
+| `nnbar-sim-lunarc` | 7 | `codex-prompts-sim.txt` | `codex-tasks/sim/` | C++/SLURM/cosmic recovery and simulation evidence lanes; pane 0 is `planner-sim`. |
+| `nnbar-g4gpu-lunarc` | 4 | `codex-prompts-g4gpu.txt` | `codex-tasks/g4gpu/` | Isolated G4GPU implementation/research lanes. |
+| `nnbar-review-lunarc` | 2 | `codex-prompts-review.txt` | `codex-tasks/review/` | Geant4/OpenMC/source-review lanes. |
+| `nnbar-meta-lunarc` | 2 | `codex-prompts-meta.txt` | `codex-tasks/meta/` | Cross-cutting DEBUGGER and VALIDATOR-PLANNER only. |
+
+Per-pane lane names, specs, and writable scopes are in the prompt files and in
+the lane-specific markdown referenced by those prompts. `MASTER_PLAN.md` is the
+authoritative status table when it differs from this summary.
 
 ## Active iteration rules
 
@@ -45,7 +51,8 @@ claim so another pane does not duplicate the task.
    unrelated work.
 7. **Status commits.** Queue-driven workers mark `NEXT` → `RUNNING`, commit the
    claim, implement and verify, then mark `RUNNING` → `DONE` in
-   `MASTER_PLAN.md` and commit the completion.
+   `MASTER_PLAN.md` and commit the completion. Queue pops should be committed
+   with the claim when the queue file is tracked.
 8. **G4GPU isolation is mandatory.** Worker-3/4 output must remain separated
    from NNBAR thesis-production code and data; see
    `docs/policies/g4gpu-isolation.md`.
@@ -56,11 +63,12 @@ claim so another pane does not duplicate the task.
 
 ## Active iteration cycle (template)
 
-For `worker-0`..`worker-4`:
+For non-planner workers in `recon`, `sim`, `g4gpu`, and `review` sessions:
 
-1. Re-read `docs/parallel-sessions.md` and your `worker-*.md` lane spec.
-2. Check your queue file first if your spec defines one; otherwise inspect
-   `MASTER_PLAN.md` for a matching unassigned `NEXT` task.
+1. Re-read `docs/parallel-sessions.md` and your lane-specific markdown spec.
+2. Check your session queue file first (`codex-tasks/<session>/worker-N.txt`)
+   if your spec defines one; otherwise inspect `MASTER_PLAN.md` for a matching
+   unassigned `NEXT` task.
 3. Claim exactly one task (`NEXT` → `RUNNING`) and commit the claim.
 4. Read the task spec and every plan/source section it references.
 5. Make the scoped change, respecting lane isolation and file caps.
@@ -68,8 +76,8 @@ For `worker-0`..`worker-4`:
 7. Commit the implementation, update `MASTER_PLAN.md` to `DONE`, commit the
    completion, then stop.
 
-For `planner`: review new commits, maintain queue depth across worker queues,
-write compact lane specs, update `MASTER_PLAN.md`, then stop.
+For planner panes: review new commits, maintain queue depth across the active
+LUNARC queue dirs, write compact lane specs, update `MASTER_PLAN.md`, then stop.
 
 ## Legacy Wave-6 lanes (historical plan-audit context)
 
@@ -247,14 +255,15 @@ Otherwise: keep iterating.
 - `docs/parallel-sessions.md` (this file), unless the active task spec
   explicitly assigns the shared protocol refresh
 - `docs/rebuild_plans/00_README.md` and 01–06 (foundations)
-- Other lanes' `docs/parallel-sessions/worker-*.md` or legacy `L*.md`
+- Other lanes' `docs/parallel-sessions/*.md` lane specs unless your task
+  explicitly assigns shared coordination-doc maintenance
 - Other lanes' writable targets
 
 ## Required reading (every lane, every iteration)
 
 - `docs/parallel-sessions.md` (this file)
-- Your `docs/parallel-sessions/worker-*.md` (or legacy `L<n>.md` for old
-  Wave-6 plan-audit tasks)
+- Your lane-specific `docs/parallel-sessions/*.md` spec (or legacy `L<n>.md`
+  for old Wave-6 plan-audit tasks)
 - Plan sections your task references (the relevant
   `docs/rebuild_plans/*.md`)
 - `CODING_STANDARDS.md` (only on first iteration; sessions remember)
