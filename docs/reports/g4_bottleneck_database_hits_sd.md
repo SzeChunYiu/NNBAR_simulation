@@ -49,7 +49,7 @@ fast paths.
 | Field | Value |
 |-------|-------|
 | File | `source/digits_hits/detector/src/G4SDManager.cc`; `source/digits_hits/hits/src/G4HCofThisEvent.cc` |
-| Lines | `104-108`; `37-42` |
+| Lines | `G4SDManager.cc` 104-108; `G4HCofThisEvent.cc` 37-42 |
 | Hot-path % (profile-measured) | Hit/SD family: about 10% aggregate Geant4 CPU; per-line self% `OPEN:` pending Phase 5 perf. |
 | Category | 6 — Memory allocation |
 | Current pattern | Short snippet: `new G4HCofThisEvent(...)`, then detector-tree initialization. |
@@ -83,7 +83,7 @@ fast paths.
 | Field | Value |
 |-------|-------|
 | File | `source/digits_hits/detector/src/G4HCtable.cc`; `source/digits_hits/detector/src/G4SDManager.cc`; `source/digits_hits/detector/src/G4VSensitiveDetector.cc` |
-| Lines | `43-67`; `127-145`; `94-98` |
+| Lines | `G4HCtable.cc` 43-67; `G4SDManager.cc` 127-145; `G4VSensitiveDetector.cc` 94-98 |
 | Hot-path % (profile-measured) | Hit collection lookup / SD initialization family; per-line self% `OPEN:` pending perf. |
 | Category | 3 — Data structure |
 | Current pattern | Short snippet: loop over HC names; full-name queries build `SD/HC` strings before comparison. |
@@ -168,7 +168,7 @@ fast paths.
 | Field | Value |
 |-------|-------|
 | File | `source/digits_hits/hits/src/G4HCofThisEvent.cc`; `source/digits_hits/hits/include/G4HCofThisEvent.hh` |
-| Lines | `44-50`; `72-81` |
+| Lines | `G4HCofThisEvent.cc` 44-50; `G4HCofThisEvent.hh` 72-81 |
 | Hot-path % (profile-measured) | Event-end hit collection bookkeeping; per-line self% `OPEN:` pending perf/allocation trace. |
 | Category | 3 — Data structure |
 | Current pattern | Short snippet: delete each stored collection; count non-null slots by scanning the vector. |

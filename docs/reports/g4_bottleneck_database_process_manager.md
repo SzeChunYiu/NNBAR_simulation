@@ -60,7 +60,7 @@ near-cap root database `docs/reports/bottleneck_database_geant4.md`.
 | Why slow | Adding one process updates the global process table, the all-process list, up to three ordered DoIt vectors, all affected attribute indices, and then rebuilds all GPIL vectors. Physics-list setup repeats this small graph mutation dozens of times per particle. |
 | Proposed fix | Add a process-manager builder/finalize phase: collect process descriptors, ordering parameters, and applicability once, then sort and materialize all six vectors in one bulk pass. Keep the current mutating API as a compatibility wrapper that marks the builder dirty. |
 | Expected speedup | 1.5-3x for process-manager construction on particles with many processes; negligible event-loop speedup by itself, but it unlocks immutable vector descriptors for BD-geant4-136--139. |
-| Validation strategy | Compare `DumpInfo()` process order, `idxProcVector`, `ordProcVector`, active flags, and all `Get*ProcessVector()` contents for every particle in a reference physics list; then run fixed-seed event replays to require identical selected processes and final states. |
+| Validation | Compare `DumpInfo()` process order, `idxProcVector`, `ordProcVector`, active flags, and all `Get*ProcessVector()` contents for every particle in a reference physics list; then run fixed-seed event replays to require identical selected processes and final states. |
 | Implementation target | `g4gpu-phase5d-process-manager-builder`; upstream Geant4 MR `g4-process-manager-bulk-finalize`. |
 | Citation | Stroustrup 2012; Fraser and Hanson 1995. |
 | Status | OPEN |
@@ -77,7 +77,7 @@ near-cap root database `docs/reports/bottleneck_database_geant4.md`.
 | Why slow | Each ordered insertion performs two linear passes over the same small process set, plus `std::vector` insertion movement. The asymptotic cost is acceptable for tiny lists, but repeated across all particles and DoIt vectors it creates avoidable setup work and complicated index mutation. |
 | Proposed fix | During the builder/finalize phase, stable-sort descriptors by `(DoIt kind, ordering, original sequence)` and assign final indices once. For compatibility mode, add a single helper that returns both insertion point and affected-index span to avoid duplicate scans. |
 | Expected speedup | 1.2-2x for setup sections dominated by process ordering; lower risk than runtime changes because no physics random stream is touched. |
-| Validation strategy | Golden tests for equal-order, `ordLast`, first/second/last ordering, inactive processes, and removal/reinsert cases; assert exact vector order and index arrays before event replay. |
+| Validation | Golden tests for equal-order, `ordLast`, first/second/last ordering, inactive processes, and removal/reinsert cases; assert exact vector order and index arrays before event replay. |
 | Implementation target | `g4gpu-phase5d-process-order-bulk-sort`. |
 | Citation | Intel 2024 data-movement guidance; Stroustrup 2012. |
 | Status | OPEN |
@@ -94,7 +94,7 @@ near-cap root database `docs/reports/bottleneck_database_geant4.md`.
 | Why slow | A single ordering edit performs vector erasure, vector insertion, two index-repair passes, consistency checks, and a full six-vector GPIL rebuild. This makes any later runtime cache conservative because there is no compact mutation epoch or per-vector dirty bit. |
 | Proposed fix | Introduce per-DoIt-vector epochs and dirty flags. Reorder one DoIt vector incrementally, rebuild only its matching GPIL reverse view, and bump an epoch consumed by stepping-manager dispatch descriptors. |
 | Expected speedup | 1.3-2.5x for ordering-heavy initialization and much cheaper invalidation of optimized GPIL/DoIt tables. |
-| Validation strategy | Run ordering mutation tests before and after initialization; assert epochs change exactly once per edited vector and fallback dispatch is used when a mutation occurs during tracking. Fixed-seed replays must preserve selected process identity. |
+| Validation | Run ordering mutation tests before and after initialization; assert epochs change exactly once per edited vector and fallback dispatch is used when a mutation occurs during tracking. Fixed-seed replays must preserve selected process identity. |
 | Implementation target | `g4gpu-phase5d-process-vector-epochs`. |
 | Citation | Herlihy and Shavit 2012; Hoelzle, Chambers, and Ungar 1991. |
 | Status | OPEN |
@@ -111,7 +111,7 @@ near-cap root database `docs/reports/bottleneck_database_geant4.md`.
 | Why slow | Three public ordering helpers encode overlapping policy branches separately, which makes the process-manager mutation surface larger than necessary and increases the chance that optimized cache invalidation misses a path. |
 | Proposed fix | Replace helper internals with one `ReorderProcess(idDoIt, placement)` primitive that computes target ordering/position, mutates the selected DoIt vector once, and calls the same dirty-vector/epoch logic as BD-geant4-133. |
 | Expected speedup | 1.1-1.5x in setup paths using first/second/last helpers; primarily a maintainability and cache-correctness win. |
-| Validation strategy | Exhaustively exercise repeated first/last warnings, two-process equal-order cases, second-position insertion, inactive processes, and invalid DoIt indices; compare warnings, vector order, and `DumpInfo()` output. |
+| Validation | Exhaustively exercise repeated first/last warnings, two-process equal-order cases, second-position insertion, inactive processes, and invalid DoIt indices; compare warnings, vector order, and `DumpInfo()` output. |
 | Implementation target | `g4gpu-phase5d-process-reorder-primitive`. |
 | Citation | Fraser and Hanson 1995; Intel 2024 branch/control-flow guidance. |
 | Status | OPEN |
@@ -128,7 +128,7 @@ near-cap root database `docs/reports/bottleneck_database_geant4.md`.
 | Why slow | GPIL vectors are deterministic reverse views of DoIt vectors, but the code stores and rebuilds full pointer vectors. One DoIt edit rebuilds AtRest, AlongStep, and PostStep GPIL views and calls `GetAttribute(...)` repeatedly. |
 | Proposed fix | Store GPIL as a reverse view descriptor `(doItVector, reverse=true)` or rebuild only the dirty GPIL vector. If materialized storage is kept for ABI compatibility, reserve capacity and update indices in one reverse pass over the changed vector. |
 | Expected speedup | 1.5-3x for GPIL regeneration; reduces setup noise and simplifies direct dispatch-table generation. |
-| Validation strategy | Compare all `GetProcessVector(idx*, typeGPIL)` entries and `idxProcVector` values against vanilla after add/remove/reorder/activate/inactivate sequences; event replay must preserve GPIL winner order. |
+| Validation | Compare all `GetProcessVector(idx*, typeGPIL)` entries and `idxProcVector` values against vanilla after add/remove/reorder/activate/inactivate sequences; event replay must preserve GPIL winner order. |
 | Implementation target | `g4gpu-phase5d-gpil-reverse-view`. |
 | Citation | Stroustrup 2012; Intel 2024 cache-locality guidance. |
 | Status | OPEN |
@@ -145,7 +145,7 @@ near-cap root database `docs/reports/bottleneck_database_geant4.md`.
 | Why slow | The stepping manager sees arrays of process pointers but not compact metadata such as process type, forced-condition capability, side-effect class, or direct GPIL/DoIt thunks. Hot loops therefore reload process objects and branch on policy scattered across classes. |
 | Proposed fix | Build an immutable `ProcessDispatchDescriptor` array per particle/DoIt kind after physics initialization. Each descriptor stores the process pointer plus cached process type, activation epoch, optional direct thunk, and side-effect flags while preserving the old vector API as a view. |
 | Expected speedup | 1.1-1.4x on process-dispatch overhead once used by GPIL/DoIt loops; larger when combined with BD-geant4-137--139. |
-| Validation strategy | Descriptor construction tests compare every field to vanilla process/vector state; dispatch uses descriptors only when the epoch matches, otherwise falls back to the original vectors. Event replay must preserve selected process order and secondary production. |
+| Validation | Descriptor construction tests compare every field to vanilla process/vector state; dispatch uses descriptors only when the epoch matches, otherwise falls back to the original vectors. Event replay must preserve selected process order and secondary production. |
 | Implementation target | `g4gpu-phase5d-process-dispatch-descriptors`. |
 | Citation | Hoelzle, Chambers, and Ungar 1991; Intel 2024. |
 | Status | OPEN |
@@ -162,7 +162,7 @@ near-cap root database `docs/reports/bottleneck_database_geant4.md`.
 | Why slow | In ordinary production, process activation is stable for long stretches, but every step still pays null-branch checks. If a user inactivates a process, the sparse vector preserves indices at the cost of branches in all future dispatch loops. |
 | Proposed fix | Maintain a compact active descriptor list for event-loop dispatch and a sparse compatibility view for public indices. Activation changes bump an epoch and rebuild the compact list outside the hot loop. |
 | Expected speedup | 1-3% wall-clock if null checks and sparse vectors appear in perf; higher in custom applications that inactivate many processes. |
-| Validation strategy | Toggle process activation during controlled runs and compare public vector indices, active flags, GPIL winner order, DoIt calls, and final events. Add a stress test with alternating active/inactive processes to force fallback. |
+| Validation | Toggle process activation during controlled runs and compare public vector indices, active flags, GPIL winner order, DoIt calls, and final events. Add a stress test with alternating active/inactive processes to force fallback. |
 | Implementation target | `g4gpu-phase5d-compact-active-process-list`. |
 | Citation | Intel 2024 branch-prediction guidance; Herlihy and Shavit 2012. |
 | Status | OPEN |
@@ -179,7 +179,7 @@ near-cap root database `docs/reports/bottleneck_database_geant4.md`.
 | Why slow | Many continuous processes have predictable side-effect classes for a given particle/physics list, but the generic loop performs secondary extraction, status propagation, and particle-change cleanup uniformly. This repeats policy work for every step even when a process never creates secondaries or cannot alter track status. |
 | Proposed fix | Use descriptors from BD-geant4-136 to split AlongStep DoIt into specialized loops: no-secondary/no-status-change fast path, status-only path, and full generic path. Retain byte-for-byte fallback when a process advertises unknown side effects. |
 | Expected speedup | 1.1-1.3x inside AlongStep DoIt dispatch; 1-4% event-level gain in transportation/MSC/ionization-heavy workloads if perf confirms dispatch overhead. |
-| Validation strategy | Instrument vanilla particle-change deltas per process, classify side effects, then replay fixed seeds and assert identical step updates, track statuses, secondary lists, and process-defined-step metadata. |
+| Validation | Instrument vanilla particle-change deltas per process, classify side effects, then replay fixed seeds and assert identical step updates, track statuses, secondary lists, and process-defined-step metadata. |
 | Implementation target | `g4gpu-phase5d-alongstep-sideeffect-specialization`. |
 | Citation | Futamura 1971/1983; Hoelzle, Chambers, and Ungar 1991. |
 | Status | OPEN |
@@ -196,7 +196,7 @@ near-cap root database `docs/reports/bottleneck_database_geant4.md`.
 | Why slow | The GPIL phase already computed selected/forced conditions, but DoIt dispatch reinterprets the condition vector through branchy predicates and inverse indexing. The killed-track strongly-forced pass is rare but remains interleaved with the common path. |
 | Proposed fix | During GPIL selection, materialize a compact PostStep invocation list for the current step: normal selected process, forced processes, and a separate strongly-forced-after-kill list. Invoke that list directly in DoIt. |
 | Expected speedup | 1.1-1.4x inside PostStep DoIt dispatch; broad but small event-level gain on secondary-rich EM/hadronic workloads. |
-| Validation strategy | Step-level trace comparison of condition flags, invocation order, killed-track behavior, `fWorldBoundary` updates, particle changes, and secondaries for NotForced/Forced/ExclusivelyForced/StronglyForced cases. |
+| Validation | Step-level trace comparison of condition flags, invocation order, killed-track behavior, `fWorldBoundary` updates, particle changes, and secondaries for NotForced/Forced/ExclusivelyForced/StronglyForced cases. |
 | Implementation target | `g4gpu-phase5d-poststep-invocation-list`. |
 | Citation | Intel 2024 branch-control guidance; Hoelzle, Chambers, and Ungar 1991. |
 | Status | OPEN |
@@ -213,7 +213,7 @@ near-cap root database `docs/reports/bottleneck_database_geant4.md`.
 | Why slow | Each `G4ProcessVector` is a separate heap object wrapping another heap vector. Insert/erase operations move pointer ranges and pair poorly with process-manager index arrays. The event loop later consumes these scattered allocations through pointer indirections. |
 | Proposed fix | Add a small-buffer/reserved-storage implementation for the common process-count range and freeze vectors after initialization. A compatibility wrapper can still expose `G4ProcessVector` while descriptors use contiguous immutable storage. |
 | Expected speedup | 1.2-2x for vector construction/mutation and modest dispatch cache-locality gains when descriptors alias contiguous storage. |
-| Validation strategy | ABI/API tests for `entries`, `index`, `contains`, `operator[]`, `insertAt`, `removeAt`, copy/assignment, and destructor behavior; full physics-list construction and fixed-seed event replay must match vanilla. |
+| Validation | ABI/API tests for `entries`, `index`, `contains`, `operator[]`, `insertAt`, `removeAt`, copy/assignment, and destructor behavior; full physics-list construction and fixed-seed event replay must match vanilla. |
 | Implementation target | `g4gpu-phase5d-process-vector-small-buffer`. |
 | Citation | Stroustrup 2012; Intel 2024 memory-hierarchy guidance. |
 | Status | OPEN |
