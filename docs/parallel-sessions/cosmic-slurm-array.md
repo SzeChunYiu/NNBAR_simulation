@@ -273,3 +273,29 @@ Stop/next-action rule remains: do **not** submit another proton-bin5 recovery
 while `3046812` is active. Inspect `3046812` logs/outputs after the full array
 exits, then design any next recovery explicitly; separate mu- bin5 and gamma
 bin4 recovery specs are still needed for `3040259_5` and `3040275_10`.
+
+### Current handoff (2026-05-12 07:56 CEST)
+
+Guarded LUNARC refresh (`rtk proxy bash -lc "ssh -O check lunarc ..."`, then
+`squeue`, `sacct -X`, output inventory, and log tails) found proton-bin5
+second diagnostic/recovery array `3046812` still active. No new proton-bin5
+submission is authorized:
+
+- `3046812_0`, `_3`, and `_4` completed with exit `0:0`; `3046812_1` and
+  `_2` timed out at `06:00:16` and `06:00:13`.
+- `3046812_5` and `_6` remain running on `cn018` for `00:47:57` and
+  `00:46:53` at this check.
+- Root `build_lunarc/output/cosmic_proton_bin5/Particle_output_0.parquet`
+  remains a 4-byte invalid stub.
+- Diagnostic non-stub outputs remain limited to `second_diagnostic_cap100_rep0`
+  (12025 bytes), `second_diagnostic_cap250_rep1` (23758 bytes), and
+  `second_diagnostic_cap500_rep0` (43563 bytes). `second_diagnostic_cap500_rep1`
+  and `second_diagnostic_cap1000_rep0` remain 4-byte stubs.
+- Running stdout tails remained at event 491 for `_5` and event 962 for `_6`;
+  stderr tails show only lead-glass position-file loading.
+
+Stop/next-action rule remains: do **not** submit another proton-bin5 recovery
+while `3046812` is active. Inspect `3046812` logs/outputs after the full array
+exits, then design any next recovery explicitly; separate mu- bin5 and gamma
+bin4 recovery specs are still needed for `3040259_5` and `3040275_10`.
+
