@@ -1,1 +1,0 @@
-/goal implement benchmarks/harness/run.py per docs/specs/benchmark-harness.md §Implementation task 6: CLI entry point (argparse, wires builder/runner/schema/hardware), focused test --help exits 0 and dry-run W1 PL1 H3 prints valid sbatch
