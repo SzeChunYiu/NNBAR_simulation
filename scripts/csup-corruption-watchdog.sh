@@ -126,9 +126,11 @@ run_once() {
     [ -f "$prompts_file" ] || continue
     # List of /goal lines, indexed 0..N-1
     LINES=()
-    while IFS= read -r prompt_line; do
-      LINES+=("$prompt_line")
-    done < <(grep -E '^/goal' "$prompts_file")
+    while IFS= read -r prompt_line || [[ -n "$prompt_line" ]]; do
+      case "$prompt_line" in
+        /goal*) LINES+=("$prompt_line") ;;
+      esac
+    done < "$prompts_file"
 
     # Capture all panes in the session
     local panes_raw

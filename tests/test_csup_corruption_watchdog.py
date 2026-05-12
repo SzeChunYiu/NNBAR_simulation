@@ -169,7 +169,7 @@ def test_watchdog_checks_corruption_patterns_without_external_grep(
         ),
         "grep": (
             "#!/usr/bin/env bash\n"
-            "if [[ \"$1\" == '-Eq' ]]; then printf '%s\\n' \"$2\" >> \"$GREP_LOG\"; fi\n"
+            "printf '%s\\n' \"$*\" >> \"$GREP_LOG\"\n"
             "exec /usr/bin/grep \"$@\"\n"
         ),
     }
