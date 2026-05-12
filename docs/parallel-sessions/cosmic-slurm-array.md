@@ -428,17 +428,18 @@ Stop/next-action rule: do not submit any production proton-bin5 recovery while
 until the array exits, then inspect final `sacct`, logs, and `thread_probe_*`
 row counts before designing any production recovery.
 
-### Result-inspection active refresh (2026-05-12 09:02 CEST)
+### Result-inspection active refresh (2026-05-12 09:13 CEST)
 
 Worker-0 refreshed `3047491`; it had not exited, so result inspection remains
-`RUNNING`. `squeue` showed `_4` and `_5` RUNNING on `cn135` at `12:31`, with `_6`
+`RUNNING`. `squeue` showed `_4` and `_5` RUNNING on `cn135` at `23:43`, with `_6`
 and `_7` PENDING on `JobArrayTaskLimit`. `sacct -X` showed `_0` COMPLETED
 (`00:01:01`, exit `0:0`), `_1` FAILED (`00:09:28`, exit `0:9`), `_2` COMPLETED
 (`00:02:23`, exit `0:0`), `_3` FAILED (`00:06:02`, exit `0:9`), `_4`/`_5`
 RUNNING, and `_6`/`_7` PENDING. Partial row counts remain `thread_probe_0`
 12025 bytes / 100 rows and `thread_probe_2` 23758 bytes / 250 rows;
 `thread_probe_1`, `_3`, `_4`, and `_5` are 4-byte stubs, and `_6`/`_7` are not
-present yet. Log tails show `_4` at event 238 and `_5` at event 491; no production recovery was submitted or output mutated.
+present yet. Log tails remain `_4` at event 238 and `_5` at event 491; no
+production recovery was submitted or output mutated.
 
-Stop/next-action rule: wait for `_4`--`_7` to leave the queue, then inspect final `sacct`, logs, and `thread_probe_*`
-Parquet row counts before any recovery design.
+Stop/next-action rule: wait for `_4`--`_7` to leave the queue, then inspect final
+`sacct`, logs, and `thread_probe_*` Parquet row counts before any recovery design.
