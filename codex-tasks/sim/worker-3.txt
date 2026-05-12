@@ -1,1 +1,0 @@
-/goal You are PANE 3, lane pi0-foil-energy-scan-ext. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/pi0-foil-energy-scan-ext.md, then complete one compact-safe iteration.
