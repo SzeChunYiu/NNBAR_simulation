@@ -41,7 +41,7 @@ scan_file() {
   while IFS= read -r line; do
     n=$((n + 1))
     # Skip blank lines and comments
-    [[ -z "${line// }" ]] && continue
+    [[ "$line" =~ ^[[:space:]]*$ ]] && continue
     [[ "$line" =~ ^[[:space:]]*# ]] && continue
     line_count=$((line_count + 1))
 

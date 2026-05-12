@@ -71,3 +71,33 @@ def test_appledouble_resource_forks_are_ignored(tmp_path: Path) -> None:
     assert result.returncode == 0, result.stdout
     assert "files scanned: 2" in result.stdout
     assert "failures: 0" in result.stdout
+
+
+def test_whitespace_only_queue_lines_are_ignored(tmp_path: Path) -> None:
+    """Blank queue lines may contain tabs from manual editor cleanup."""
+    scripts_dir = tmp_path / "scripts"
+    queue_dir = tmp_path / "codex-tasks" / "demo"
+    scripts_dir.mkdir()
+    queue_dir.mkdir(parents=True)
+    shutil.copy2(SCRIPT, scripts_dir / SCRIPT.name)
+
+    (tmp_path / "codex-prompts-demo.txt").write_text(
+        "/goal You are PANE 0, lane DEMO. Read docs/parallel-sessions/demo.md.\n",
+        encoding="utf-8",
+    )
+    (queue_dir / "worker.txt").write_text(
+        "\t  \t\n"
+        "/goal You are PANE 1, lane WORKER. Read docs/parallel-sessions/demo.md.\n",
+        encoding="utf-8",
+    )
+
+    result = subprocess.run(
+        ["bash", str(scripts_dir / SCRIPT.name)],
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+
+    assert result.returncode == 0, result.stdout
+    assert "prompt lines checked: 2" in result.stdout
+    assert "failures: 0" in result.stdout

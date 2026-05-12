@@ -354,3 +354,58 @@ passed, the guard test exited 2, static seed/thread checks passed, and
 `sbatch --test-only --array=0-7 slurm/cosmic_proton_bin5_thread_probe.sbatch`
 returned pseudo-job `3047483`; `squeue`/`sacct` for `3047483` found no real job.
 Do not run the probe until a later approved lane explicitly sets the guard.
+
+### Current handoff (2026-05-12 08:40 CEST)
+
+Worker-0 submitted the explicitly authorized proton-bin5 thread/seed diagnostic
+array once, as SLURM job `3047491`. This is not a production recovery: it runs
+only the guarded wrapper `slurm/cosmic_proton_bin5_thread_probe.sbatch` with
+`PROTON_BIN5_THREAD_PROBE_APPROVED=YES`, comparing the failed `3046812_1`,
+`3046812_2`, `3046812_5`, and `3046812_6` seed/cap paths at `THREADS=1` and
+`THREADS=4`.
+
+Pre-submit safety evidence:
+
+- Remote wrapper exists in `/projects/hep/fs10/shared/nnbar/billy/NNBAR_Detector_sim`
+  and `bash -n slurm/cosmic_proton_bin5_thread_probe.sbatch` passed.
+- Guard/invariant greps confirmed `PROTON_BIN5_THREAD_PROBE_APPROVED:-NO`,
+  `#SBATCH --array=0-7%2`, and `thread_probe_${TASK_ID}` output naming.
+- The wrapper contains a no-overwrite check that exits if the target
+  `thread_probe_${TASK_ID}` directory already contains files.
+- No active `pbin5-thread-probe` job and no existing
+  `build_lunarc/output/cosmic_proton_bin5/thread_probe_*` directories were
+  present before submission.
+- `sbatch --test-only slurm/cosmic_proton_bin5_thread_probe.sbatch` returned
+  pseudo-job `3047490` and did not submit work.
+
+Submission evidence:
+
+- Command used:
+  `sbatch --parsable --export=ALL,PROTON_BIN5_THREAD_PROBE_APPROVED=YES slurm/cosmic_proton_bin5_thread_probe.sbatch`
+- Returned job id: `3047491`.
+- Immediate `squeue -j 3047491 --array` showed `3047491_0` and `3047491_1`
+  RUNNING on `cn018` at `0:01`; `3047491_2`--`3047491_7` were PENDING on
+  `JobArrayTaskLimit`.
+- Immediate `sacct -X -j 3047491` returned only the header, as expected just
+  after submission.
+
+Follow-up commands for the next compact unit after the array exits:
+
+```bash
+rtk proxy bash -lc 'ssh -O check lunarc 2>/dev/null && echo "Connected" || /Users/billy/lunarc-init.sh'
+rtk proxy ssh lunarc "sacct -X -j 3047491 --format=JobID%-18,JobName%36,State%14,Elapsed,ExitCode -P"
+rtk proxy ssh lunarc "cd /projects/hep/fs10/shared/nnbar/billy/NNBAR_Detector_sim && /projects/hep/fs10/shared/nnbar/billy/packages/hibeam_env/bin/python - <<'PY'
+from pathlib import Path
+import pyarrow.parquet as pq
+base = Path('build_lunarc/output/cosmic_proton_bin5')
+for p in sorted(base.glob('thread_probe_*/Particle_output_0.parquet')):
+    size = p.stat().st_size
+    rows = 'stub' if size <= 4 else pq.ParquetFile(p).metadata.num_rows
+    print(p, size, rows)
+PY"
+```
+
+Stop/next-action rule: do not submit any production proton-bin5 recovery until
+a later lane inspects `3047491` `sacct`, logs, and row counts and explains the
+thread/seed behavior.
+
