@@ -19,7 +19,10 @@ instead of remaining in `libG4Accel`.
 
 Fresh verification on 2026-05-12 found both local and LUNARC trees checked out
 on `accel/master` at the `v11.2.2` tag, with branch tracking the private GitHub
-mirror. The LUNARC tree has an untracked `build/` directory only.
+mirror. The GitHub API resolves `SzeChunYiu/geant4-accel` as a private repo
+with default branch `accel/master`; that branch points to the same commit as
+both checked-out forks (`f840b5da3a70c2c7be836fdb72a781eab12e0af6`). The
+LUNARC tree has an untracked `build/` directory only.
 
 ## Contribution routes
 
