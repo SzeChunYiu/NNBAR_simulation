@@ -127,3 +127,15 @@ inputs with HepMC3/VecGeom or a precise blocker report.
   `results/results.parquet` was present.
 - No new SLURM job was submitted; the Celeritas row stays `QUEUED` until job
   3047497 completes and the parquet result can be read back.
+
+### 2026-05-12 — Celeritas rerun second pending refresh (worker-3)
+
+- Guarded LUNARC check at 2026-05-12T09:55 CEST found corrected rerun job
+  3047497 still `PENDING` on `Resources`, with `TIME=0:00`,
+  `StartTime=2026-05-12T12:01:31`, and `SchedNodeList=cg06`.
+- `sacct -X` still reports `Start=Unknown`, `End=Unknown`, and
+  `NodeList=None assigned`; no allocation has started.
+- No stdout/stderr logs for job 3047497 existed yet, and no remote
+  `results/results.parquet` was present.
+- No new SLURM job was submitted; keep Celeritas `QUEUED` until job 3047497
+  completes or fails and the result/log evidence can be read back.
