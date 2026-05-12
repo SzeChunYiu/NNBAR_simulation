@@ -232,6 +232,43 @@ def test_watchdog_reinjects_pane_zero_prompt(tmp_path: Path) -> None:
     assert "PANE 0" in ssh_log.read_text(encoding="utf-8")
 
 
+def test_watchdog_maps_one_based_tmux_panes_by_position(tmp_path: Path) -> None:
+    """LUNARC tmux panes are one-based, but pane 1 is still prompt line 0."""
+    fake_bin = tmp_path / "bin"
+    fake_bin.mkdir()
+    ssh_log = tmp_path / "ssh.log"
+    fake_ssh = fake_bin / "ssh"
+    fake_ssh.write_text(
+        "#!/usr/bin/env bash\n"
+        "case \"$*\" in\n"
+        "  *squeue*) echo 12345 ;;\n"
+        "  *list-panes*) echo 1 ;;\n"
+        "  *capture-pane*) echo '/model goal You are PANE' ;;\n"
+        "  *) printf '%s\\n' \"$*\" >> \"$SSH_LOG\" ;;\n"
+        "esac\n"
+        "exit 0\n",
+        encoding="utf-8",
+    )
+    fake_ssh.chmod(0o755)
+
+    env = os.environ.copy()
+    env["PATH"] = f"{fake_bin}{os.pathsep}{env['PATH']}"
+    env["SSH_LOG"] = str(ssh_log)
+
+    result = subprocess.run(
+        ["bash", str(SCRIPT), "--once"],
+        text=True,
+        capture_output=True,
+        check=False,
+        env=env,
+    )
+
+    reinject_commands = ssh_log.read_text(encoding="utf-8")
+    assert result.returncode == 0
+    assert "PANE 0, lane planner-recon" in reinject_commands
+    assert "PANE 1, lane event-variable-electron-pair-count" not in reinject_commands
+
+
 def test_watchdog_detects_invalid_request_error_regex(tmp_path: Path) -> None:
     """Regex-style corruption patterns should match real invalid_request errors."""
     fake_bin = tmp_path / "bin"

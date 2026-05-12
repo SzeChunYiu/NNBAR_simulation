@@ -117,8 +117,11 @@ run_once() {
       continue
     fi
 
+    local pane_ordinal=0
     while read -r idx; do
       [[ -z "$idx" ]] && continue
+      local prompt_idx=$pane_ordinal
+      pane_ordinal=$((pane_ordinal + 1))
       local cap
       if ! cap=$(ssh_lunarc "srun --jobid='$jobid' --overlap bash -lc 'tmux capture-pane -t \"$session:.$idx\" -p -S -80 2>/dev/null'"); then
         echo "  [$session pane $idx] unable to capture pane; skipping"
@@ -132,8 +135,7 @@ run_once() {
         fi
       done
       if (( corrupt )); then
-        # tmux pane idx -> prompts line idx mapping (0-based)
-        local prompt_idx=$idx
+        # tmux pane_index may be one-based on LUNARC; map by list position.
         local prompt="${LINES[$prompt_idx]:-}"
         if [[ -z "$prompt" ]]; then
           echo "  [$session pane $idx] CORRUPT but no prompt at index $prompt_idx; skipping"
