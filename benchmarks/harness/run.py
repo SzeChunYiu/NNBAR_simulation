@@ -58,6 +58,13 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     parser = build_parser()
     args = parser.parse_args(argv)
+    if args.generate_reference:
+        parser.exit(
+            2,
+            "reference generation is deferred to implementation task 7; "
+            "--generate-reference is fail-closed until benchmarks/reference/ "
+            "and MANIFEST.sha256 support land\n",
+        )
     if args.collect:
         return _collect(args, parser)
 

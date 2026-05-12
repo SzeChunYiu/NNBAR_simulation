@@ -188,3 +188,35 @@ def test_run_cli_dry_run_w1_pl1_h3_prints_valid_sbatch():
 
     bash_check = subprocess.run(["bash", "-n"], input=result.stdout, capture_output=True, text=True)
     assert bash_check.returncode == 0, bash_check.stderr
+
+
+def test_run_cli_generate_reference_fails_closed_until_task_7():
+    result = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "benchmarks.harness.run",
+            "--generate-reference",
+            "--opt-id",
+            "BD-geant4-032",
+            "--opt-branch",
+            "lane/bd-geant4-032",
+            "--workload",
+            "W1",
+            "--physics-list",
+            "PL1",
+            "--hw",
+            "H3",
+            "--n-seeds",
+            "1",
+            "--n-events",
+            "100",
+        ],
+        capture_output=True,
+        text=True,
+    )
+
+    assert result.returncode != 0
+    assert "reference generation" in result.stderr
+    assert "task 7" in result.stderr
+    assert not result.stdout.startswith("#!/bin/bash")
