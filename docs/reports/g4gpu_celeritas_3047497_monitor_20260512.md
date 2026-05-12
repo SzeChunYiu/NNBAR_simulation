@@ -341,3 +341,59 @@ Disposition remains unchanged: keep the Celeritas rerun in external scheduler
 wait, keep `MCAccel competitor benchmarks` in `RUNNING`, and do not create
 `docs/reports/celeritas_benchmark_3047497.md` until `results/results.parquet`
 exists or the job reaches a terminal state with stdout/stderr to preserve.
+
+
+## Refresh: 2026-05-12 12:49 CEST
+
+Read-only LUNARC refresh confirms job 3047497 is still scheduler-pending and
+has not produced logs or benchmark output. No new job was submitted.
+
+```text
+REMOTE_DATE=2026-05-12 12:49:00 CEST
+
+JOBID      NAME                    STATE        TIME   TIME_LIMIT  NODES  NODELIST(REASON)  QOS
+3047497    mcaccel-celeritas       PENDING      0:00   2:00:00     1      (Priority)        normal
+
+JobID|JobName|State|Elapsed|Start|End|ExitCode|NodeList
+3047497|mcaccel-celeritas|PENDING|00:00:00|Unknown|Unknown|0:0|None assigned
+
+JobName=mcaccel-celeritas
+Account=lu2026-2-51
+QOS=normal
+JobState=PENDING
+Reason=Priority
+ExitCode=0:0
+RunTime=00:00:00
+TimeLimit=02:00:00
+SubmitTime=2026-05-12T08:45:15
+EligibleTime=2026-05-12T08:45:15
+StartTime=2026-05-14T00:04:30
+EndTime=2026-05-14T02:04:30
+Partition=gpua40
+SchedNodeList=cg04
+NumNodes=1
+Command=/projects/hep/fs10/shared/nnbar/billy/mcaccel_competitors/celeritas/build-fixed-20260512.sh
+WorkDir=/projects/hep/fs10/shared/nnbar/billy/mcaccel_competitors/celeritas
+StdErr=/projects/hep/fs10/shared/nnbar/billy/mcaccel_competitors/celeritas/slurm/celeritas-3047497.err
+StdOut=/projects/hep/fs10/shared/nnbar/billy/mcaccel_competitors/celeritas/slurm/celeritas-3047497.out
+```
+
+The active-job filter showed Celeritas job 3047497 and historical V7 shakedown
+job 3047502 still pending on `Priority`; three `mcaccel-sup` holder jobs were
+running (`3047628` on `cx08`, `3047941` on `cx12`, and `3047906` on `cx04`).
+No Celeritas job has allocated a GPU node.
+
+Remote file checks:
+
+```text
+-rwx--x--x 1 scyiu hep 6894 May 12 08:40 build-fixed-20260512.sh
+aa02355926582c49846661482cb9d8ede87b698ad263d23e62229492636e4104  build-fixed-20260512.sh
+MISSING slurm/celeritas-3047497.out
+MISSING slurm/celeritas-3047497.err
+MISSING results/results.parquet
+```
+
+Disposition remains unchanged: keep the Celeritas rerun in external scheduler
+wait, keep `MCAccel competitor benchmarks` in `RUNNING`, and do not create
+`docs/reports/celeritas_benchmark_3047497.md` until `results/results.parquet`
+exists or the job reaches a terminal state with stdout/stderr to preserve.
