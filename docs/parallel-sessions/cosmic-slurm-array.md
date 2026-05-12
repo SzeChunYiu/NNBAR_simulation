@@ -324,3 +324,17 @@ recovery scripts. The next proton-bin5 iteration must write a fresh,
 explicitly authorized recovery design that accounts for the cap/seed-dependent
 stall/failure pattern above before any `sbatch` submission.
 
+### Current handoff (2026-05-12 08:17 CEST)
+
+Worker-0 completed the required fresh proton-bin5 recovery design in
+`docs/parallel-sessions/cosmic-proton-bin5-recovery-design.md`; no SLURM job was
+submitted. Guarded LUNARC evidence still shows `3046812` fully exited and absent
+from `squeue`; valid diagnostic Parquet exists only for cap100 rep0 (100 rows),
+cap250 rep1 (250 rows), and cap500 rep0 (500 rows). The root proton-bin5 output,
+first recovery shards, and failed diagnostic outputs remain 4-byte stubs.
+
+Stop/next-action rule: proton-bin5 production recovery is now BLOCKED until a
+future explicitly queued thread/seed probe compares the failed seed paths at
+`THREADS=1` and `THREADS=4` with a no-submit-by-default guard. Do not run
+`cosmic_proton_bin5_recovery.sbatch` or any old proton-bin5 recovery script.
+
