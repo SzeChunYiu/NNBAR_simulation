@@ -4,8 +4,17 @@
 
 This pane reads Geant4 source code line by line, identifies concrete
 optimization opportunities, and produces written reports that feed the
-implementation work in worker-3. It does NOT modify NNBAR or production
-G4GPU code — it produces analyses, surveys, and recommendations.
+implementation work in worker-3.
+
+**Reframe.** This work is not just for NNBAR. The end state is a faster
+Geant4 toolkit that every user benefits from — HEP experiments, medical
+physics, space-radiation simulation, GATE, the whole community. Every
+optimization opportunity worker-4 surfaces should be evaluated against the
+question "would this also help a CMS HCAL simulation, a proton therapy
+treatment plan, an ATLAS pileup run?" — not just "would this help NNBAR?"
+
+It does NOT modify NNBAR or production G4GPU code — it produces analyses,
+surveys, and recommendations.
 
 Same isolation policy as worker-3: nothing under `NNBAR_Detector/`,
 `nnbar_reconstruction/`, `scripts/`, `lunarc/`, `slurm/`, or `macro/` is

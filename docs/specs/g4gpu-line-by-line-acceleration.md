@@ -10,9 +10,42 @@ strictly inside the G4GPU repo (`/Volumes/MyDrive/nnbar/geant4-gpu/` locally,
 mirror on LUNARC). No code or build configuration crosses the boundary into
 `NNBAR_Detector/` or `nnbar_reconstruction/`.
 
-**Goal**: a Geant4-compatible Monte Carlo backend that nobody else can beat on
-throughput, latency, accuracy, *or* developer ergonomics. We attack every layer
-of the transport pipeline, not just GPU offload.
+## What we are actually building
+
+**This is not an NNBAR-specific accelerator.** It is a general-purpose
+optimization of the Geant4 toolkit itself, intended to benefit every user of
+Geant4: HEP experiments (ATLAS, CMS, LHCb, DUNE, Belle II, ...), medical
+physics (proton therapy simulation, GATE), space-radiation simulation, and
+the long tail of academic and industrial users.
+
+The architecture follows the pattern AdePT and Celeritas use: ship a separate
+library (`libG4Accel.so`) that registers itself with vanilla Geant4 through
+its existing fast-simulation / task-system / process-manager hooks, plus a
+set of upstream-ready patches that fix hot-path performance bugs at source.
+Users opt in via a CMake flag (`-DG4_USE_ACCEL=ON`) or a single API call
+(`G4AcceleratorManager::Instance()->Activate(...)`); they do not have to
+rewrite their applications.
+
+The end state has three deliverables:
+
+1. **`libG4Accel`** — a standalone library shipping the GPU kernels and
+   non-trivially-different algorithms (RT geometry, persistent-kernel
+   pipeline, JIT-specialized step loops). Wraps the official Geant4
+   integration points. Distributed under an open-source license.
+2. **Upstream patches** — every optimization that does NOT require a GPU
+   (QMC RNG, SAH-BVH for voxel descent, perfect-hash material lookup,
+   branchless surface tests, PGO+LTO build config, cache-line alignment)
+   submitted as merge requests against `gitlab.cern.ch/geant4/geant4`.
+   These benefit every Geant4 user immediately on the next release.
+3. **Benchmark + validation suite** — canonical Geant4 examples
+   (BasicExample, hadr01, hadr02, OpNovice, ext/electromagnetic/TestEm0...)
+   plus a small set of representative real-world workloads (NNBAR signal,
+   CMS HCAL barrel, etc.) run twice — vanilla vs. accelerated — with
+   distribution agreement gated in CI.
+
+**Goal**: produce the fastest, most correct Geant4 in the world without
+breaking a single existing user's code. We attack every layer of the
+transport pipeline. Not just GPU offload — *optimize Geant4's own source*.
 
 This document is the strategic root for G4GPU phases 5+. Phases 0–4 (muon,
 voxel geometry, RTX, optical) are infrastructure. The differentiated work
@@ -61,19 +94,33 @@ We attack each in the order of $\text{cycles\_saved} \times \text{coverage}$.
 ### Phase 5 — Profile-driven baseline + L0 microarchitecture wins
 **Scope.** Establish the measurement framework before anything else.
 
-- Build a benchmark suite: 6 canonical events (low-E gamma, high-E muon,
-  n̄-C annihilation, cosmic shower, optical, beam neutron).
+- Build a benchmark suite covering **both** generic Geant4 workloads AND
+  one representative real-world use:
+  - **Canonical Geant4 examples** (vanilla, untouched): `BasicExample`,
+    `extended/electromagnetic/TestEm0`, `extended/hadronic/Hadr01`,
+    `extended/hadronic/Hadr02`, `extended/optical/OpNovice2`,
+    `extended/parameterisations/Par01` — these are what the Geant4
+    collaboration itself uses for regression.
+  - **NNBAR-equivalent reference events** (driven by our own geometry but
+    run with vanilla Geant4): gamma_100mev, muon_10gev, nbar_carbon,
+    cosmic_shower, optical_scintillator, beam_neutron.
 - Wire `perf record` / `perf annotate` and NVIDIA Nsight Compute into CI.
-- Apply L0 wins to the CPU fallback: AVX-512/NEON intrinsics for the cross-
-  section interpolator, branchless surface intersection in `G4Box`/`G4Tubs`,
-  cache-line alignment of `G4Track` and friends, prefetch ahead of touchable
-  walks.
-- Validate against vanilla Geant4 with KS test on energy/momentum/position
-  distributions. Tolerance: ≤ 1% KL divergence on flagship histograms.
+- Apply L0 wins **as upstreamable patches against Geant4 source** (these
+  are the ones that benefit every user, not just GPU users):
+  AVX-512/NEON intrinsics for `G4PhysicsVector::Value()` (cross-section
+  interpolator); branchless surface intersection in `G4Box::DistanceToIn`/
+  `Out`, `G4Tubs::DistanceToIn`/`Out`; cache-line alignment of `G4Track`,
+  `G4Step`, `G4StepPoint`; prefetch ahead of touchable history walks;
+  enable PGO + LTO in the canonical CMake build.
+- Validate against unpatched Geant4 on **the canonical examples themselves**
+  with KS test on every output histogram. Tolerance: ≤ 1% KL divergence on
+  flagship histograms, bit-exact on fixed-seed runs where the optimization
+  is algebraically identical.
 
-**Acceptance.** CPU fallback shows ≥1.8× speedup on the benchmark suite with
-no regression on validation. Profile output is committed to the repo so the
-next phase has a baseline.
+**Acceptance.** Patched Geant4 shows ≥1.8× speedup on the canonical
+benchmark suite with no regression on validation. At least three patches
+ready to submit as MRs upstream. Profile output committed to the repo so
+the next phase has a baseline.
 
 ### Phase 6 — L1 algorithmic redesign (SoA tracks, lock-free queues)
 - Replace AoS `G4Track` with `TrackSoA` (position, momentum, energy, weight

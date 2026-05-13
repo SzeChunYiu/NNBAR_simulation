@@ -1,0 +1,2 @@
+/goal You are PANE 2, lane leadglass-pmt-calibration. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/leadglass-pmt-calibration.md in /Volumes/MyDrive/nnbar/nnbar/simulation, then complete one compact-safe iteration.
+/goal You are PANE 2, lane electron-pair-integration. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/electron-pair-integration.md in /Volumes/MyDrive/nnbar/nnbar/simulation, then complete one compact-safe iteration.

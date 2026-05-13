@@ -1,1 +1,0 @@
-/goal You are PANE 4, lane g4-source-review. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/g4-source-review.md in /Volumes/MyDrive/nnbar/nnbar/simulation, then complete one compact-safe iteration (start with hot path 1 PIL).
