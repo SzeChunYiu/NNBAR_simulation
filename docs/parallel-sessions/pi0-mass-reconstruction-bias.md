@@ -1,10 +1,9 @@
-# Pi0 Mass Reconstruction Bias — DEC-2026-05-13
+# Pi0 Mass Reconstruction — DEC-2026-05-13
 
 ## Finding
 
-The pi0 invariant-mass reconstruction has a systematic **-20 MeV bias** across the full
-100–600 MeV kinetic-energy range. Reconstructed mass is ~113–117 MeV vs the true pi0
-mass of 135.0 MeV.
+**Raw (uncalibrated) reconstruction**: systematic -20 MeV bias (113–117 MeV vs true 135 MeV).
+**After calibration (`cv_photon_response_scaled_full_reco`)**: only -1.5 MeV bias (133.5 MeV).
 
 ## Data Source
 
@@ -35,15 +34,28 @@ True pi0 mass: 134.9766 MeV. Systematic bias: ~-20 MeV (~15%).
 3. **Incomplete cluster merging**: two photon clusters from same pi0 may not be
    correctly paired if one photon converts early.
 
+## Calibrated Stage Results (run 0 = 100 MeV pi0 KE)
+
+| Stage | Mean (MeV) | Bias (MeV) |
+|-------|-----------|------------|
+| truth_daughters | 135.0 | 0.0 |
+| full_reco (raw) | 114.8 | -20.2 |
+| energy_scaled_full_reco | 131.1 | -3.9 |
+| cv_photon_response_scaled_full_reco | 133.5 | **-1.5** |
+| containment_binned_full_reco | 132.6 | -2.4 |
+
+The key stage split: `reco_direction_truth_energy` gives 134.3 MeV (bias -0.7 MeV),
+meaning the **direction reconstruction is correct** but **energy measurement is low by ~15%**
+before calibration. After photon-response calibration the bias drops to -1.5 MeV.
+
 ## Comparison with Thesis
 
-Thesis Ch. 8 reports mass reconstruction peak near 135 MeV with good sigma resolution.
-The current -20 MeV bias indicates the reconstruction chain is not thesis-equivalent.
-The most likely culprit is the `non_thesis_photons_per_mev` blocker (200 vs thesis value).
+Thesis Ch. 8 reports mass reconstruction peak near 135 MeV — consistent with the calibrated
+stage (133.5 MeV). The raw 114.8 MeV is an artifact of the uncalibrated reconstruction.
 
-## Status: OPEN
+## Status: CLOSED for calibrated reco; OPEN for local Python reco
 
-Resolving this requires:
-1. Closing `non_thesis_photons_per_mev` calibration blocker
-2. Verifying lead-glass reflectivity (95% simulated vs 90% thesis)
-3. Possibly applying an energy correction factor
+The LUNARC pipeline with calibration achieves -1.5 MeV bias — thesis-compatible.
+Local Python `run_pi0_reco` gives ~129 MeV (-6 MeV) — needs photon-response calibration
+to match. Wiring the `cv_photon_response_scaled` stage into the Python reco is the
+remaining work.
