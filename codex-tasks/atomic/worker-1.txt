@@ -1,0 +1,1 @@
+/goal lane radioactivation-stall-atomic. Read docs/parallel-sessions/radioactivation-stall-atomic.md. Analyse Interaction_output_0.parquet from a completed cosmic bin in build_lunarc/output/ to identify isotopes produced by Radioactivation process. Write docs/reports/radioactivation_stall_atomic.md with isotope list and recommended lifetime threshold. Push.

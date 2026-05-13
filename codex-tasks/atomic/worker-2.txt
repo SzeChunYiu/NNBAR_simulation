@@ -1,0 +1,1 @@
+/goal lane celeritas-build-fix. Read docs/parallel-sessions/celeritas-build-fix.md. Fix mcaccel_competitors/celeritas/build-fixed-20260512.sh: replace source geant4.sh block with conda activate.d loop. Also update local copy if tracked in git. Write docs/reports/celeritas_build_fix_20260513.md confirming fix. Push changes.
