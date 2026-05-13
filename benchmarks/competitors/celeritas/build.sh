@@ -43,10 +43,16 @@ module load GCC/13.2.0 CMake/3.27.6 Ninja/1.11.1 CUDA/12.8.0 Python/3.11.5
 export CMAKE_PREFIX_PATH="$HIB:${CMAKE_PREFIX_PATH:-}"
 export PATH="$HIB/bin:$PATH"
 export LD_LIBRARY_PATH="$HIB/lib:${LD_LIBRARY_PATH:-}"
-if [ -f "$HIB/bin/geant4.sh" ]; then
-  # shellcheck disable=SC1091
-  source "$HIB/bin/geant4.sh"
-fi
+# Source conda activate.d scripts to set Geant4 data paths (geant4.sh is incompatible with conda)
+# CONDA_PREFIX needed by the activate.d scripts; -u disabled so unset G4*DATA vars are handled
+CONDA_PREFIX="$HIB"
+export CONDA_PREFIX
+set +u
+for _g4act in "$HIB/etc/conda/activate.d"/activate-geant4-data-*.sh; do
+  # shellcheck disable=SC1090
+  [ -f "$_g4act" ] && source "$_g4act"
+done
+set -u
 export OMP_NUM_THREADS="${SLURM_CPUS_PER_TASK:-16}"
 export CELER_LOG=${CELER_LOG:-info}
 export CELER_DISABLE_PARALLEL=1

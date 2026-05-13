@@ -1,0 +1,1 @@
+/goal audit CRY cosmic generator settings per docs/parallel-sessions/cry-settings-audit.md. Find CRY macro files and source, extract all parameters, estimate background event rate. Write docs/reports/cry_cosmic_settings_audit.md.

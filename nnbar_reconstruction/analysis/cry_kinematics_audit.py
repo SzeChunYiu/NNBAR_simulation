@@ -224,7 +224,7 @@ def _parquet_path(root: Path, particle: str, ebin: int) -> Path:
     candidates = (
         root / f"cosmic_{particle}_{ebin}",
         root / f"cosmic_{particle}_bin{ebin}",
-        root / f"cosmic_{particle.replace("-", "minus")}_{ebin}",
+        root / f"cosmic_{particle.replace('-', 'minus')}_{ebin}",
     )
     for directory in candidates:
         exact = directory / "Particle_output_0.parquet"

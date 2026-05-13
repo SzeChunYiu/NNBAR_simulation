@@ -1,1 +1,1 @@
-/goal create docs/reports/signal_sample_registry.md — authoritative registry for sig_foil_v3: MCPL provenance, expected Parquet schema (all subdetector files + column names), event count, vertex distribution (uniform on 30cm disk), seed, and how to regenerate on LUNARC. Use existing pi0_mono samples as schema reference. Read-only audit; no SLURM, no code changes.
+/goal You are PANE 5, lane skyshine-timing-disposition. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/skyshine-timing-disposition.md, then complete one compact-safe iteration.

@@ -1,238 +1,241 @@
 # OpenMC bottleneck database — tally scoring hot path
 
-Status: compact-safe worker-4 lane-swap from the review source-review queue.
-Scope is OpenMC v0.15.3 tally scoring: filter-bin matching, event/score
-loops, nuclide/reaction loops, atomics, and batch accumulation. This shard
-continues at `BD-openmc-033` and deliberately does not repeat
-`BD-openmc-001`--`032` from the cross-section, transport, and geometry shards.
+Status: compact-safe worker-4 lane-swap from `codex-tasks/review/worker-1.txt`.
+Scope is OpenMC v0.15.3 tally scoring: filter matching, score/nuclide/reaction
+loops, `SCORE_EVENTS` handling, and tally-bin accumulation. This shard continues
+at `BD-openmc-033` and does not repeat `BD-openmc-001`--`032` from the prior
+OpenMC bottleneck database shards.
 
 ## Source provenance and profile basis
 
-- The local read-only mirror `/tmp/openmc-v0.15.3` was used for line-number
-  inspection only. It byte-matches a fresh official OpenMC `v0.15.3` tag clone
-  at commit `27e38e894` for every source file cited below.
-- Prior shards verified `/tmp/openmc-v0.15.3` against the LUNARC OpenMC
-  `v0.15.3` checkout. A fresh LUNARC socket guard was attempted in this
-  iteration but did not complete before local fallback, so this report makes no
-  new LUNARC-source freshness claim.
-- The queue prompt named `Tally::score_events()`, but OpenMC v0.15.3 has no
-  such function symbol. Event-count scoring is implemented by `SCORE_EVENTS`
-  cases in `src/tallies/tally_scoring.cpp`.
-- Hot-path percentages below are review estimates pending a pinned tally-heavy
-  OpenMC `perf record` run that maps samples to the exact cited ranges.
+- Source tree read from LUNARC: `/projects/hep/fs10/shared/nnbar/billy/openmc`.
+- LUNARC checkout is detached at OpenMC tag `v0.15.3`, commit `27e38e894`.
+- A read-only local mirror at `/tmp/openmc-v0.15.3` was used for line-number
+  verification only; no OpenMC build, run, fork patch, NNBAR code, or production
+  data was modified.
+- SHA-256 parity between local and LUNARC source was verified for
+  `src/tallies/tally.cpp`, `src/tallies/tally_scoring.cpp`,
+  `include/openmc/tallies/tally.h`, and
+  `include/openmc/tallies/tally_scoring.h` before these line references were
+  written.
+- The queue phrase `Tally::score_events()` was resolved by source grep as the
+  `SCORE_EVENTS` switch arms in `src/tallies/tally_scoring.cpp`; OpenMC v0.15.3
+  has no `Tally::score_events` function symbol.
+- Hot-path percentages below inherit the lane-spec profile basis: OpenMC tallies
+  / scoring account for roughly 10--15% of transport CPU in tally-heavy runs.
+  Exact per-line self percentages remain `OPEN:` until a pinned LUNARC `perf
+  record` run maps samples to these ranges.
 
 ## References used by entries
 
 - Romano et al. 2015, *OpenMC: A state-of-the-art Monte Carlo code for research
   and development*, Annals of Nuclear Energy 82.
 - Khuong and Morin 2015, *Array layouts for comparison-based searching*.
-- Fredman, Komlos, and Szemeredi 1984, *Storing a sparse table with O(1)
-  worst case access time*.
 - Aho, Sethi, and Ullman 1986, *Compilers: Principles, Techniques, and Tools*.
 - Futamura 1971/1983, partial evaluation / projection work.
-- Herlihy and Shavit 2008, *The Art of Multiprocessor Programming*.
 - Williams, Waterman, and Patterson 2009, *Roofline: an insightful visual
   performance model for multicore architectures*.
-- Wald, Boulos, and Shirley 2007, *Ray Tracing Deformable Scenes using Dynamic
-  Bounding Volume Hierarchies*.
+- Herlihy and Shavit 2008, *The Art of Multiprocessor Programming*.
 - Stroustrup 2012, *Why you should avoid Linked Lists*.
+- Higham 2002, *Accuracy and Stability of Numerical Algorithms*.
 
 ---
 
-### BD-openmc-033  Filter-bin discovery uses virtual per-filter calls on every scoring event
+### BD-openmc-033  Filter-bin construction repeats virtual filter dispatch for every active tally
 
 | Field | Value |
 |-------|-------|
-| File | `src/tallies/tally_scoring.cpp` |
-| Lines | 31-57 |
-| Hot-path % (profile-measured) | `OPEN:` tally filter matching; pending tally-heavy CE benchmark perf. |
+| File | `src/tallies/tally_scoring.cpp`; `include/openmc/tallies/tally_scoring.h` |
+| Lines | `src/tallies/tally_scoring.cpp:31-57`; `include/openmc/tallies/tally_scoring.h:21-52` |
+| Hot-path % (profile-measured) | `OPEN:` tally/scoring family; expected 10--15% aggregate transport CPU before per-symbol LUNARC perf. |
 | Category | 5 — Control flow |
-| Current code snippet | `model::tally_filters[i_filt]->get_all_bins(p, tally_.estimator_, match);` |
-| Current pattern | `FilterBinIter` loops over each filter in a tally and dispatches a virtual `get_all_bins` call whenever the particle-local match cache is not already populated. |
-| Why slow | Tally-heavy models execute many short virtual calls from the inner scoring path; the call target, filter metadata, and particle state are scattered across memory and defeat inlining of common cases. |
-| Proposed fix | Build setup-time filter-evaluator descriptors for common filter combinations and dispatch through compact function-pointer or policy-specialized evaluators, with the virtual path retained for rare/custom filters. |
-| Expected speedup | 1.05--1.20x inside filter matching when many simple tallies are active; wall-clock impact depends on tally self time. |
-| Validation | Replay fixed particle scoring events and require identical `FilterMatch` bins/weights for every tally/filter combination before comparing statepoint tallies bitwise or within current reduction order tolerance. |
-| Implementation target | `openmc-fork` tally filter policy prototype; optional `libMCAccel/adapters/openmc` filter descriptor. |
-| Cross-code pattern | Same policy-specialization opportunity as Geant4 process dispatch table work in `g4gpu-phase5d-jit-poststep-gpil`. |
+| Current code snippet | `for (auto i_filt : tally_.filters()) { ... model::tally_filters[i_filt]->get_all_bins(p, tally_.estimator_, match); ... }` |
+| Current pattern | Each `FilterBinIter` constructor walks the tally filter list, checks cached `bins_present_`, and invokes the filter virtual `get_all_bins` method when a particle/tally event has not already populated that filter. |
+| Why slow | Filter policy is static for a tally, but scoring reinterprets the filter vector and pays a virtual call chain per relevant event/tally pair. Many tallies share cell, material, energy, or particle filters, so work can repeat before any score is accumulated. |
+| Proposed fix | Build a per-tally `FilterScoringPlan` at tally setup: compact filter ids, prebound filter-kind dispatch, and a small event-local cache keyed by `(filter id, estimator, event generation)`. Keep the existing virtual path for uncommon/custom filters. |
+| Expected speedup | 1.05--1.25× inside filter matching for tally-heavy CE fixed-source or depletion problems; wall-clock depends on number of active filters per event. |
+| Validation | Record vanilla `(tally id, filter id, bins, weights)` tuples for fixed-seed histories and require identical tuples from the plan path across cell/energy/material/time filters before comparing final tally means and variances. |
+| Implementation target | `openmc-fork` tally-filter scoring-plan PR; reusable `libMCAccel/adapters/openmc` filter-dispatch descriptor. |
+| Cross-code pattern | Same static-policy hoisting as Geant4 `BD-geant4-033`/`BD-geant4-041` process and hook dispatch. |
 | Citation | Futamura 1971/1983; Aho, Sethi, and Ullman 1986. |
 | Status | OPEN |
 
-### BD-openmc-034  Filter-combination iteration recomputes mixed-radix index/weight serially
+### BD-openmc-034  Filter combination iteration recomputes strides and weights for every product bin
+
+| Field | Value |
+|-------|-------|
+| File | `src/tallies/tally_scoring.cpp`; `src/tallies/tally.cpp` |
+| Lines | `src/tallies/tally_scoring.cpp:94-139`; `src/tallies/tally.cpp:503-515` |
+| Hot-path % (profile-measured) | `OPEN:` filter-combination iteration; pending tally-filter perf. |
+| Category | 3 — Data structure |
+| Current code snippet | `index_ += match.bins_[i_bin] * tally_.strides(i); weight_ *= match.weights_[i_bin];` |
+| Current pattern | The iterator searches backward through filters, mutates `i_bin_`, and recomputes flattened index and product weight over all filters for each valid bin combination. |
+| Why slow | The stride vector is precomputed, but the valid-bin Cartesian product is generated through mutable per-filter state and an O(n_filters) recomputation. Common single-bin filters still participate in every index/weight pass. |
+| Proposed fix | Emit an event-local flat list of `(filter_index, filter_weight)` pairs once per tally event. Collapse one-bin filters into a base offset/weight and iterate only over multi-bin filters; use a contiguous small-vector representation for the resulting combinations. |
+| Expected speedup | 1.1--1.4× for filter-index generation in tallies with multiple energy/mesh/time bins; neutral for one-filter tallies. |
+| Validation | Exhaustively compare flattened indices and weights for synthetic filter-match products, including empty filters and mixed one-/many-bin filters; then replay fixed histories and compare raw `results_` updates. |
+| Implementation target | `openmc-fork` filter-combination flattener. |
+| Cross-code pattern | Mirrors Geant4 `BD-geant4-050` touchable/history flattening and `BD-geant4-047` static geometry index precompute. |
+| Citation | Stroustrup 2012; Williams, Waterman, and Patterson 2009. |
+| Status | OPEN |
+
+### BD-openmc-035  Delayed-group fission scoring mutates filter-match state and recomputes bin products
 
 | Field | Value |
 |-------|-------|
 | File | `src/tallies/tally_scoring.cpp` |
-| Lines | 94-139 |
-| Hot-path % (profile-measured) | `OPEN:` multi-filter tally scoring; pending filter-combination counter instrumentation. |
-| Category | 2 — Algorithm |
-| Current code snippet | `for (int i = tally_.filters().size() - 1; i >= 0; --i) { ... }`; `index_ += match.bins_[i_bin] * tally_.strides(i);` |
-| Current pattern | Each next filter combination scans filters backward, mutates per-filter bin indices, and recomputes the flat tally index and product weight from all filters. |
-| Why slow | Cartesian-product tallies repeatedly touch the same filter metadata and multiply/index state for every combination, even when only the last filter bin changes. |
-| Proposed fix | Add an incremental mixed-radix iterator that updates `index_` and `weight_` by delta for the advanced filter, or pre-expand small static filter products into contiguous `(index, weight)` pairs. |
-| Expected speedup | 1.05--1.3x for tallies with multiple filters and many bins; neutral for single-filter tallies. |
-| Validation | Exhaustively compare generated `(filter_index, filter_weight)` sequences for synthetic filters and replay representative CE scoring events to require identical bin visits and accumulated results. |
-| Implementation target | `openmc-fork` `FilterBinIter` fast iterator. |
-| Cross-code pattern | Mirrors branchless/indexed traversal opportunities in geometry partition and process-vector reviews. |
-| Citation | Aho, Sethi, and Ullman 1986; Williams, Waterman, and Patterson 2009. |
-| Status | OPEN |
-
-### BD-openmc-035  Energy filters use branchy binary search for every matching event
-
-| Field | Value |
-|-------|-------|
-| File | `src/tallies/filter_energy.cpp` |
-| Lines | 59-109 |
-| Hot-path % (profile-measured) | `OPEN:` energy-filter matching; pending per-filter hit counters. |
-| Category | 2 — Algorithm |
-| Current code snippet | `auto bin = lower_bound_index(bins_.begin(), bins_.end(), E);`; `auto bin = lower_bound_index(bins_.begin(), bins_.end(), p.E());` |
-| Current pattern | Continuous-energy incoming/outgoing energy filters check bounds and perform comparison-based lower-bound search for each scoring event. |
-| Why slow | Energy bins are immutable after initialization, but the hot path repeats a branchy search through the same vectors. Histories often score nearby energies, so locality is not exploited. |
-| Proposed fix | Store an Eytzinger-layout copy or cached last-bin/neighbor fast path for monotone or slowly varying scoring streams; fall back to current `lower_bound_index` for cold jumps. |
-| Expected speedup | 1.1--1.6x for energy-filter binning in tally-heavy models; smaller wall-clock impact unless energy filters dominate. |
-| Validation | Compare bin IDs for sampled energies at every bin boundary, underflow/overflow point, and replayed particle scoring trace before tally regression. |
-| Implementation target | `openmc-fork` energy-filter binning helper shared by incoming/outgoing filters. |
-| Cross-code pattern | Same search primitive as OpenMC `BD-openmc-001` and Geant4 physics-vector binary-search findings. |
-| Citation | Khuong and Morin 2015; Aho, Sethi, and Ullman 1986. |
-| Status | OPEN |
-
-### BD-openmc-036  Mesh tracklength filters call geometry-style crossed-bin enumeration inside scoring
-
-| Field | Value |
-|-------|-------|
-| File | `src/tallies/filter_mesh.cpp` |
-| Lines | 35-59 |
-| Hot-path % (profile-measured) | `OPEN:` mesh-filter tallies; pending mesh-tally benchmark. |
-| Category | 4 — Geometry/data structure |
-| Current code snippet | `model::meshes[mesh_]->bins_crossed(last_r, r, u, match.bins_, match.weights_);` |
-| Current pattern | Non-tracklength mesh scoring performs one `get_bin`, while tracklength scoring asks the mesh to enumerate every crossed bin and weight during tally scoring. |
-| Why slow | Fine mesh tallies turn a single transport step into a secondary geometry walk plus vector appends in the scoring path, amplifying memory traffic and branch divergence. |
-| Proposed fix | Cache per-step mesh traversal fragments when the transport geometry step is already known, or add a specialized regular-mesh DDA accumulator that writes compact `(bin, weight)` pairs without generic vector growth. |
-| Expected speedup | 1.1--1.5x for fine regular mesh tracklength tallies; no benefit for sparse non-mesh tallies. |
-| Validation | Compare crossed-bin IDs and path-length weights for randomized rays through regular and unstructured meshes, then require identical mesh tally statepoint values for fixed seeds. |
-| Implementation target | `openmc-fork` mesh tally traversal cache; possible `libMCAccel` regular-mesh accumulator. |
-| Cross-code pattern | Related to Geant4 voxel/geometry traversal acceleration and OpenMC geometry partition findings. |
-| Citation | Williams, Waterman, and Patterson 2009; Wald, Boulos, and Shirley 2007. |
-| Status | OPEN |
-
-### BD-openmc-037  CE nonanalog scoring is a large per-score switch with embedded nuclide loops
-
-| Field | Value |
-|-------|-------|
-| File | `src/tallies/tally_scoring.cpp` |
-| Lines | 578-615 and 676-760 |
-| Hot-path % (profile-measured) | `OPEN:` CE tracklength/collision score loop; pending per-score perf counters. |
+| Lines | 147-176 and 713-759 |
+| Hot-path % (profile-measured) | `OPEN:` delayed-fission tally path; pending delayed-group benchmark. |
 | Category | 5 — Control flow |
-| Current code snippet | `for (auto i = 0; i < tally.scores_.size(); ++i) { ... switch (score_bin) { ... }`; `for (auto i = 0; i < material.nuclide_.size(); ++i) { ... }` |
-| Current pattern | `score_general_ce_nonanalog` iterates each score, switches on score type, and for material-total fission-family scores loops over material nuclides inside selected switch arms. |
-| Why slow | The hot scoring loop interleaves score dispatch, particle-type checks, material traversal, delayed-group branches, and atom-density loads; this blocks vectorization and repeats material metadata reads for related scores. |
-| Proposed fix | Compile per-tally score plans at setup time: group simple macro scores, nuclide-reduction scores, and delayed-group expansion into small straight-line kernels that share material traversal and particle-type guards. |
-| Expected speedup | 1.05--1.25x for CE nonanalog scoring with many score bins; higher for fission-family score sets in isotope-rich materials. |
-| Validation | For each supported score plan, compare per-score contributions against the generic switch for replayed events, including delayed-group filters, void material, photons, and `multiply_density` cases. |
-| Implementation target | `openmc-fork` tally score-plan prototype. |
-| Cross-code pattern | Same setup-time specialization pattern as Geant4 GPIL/process-vector dispatch. |
-| Citation | Futamura 1971/1983; Williams, Waterman, and Patterson 2009. |
+| Current code snippet | `dg_match.bins_[i_bin] = d_bin; ... for (auto i = 0; i < tally.filters().size(); ++i) { ... } ... dg_match.bins_[i_bin] = original_bin;` |
+| Current pattern | `score_fission_delayed_dg` temporarily edits the particle filter-match bin, recomputes the full flattened filter index/weight, atomically updates the result, and restores the original bin for every delayed group contribution. |
+| Why slow | Mutating shared event-local filter state around every delayed group creates extra stores, increases aliasing risk, and repeats the same stride/weight product that the surrounding `FilterBinIter` already computed. |
+| Proposed fix | Pass a precomputed base filter index/weight plus a delayed-group stride into a pure helper that computes `filter_index = base + d_bin * dg_stride` without modifying `FilterMatch`. |
+| Expected speedup | 1.1--1.6× in delayed-neutron tally scoring when delayed-group filters are active; zero effect for tallies without delayed groups. |
+| Validation | Unit compare delayed-group filter indices for all delayed-group bins and filter-order permutations; fixed-seed fission histories must produce identical delayed-nu-fission, decay-rate, and IFP beta tallies. |
+| Implementation target | `openmc-fork` delayed-group filter-index fast path. |
+| Cross-code pattern | Same mutable-state removal theme as Geant4 `BD-geant4-109`/`BD-geant4-110` step-state copy cleanup. |
+| Citation | Aho, Sethi, and Ullman 1986; Higham 2002 for preserving accumulation semantics. |
 | Status | OPEN |
 
-### BD-openmc-038  SCORE_EVENTS increments a shared result bin with an atomic per event
+### BD-openmc-036  Continuous-energy nonanalog scoring carries a large score switch in the inner loop
 
 | Field | Value |
 |-------|-------|
 | File | `src/tallies/tally_scoring.cpp` |
-| Lines | 907-910 and 2297-2300 |
-| Hot-path % (profile-measured) | `OPEN:` event-count score; pending `SCORE_EVENTS` contention benchmark. |
-| Category | 6 — Parallel synchronization |
-| Current code snippet | `#pragma omp atomic`; `tally.results_(filter_index, score_index, TallyResult::VALUE) += 1.0;` |
-| Current pattern | Both CE and MG `SCORE_EVENTS` paths atomically increment the shared tally result for every matching scoring event. |
-| Why slow | Popular event-count tallies create cache-line contention across OpenMP threads; the value is additive and does not require immediate global visibility. |
-| Proposed fix | Accumulate event counts in thread-local or per-work-chunk scratch buffers and reduce into `results_` at batch boundaries, preserving existing atomic fallback for small tallies. |
-| Expected speedup | 1.1--2.0x for `SCORE_EVENTS`-heavy tallies under high thread counts; negligible when atomics are sparse. |
-| Validation | Run fixed-seed multi-thread tally tests across thread counts and require identical total counts plus unchanged non-event scores; add stress tests for repeated same-bin collisions. |
-| Implementation target | `openmc-fork` tally thread-local accumulation buffer. |
-| Cross-code pattern | Same reduction-vs-atomic tradeoff as Geant4 hit/tally collection synchronization reviews. |
+| Lines | 578-1115 |
+| Hot-path % (profile-measured) | `OPEN:` CE nonanalog score/nuclide/reaction loop; pending CE tally perf. |
+| Category | 9 — JIT specialization |
+| Current code snippet | `for (auto i = 0; i < tally.scores_.size(); ++i) { auto score_bin = tally.scores_[i]; ... switch (score_bin) { ... } }` |
+| Current pattern | For every filter/nuclide combination, the CE nonanalog scorer loops over runtime `scores_` and enters a broad switch covering flux, reaction rates, fission moments, heating, events, IFP, and arbitrary MT reactions. |
+| Why slow | The score list is static after input parsing, but each scoring event redoes the switch, particle-type guards, material checks, and optional delayed-group logic. This prevents inlining the common score subset used by a given tally. |
+| Proposed fix | Compile each tally score list into a vector of score functors or template-specialized kernels selected at setup. Group simple linear XS scores into a fused loop and keep rare scores (IFP, delayed group, heating) in cold helpers. |
+| Expected speedup | 1.1--1.5× inside CE nonanalog scoring for tallies with a small fixed score set; wall-clock depends on tally frequency and score count. |
+| Validation | For every score type enabled in a regression matrix, compare per-event raw score contributions and final means/variances under fixed seeds; require bit-identical results for algebraically unchanged paths. |
+| Implementation target | `openmc-fork` tally-score functor prototype; optional LLVM/Cling specialization later only after deterministic functors pass. |
+| Cross-code pattern | Same static score/process list specialization as Geant4 `BD-geant4-061` and `BD-geant4-101`. |
+| Citation | Futamura 1971/1983; Aho, Sethi, and Ullman 1986. |
+| Status | OPEN |
+
+### BD-openmc-037  SCORE_EVENTS updates pay the full score loop and atomic path
+
+| Field | Value |
+|-------|-------|
+| File | `src/tallies/tally_scoring.cpp`; `include/openmc/constants.h` |
+| Lines | `src/tallies/tally_scoring.cpp:907-911`; `src/tallies/tally_scoring.cpp:1519-1523`; `src/tallies/tally_scoring.cpp:2297-2301`; `include/openmc/constants.h:319-319` |
+| Hot-path % (profile-measured) | `OPEN:` events-score arm; pending event-count tally benchmark. |
+| Category | 7 — Concurrency |
+| Current code snippet | `case SCORE_EVENTS: ... #pragma omp atomic tally.results_(filter_index, score_index, TallyResult::VALUE) += 1.0; continue;` |
+| Current pattern | Event-count scores are handled as switch arms inside CE nonanalog, CE analog, and MG general scorers, each performing an OpenMP atomic update to the shared `xtensor` result bin. |
+| Why slow | Counting events does not need cross-section data, nuclide loops, or floating score calculation, but it still flows through the generic score dispatcher and contends on the same per-bin atomic path under OpenMP. |
+| Proposed fix | Split event-count tallies into a per-thread dense counter buffer keyed by filter bin/score index; reduce into `results_` at batch or tally reduction time. Dispatch to this path before the general score switch when a tally contains only `SCORE_EVENTS` or other pure counts. |
+| Expected speedup | 1.2--3× for event-count tally updates under high thread contention; smaller if atomics are uncontended. |
+| Validation | Compare per-thread and reduced event counts to vanilla atomics on deterministic synthetic collisions/surface crossings; run ThreadSanitizer on the counter path and compare fixed-seed final tally means. |
+| Implementation target | `openmc-fork` per-thread tally accumulator for count-only scores. |
+| Cross-code pattern | Mirrors Geant4 `BD-geant4-024`/`BD-geant4-025` sensitive-detector hit accumulation contention. |
 | Citation | Herlihy and Shavit 2008; Williams, Waterman, and Patterson 2009. |
 | Status | OPEN |
 
-### BD-openmc-039  Analog CE tallies nest active-tally, filter, and nuclide loops per collision event
+### BD-openmc-038  Continuous-energy analog scoring duplicates fission and event logic with more runtime policy checks
 
 | Field | Value |
 |-------|-------|
 | File | `src/tallies/tally_scoring.cpp` |
-| Lines | 2314-2363 |
-| Hot-path % (profile-measured) | `OPEN:` analog CE tally scoring; pending tally mix benchmark. |
-| Category | 3 — Data structure |
-| Current code snippet | `for (auto i_tally : model::active_analog_tallies) { ... for (; filter_iter != end; ++filter_iter) { ... for (auto i = 0; i < tally.nuclides_.size(); ++i) { ... } } }` |
-| Current pattern | Every analog event iterates active tallies, constructs filter iterators, loops filter combinations, then scans nuclide bins for event-nuclide or total-material matches. |
-| Why slow | The loop layout is tally-major instead of event-match-major; it repeatedly touches tally metadata and branches over nuclide bins even when only one event nuclide can contribute. |
-| Proposed fix | Build an event-nuclide-to-tally-bin index for analog CE tallies so common `(event_nuclide, total)` contributions jump directly to candidate bins after filters match. |
-| Expected speedup | 1.05--1.25x for many analog tallies/nuclide bins; neutral for very small tally sets. |
-| Validation | Compare scored bin sets for every event nuclide and total-material bin against the generic loop, then run analog tally statepoint regressions. |
-| Implementation target | `openmc-fork` analog tally bin index. |
-| Cross-code pattern | Mirrors sparse-table lookup opportunities in cross-section and process-manager reviews. |
-| Citation | Fredman, Komlos, and Szemeredi 1984; Stroustrup 2012. |
+| Lines | 1116-1621 |
+| Hot-path % (profile-measured) | `OPEN:` CE analog score loop; pending analog-tally perf. |
+| Category | 5 — Control flow |
+| Current code snippet | `void score_general_ce_analog(...) { ... for (...) { switch (score_bin) { ... settings::survival_biasing ... tally.energyout_filter_ ... } } }` |
+| Current pattern | CE analog scoring implements another large score switch with survival-biasing, outgoing-energy, delayed-group, fission-bank, and event-type guards interleaved in the hot loop. |
+| Why slow | Most analog tallies use a fixed estimator/score/filter policy, but the routine rechecks survival biasing, outgoing-energy filter presence, and fission state per score. The CE nonanalog and analog implementations also duplicate branches that could share precompiled score actions. |
+| Proposed fix | Build analog-specific score actions at setup: simple event/reaction counters, fission outgoing-energy helpers, delayed-group helpers, and survival-biasing variants. The top-level loop then invokes only actions present in the tally. |
+| Expected speedup | 1.05--1.35× in analog-tally scoring; largest for fission tallies with many disabled optional features. |
+| Validation | Fixed-seed collision trace comparing each analog score contribution, including survival-biasing on/off, outgoing-energy filters, delayed groups, and event MT filters. |
+| Implementation target | `openmc-fork` analog score-action refactor. |
+| Cross-code pattern | Same hot/cold path split as Geant4 `BD-geant4-033` force-condition and `BD-geant4-099` decay/stopping optional-path specialization. |
+| Citation | Futamura 1971/1983; Aho, Sethi, and Ullman 1986. |
 | Status | OPEN |
 
-### BD-openmc-040  Tracklength and collision estimators duplicate nuclide-density lookup and CE/MG dispatch
+### BD-openmc-039  Multigroup scoring repeatedly queries XS tables inside a duplicated giant switch
+
+| Field | Value |
+|-------|-------|
+| File | `src/tallies/tally_scoring.cpp` |
+| Lines | 1622-2313 |
+| Hot-path % (profile-measured) | `OPEN:` MG tally score loop; pending multigroup benchmark. |
+| Category | 3 — Data structure |
+| Current code snippet | `const auto& macro_xs = data::mg.macro_xs_[p.material()]; ... switch (score_bin) { ... macro_xs.get_xs(...); nuc_xs.get_xs(...); }` |
+| Current pattern | The MG scorer duplicates the general score loop and repeatedly calls macro/nuclide `get_xs` helpers for each score, estimator branch, delayed group, and nuclide bin. |
+| Why slow | Cross-section table identity, reaction channel, delayed-group count, and estimator policy are fixed enough to pre-bind for each score. Repeated generic `get_xs` calls and duplicated CE/MG switch structure scatter memory access and inflate instruction cache footprint. |
+| Proposed fix | Emit MG tally descriptors with contiguous score-channel handles and per-score function pointers/functors. Cache macro and nuclide table row handles once per particle group/material before looping over requested scores. |
+| Expected speedup | 1.1--1.4× inside MG scoring for tally-heavy deterministic multigroup runs; no impact on CE-only jobs. |
+| Validation | Compare MG score contributions over all MgxsType channels, delayed groups, estimator modes, and survival-biasing settings; verify final tallies against vanilla on fixed multigroup pin-cell models. |
+| Implementation target | `openmc-fork` MG tally descriptor and row-cache prototype. |
+| Cross-code pattern | Data-descriptor analogue of Geant4 `BD-geant4-071` neutron-HP table view and `BD-geant4-080` thermal-scattering descriptor opportunities. |
+| Citation | Stroustrup 2012; Williams, Waterman, and Patterson 2009. |
+| Status | OPEN |
+
+### BD-openmc-040  Tally drivers duplicate nested tally/filter/nuclide loops and reset filter matches every event
+
+| Field | Value |
+|-------|-------|
+| File | `src/tallies/tally_scoring.cpp` |
+| Lines | 2314-2414 and 2416-2490 |
+| Hot-path % (profile-measured) | `OPEN:` analog and tracklength tally drivers; pending driver self% perf. |
+| Category | 5 — Control flow |
+| Current code snippet | `for (auto i_tally : model::active_analog_tallies) { ... for (; filter_iter != end; ++filter_iter) { ... for (auto i = 0; i < tally.nuclides_.size(); ++i) { ... } } }` |
+| Current pattern | Analog CE/MG and tracklength drivers independently implement active-tally loops, filter-bin loops, nuclide-bin loops, `assume_separate` checks, and final resets of every particle filter match. |
+| Why slow | The estimator-specific drivers share the same loop skeleton, but it is expanded repeatedly with runtime CE/MG branches and full filter-match resets after each event. Resetting every `FilterMatch` touches filters not used by the just-scored tallies. |
+| Proposed fix | Introduce a generic tally-driver skeleton over precomputed `ActiveTallyPlan` descriptors. Track the subset of filter ids touched during scoring and clear only those marks; specialize the score backend once for CE, MG, analog, and tracklength modes. |
+| Expected speedup | 1.05--1.25× in tally driver overhead, with larger memory-traffic savings when many filters exist but only a few are active per event. |
+| Validation | Instrument touched-filter sets and require identical filter reuse/clear behavior under fixed histories; compare final tallies for analog CE, analog MG, tracklength, and timed-tracklength estimators. |
+| Implementation target | `openmc-fork` active-tally plan / touched-filter reset patch. |
+| Cross-code pattern | Matches Geant4 `BD-geant4-041` optional hook dispatch and `BD-geant4-108` repeated tracking-state bookkeeping. |
+| Citation | Aho, Sethi, and Ullman 1986; Futamura 1971/1983. |
+| Status | OPEN |
+
+### BD-openmc-041  Collision and tracklength drivers redo nuclide/material lookup and CE/MG dispatch per tally
 
 | Field | Value |
 |-------|-------|
 | File | `src/tallies/tally_scoring.cpp` |
 | Lines | 2416-2475 and 2543-2605 |
-| Hot-path % (profile-measured) | `OPEN:` tracklength/collision tally drivers; pending estimator-separated perf. |
-| Category | 5 — Control flow |
-| Current code snippet | `auto j = mat->mat_nuclide_index_[i_nuclide];`; `if (settings::run_CE) { score_general_ce_nonanalog(...); } else { score_general_mg(...); }` |
-| Current pattern | Tracklength and collision drivers both perform material nuclide lookup, optional log-union update, density handling, then branch on CE/MG mode before entering the general score loop. |
-| Why slow | Nearly identical estimator code is duplicated and keeps a runtime CE/MG branch in the inner tally path even though the run mode is fixed for the calculation. |
-| Proposed fix | Factor a setup-selected estimator kernel for CE vs MG and shared nuclide-density descriptor lookup; keep the existing generic branch only for unusual runtime-switch contexts. |
-| Expected speedup | 1.03--1.12x for tracklength/collision scoring with many active tallies; larger if descriptor lookup improves cache locality. |
-| Validation | Compare per-event calls and resulting tally values for CE and MG test problems, including missing nuclide bins and `multiply_density=false`. |
-| Implementation target | `openmc-fork` estimator-driver specialization. |
-| Cross-code pattern | Same fixed-run-mode specialization used in Geant4 physics-list/process-manager acceleration candidates. |
-| Citation | Futamura 1971/1983; Aho, Sethi, and Ullman 1986. |
+| Hot-path % (profile-measured) | `OPEN:` collision/tracklength estimator setup; pending material-rich CE perf. |
+| Category | 2 — Algorithm |
+| Current code snippet | `auto j = mat->mat_nuclide_index_[i_nuclide]; ... if (settings::run_CE) { score_general_ce_nonanalog(...); } else { score_general_mg(...); }` |
+| Current pattern | For each active tally and nuclide bin, the drivers look up material-nuclide membership, sometimes compute the log-union grid index, update microscopic XS, and branch on global CE/MG mode before scoring. |
+| Why slow | Material membership and tally nuclide bins are static relative to the material; CE/MG mode is global. The hot loop can use a precomputed material/tally nuclide map and setup-selected scorer instead of repeating hash/vector lookups and global branches. |
+| Proposed fix | Precompute `TallyMaterialNuclidePlan` entries per `(tally, material)` with present nuclide slot, density multiplier policy, and missing-nuclide XS-update requirement. Split CE and MG driver entry points at setup. |
+| Expected speedup | 1.1--1.5× for estimator setup in isotope-rich materials or tallies with many nuclide bins. |
+| Validation | Compare selected nuclide slots, atom densities, missing-nuclide micro-XS updates, and scores for materials with/without requested nuclides; fixed-seed tallies must match vanilla exactly. |
+| Implementation target | `openmc-fork` material/tally nuclide plan and CE/MG driver split. |
+| Cross-code pattern | Similar to Geant4 `BD-geant4-121` hadronic target material selection and `BD-geant4-032` PIL process-table specialization. |
+| Citation | Khuong and Morin 2015; Futamura 1971/1983. |
 | Status | OPEN |
 
-### BD-openmc-041  Surface-current tally atomically updates every score bin in the inner loop
+### BD-openmc-042  Shared `xtensor` bin accumulation uses atomics for every scoring contribution
 
 | Field | Value |
 |-------|-------|
-| File | `src/tallies/tally_scoring.cpp` |
-| Lines | 2622-2662 |
-| Hot-path % (profile-measured) | `OPEN:` surface-current tally scoring; pending boundary-heavy benchmark. |
-| Category | 6 — Parallel synchronization |
-| Current code snippet | `for (auto score_index = 0; score_index < tally.scores_.size(); ++score_index) { #pragma omp atomic ... }` |
-| Current pattern | For each surface tally and filter combination, the code multiplies current by filter weight and atomically adds the same score to every score bin. |
-| Why slow | Surface-heavy models can concentrate many threads on a small set of boundary bins; repeating atomics per score bin serializes on cache lines and prevents chunk-level coalescing. |
-| Proposed fix | Use per-thread surface tally buffers keyed by `(filter_index, score_index)` and reduce at synchronization points; specialize single-score current tallies to one buffered increment. |
-| Expected speedup | 1.1--1.8x for boundary/surface-source benchmarks with high thread count and few surface bins. |
-| Validation | Fixed-seed surface-current tests across thread counts must match current statepoint sums; include reflective/periodic boundary cases from the geometry shard. |
-| Implementation target | `openmc-fork` buffered surface tally accumulation. |
-| Cross-code pattern | Same batched hit/reduction strategy as Geant4 sensitive-detector and OpenMC transport atomic opportunities. |
-| Citation | Herlihy and Shavit 2008; Williams, Waterman, and Patterson 2009. |
+| File | `src/tallies/tally_scoring.cpp`; `src/tallies/tally.cpp`; `include/openmc/tallies/tally.h` |
+| Lines | `src/tallies/tally_scoring.cpp:170-172`; `src/tallies/tally_scoring.cpp:2307-2310`; `src/tallies/tally_scoring.cpp:2648-2649`; `src/tallies/tally.cpp:821-873`; `include/openmc/tallies/tally.h:159-163` |
+| Hot-path % (profile-measured) | `OPEN:` tally-bin accumulation and batch reduction; pending threaded tally perf. |
+| Category | 7 — Concurrency |
+| Current code snippet | `#pragma omp atomic tally.results_(filter_index, score_index, TallyResult::VALUE) += score * filter_weight;` |
+| Current pattern | Scoring functions atomically add each contribution into the shared `results_` tensor. Batch accumulation later walks `results_.shape()` to normalize, zero `VALUE`, and update sums/squares. |
+| Why slow | Fine-grained atomics serialize hot bins under OpenMP and force random writes through an `xtensor` indexing path. The batch accumulator then revisits the full dense tensor even when only a sparse subset of bins was touched. |
+| Proposed fix | Use per-thread or per-task scratch accumulators for active tally bins, with a sparse touched-bin list and deterministic reduction into `results_` at synchronization points. Preserve dense `xtensor` storage for public API/statepoint output. |
+| Expected speedup | 1.2--4× for tally-heavy multithreaded runs with contended bins; lower but still positive for sparse tallies due to touched-bin batch accumulation. |
+| Validation | Compare raw per-bin contributions before/after reduction under fixed seeds; verify deterministic reductions produce identical or documented roundoff-bounded sums, then compare statepoint tally means/standard deviations. |
+| Implementation target | `openmc-fork` per-thread tally accumulator; later shared `libMCAccel/core/accumulation` primitive. |
+| Cross-code pattern | Directly mirrors Geant4 `BD-geant4-024`--`BD-geant4-031` sensitive-detector/hit-map accumulation bottlenecks. |
+| Citation | Herlihy and Shavit 2008; Higham 2002; Williams, Waterman, and Patterson 2009. |
 | Status | OPEN |
 
-### BD-openmc-042  Batch accumulation streams dense result arrays and zeros VALUE each batch
+## Concrete next-step proposal
 
-| Field | Value |
-|-------|-------|
-| File | `src/tallies/tally.cpp` |
-| Lines | 821-874 |
-| Hot-path % (profile-measured) | `OPEN:` batch-end tally reduction; pending large-tally statepoint benchmark. |
-| Category | 1 — Microarchitecture |
-| Current code snippet | `for (int i = 0; i < results_.shape()[0]; ++i) { for (int j = 0; j < results_.shape()[1]; ++j) { ... results_(i, j, TallyResult::VALUE) = 0.0; ... } }` |
-| Current pattern | `Tally::accumulate` normalizes every filter/score bin, zeros the `VALUE` slot, and updates moment slots with an OpenMP parallel loop over dense `results_`. |
-| Why slow | Large sparse tallies still stream every dense bin at batch end, including bins that received no contribution; moment slots interleave VALUE/SUM/SUM_SQ updates in one layout. |
-| Proposed fix | Track a sparse dirty-bin list for tallies with low occupancy and use dense streaming only after occupancy crosses a threshold; optionally split hot `VALUE` scratch from long-lived moments. |
-| Expected speedup | 1.2--3.0x for very sparse large filter/score spaces; small overhead for dense tallies if the threshold is conservative. |
-| Validation | Compare accumulation moments for dense and sparse synthetic tallies, including higher moments, MPI reduction modes, fixed-source normalization, and random-ray solver normalization. |
-| Implementation target | `openmc-fork` dirty-bin tally accumulation prototype. |
-| Cross-code pattern | Same sparse-active-bin approach as hit collection and geometry candidate-list optimization. |
-| Citation | Williams, Waterman, and Patterson 2009; Stroustrup 2012. |
-| Status | OPEN |
-
-## Next-step proposal
-
-Queue a worker-3 / OpenMC-adapter implementation task for `BD-openmc-038` and
-`BD-openmc-041`: prototype thread-local tally accumulation buffers for
-`SCORE_EVENTS` and surface-current tallies, then validate fixed-seed tally
-statepoints across OpenMP thread counts before attempting broader score-loop
-specialization.
+Queue an `openmc-tally-accumulator-prototype` task for worker-3/OpenMC adapter
+work after a LUNARC `perf record` confirms tally self time on a tally-heavy CE
+pin-cell or assembly benchmark. Start with `BD-openmc-042` plus the count-only
+subset of `BD-openmc-037`: per-thread accumulators are deterministic, can be
+validated against raw per-bin contribution traces, and unblock later descriptor
+work in `BD-openmc-033`--`BD-openmc-041`.

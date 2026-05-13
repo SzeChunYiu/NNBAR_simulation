@@ -142,8 +142,14 @@ def _collect(args: argparse.Namespace, parser: argparse.ArgumentParser) -> int:
 
 def _parse_seeds(seed_text: str | None, n_seeds: int, parser: argparse.ArgumentParser) -> list[int]:
     if seed_text:
+        parts = seed_text.split(",")
+        _require(
+            all(part.strip() for part in parts),
+            "--seeds must not contain empty entries",
+            parser,
+        )
         try:
-            seeds = [int(part) for part in seed_text.split(",") if part]
+            seeds = [int(part) for part in parts]
         except ValueError:
             parser.error("--seeds must be a comma-separated list of integers")
         _require(seeds, "--seeds must not be empty", parser)

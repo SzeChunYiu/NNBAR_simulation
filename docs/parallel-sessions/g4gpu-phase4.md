@@ -1,147 +1,93 @@
-# Lane: g4gpu-phase4
+# Lane: g4gpu-phase4 (Opticks integration boundary)
+
+## Role
+
+You are an isolated G4GPU worker. Keep all implementation work in the
+`geant4-gpu` side project; do not touch NNBAR production simulation,
+reconstruction, data, macros, or SLURM output paths.
 
 ## Goal
 
-Implement the optical photon transport kernel for G4GPU using NVIDIA OptiX path tracing.
-This replaces Geant4's serial CPU optical transport with parallel GPU path tracing —
-the same algorithm used for real-time rendering in games, now applied to scintillation
-photons in the NNBAR detector.
+Refresh Phase 4 from a custom optical-photon OptiX rewrite into a fail-closed
+Opticks integration boundary. The compact first unit is **not** to claim optical
+transport speedup. It is to make G4GPU able to discover, document, and call an
+Opticks bridge when available, while preserving a clean `G4GPU_WITH_OPTICKS=OFF`
+build when Opticks is absent.
 
-## Repo
+## Repo and branch
 
-Work in: `/Volumes/MyDrive/nnbar/geant4-gpu/`
-Branch: `lane/g4gpu-phase4`
+Work in the isolated repo:
 
-## Read first
-
-- `docs/SPEC.md` §Phase 4 — optical photon kernel design
-- `docs/VALIDATION.md` §V6 — detection efficiency + timing distribution tests
-- `include/g4gpu/G4GPUHitBuffer.hh` — hit accumulation interface
-- `src/geometry/RTXGeometry.*` — BVH to reuse for photon tracing
-
-## Physics mapping (thesis + Geant4 → OptiX)
-
-| Geant4 process | OptiX program | Implementation |
-|---|---|---|
-| G4OpBoundaryProcess — reflection/refraction | `__closesthit__` | Fresnel equations, sample reflected/transmitted |
-| G4OpAbsorption — bulk absorption | Per-step | Beer-Lambert: `exp(-step/abs_length)` per material |
-| G4OpRayleigh — Rayleigh scattering | `__closesthit__` or scatter kernel | Sample new direction |
-| PMT hit detection | `__closesthit__` on PMT surface | atomicAdd to PMT hit buffer |
-| Photon escaped | `__miss__` | Mark photon killed |
-
-## Files to produce
-
-### 1. `include/g4gpu/G4GPUOptical.hh` (NEW, <120 lines)
-
-```cpp
-#pragma once
-#include <cuda_runtime.h>
-
-struct PhotonSOA {
-    float* x, *y, *z;           // position (mm)
-    float* dx, *dy, *dz;        // direction (unit)
-    float* wavelength;           // nm
-    float* polarization_x, *polarization_y, *polarization_z;
-    int*   status;               // 0=alive, 1=absorbed, 2=detected, 3=escaped
-    int    size;
-    int    capacity;
-};
-
-struct MaterialOpticalData {
-    float refractive_index;      // n
-    float absorption_length_mm;  // mean free path for absorption
-    float rayleigh_length_mm;    // mean free path for Rayleigh scattering
-    char  name[32];
-};
-
-struct PMTHitBuffer {
-    float* edep;                 // always 1 photon = 1 hit
-    float* time;
-    int*   pmt_id;
-    int    n_hits;
-    int    capacity;
-};
-
-void LaunchOpticalPhotonKernel(
-    PhotonSOA* d_photons,
-    PMTHitBuffer* d_pmt_hits,
-    MaterialOpticalData* d_opt_mats,
-    void* bvh_handle,            // OptixTraversableHandle cast to void* for header purity
-    curandState* d_rng,
-    int n_photons,
-    cudaStream_t stream
-);
+```text
+/Volumes/MyDrive/nnbar/geant4-gpu/
 ```
 
-### 2. `src/optical/OpticalPhotonKernel.cu` (NEW, <400 lines)
+Use branch:
 
-OptiX raygen program — one ray per optical photon:
-```cuda
-extern "C" __global__ void __raygen__optical() {
-    int idx = optixGetLaunchIndex().x;
-    // Load photon from PhotonSOA
-    // Launch ray with current pos+dir
-    // On hit: apply Fresnel, sample reflection/transmission
-    //         if absorbed: mark status=1
-    //         if PMT surface: atomicAdd to PMT buffer, mark status=2
-    // On miss: mark status=3 (escaped)
-    // Loop up to MAX_BOUNCES=100
-}
+```text
+lane/g4gpu-phase4-opticks
 ```
 
-Fresnel coefficients:
-```cuda
-__device__ float FresnelReflectance(float cos_theta_i, float n1, float n2) {
-    float sin_t2 = (n1/n2)*(n1/n2) * (1.0f - cos_theta_i*cos_theta_i);
-    if (sin_t2 > 1.0f) return 1.0f;  // total internal reflection
-    float cos_theta_t = sqrtf(1.0f - sin_t2);
-    float rs = (n1*cos_theta_i - n2*cos_theta_t) / (n1*cos_theta_i + n2*cos_theta_t);
-    float rp = (n2*cos_theta_i - n1*cos_theta_t) / (n2*cos_theta_i + n1*cos_theta_t);
-    return 0.5f * (rs*rs + rp*rp);
-}
+If a matching LUNARC worktree is required, create/use it under an isolated
+`/projects/hep/fs10/shared/nnbar/billy/geant4-gpu-*` path. Do not copy code into
+`NNBAR_Detector` or the thesis-production simulation checkout.
+
+## Required reading
+
+- `docs/parallel-sessions/MASTER_PLAN.md` — current G4GPU status.
+- `docs/specs/g4gpu-line-by-line-acceleration.md` — Phase 4 policy: ship optical
+  by wrapping Opticks rather than rebuilding it.
+- In the isolated `geant4-gpu` repo: `docs/SPEC.md`, `docs/VALIDATION.md`,
+  existing `cmake/`, `include/g4gpu/`, `src/`, and `tests/` layout.
+- If Opticks source or install is available locally/LUNARC, inspect only enough to
+  identify the public entry points and cite exact paths in the report.
+
+## Writable scope
+
+Only the isolated `geant4-gpu` worktree and these coordination files if needed:
+
+- `docs/parallel-sessions/MASTER_PLAN.md`
+- `docs/reports/phase4_opticks_bridge_*.md`
+
+Do not edit NNBAR production code, production data, or active SLURM job files.
+
+## Compact iteration
+
+1. Check whether Opticks is available locally or on LUNARC. If using LUNARC, first
+   run the socket guard from `MASTER_PLAN.md`; use read-only discovery commands.
+2. Add a guarded G4GPU build option such as `G4GPU_WITH_OPTICKS` that defaults
+   `OFF`.
+3. Add a small bridge/interface scaffold only if it can compile without Opticks
+   when the option is `OFF`. Prefer an adapter boundary over copied Opticks code.
+4. Add a smoke test or configure test that proves the default build remains
+   fail-closed without Opticks.
+5. Write `docs/reports/phase4_opticks_bridge_YYYYMMDD.md` with:
+   - what was discovered about Opticks availability,
+   - exact files changed in the isolated repo,
+   - what is still blocked before any optical-speedup claim,
+   - verification commands and outputs.
+6. Update the Phase 4 row in `MASTER_PLAN.md` only with verified evidence.
+
+## Verification
+
+Run the smallest relevant checks in the isolated `geant4-gpu` worktree, for
+example:
+
+```bash
+cmake --build build --target G4GPU -j2
+ctest --test-dir build --output-on-failure -R "opticks|optical|stub"
 ```
 
-### 3. `src/optical/ScintillationSampler.cu` (NEW, <150 lines)
-
-Given energy deposition event (position, edep, material):
-- Sample N_photons from Poisson(edep × photon_yield_per_MeV)
-- Sample wavelengths from scintillation spectrum (Gaussian ~420nm ±10nm for plastic scint)
-- Generate isotropic initial directions
-- Populate PhotonSOA for GPU transport
-
-### 4. CMakeLists.txt additions
-
-```cmake
-option(G4GPU_WITH_OPTICAL "Enable OptiX optical photon transport" OFF)
-if(G4GPU_WITH_OPTICAL)
-    find_package(OptiX REQUIRED)
-    target_sources(G4GPU PRIVATE
-        src/optical/OpticalPhotonKernel.cu
-        src/optical/ScintillationSampler.cu
-    )
-    target_compile_definitions(G4GPU PUBLIC G4GPU_WITH_OPTICAL=1)
-endif()
-```
-
-### 5. `tests/test_optical.cc` (NEW, <120 lines)
-
-Per VALIDATION.md V6:
-- If compiled without OptiX: print skip message, return 0
-- Otherwise: generate 1000 photons at origin, pointing up (+y)
-  in a glass sphere geometry. Count how many reach the PMT surface.
-  Check detection efficiency > 0 (smoke test only in Phase 4).
+If no build tree exists, run configure/build commands consistent with the repo's
+current docs and record the exact command. If Opticks is absent, the expected
+green path is the default `G4GPU_WITH_OPTICKS=OFF` build plus a report explaining
+the missing dependency.
 
 ## Stop condition
 
-Compiles with `-DG4GPU_WITH_OPTICAL=OFF` (no OptiX needed for basic build).
-Core algorithm (Fresnel, ScintillationSampler) code reviewed for correctness.
-Committed and pushed on `lane/g4gpu-phase4`.
-Write "DONE: G4GPU Phase 4 optical transport committed". Re-read MASTER_PLAN.md.
-
-## Note on OptiX dependency
-
-Phases 3 and 4 both require OptiX SDK. If OptiX is not available on the build machine:
-- Write the header and source files completely
-- Guard with `#ifdef G4GPU_WITH_OPTICAL` / `#ifdef G4GPU_WITH_RTX`
-- Document in README how to activate when OptiX is available
-- The physics and algorithm correctness can still be reviewed without compiling
+Stop after one bounded Opticks-bridge scaffold or availability/blocker report is
+committed in the isolated `geant4-gpu` repo and summarized in the local
+coordination docs. Do not submit SLURM jobs unless the lane needs a short build
+verification and the command is explicitly build/test only. Never claim optical
+physics parity or speedup until a later validation lane compares against Opticks
+reference output.

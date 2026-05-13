@@ -1,0 +1,326 @@
+{
+  "scenarios": [
+    {
+      "name": "baseline",
+      "position_smear_cm": 0.0,
+      "hit_efficiency": 1.0,
+      "noise_hits_per_event": 0,
+      "description": "No degradation"
+    },
+    {
+      "name": "pos_0.5cm",
+      "position_smear_cm": 0.5,
+      "hit_efficiency": 1.0,
+      "noise_hits_per_event": 0,
+      "description": "0.5 cm position smearing"
+    },
+    {
+      "name": "pos_1.0cm",
+      "position_smear_cm": 1.0,
+      "hit_efficiency": 1.0,
+      "noise_hits_per_event": 0,
+      "description": "1.0 cm position smearing"
+    },
+    {
+      "name": "pos_2.0cm",
+      "position_smear_cm": 2.0,
+      "hit_efficiency": 1.0,
+      "noise_hits_per_event": 0,
+      "description": "2.0 cm position smearing"
+    },
+    {
+      "name": "pos_5.0cm",
+      "position_smear_cm": 5.0,
+      "hit_efficiency": 1.0,
+      "noise_hits_per_event": 0,
+      "description": "5.0 cm position smearing"
+    },
+    {
+      "name": "eff_95pct",
+      "position_smear_cm": 0.0,
+      "hit_efficiency": 0.95,
+      "noise_hits_per_event": 0,
+      "description": "95% hit efficiency"
+    },
+    {
+      "name": "eff_90pct",
+      "position_smear_cm": 0.0,
+      "hit_efficiency": 0.9,
+      "noise_hits_per_event": 0,
+      "description": "90% hit efficiency"
+    },
+    {
+      "name": "eff_80pct",
+      "position_smear_cm": 0.0,
+      "hit_efficiency": 0.8,
+      "noise_hits_per_event": 0,
+      "description": "80% hit efficiency"
+    },
+    {
+      "name": "eff_70pct",
+      "position_smear_cm": 0.0,
+      "hit_efficiency": 0.7,
+      "noise_hits_per_event": 0,
+      "description": "70% hit efficiency"
+    },
+    {
+      "name": "noise_50",
+      "position_smear_cm": 0.0,
+      "hit_efficiency": 1.0,
+      "noise_hits_per_event": 50,
+      "description": "50 noise hits/event"
+    },
+    {
+      "name": "noise_100",
+      "position_smear_cm": 0.0,
+      "hit_efficiency": 1.0,
+      "noise_hits_per_event": 100,
+      "description": "100 noise hits/event"
+    },
+    {
+      "name": "noise_200",
+      "position_smear_cm": 0.0,
+      "hit_efficiency": 1.0,
+      "noise_hits_per_event": 200,
+      "description": "200 noise hits/event"
+    },
+    {
+      "name": "noise_500",
+      "position_smear_cm": 0.0,
+      "hit_efficiency": 1.0,
+      "noise_hits_per_event": 500,
+      "description": "500 noise hits/event"
+    },
+    {
+      "name": "realistic_good",
+      "position_smear_cm": 0.5,
+      "hit_efficiency": 0.95,
+      "noise_hits_per_event": 50,
+      "description": "Realistic good conditions"
+    },
+    {
+      "name": "realistic_moderate",
+      "position_smear_cm": 1.0,
+      "hit_efficiency": 0.9,
+      "noise_hits_per_event": 100,
+      "description": "Realistic moderate conditions"
+    },
+    {
+      "name": "realistic_challenging",
+      "position_smear_cm": 2.0,
+      "hit_efficiency": 0.8,
+      "noise_hits_per_event": 200,
+      "description": "Realistic challenging conditions"
+    }
+  ],
+  "results": [
+    {
+      "config_name": "baseline",
+      "n_events": 50,
+      "cluster_purity": 0.9941096580329958,
+      "cluster_completeness": 0.13760756009325978,
+      "n_clusters_per_event": 18.18,
+      "track_efficiency": 0.9063333333333332,
+      "track_fake_rate": 0.8621363403817764,
+      "n_tracks_per_event": 15.94,
+      "vertex_reco_rate": 0.98,
+      "vertex_resolution_r": 22.102174874617038,
+      "vertex_bias_r": 31.822842796343984
+    },
+    {
+      "config_name": "pos_0.5cm",
+      "n_events": 50,
+      "cluster_purity": 0.9918136402901143,
+      "cluster_completeness": 0.11497018034190315,
+      "n_clusters_per_event": 22.74,
+      "track_efficiency": 0.8918333333333334,
+      "track_fake_rate": 0.8677261745436383,
+      "n_tracks_per_event": 15.56,
+      "vertex_reco_rate": 0.66,
+      "vertex_resolution_r": 36.26674651150759,
+      "vertex_bias_r": 33.244187636712425
+    },
+    {
+      "config_name": "pos_1.0cm",
+      "n_events": 50,
+      "cluster_purity": 0.9922879417134967,
+      "cluster_completeness": 0.09989610408127561,
+      "n_clusters_per_event": 27.96,
+      "track_efficiency": 0.9311666666666667,
+      "track_fake_rate": 0.8573475061289918,
+      "n_tracks_per_event": 17.72,
+      "vertex_reco_rate": 0.48,
+      "vertex_resolution_r": 38.435141757263104,
+      "vertex_bias_r": 19.463562279660525
+    },
+    {
+      "config_name": "pos_2.0cm",
+      "n_events": 50,
+      "cluster_purity": 0.9925801909308111,
+      "cluster_completeness": 0.08686855552998689,
+      "n_clusters_per_event": 30.7,
+      "track_efficiency": 0.9790000000000001,
+      "track_fake_rate": 0.9005748503837028,
+      "n_tracks_per_event": 26.18,
+      "vertex_reco_rate": 0.24,
+      "vertex_resolution_r": 64.99226590173116,
+      "vertex_bias_r": 27.896196253887805
+    },
+    {
+      "config_name": "pos_5.0cm",
+      "n_events": 50,
+      "cluster_purity": 0.9897338316106002,
+      "cluster_completeness": 0.07478804103921147,
+      "n_clusters_per_event": 34.38,
+      "track_efficiency": 0.77,
+      "track_fake_rate": 0.91404364981969,
+      "n_tracks_per_event": 23.0,
+      "vertex_reco_rate": 0.04,
+      "vertex_resolution_r": 37.22436553153399,
+      "vertex_bias_r": 3.338796198891071
+    },
+    {
+      "config_name": "eff_95pct",
+      "n_events": 50,
+      "cluster_purity": 0.9940214726446271,
+      "cluster_completeness": 0.1345005152429402,
+      "n_clusters_per_event": 17.9,
+      "track_efficiency": 0.9188333333333333,
+      "track_fake_rate": 0.8592984148841053,
+      "n_tracks_per_event": 16.08,
+      "vertex_reco_rate": 0.98,
+      "vertex_resolution_r": 22.070421628607654,
+      "vertex_bias_r": 31.75981198686336
+    },
+    {
+      "config_name": "eff_90pct",
+      "n_events": 50,
+      "cluster_purity": 0.991272186413314,
+      "cluster_completeness": 0.12960664550481757,
+      "n_clusters_per_event": 18.52,
+      "track_efficiency": 0.9381666666666666,
+      "track_fake_rate": 0.8444854966212142,
+      "n_tracks_per_event": 16.26,
+      "vertex_reco_rate": 0.96,
+      "vertex_resolution_r": 22.274151149476506,
+      "vertex_bias_r": 31.895434728745375
+    },
+    {
+      "config_name": "eff_80pct",
+      "n_events": 50,
+      "cluster_purity": 0.9917784856478459,
+      "cluster_completeness": 0.11019414015814352,
+      "n_clusters_per_event": 19.14,
+      "track_efficiency": 0.9455,
+      "track_fake_rate": 0.857614492980637,
+      "n_tracks_per_event": 16.52,
+      "vertex_reco_rate": 0.98,
+      "vertex_resolution_r": 22.067413329637958,
+      "vertex_bias_r": 31.609062313081754
+    },
+    {
+      "config_name": "eff_70pct",
+      "n_events": 50,
+      "cluster_purity": 0.9926428017185196,
+      "cluster_completeness": 0.09984378269003694,
+      "n_clusters_per_event": 18.52,
+      "track_efficiency": 0.8821666666666667,
+      "track_fake_rate": 0.8643036377799355,
+      "n_tracks_per_event": 16.3,
+      "vertex_reco_rate": 0.98,
+      "vertex_resolution_r": 22.746728456006778,
+      "vertex_bias_r": 31.67037007005756
+    },
+    {
+      "config_name": "noise_50",
+      "n_events": 50,
+      "cluster_purity": 0.9914876243885279,
+      "cluster_completeness": 0.13706578829876995,
+      "n_clusters_per_event": 20.0,
+      "track_efficiency": 0.9131666666666667,
+      "track_fake_rate": 0.8682817316366078,
+      "n_tracks_per_event": 17.0,
+      "vertex_reco_rate": 0.98,
+      "vertex_resolution_r": 21.814001094303745,
+      "vertex_bias_r": 31.82314266534303
+    },
+    {
+      "config_name": "noise_100",
+      "n_events": 50,
+      "cluster_purity": 0.9889285503255901,
+      "cluster_completeness": 0.13594694798473997,
+      "n_clusters_per_event": 21.8,
+      "track_efficiency": 0.9208333333333333,
+      "track_fake_rate": 0.8710466034609674,
+      "n_tracks_per_event": 16.8,
+      "vertex_reco_rate": 0.98,
+      "vertex_resolution_r": 22.18668339332392,
+      "vertex_bias_r": 31.850814773037133
+    },
+    {
+      "config_name": "noise_200",
+      "n_events": 50,
+      "cluster_purity": 0.9889854998982185,
+      "cluster_completeness": 0.11747916780586964,
+      "n_clusters_per_event": 42.36,
+      "track_efficiency": 0.8325,
+      "track_fake_rate": 0.8964980466268999,
+      "n_tracks_per_event": 19.24,
+      "vertex_reco_rate": 0.92,
+      "vertex_resolution_r": 16.67396548681878,
+      "vertex_bias_r": 19.24693921435925
+    },
+    {
+      "config_name": "noise_500",
+      "n_events": 50,
+      "cluster_purity": 0.962808953408822,
+      "cluster_completeness": 0.13219557351209335,
+      "n_clusters_per_event": 71.56,
+      "track_efficiency": 0.4088333333333333,
+      "track_fake_rate": 0.9354373549605141,
+      "n_tracks_per_event": 16.44,
+      "vertex_reco_rate": 0.68,
+      "vertex_resolution_r": 24.05001574459899,
+      "vertex_bias_r": 30.16534479498116
+    },
+    {
+      "config_name": "realistic_good",
+      "n_events": 50,
+      "cluster_purity": 0.9876863780410922,
+      "cluster_completeness": 0.11352706107642538,
+      "n_clusters_per_event": 22.56,
+      "track_efficiency": 0.9658333333333333,
+      "track_fake_rate": 0.8529603030928932,
+      "n_tracks_per_event": 17.08,
+      "vertex_reco_rate": 0.76,
+      "vertex_resolution_r": 35.66544480027284,
+      "vertex_bias_r": 31.613371863240342
+    },
+    {
+      "config_name": "realistic_moderate",
+      "n_events": 50,
+      "cluster_purity": 0.9876037737421433,
+      "cluster_completeness": 0.10037806158538422,
+      "n_clusters_per_event": 29.76,
+      "track_efficiency": 0.9491666666666666,
+      "track_fake_rate": 0.878595900307037,
+      "n_tracks_per_event": 18.88,
+      "vertex_reco_rate": 0.5,
+      "vertex_resolution_r": 45.446921563332715,
+      "vertex_bias_r": 31.75949542073686
+    },
+    {
+      "config_name": "realistic_challenging",
+      "n_events": 50,
+      "cluster_purity": 0.9861436886902942,
+      "cluster_completeness": 0.0882318976158959,
+      "n_clusters_per_event": 46.54,
+      "track_efficiency": 0.7965000000000001,
+      "track_fake_rate": 0.9154094737740585,
+      "n_tracks_per_event": 22.14,
+      "vertex_reco_rate": 0.32,
+      "vertex_resolution_r": 58.009260692714804,
+      "vertex_bias_r": 28.84098867033513
+    }
+  ]
+}

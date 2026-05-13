@@ -1,0 +1,3 @@
+[submodule "NNBAR_Detector"]
+	path = NNBAR_Detector
+	url = https://github.com/SzeChunYiu/NNBAR_Detector

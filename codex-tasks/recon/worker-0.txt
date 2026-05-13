@@ -1,0 +1,1 @@
+/goal You are PANE 0, lane signal-kinematics-audit. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/signal-sample-kinematics.md, then complete one compact-safe iteration. sig_foil_v3 Parquet is available locally at build_lunarc/output/sig_foil_v3/.

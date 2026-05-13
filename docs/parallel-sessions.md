@@ -79,6 +79,33 @@ For non-planner workers in `recon`, `sim`, `g4gpu`, and `review` sessions:
 For planner panes: review new commits, maintain queue depth across the active
 LUNARC queue dirs, write compact lane specs, update `MASTER_PLAN.md`, then stop.
 
+## Never idle — always find work
+
+When your queue file is empty AND `MASTER_PLAN.md` shows no `NEXT` task in your
+lane, do NOT sit GOAL_DONE. The supervisor defaults
+`CODEX_SUPERVISOR_CONTINUOUS_LANES=*` and re-sends your `/goal`. Pick up new
+work in this priority order:
+
+1. **Pop from another lane's queue** (`codex-tasks/<other-session>/worker-N.txt`)
+   if the lane is closest to your scope and `## Files you must NOT touch` does
+   not block you. Mention the lane swap in your commit message.
+2. **Plan-audit / methodology check** — open `MASTER_PLAN.md`, find a `DONE`
+   item from the last 24h whose verification artifact is missing or thin, and
+   add the missing artifact (decision-log entry, regenerated readiness report,
+   missing test). Per-lane specs may also list `## Open questions for operator`
+   you can answer with a one-paragraph note.
+3. **Gap scan** — walk your lane's writable scope for files near the 500-line
+   cap, missing tests, or duplicated logic; pick the smallest improvement and
+   commit one bounded change.
+4. **G4GPU + isolation panes**: if your scope is fully sealed off, drop down
+   into research/notebooks under `docs/research/` and produce one new
+   bounded analysis artifact. Do not reach across the isolation boundary.
+
+Stay in scope: small bounded commits only, never reach into another lane's
+writable paths. A pane that goes GOAL_DONE because of rate-limit is fine; a
+pane that goes GOAL_DONE because *no tasks were queued* is a bug — fix the
+queue or follow this rule.
+
 ## Legacy Wave-6 lanes (historical plan-audit context)
 
 The previous `nnbar-rebuild` tmux batch used four file-disjoint lanes. Keep

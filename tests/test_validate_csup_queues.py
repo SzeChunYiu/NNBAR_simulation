@@ -181,6 +181,33 @@ def test_unknown_flag_is_rejected_before_validation(tmp_path: Path) -> None:
     assert "OK: every prompt line passes" not in result.stdout
 
 
+def test_fix_mode_escapes_invalid_lane_label_when_commenting(tmp_path: Path) -> None:
+    """``--fix`` must still comment invalid lane labels containing sed syntax."""
+    scripts_dir = tmp_path / "scripts"
+    scripts_dir.mkdir()
+    shutil.copy2(SCRIPT, scripts_dir / SCRIPT.name)
+
+    prompt_file = tmp_path / "codex-prompts-demo.txt"
+    prompt_file.write_text(
+        "/goal You are PANE 0, lane BAD|LANE. Read docs/parallel-sessions/demo.md.\n",
+        encoding="utf-8",
+    )
+
+    result = subprocess.run(
+        ["bash", str(scripts_dir / SCRIPT.name), "--fix"],
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+
+    assert result.returncode == 1
+    assert "bad flag in substitute command" not in result.stderr
+    assert "(commented out in --fix mode)" in result.stdout
+    assert prompt_file.read_text(encoding="utf-8").startswith(
+        "# AUTO-COMMENTED (validator: lane label 'BAD|LANE' contains invalid characters): "
+    )
+
+
 def test_meta_debugger_queue_rejects_validator_prompt(tmp_path: Path) -> None:
     """The project-wide DEBUGGER queue must not receive VALIDATOR work."""
     scripts_dir = tmp_path / "scripts"

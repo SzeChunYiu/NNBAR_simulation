@@ -1,0 +1,1 @@
+/goal You are PANE 1, lane cosmic-background-rate-audit. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/cosmic-background-rate-audit.md, then complete one compact-safe iteration. 25/27 cosmic bins are available in build_lunarc/output/.

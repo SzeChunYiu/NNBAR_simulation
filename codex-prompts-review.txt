@@ -1,0 +1,3 @@
+# nnbar-review-lunarc — 2 panes — Geant4 / OpenMC / competitor source review
+/goal You are PANE 0, lane g4-source-review. Read docs/parallel-sessions/MASTER_PLAN.md, docs/parallel-sessions/g4-source-review.md, and docs/specs/mcaccel-bottleneck-methodology.md, then iterate per the protocol until rate-limited (next hot path: physics sampling DoIt).
+/goal You are PANE 1, lane openmc-line-reference-fix. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/openmc-line-reference-fix.md, then iterate per the protocol until rate-limited; after that lane closes, continue with the OpenMC bottleneck-database followups queued by the planner.

@@ -220,3 +220,29 @@ def test_run_cli_generate_reference_fails_closed_until_task_7():
     assert "reference generation" in result.stderr
     assert "task 7" in result.stderr
     assert not result.stdout.startswith("#!/bin/bash")
+
+
+def test_run_cli_rejects_empty_explicit_seed_entries():
+    result = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "benchmarks.harness.run",
+            "--opt-id",
+            "BD-geant4-032",
+            "--workload",
+            "W1",
+            "--physics-list",
+            "PL1",
+            "--hw",
+            "H3",
+            "--seeds",
+            "1,,3",
+        ],
+        capture_output=True,
+        text=True,
+    )
+
+    assert result.returncode != 0
+    assert "--seeds must not contain empty entries" in result.stderr
+    assert not result.stdout.startswith("#!/bin/bash")

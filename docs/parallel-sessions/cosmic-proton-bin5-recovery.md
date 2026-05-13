@@ -35,6 +35,27 @@ Do not edit reconstruction code, G4GPU code, detector geometry, or broad cosmic
 array scripts. Do not submit, edit, or reuse `cosmic_proton_bin5_recovery.sbatch`
 for production.
 
+## CRITICAL — never run nnbar-detector-simulation.bin inside this pane
+
+The codex-supervisor holder node (cn018) is for codex CLI ONLY. NEVER
+invoke `nnbar-detector-simulation.bin` directly — not for production,
+not for diagnostics, not for thread-probes, not for "quick checks".
+Any Geant4 execution MUST go through a SLURM batch job (`sbatch
+<script>`), which runs on a compute node, not the holder.
+
+2026-05-12 incidents (twice): this pane ran cosmic_proton_bin5
+diagnostic and thread-probe `.mac` files via inline `nnbar-detector-simulation.bin -t 4 -g`,
+each eating 100-170% CPU on the shared holder, contributing to load-avg
+overload that crashed tmux. Those processes were killed both times.
+
+If a thread/seed probe is needed: WRITE the sbatch script, run `bash -n
+<script>.sbatch`, run `sbatch --test-only <script>.sbatch` (which
+validates without submitting), and STOP there. Do not run the binary
+inline under any framing — "probe", "diagnostic", "smoke", "1-event
+sanity", etc. all forbidden.
+
+See `CLAUDE.md` §"The codex-supervisor holder node is for codex only".
+
 ## One compact-safe iteration
 
 1. Run the LUNARC guard before any remote command:
