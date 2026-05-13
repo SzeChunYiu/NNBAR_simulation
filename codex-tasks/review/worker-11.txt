@@ -1,0 +1,1 @@
+/goal lane g4-source-review-field-integration. Read docs/parallel-sessions/g4-source-review-field-integration.md and produce shard docs/reports/g4_bottleneck_database_field_integration.md with BD-geant4-261 through BD-geant4-270. Update MASTER_PLAN.md row when done.

@@ -1,0 +1,1 @@
+/goal lane g4-source-review-msc-models. Read docs/parallel-sessions/g4-source-review-msc-models.md and produce shard docs/reports/g4_bottleneck_database_msc_models.md with BD-geant4-221 through BD-geant4-230. Update MASTER_PLAN.md row when done.

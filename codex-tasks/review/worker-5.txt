@@ -1,0 +1,1 @@
+/goal lane g4-source-review-em-ionisation. Read docs/parallel-sessions/g4-source-review-em-ionisation.md and produce shard docs/reports/g4_bottleneck_database_em_ionisation.md with BD-geant4-201 through BD-geant4-210. Update MASTER_PLAN.md row when done.

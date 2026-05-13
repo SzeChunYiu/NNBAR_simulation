@@ -8,7 +8,7 @@ schema_version = 1
 
 [project]
 name = "nnbar"
-description = "NNBAR simulation, reconstruction, and G4GPU R&D. 22-pane LUNARC layout: 7 recon + 7 sim + 4 g4gpu + 2 review + 2 meta."
+description = "NNBAR simulation, reconstruction, and G4GPU R&D. 22-pane cn018 layout + 20 review panes across cn002/cn058/cn137 for BD-201-400 Geant4 optimization discovery."
 
 # ---- Mac local (legacy / dashboard only) ------------------------------------
 
@@ -75,3 +75,36 @@ tasks_dir = "codex-tasks/meta"
 session = "nnbar-meta-lunarc"
 role = "meta"
 sync_policy = "git-only"
+
+# ---- G4 optimization review sessions on idle holders (cn002/cn058/cn137) ----
+# 20 dedicated review panes for Geant4 BD-201-400 line-by-line optimization.
+
+[hosts."review2-lunarc"]
+ssh = "lunarc-cn002"
+project_dir = "/projects/hep/fs10/shared/nnbar/billy/NNBAR_Detector_sim"
+prompts = "codex-prompts-review2.txt"
+tasks_dir = "codex-tasks/review"
+session = "nnbar-review2-lunarc"
+role = "remote-executor"
+sync_policy = "git-only"
+remote_env = "source /projects/hep/fs10/shared/codex-tooling/env-shared.sh; export CODEX_SUPERVISOR_DEBUGGER=0 CODEX_SUPERVISOR_VALIDATOR=0"
+
+[hosts."review3-lunarc"]
+ssh = "lunarc-cn058"
+project_dir = "/projects/hep/fs10/shared/nnbar/billy/NNBAR_Detector_sim"
+prompts = "codex-prompts-review3.txt"
+tasks_dir = "codex-tasks/review"
+session = "nnbar-review3-lunarc"
+role = "remote-executor"
+sync_policy = "git-only"
+remote_env = "source /projects/hep/fs10/shared/codex-tooling/env-shared.sh; export CODEX_SUPERVISOR_DEBUGGER=0 CODEX_SUPERVISOR_VALIDATOR=0"
+
+[hosts."review4-lunarc"]
+ssh = "lunarc-cn137"
+project_dir = "/projects/hep/fs10/shared/nnbar/billy/NNBAR_Detector_sim"
+prompts = "codex-prompts-review4.txt"
+tasks_dir = "codex-tasks/review"
+session = "nnbar-review4-lunarc"
+role = "remote-executor"
+sync_policy = "git-only"
+remote_env = "source /projects/hep/fs10/shared/codex-tooling/env-shared.sh; export CODEX_SUPERVISOR_DEBUGGER=0 CODEX_SUPERVISOR_VALIDATOR=0"
