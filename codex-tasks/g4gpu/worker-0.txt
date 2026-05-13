@@ -1,1 +1,1 @@
-/goal You are PANE 0, lane g4gpu-em-gamma-kernel. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/g4gpu-em-gamma-kernel.md, then complete one compact-safe iteration.
+/goal lane g4-cpu-opt-gpil-dispatch. Read docs/parallel-sessions/g4-cpu-opt-gpil-dispatch.md. In geant4-fork branch opt/gpil-dispatch-table implement BD-geant4-032/034/035 GPIL dispatch table, run fixed-seed TestEm3 validation, write report opt_gpil_dispatch_table_20260513.md, push branch.

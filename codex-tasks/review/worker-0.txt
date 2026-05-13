@@ -1,1 +1,1 @@
-/goal You are PANE 0, lane openmc-source-review. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/openmc-source-review.md, then complete one compact-safe iteration adding BD-openmc-043 through BD-openmc-052.
+/goal lane g4-source-review-allocator-mt. Read docs/parallel-sessions/g4-source-review-allocator-mt.md and produce shard docs/reports/g4_bottleneck_database_allocator_mt.md with BD-geant4-151 through BD-geant4-160. Update MASTER_PLAN.md row when done.

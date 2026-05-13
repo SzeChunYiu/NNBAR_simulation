@@ -1,1 +1,1 @@
-/goal You are PANE 2, lane mcaccel-openmc-adapter. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/mcaccel-openmc-adapter.md, then complete one compact-safe iteration (Iteration 3: QMC/RNG comparison and adapter validation).
+/goal lane g4-cpu-opt-hp-neutron. Read docs/parallel-sessions/g4-cpu-opt-hp-neutron.md. In geant4-fork branch opt/hp-neutron-lookup implement BD-geant4-071/072/074 binary-search XS lookup, CDF sampling, Doppler LRU cache. Validate Hadr01 XS within 0.1%. Push branch.
