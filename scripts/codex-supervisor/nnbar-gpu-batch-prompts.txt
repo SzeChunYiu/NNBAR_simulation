@@ -1,3 +1,4 @@
-/goal You are PANE 0, lane cry-integration. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/cry-integration.md in /Volumes/MyDrive/nnbar/nnbar/simulation, then implement CRY C++ integration in NNBAR_Detector per spec, build on LUNARC, run test cosmic job.
-/goal You are PANE 1, lane pi0-verification. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/pi0-verification.md in /Volumes/MyDrive/nnbar/nnbar/simulation, verify pi0 cuts match thesis Ch.8, fix discrepancies, add pytest tests.
-/goal You are PANE 2, lane planner. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/planner.md in /Volumes/MyDrive/nnbar/nnbar/simulation, then read all thesis chapters and codebase, write PROPOSED TASKS to MASTER_PLAN.md for human review.
+/goal You are PANE 0, lane worker-0. Read docs/parallel-sessions.md and docs/parallel-sessions/worker-0.md in /Volumes/MyDrive/nnbar/nnbar/simulation, then complete one compact-safe iteration.
+/goal You are PANE 1, lane worker-1. Read docs/parallel-sessions.md and docs/parallel-sessions/worker-1.md in /Volumes/MyDrive/nnbar/nnbar/simulation, then complete one compact-safe iteration.
+/goal You are PANE 2, lane worker-2. Read docs/parallel-sessions.md and docs/parallel-sessions/worker-2.md in /Volumes/MyDrive/nnbar/nnbar/simulation, then complete one compact-safe iteration.
+/goal You are PANE 3, lane planner. Read docs/parallel-sessions.md and docs/parallel-sessions/planner.md in /Volumes/MyDrive/nnbar/nnbar/simulation, then complete one compact-safe iteration.

@@ -1,0 +1,1 @@
+/goal You are PANE 1, lane hibeam-vertex-method-closure. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/hibeam-vertex-method-closure.md in /Volumes/MyDrive/nnbar/nnbar/simulation, then complete one compact-safe iteration.
