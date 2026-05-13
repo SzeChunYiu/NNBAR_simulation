@@ -62,6 +62,29 @@ Then stop. The supervisor will resend this prompt when new tasks are added.
 
 ## Important constraints
 
+### G4GPU isolation (overrides everything)
+
+The NNBAR simulation is thesis-critical. G4GPU is exploratory R&D. They are
+**entirely separate projects** and must not share code, builds, binaries, or
+data provenance.
+
+- **Never** add a G4GPU include, link, or `find_package(G4GPU)` to anything
+  under `NNBAR_Detector/`, `nnbar_reconstruction/`, `scripts/`, `lunarc/`,
+  `slurm/`, or `macro/`.
+- **Never** swap a G4GPU kernel for a Geant4 process in the NNBAR pipeline,
+  even for testing. G4GPU prototypes run in their own tree at
+  `/Volumes/MyDrive/nnbar/geant4-gpu/` and on LUNARC at
+  `/projects/hep/fs10/shared/nnbar/billy/geant4-gpu/`.
+- **Never** submit a SLURM job that uses a G4GPU binary in the NNBAR
+  production pipeline.
+- All NNBAR-thesis production data must carry `simulator=geant4-11.2.2-...`
+  provenance in Parquet metadata; G4GPU benchmark outputs stay in the
+  G4GPU tree and never get copied into `results/`.
+
+Full rationale and the physics-parity gate are in
+`docs/policies/g4gpu-isolation.md`. If a task you are about to do appears to
+violate this rule, refuse it and write a note in MASTER_PLAN.md.
+
 ### Resource policy — no heavy local work
 - **NEVER run cmake, make, g++, nvcc, or any C++/CUDA compiler locally.**
   This machine is memory-constrained (190 MB free RAM). ALL compilation goes to

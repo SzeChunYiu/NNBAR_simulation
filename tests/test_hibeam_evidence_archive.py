@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 import pytest
@@ -26,6 +27,18 @@ def _complete_item():
         status="ready",
         blocker_text="",
     )
+
+
+def _optional_hibeam_article_text():
+    article_path = os.environ.get("NNBAR_HIBEAM_ARTICLE_TEX")
+    if not article_path:
+        pytest.skip("NNBAR_HIBEAM_ARTICLE_TEX is not set")
+
+    article_file = Path(article_path)
+    if not article_file.is_file():
+        pytest.skip("NNBAR_HIBEAM_ARTICLE_TEX does not point to a file")
+
+    return article_file.read_text()
 
 
 def test_complete_pinned_evidence_package_is_ready():
@@ -78,7 +91,7 @@ def test_placeholder_hibeam_paper_tokens_are_blockers():
 def test_unhashed_archive_member_and_unpinned_local_path_are_blockers():
     item = _complete_item().with_updates(
         archive_digest="",
-        pinned_ref="/Volumes/MyDrive/nnbar/local/results.json",
+        pinned_ref="file:local/results.json",
     )
 
     audit = audit_hibeam_evidence_archive(
@@ -95,9 +108,7 @@ def test_unhashed_archive_member_and_unpinned_local_path_are_blockers():
 
 
 def test_current_hibeam_paper_and_governance_texts_surface_blockers():
-    paper = Path("/Volumes/MyDrive/nnbar/papers/overleaf-696757e2/main.tex")
-    if not paper.exists():
-        pytest.skip("local HIBEAM paper checkout is not available")
+    paper_text = _optional_hibeam_article_text()
 
     item = _complete_item().with_updates(
         dataset_registry_id="hibeam_vertex_compton_scan_v1",
@@ -116,7 +127,7 @@ def test_current_hibeam_paper_and_governance_texts_surface_blockers():
         decision_log_text=Path("docs/governance/DECISION_LOG.md").read_text(),
         ledger_text=Path("docs/thesis_reproduction_ledger.md").read_text(),
         validation_reports=set(),
-        paper_text=paper.read_text(),
+        paper_text=paper_text,
     )
 
     assert audit.ready is False
@@ -124,5 +135,22 @@ def test_current_hibeam_paper_and_governance_texts_surface_blockers():
     assert "unresolved_decision_log_id:HIB-VTX-RESULTS" in audit.blockers
     assert "unresolved_ledger_row_id:HIB-VTX-RESULTS" in audit.blockers
     assert "missing_validation_report:HIB-VTX-RESULTS" in audit.blockers
-    assert "paper_todo_marker" in audit.blockers
-    assert "paper_observation_placeholder" in audit.blockers
+    for paper_blocker in audit_paper_text(paper_text).blockers:
+        assert paper_blocker in audit.blockers
+
+
+def test_hibeam_evidence_sources_do_not_embed_machine_specific_paths():
+    forbidden_paths = (
+        "/" + "Volumes/MyDrive/nnbar/papers",
+        "/" + "Users/",
+        "/" + "home/" + "billy",
+    )
+    source_paths = (
+        Path(__file__),
+        Path("nnbar_reconstruction/analysis/hibeam_evidence_archive.py"),
+    )
+
+    for source_path in source_paths:
+        source_text = source_path.read_text()
+        for forbidden_path in forbidden_paths:
+            assert forbidden_path not in source_text
