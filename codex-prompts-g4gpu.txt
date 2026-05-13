@@ -1,0 +1,5 @@
+# nnbar-g4gpu-lunarc — 4 panes — G4GPU R&D (isolated from NNBAR production)
+/goal You are PANE 0, lane g4gpu-phase5. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/g4gpu-phase5.md, then iterate per the protocol until rate-limited.
+/goal You are PANE 1, lane g4gpu-phase8-survey. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/g4gpu-phase8-survey.md, then iterate per the protocol until rate-limited.
+/goal You are PANE 2, lane g4gpu-em-gamma-kernel. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/g4gpu-em-gamma-kernel.md, then iterate per the protocol until rate-limited.
+/goal You are PANE 3, lane g4gpu-fullevent-validation-v7. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/g4gpu-fullevent-validation-v7.md, then iterate per the protocol until rate-limited.

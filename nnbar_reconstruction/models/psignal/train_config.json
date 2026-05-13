@@ -1,0 +1,14 @@
+{
+  "train_data": "training_data/psignal_train.npz",
+  "val_data": "training_data/psignal_val.npz",
+  "min_hits": 5,
+  "hidden": 64,
+  "emb": 128,
+  "dropout": 0.1,
+  "batch_size": 32,
+  "epochs": 50,
+  "lr": 0.001,
+  "weight_decay": 0.0001,
+  "patience": 15,
+  "save_dir": "models/psignal"
+}

@@ -1,0 +1,9 @@
+# nnbar-recon-lunarc — 7 panes — Python reconstruction work
+# Each pane reads MASTER_PLAN.md and its lane spec, then iterates compact-safe.
+/goal You are PANE 0, lane planner-recon. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/planner.md, then iterate per the protocol until rate-limited.
+/goal You are PANE 1, lane event-variable-electron-pair-count. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/event-variable-electron-pair-count.md, then iterate per the protocol until rate-limited.
+/goal You are PANE 2, lane rfc-feature-provenance. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/rfc-feature-provenance.md, then iterate per the protocol until rate-limited.
+/goal You are PANE 3, lane pion-multiplicity-closure. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/pion-multiplicity-closure.md, then iterate per the protocol until rate-limited.
+/goal You are PANE 4, lane magnetic-field-boundary. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/magnetic-field-boundary.md, then iterate per the protocol until rate-limited.
+/goal You are PANE 5, lane hibeam-acts-kalman-closure. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/hibeam-acts-kalman-closure.md, then iterate per the protocol until rate-limited.
+/goal You are PANE 6, lane signal-sample-kinematics. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/signal-sample-kinematics.md, then iterate per the protocol until rate-limited.

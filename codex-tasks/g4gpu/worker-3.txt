@@ -1,0 +1,1 @@
+/goal You are PANE 3, lane mcaccel-competitor-benchmarks. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/mcaccel-competitor-benchmarks.md, then complete one compact-safe iteration. Celeritas baseline captured (job 3052546, 3.56s, 72 events/s, 2301 primaries/s on A40). Advance AdePT and OpenMC status.

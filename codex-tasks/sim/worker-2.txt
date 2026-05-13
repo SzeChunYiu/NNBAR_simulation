@@ -1,0 +1,1 @@
+/goal You are PANE 2, lane pi0-foil-energy-scan-ext. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/pi0-foil-energy-scan-ext.md, then complete one compact-safe iteration. Submit pi0_energy_scan_ext.sbatch on LUNARC via sbatch; confirm job ID in squeue. Do not run compute on holder node.

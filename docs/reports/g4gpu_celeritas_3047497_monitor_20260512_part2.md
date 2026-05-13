@@ -253,3 +253,26 @@ MISSING results/results.parquet
 Disposition unchanged: keep `MCAccel competitor benchmarks` in `RUNNING`; this
 iteration submitted no new job, ran no build/test executable, and did not touch
 NNBAR production paths.
+
+
+## Refresh attempt: 2026-05-13 07:07 CEST
+
+This compact worker-3 iteration attempted to refresh job `3047497` before the
+scheduler-estimated start window, but the LUNARC SSH control socket was stale:
+`ssh -O check lunarc` reported `SOCKET=Connected`, while a session open failed
+with `mux_client_read_packet_timeout: read header failed: Broken pipe` and
+`Control master terminated unexpectedly`. The mandated auto-login repair was
+then run; it closed the stale socket, attempted password + Pocket Pass OTP, and
+ended with `Authentication rejected after OTP; update password or Pocket
+Pass/TOTP material`, leaving `SOCKET=NotConnected`.
+
+Because no authenticated remote shell was available, this refresh records **no
+authoritative SLURM state** for `3047497`: no `squeue`, `sacct`, `scontrol`,
+log-tail, or `results/results.parquet` check succeeded after the stale socket
+failed. Treat the previous 2026-05-12 13:54 CEST status as the latest verified
+cluster evidence until LUNARC authentication is repaired and the same read-only
+checks can be rerun.
+
+Disposition unchanged: keep `MCAccel competitor benchmarks` in `RUNNING`; this
+iteration submitted no new job, ran no local or remote build/test executable,
+did not promote any timing result, and did not touch NNBAR production paths.

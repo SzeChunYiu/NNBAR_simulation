@@ -1,0 +1,8 @@
+# nnbar-sim-lunarc — 7 panes — C++ sim, kinematics validation, thesis-gap audits
+/goal You are PANE 0, lane planner-sim. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/planner.md, then iterate per the protocol until rate-limited.
+/goal You are PANE 1, lane cosmic-proton-bin5-recovery. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/cosmic-proton-bin5-recovery.md, then iterate per the protocol until rate-limited.
+/goal You are PANE 2, lane cry-cosmic-kinematics-closure. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/cry-cosmic-kinematics-closure.md, then iterate per the protocol until rate-limited.
+/goal You are PANE 3, lane photon-conversion-map. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/photon-conversion-map.md, then iterate per the protocol until rate-limited.
+/goal You are PANE 4, lane skyshine-timing-disposition. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/skyshine-timing-disposition.md, then iterate per the protocol until rate-limited.
+/goal You are PANE 5, lane neutral-object-pi0-mass-response. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/neutral-object-pi0-mass-response.md, then iterate per the protocol until rate-limited.
+/goal You are PANE 6, lane tpc-occupancy-followup. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/tpc-occupancy-followup.md, then iterate per the protocol until rate-limited.

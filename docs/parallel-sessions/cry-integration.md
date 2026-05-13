@@ -122,9 +122,11 @@ private:
 Full implementation:
 - `UpdateCRYSetup()`: constructs CRYSetup with input string:
   ```
-  "date 1-1-2024 latitude 55.71 altitude 0 subboxLength 2400"
+  "date 1-1-2024 latitude 55.71 altitude 0 subboxLength 24"
   ```
-  ("subboxLength" is CRY's parameter for half-plane size in cm — 2400 cm = 24m)
+  (`subboxLength` and `CRYParticle::x/y()` are in meters in CRY v1.7; 24 m gives
+  the thesis 24m×24m event plane, and x/y must be converted to Geant4 units with
+  `CLHEP::m`.)
 - `GenerateCRYPrimaries()`:
   1. Call `fGenerator->gen()` to get a list of CRYParticles
   2. Find the one particle matching `fParticleType`
@@ -165,7 +167,7 @@ Add static `G4bool sCRYMode = false` and CRY macro commands via `G4GenericMessen
 ### 5. Write run_cosmic.slurm on LUNARC
 
 After the binary is rebuilt with `-DWITH_CRY=ON`, create a SLURM array script:
-- Array: 30 jobs (5 particles × 6 energy bins, skip zero N_{i,j} combinations)
+- Array: 27 jobs (5 particles × 6 energy bins, skip only zero N_{i,j} combinations)
 - Each job: 1,000,000 events
 - Output: `output/cosmic_{particle}_{ebin}/`
 - Use 4 threads (`-t 4`), 16G RAM, 8h time limit, partition=lu48
@@ -177,7 +179,7 @@ EBINS=(0 1 2 3 4 5)
 EMIN=(0 0.5 1 5 10 50)
 EMAX=(0.5 1 5 10 50 200)
 ```
-Skip (gamma, bin 4), (gamma, bin 5), (e-, bin 4), (e-, bin 5) — N_{i,j}=0.
+Skip only (e-, bin 4), (gamma, bin 5), and (e-, bin 5) — these are the zero `N_{i,j}` entries in the 6×5 table. Gamma bin 4 (`particleIdx=1`, `energyBin=4`) is nonzero and must be run.
 
 ## CRY library setup on LUNARC
 

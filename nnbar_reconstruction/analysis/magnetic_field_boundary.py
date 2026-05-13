@@ -71,7 +71,7 @@ _CLAIM_TERM = (
 )
 
 _SAFE_CLAIM_PATTERNS = (
-    re.compile(rf"\bmay\s+not\s+be\s+quoted\b", re.IGNORECASE),
+    re.compile(r"\bmay\s+not\s+be\s+quoted\b", re.IGNORECASE),
     re.compile(rf"\bno\s+{_CLAIM_TERM}(?:\s+or\s+{_CLAIM_TERM})?", re.IGNORECASE),
     re.compile(
         rf"\b{_CLAIM_TERM}\b[^.\n]{{0,80}}\b"

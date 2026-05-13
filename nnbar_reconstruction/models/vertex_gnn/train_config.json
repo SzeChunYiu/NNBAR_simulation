@@ -1,0 +1,16 @@
+{
+  "train_data": "training_data/vertex_train.npz",
+  "val_data": "training_data/vertex_val.npz",
+  "version": "v1",
+  "hidden_dim": 128,
+  "n_layers": 3,
+  "n_heads": 4,
+  "dropout": 0.1,
+  "batch_size": 32,
+  "epochs": 100,
+  "lr": 0.001,
+  "weight_decay": 0.0001,
+  "patience": 20,
+  "loss": "logcosh",
+  "save_dir": "models/vertex_gnn"
+}

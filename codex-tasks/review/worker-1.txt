@@ -1,0 +1,1 @@
+/goal You are PANE 1, lane g4-source-review. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/g4-source-review.md, then complete one compact-safe iteration adding BD-geant4-151 through BD-geant4-160.

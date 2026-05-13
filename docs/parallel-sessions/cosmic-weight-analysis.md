@@ -65,7 +65,7 @@ python scripts/combine_cosmic_background.py \
     --subsystem TPC               # which subsystem Parquet to combine
 ```
 
-For each of the 26 job directories (`cosmic_mu-_bin0/` through `cosmic_proton_bin5/`):
+For each of the 27 nonzero job directories (`cosmic_mu-_bin0/` through `cosmic_proton_bin5/`, skipping only zero-`N_{i,j}` bins):
 1. Parse particle name and bin index from directory name
 2. Load `TPC_output_0.parquet` (or specified subsystem)
 3. Look up w_{i,j} using `get_weight(ebin, particle_idx)`
