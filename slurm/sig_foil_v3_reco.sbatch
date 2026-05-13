@@ -75,18 +75,23 @@ result = {
     'tpc_trigger_efficiency': float(n_triggered/n_total),
 }
 
-# Load LeadGlass filtered to triggered events
-print("Loading LeadGlass (filtered)...", flush=True)
+# Load LeadGlass filtered to triggered events — only columns needed for clustering
+print("Loading LeadGlass (filtered, 5 cols)...", flush=True)
 triggered_set = set(int(x) for x in triggered_events)
+_COLS = ['Event_ID', 'x', 'y', 'z', 'eDep']
 lg_table = pq.read_table(DATA_DIR / 'LeadGlass_output_0.parquet',
-                         filters=[('Event_ID', 'in', list(triggered_set))])
+                         filters=[('Event_ID', 'in', list(triggered_set))],
+                         columns=_COLS)
 lg_df = lg_table.to_pandas()
+del lg_table; gc.collect()
 print(f"LG: {len(lg_df)} hits, {lg_df['Event_ID'].nunique()} events", flush=True)
 
-print("Loading Scintillator (filtered)...", flush=True)
+print("Loading Scintillator (filtered, 5 cols)...", flush=True)
 scint_table = pq.read_table(DATA_DIR / 'Scintillator_output_0.parquet',
-                            filters=[('Event_ID', 'in', list(triggered_set))])
+                            filters=[('Event_ID', 'in', list(triggered_set))],
+                            columns=_COLS)
 scint_df = scint_table.to_pandas()
+del scint_table; gc.collect()
 print(f"Scint: {len(scint_df)} hits", flush=True)
 
 # Standalone pi0 reco: cone clustering + diphoton invariant mass
