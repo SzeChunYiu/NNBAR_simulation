@@ -1,10 +1,12 @@
 # OptiX 9 SDK download blocker
 
-## Status
+## Status — RESOLVED 2026-05-12
 
-External operator action is required. NVIDIA OptiX SDK downloads require an
-interactive click-through license in a web browser, so the worker must not try
-to bypass or automate the download.
+Operator transferred `NVIDIA-OptiX-SDK-9.0.0-linux64-x86_64.sh` (55.7 MB) from
+local Mac to LUNARC. Installed with `--skip-license --include-subdir --prefix=.`
+into `/projects/hep/fs10/shared/nnbar/billy/packages/NVIDIA-OptiX-SDK-9.0.0-linux64-x86_64/`;
+symlink `optix-9.0` created. Verification: `OPTIX_READY` confirmed at
+`optix-9.0/include/optix.h`. MASTER_PLAN Phase 3 promoted to `NEXT`.
 
 ## Required download
 

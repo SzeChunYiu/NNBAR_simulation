@@ -1,105 +1,94 @@
 from pathlib import Path
 
 from nnbar_reconstruction.analysis.scintillator_wls_contract import (
-    SCALAR_RESPONSE,
-    WLS_FUNCTION,
+    EvidencePackage,
     audit_current_scintillator_wls_contract,
     audit_scintillator_wls_contract,
-    scan_text_for_wls_evidence,
 )
 
 
-def test_text_scanner_distinguishes_wls_functions_from_scalar_response():
-    radial = scan_text_for_wls_evidence(
-        "f(r) = A exp(-r/B) + C; source DEC-2026-05-11-WLS", "radial.cc"
-    )
-    longitudinal = scan_text_for_wls_evidence(
-        "auto f_z = D * exp(-z / E); closure artifact output/wls/summary.json",
-        "longitudinal.cc",
-    )
-    scalar = scan_text_for_wls_evidence(
-        "light_yield: 11136\nattenuation_length: 200.0", "nnbar_geometry.yaml"
-    )
-
-    assert radial.radial_function.kind == WLS_FUNCTION
-    assert radial.radial_function.present is True
-    assert radial.longitudinal_function.present is False
-    assert radial.provenance_present is True
-    assert longitudinal.longitudinal_function.kind == WLS_FUNCTION
-    assert longitudinal.longitudinal_function.present is True
-    assert longitudinal.provenance_present is True
-    assert scalar.scalar_response.kind == SCALAR_RESPONSE
-    assert scalar.scalar_response.present is True
-    assert scalar.radial_function.present is False
-    assert scalar.longitudinal_function.present is False
+def _codes(report):
+    return {blocker.code for blocker in report.blockers}
 
 
-def test_complete_source_backed_wls_functions_with_provenance_are_ready(tmp_path):
-    source = tmp_path / "NNBAR_Detector" / "src" / "Sensitive_Detector"
-    source.mkdir(parents=True)
-    (source / "ScintillatorWLS.cc").write_text(
-        """
-        // DEC-2026-05-11-WLS source-backed closure
-        double radial = A * std::exp(-r / B) + C; // f(r)
-        double longitudinal = D * std::exp(-z / E); // f(z)
-        // closure artifact: output/calibration/scintillator_wls/summary.json
-        """
+def _kinds(report):
+    return {surface.kind for surface in report.observed_surfaces}
+
+
+def test_source_backed_radial_and_longitudinal_functions_with_dec_are_ready(tmp_path):
+    source = tmp_path / "ScintillatorWLS.cc"
+    source.write_text(
+        "double scintillator_wls_f_r(double r_cm) { return 1.0 - 0.01 * r_cm; }\n"
+        "double scintillator_wls_f_z(double z_cm) { return exp(-abs(z_cm) / 210.0); }\n"
     )
 
-    report = audit_scintillator_wls_contract(tmp_path)
+    report = audit_scintillator_wls_contract(
+        EvidencePackage(
+            source_surfaces=(source,),
+            provenance="DEC-2026-05-11-scintillator-wls-closure",
+        )
+    )
 
     assert report.ready is True
-    assert report.radial_function.present is True
-    assert report.longitudinal_function.present is True
-    assert report.radial_function.source_backed is True
-    assert report.longitudinal_function.source_backed is True
-    assert report.radial_function.provenance_present is True
-    assert report.longitudinal_function.provenance_present is True
     assert report.blockers == ()
+    assert _kinds(report) >= {"wls_radial_function", "wls_longitudinal_function"}
 
 
-def test_scalar_only_current_style_config_fails_closed_with_specific_blockers(tmp_path):
-    config_dir = tmp_path / "nnbar_reconstruction" / "config"
-    config_dir.mkdir(parents=True)
-    (config_dir / "nnbar_geometry.yaml").write_text(
-        """
-        scintillator:
-          light_yield: 11136
-          attenuation_length: 200.0
-        """
+def test_scalar_light_yield_and_attenuation_are_diagnostic_not_ready(tmp_path):
+    source = tmp_path / "ScintillatorSD.cc"
+    source.write_text(
+        "G4int photons = (energyDeposit*11136.);\n"
+        "G4double atten_scint[2] = {210*cm, 210*cm};\n"
+        "scintMPT->AddProperty(\"ABSLENGTH\", energy, atten_scint, 2);\n"
     )
 
-    report = audit_scintillator_wls_contract(tmp_path)
+    report = audit_scintillator_wls_contract(EvidencePackage(source_surfaces=(source,)))
 
     assert report.ready is False
-    assert report.scalar_response.present is True
-    assert report.radial_function.present is False
-    assert report.longitudinal_function.present is False
-    blocker_text = "\n".join(blocker.message for blocker in report.blockers)
-    assert "cal_scintillator_wls_muon200_v1" in blocker_text
-    assert "n_SiPM / n_scint versus radial distance r" in blocker_text
-    assert "fit residual and pull width for f(r)" in blocker_text
-    assert "n_SiPM / n_WLS versus longitudinal distance z" in blocker_text
-    assert "fit residual and pull width for f(z)" in blocker_text
-
-
-def test_missing_optional_cpp_surface_is_diagnostic_not_exception(tmp_path):
-    report = audit_scintillator_wls_contract(tmp_path)
-
-    assert report.ready is False
-    assert any(surface.status == "missing" for surface in report.surfaces)
-    assert any("NNBAR_Detector" in surface.path for surface in report.surfaces)
-    assert {blocker.code for blocker in report.blockers} >= {
-        "missing_radial_wls_function",
-        "missing_longitudinal_wls_function",
+    assert _kinds(report) >= {"scalar_light_yield", "attenuation_length"}
+    assert _codes(report) >= {
+        "missing_wls_radial_function",
+        "missing_wls_longitudinal_function",
+        "missing_wls_provenance",
     }
+    blocker_text = "\n".join(blocker.message for blocker in report.blockers)
+    assert "cal_scintillator_wls_uniform_scan_v1" in blocker_text
+    assert "local radial coordinate r" in blocker_text
+    assert "local longitudinal coordinate z" in blocker_text
+    assert "closure residual" in blocker_text
 
 
-def test_current_repository_audit_is_fail_closed_until_wls_closure_exists():
+def test_missing_sources_are_reported_without_traceback(tmp_path):
+    missing = tmp_path / "missing_scintillator.cc"
+
+    report = audit_scintillator_wls_contract(EvidencePackage(source_surfaces=(missing,)))
+
+    assert report.ready is False
+    assert f"missing_surface:{missing}" in _codes(report)
+    assert report.observed_surfaces == ()
+
+
+def test_functions_without_dec_or_closure_artifact_still_fail_closed(tmp_path):
+    source = tmp_path / "ScintillatorWLS.cc"
+    source.write_text(
+        "double scintillator_wls_f_r(double r_cm) { return 1.0; }\n"
+        "double scintillator_wls_f_z(double z_cm) { return 1.0; }\n"
+    )
+
+    report = audit_scintillator_wls_contract(EvidencePackage(source_surfaces=(source,)))
+
+    assert report.ready is False
+    assert "missing_wls_provenance" in _codes(report)
+    assert _kinds(report) >= {"wls_radial_function", "wls_longitudinal_function"}
+
+
+def test_existing_repository_audit_stays_fail_closed_for_missing_wls_functions():
     report = audit_current_scintillator_wls_contract(Path("."))
 
     assert report.ready is False
-    assert report.scalar_response.present is True
-    assert report.radial_function.present is False
-    assert report.longitudinal_function.present is False
-    assert any("cal_scintillator_wls_muon200_v1" in b.message for b in report.blockers)
+    assert "missing_wls_radial_function" in _codes(report)
+    assert "missing_wls_longitudinal_function" in _codes(report)
+    assert any(
+        surface.kind in {"scalar_light_yield", "attenuation_length", "wls_geometry_comment"}
+        for surface in report.observed_surfaces
+    )

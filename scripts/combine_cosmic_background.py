@@ -98,7 +98,11 @@ def _load_subsystem_parquet(run_dir: Path, subsystem_name: str) -> pd.DataFrame 
     paths = sorted(run_dir.glob(f"{subsystem_name}_output_*.parquet"))
     if not paths:
         return None
-    frames = [pd.read_parquet(path) for path in paths]
+    frames = []
+    for path in paths:
+        frame = pd.read_parquet(path).copy()
+        frame["cosmic_source_file"] = path.name
+        frames.append(frame)
     if len(frames) == 1:
         return frames[0]
     return pd.concat(frames, ignore_index=True)
@@ -106,15 +110,14 @@ def _load_subsystem_parquet(run_dir: Path, subsystem_name: str) -> pd.DataFrame 
 
 def _summarize(combined: pd.DataFrame) -> dict[str, Any]:
     if "Event_ID" in combined:
+        event_keys = ["cosmic_run", "Event_ID"]
+        if "cosmic_source_file" in combined:
+            event_keys.insert(1, "cosmic_source_file")
+        unique_events = combined.drop_duplicates(event_keys)
         event_counts = (
-            combined.groupby("cosmic_particle")["Event_ID"].nunique().astype(int).to_dict()
+            unique_events.groupby("cosmic_particle").size().astype(int).to_dict()
         )
-        weighted_events = (
-            combined.drop_duplicates(["cosmic_run", "Event_ID"])
-            .groupby("cosmic_particle")["weight"]
-            .sum()
-            .to_dict()
-        )
+        weighted_events = unique_events.groupby("cosmic_particle")["weight"].sum().to_dict()
     else:
         event_counts = combined.groupby("cosmic_particle").size().astype(int).to_dict()
         weighted_events = combined.groupby("cosmic_particle")["weight"].sum().to_dict()

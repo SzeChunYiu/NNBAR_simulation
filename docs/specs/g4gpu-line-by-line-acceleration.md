@@ -12,19 +12,90 @@ mirror on LUNARC). No code or build configuration crosses the boundary into
 
 ## What we are actually building
 
-**This is not an NNBAR-specific accelerator.** It is a general-purpose
-optimization of the Geant4 toolkit itself, intended to benefit every user of
-Geant4: HEP experiments (ATLAS, CMS, LHCb, DUNE, Belle II, ...), medical
-physics (proton therapy simulation, GATE), space-radiation simulation, and
-the long tail of academic and industrial users.
+**This is not an NNBAR-specific accelerator. It is not even a Geant4-specific
+accelerator.** It is a general-purpose optimization layer for the entire
+Monte Carlo transport ecosystem.
 
-The architecture follows the pattern AdePT and Celeritas use: ship a separate
-library (`libG4Accel.so`) that registers itself with vanilla Geant4 through
-its existing fast-simulation / task-system / process-manager hooks, plus a
-set of upstream-ready patches that fix hot-path performance bugs at source.
-Users opt in via a CMake flag (`-DG4_USE_ACCEL=ON`) or a single API call
-(`G4AcceleratorManager::Instance()->Activate(...)`); they do not have to
-rewrite their applications.
+Every major MC transport code shares the same five fundamental hot paths
+(sampling, geometry navigation, physics process selection, process execution,
+track/hit management). The algorithmic optimizations we apply — QMC sampling,
+SAH-BVH geometry, perfect-hash material lookup, cache-oblivious layouts,
+JIT specialization — are mathematically generic. The infrastructure to
+ship them differs per code; the optimizations themselves are universal.
+
+### Target ecosystem
+
+| Code | Domain | License | Adoption path |
+|------|--------|---------|---------------|
+| **Geant4** | HEP, medical physics, space | Permissive | Upstream MRs + `libMCAccel` opt-in (Phase 0–10 of this plan) |
+| **OpenMC** | Reactor physics, fusion, shielding | MIT | Direct upstream PRs (modern C++, friendly maintainers) |
+| **GATE / Topas** | Medical imaging, RT | Geant4-based | Automatic — inherit Geant4 wins |
+| **VECGeom** | Geometry library used by Geant4 + ALICE | Apache 2.0 | Direct upstream PRs |
+| **MCPL** | Inter-code particle list format | BSD | Format-level perf (compression, vectorized I/O) |
+| **MCNP** | Reactor physics, shielding | Restricted | Adapter via MCPL; no source access |
+| **PHITS / FLUKA** | Medical, accelerator | Restricted | Adapter via MCPL; no source access |
+| **EGS / Penelope** | Medical physics | Mixed | Long-term — adapters once Geant4 + OpenMC mature |
+
+### Competitors we must beat
+
+These are the published state-of-the-art accelerators we benchmark against
+on identical workloads:
+
+| Project | Scope | Best published speedup vs vanilla G4 | What we need to beat them |
+|---------|-------|-------------------------------------:|---------------------------|
+| **Opticks** (Simon Blyth) | Optical photons via OptiX | ~1000× on optical | Match on optical, then stack QMC for further variance reduction |
+| **AdePT** (CERN) | EM showers via CUDA | ~10–50× on EM (Hadr04, TestEm0) | 2×+ on top via persistent kernel + QMC; cover hadronic which AdePT punts on |
+| **Celeritas** (DOE) | EM + minimal hadronic, ORANGE geom | ~10–30× on EM (CMS HCAL benchmark) | Beat their geometry latency with SAH-BVH + RT cores; cover full hadronic |
+| **VecGeom** (CERN) | Vectorized CPU geometry | 1.5–3× on G4Navigator | Beat with cache-oblivious BVH + SIMD branchless surface tests |
+| **GeantV** (CERN, discontinued) | Vectorized track history | ~3× before cancellation in 2019 | Resurrect the SoA work + apply what we've learned about GPU |
+| **WARP** / Serpent-GPU | Reactor MC on GPU | ~50–100× on cross-section lookup | Beat with perfect-hash + tensor-core SIMD (OpenMC integration) |
+
+**Goal:** match or beat each of these on its own benchmark. The headline
+plot of the paper is a single bar chart with us on top of every column.
+
+### Architecture: `libMCAccel` core + per-code adapters
+
+```
+mctransport-accel/  (project root, currently in geant4-gpu repo)
+├── core/                       # MC-code-agnostic primitives
+│   ├── rng/                    # QMC (Sobol/Niederreiter), PCG, xoshiro, cuRAND
+│   ├── geometry/               # SAH-BVH, OptiX wrapper, cache-oblivious layouts
+│   ├── sampling/               # branchless distributions, vectorized samplers
+│   ├── memory/                 # cache-aligned allocators, persistent data structures
+│   ├── compute/                # CUDA / SYCL / HIP / OpenCL kernel templates, LLVM ORC JIT
+│   └── instrumentation/        # cross-code profiling and validation harness
+├── adapters/
+│   ├── geant4/                 # libG4Accel + upstream patches
+│   ├── openmc/                 # libOMCAccel + upstream patches
+│   ├── mcpl/                   # vectorized I/O, columnar format
+│   └── topas-gate/             # automatic (inherits from geant4/)
+├── validation/
+│   ├── geant4-canonical/       # BasicExample, Hadr01, TestEm0, OpNovice2, ...
+│   ├── openmc-benchmarks/      # ICSBEP, k-inf, k-eff suite
+│   ├── medical-physics/        # AAPM TG-119, TG-43
+│   └── cross-code/             # same physics in G4 + OpenMC + MCNP → results match
+└── benchmarks/
+    ├── hep/                    # NNBAR, CMS HCAL, ATLAS muon
+    ├── medical/                # proton therapy, photon RT
+    ├── nuclear/                # PWR pin cell, MOX assembly
+    └── space/                  # GCR through aluminum shield
+```
+
+Users adopt by linking the relevant adapter. Same core, different glue.
+
+### Per-code adoption pathways
+
+Existing applications need **drop-in** integration — they do not rewrite to
+get the speedup.
+
+- **Geant4 apps**: opt in via `cmake -DG4_USE_ACCEL=ON` or one API call.
+- **OpenMC apps**: build OpenMC with `-DOMC_USE_ACCEL=ON`; same simulation
+  driver, same input files.
+- **GATE / Topas medical apps**: get Geant4 wins automatically once their
+  Geant4 dependency is rebuilt.
+- **MCPL pipelines**: I/O speedup is automatic (file format unchanged).
+- **MCNP / PHITS / FLUKA**: limited to MCPL boundary speedups until source
+  access is negotiated.
 
 The end state has three deliverables:
 

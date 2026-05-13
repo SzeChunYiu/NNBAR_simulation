@@ -148,3 +148,25 @@ def test_leadglass_filtered_energy_counts_only_out_of_window_hits():
     )
 
     assert filtered_mev == pytest.approx(52.0)
+
+
+def test_timing_helpers_reject_unknown_detector_names():
+    vertex = np.array([0.0, 0.0, 0.0])
+    hit_position = np.array([0.0, 125.0, 250.0])
+    hits = pd.DataFrame([_hit(hit_position, time_ns=5.0, energy_mev=11.0)])
+
+    with pytest.raises(ValueError, match="detector"):
+        apply_timing_cuts(
+            hits,
+            vertex=vertex,
+            t0=0.0,
+            detector="lead_glass",
+        )
+
+    with pytest.raises(ValueError, match="detector"):
+        compute_out_of_time_energy(
+            hits,
+            vertex=vertex,
+            t0=0.0,
+            detector="lead_glass",
+        )

@@ -14,6 +14,7 @@ from types import SimpleNamespace
 C_LIGHT_CM_PER_NS = 29.9792458
 SCINTILLATOR_TIMING_RESOLUTION_NS = 1.0
 LEADGLASS_TIMING_RESOLUTION_NS = 2.0
+VALID_TIMING_DETECTORS = frozenset({"scintillator", "leadglass"})
 
 
 def pion_travel_time(
@@ -157,6 +158,8 @@ def apply_timing_cuts(
     Returns:
         Filtered DataFrame.
     """
+    _validate_detector_name(detector)
+
     if len(hits) == 0 or 't' not in hits.columns:
         return hits
 
@@ -212,6 +215,8 @@ def compute_out_of_time_energy(
     Returns:
         Total energy outside timing window in MeV.
     """
+    _validate_detector_name(detector)
+
     if len(hits) == 0 or 't' not in hits.columns or 'eDep' not in hits.columns:
         return 0.0
 
@@ -278,6 +283,13 @@ def compute_filtered_scintillator_hemisphere_energies(
     )
 
     return SimpleNamespace(upper_mev=upper_mev, lower_mev=lower_mev)
+
+
+def _validate_detector_name(detector: str) -> None:
+    """Reject misspelled detector names instead of applying lead-glass cuts."""
+    if detector not in VALID_TIMING_DETECTORS:
+        valid = ", ".join(sorted(VALID_TIMING_DETECTORS))
+        raise ValueError(f"detector must be one of: {valid}")
 
 
 if __name__ == "__main__":

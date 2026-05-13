@@ -1,0 +1,9 @@
+timestamp_utc=2026-05-11T12:43:48Z
+host=cosmos1.int.lunarc
+source_path=/projects/hep/fs10/shared/nnbar/billy/mcaccel-competitors/AdePT
+source_commit=47694da970baebf8a7e5d7454910aac2313f33e3
+source_status=?? build-lunarc-a40-config-probe/;
+READABLE /cvmfs/sft-nightlies.cern.ch/lcg/views/devAdePT/Mon/x86_64-el9-gcc13-opt/setup.sh
+READABLE /cvmfs/sft.cern.ch/lcg/views/devAdePT/latest/x86_64-el9-gcc13-opt/setup.sh
+READABLE /projects/hep/fs10/shared/nnbar/billy/mcaccel-competitors/AdePT/examples/data/testEm3.gdml
+READABLE /projects/hep/fs10/shared/nnbar/billy/mcaccel-competitors/AdePT/examples/Example1/macros/example1.mac.in

@@ -19,6 +19,7 @@ from typing import Dict, Optional, Tuple
 import numpy as np
 
 from ..utils.config import get_particle_id_params
+from .electron_pair import is_electron_pair_distance
 from .charged_pid import (
     CHARGED_PID_TN_UNITS,
     ChargedPIDRangeError,
@@ -220,7 +221,10 @@ def identify_electron_pair(
     Identify electron-positron pair from gamma conversion.
 
     e+e- pairs have TPC entry points very close together
-    (from photon converting in detector material).
+    (from photon converting in detector material).  The Ch.8 5 cm boundary is
+    inclusive; see docs/rebuild_plans/24_reconstruction_question_tree/
+    24_3_charged.md C.6 and docs/rebuild_plans/36_subsystem_event_variables.md
+    E.9.
 
     Args:
         track1_entry: TPC entry point of first track.
@@ -230,15 +234,11 @@ def identify_electron_pair(
     Returns:
         Tuple of (is_epair, distance).
     """
-    if max_distance is None:
-        params = get_particle_id_params()
-        max_distance = params.get('epair_distance', 5.0)
-
-    distance = np.linalg.norm(track1_entry - track2_entry)
-
-    is_epair = distance < max_distance
-
-    return is_epair, distance
+    return is_electron_pair_distance(
+        track1_entry,
+        track2_entry,
+        max_distance_cm=max_distance,
+    )
 
 
 def identify_particle_type(

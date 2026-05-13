@@ -19,18 +19,20 @@ Branch: `lane/g4gpu-phase3`
 - `include/g4gpu/G4GPUGeometry.hh` — abstract base to implement
 - `src/geometry/VoxelGeometry.*` — the voxel backend to mirror the interface
 
-## Prerequisite check
+## Prerequisite check — RESOLVED 2026-05-12
 
-OptiX SDK must be available. Check:
+OptiX 9.0.0 SDK is installed at:
+```
+/projects/hep/fs10/shared/nnbar/billy/packages/optix-9.0/
+```
+Verified: `optix-9.0/include/optix.h` present (`OPTIX_READY`).
+
+Pass to CMake as:
 ```bash
-find /projects/hep/fs10/shared/nnbar/billy/packages -name 'optix.h' 2>/dev/null | head -3
-find /usr/local /opt -name 'optix.h' 2>/dev/null | head -3
+-DOptiX_INSTALL_DIR=/projects/hep/fs10/shared/nnbar/billy/packages/optix-9.0
 ```
 
-If OptiX not found locally: write a stub implementation with `#ifdef G4GPU_WITH_RTX` guards
-that compiles cleanly without OptiX but doesn't run. Note in README that OptiX SDK is
-required for the RTX backend. Do NOT block — implement the stub + CMake option first,
-real implementation can follow when OptiX is available.
+Do NOT fall back to a stub — implement the full RTX backend using the real SDK.
 
 ## Files to produce
 
@@ -119,7 +121,7 @@ Compile-time only if `G4GPU_WITH_RTX=ON`. Otherwise: empty test that prints
 
 ## Stop condition
 
-Stub compiles with `-DG4GPU_WITH_RTX=OFF` (no OptiX needed).
-Full implementation noted as "ready to activate when OptiX SDK available".
+Full RTX backend compiles with `-DG4GPU_WITH_RTX=ON -DOptiX_INSTALL_DIR=/projects/hep/fs10/shared/nnbar/billy/packages/optix-9.0` on LUNARC (GCC/13.2.0 + CUDA/12.8.0 + gpua40 or gpua100 partition).
+LUNARC GPU job passes `ctest -R rtx` (or at minimum the stub compile test).
 Committed and pushed on `lane/g4gpu-phase3`.
-Write "DONE: G4GPU Phase 3 RTX backend stub committed". Re-read MASTER_PLAN.md.
+Write "DONE: G4GPU Phase 3 RTX backend committed". Re-read MASTER_PLAN.md.

@@ -1,9 +1,10 @@
-"""Fail-closed audit for scintillator WLS light-collection evidence.
+"""Fail-closed audit helpers for scintillator WLS light collection.
 
-The thesis Ch. 5 WLS contract is geometric: light collected at a SiPM must be
-parameterized with a radial ``f(r)`` term and a longitudinal ``f(z)`` term. This
-module only inventories source/config text and reports blockers; it does not run
-simulations or tune constants.
+The thesis Ch. 5 WLS parameterisation is treated as an evidence contract:
+source text must expose both radial ``f(r)`` and longitudinal ``f(z)`` light-
+collection functions, and those functions must be tied to a DEC or closure
+artifact before the implementation is considered ready. Scalar light-yield or
+attenuation constants are diagnostic evidence only.
 """
 
 from __future__ import annotations
@@ -11,415 +12,333 @@ from __future__ import annotations
 from dataclasses import dataclass
 from pathlib import Path
 import re
-from typing import Iterable, Sequence
 
-WLS_FUNCTION = "wls_function"
-SCALAR_RESPONSE = "scalar_response"
-MISSING_SURFACE = "missing_surface"
+CURRENT_WLS_SOURCE_SURFACES = (
+    Path("nnbar_reconstruction/config/nnbar_geometry.yaml"),
+    Path("NNBAR_Detector/src/Sensitive_Detector/ScintillatorSD.cc"),
+    Path("NNBAR_Detector/src/sensitive/ScintillatorSD.cc"),
+    Path("NNBAR_Detector/src/Detector_Module/Scintillator_geometry.cc"),
+    Path("NNBAR_Detector/src/detector/Scintillator_geometry.cc"),
+)
 
-_RADIAL_PATTERNS = (
-    re.compile(r"f\s*\(\s*r\s*\)", re.IGNORECASE),
-    re.compile(r"\bf[_-]?r\b", re.IGNORECASE),
-    re.compile(r"radial[^\n]{0,80}(?:wls|fiber|fibre|light)", re.IGNORECASE),
-    re.compile(r"(?:wls|fiber|fibre|light)[^\n]{0,80}radial", re.IGNORECASE),
+WLS_CLOSURE_SAMPLE = "cal_scintillator_wls_uniform_scan_v1"
+WLS_CLOSURE_FIGURE_OF_MERIT = (
+    "closure residual of source-backed f(r)/f(z) against detected photon yield map"
 )
-_LONGITUDINAL_PATTERNS = (
-    re.compile(r"f\s*\(\s*z\s*\)", re.IGNORECASE),
-    re.compile(r"\bf[_-]?z\b", re.IGNORECASE),
-    re.compile(r"longitudinal[^\n]{0,80}(?:wls|fiber|fibre|light)", re.IGNORECASE),
-    re.compile(r"(?:wls|fiber|fibre|light)[^\n]{0,80}longitudinal", re.IGNORECASE),
+
+_RADIAL_FUNCTION_PATTERN = re.compile(
+    r"\b(?:scintillator_)?wls[_a-z0-9]*f[_ ]?r\s*\("
+    r"|\bf[_ ]?r\s*\("
+    r"|\bf\s*\(\s*r\s*\)",
+    re.IGNORECASE,
 )
-_SCALAR_PATTERNS = (
-    re.compile(r"\blight_yield\b", re.IGNORECASE),
-    re.compile(r"\battenuation_length\b", re.IGNORECASE),
-    re.compile(r"photons\s*/\s*MeV", re.IGNORECASE),
-    re.compile(r"SCINTILLATIONYIELD", re.IGNORECASE),
-    re.compile(r"energyDeposit\s*\*\s*11136", re.IGNORECASE),
-    re.compile(r"scintillation yield", re.IGNORECASE),
+_LONGITUDINAL_FUNCTION_PATTERN = re.compile(
+    r"\b(?:scintillator_)?wls[_a-z0-9]*f[_ ]?z\s*\("
+    r"|\bf[_ ]?z\s*\("
+    r"|\bf\s*\(\s*z\s*\)",
+    re.IGNORECASE,
 )
-_PROVENANCE_PATTERNS = (
-    re.compile(r"DEC-\d{4}-\d{2}-\d{2}[-A-Za-z0-9_]*"),
-    re.compile(r"closure artifact", re.IGNORECASE),
-    re.compile(r"output/calibration/[^\s)]+", re.IGNORECASE),
-    re.compile(r"summary\.json", re.IGNORECASE),
+_SCALAR_LIGHT_YIELD_PATTERN = re.compile(
+    r"energyDeposit\s*\*\s*11136(?:\.0*)?"
+    r"|SCINTILLATIONYIELD"
+    r"|\blight_yield\s*:"
+    r"|photons\s*/\s*MeV"
+    r"|\bscintYield_\b",
+    re.IGNORECASE,
 )
-_SOURCE_SUFFIXES = {".cc", ".hh", ".cpp", ".cxx", ".hpp", ".py", ".yaml", ".yml"}
-_TEXT_SUFFIXES = _SOURCE_SUFFIXES | {".md", ".txt"}
+_ATTENUATION_PATTERN = re.compile(
+    r"ABSLENGTH|atten(?:uation)?[_a-z0-9]*(?:scint|length)|atten_scint",
+    re.IGNORECASE,
+)
+_WLS_COMMENT_PATTERN = re.compile(r"^\s*(?://|#).*\bWLS\b", re.IGNORECASE | re.MULTILINE)
+_BLOCK_COMMENT_PATTERN = re.compile(r"/\*.*?\*/", re.DOTALL)
+_DEC_PATTERN = re.compile(r"\bDEC-\d{4}-\d{2}-\d{2}")
 
 
 @dataclass(frozen=True)
-class EvidenceFinding:
-    """Evidence for one WLS contract feature.
+class EvidencePackage:
+    """Evidence inputs for the scintillator WLS contract audit.
 
     Args:
-        kind: Stable category such as ``WLS_FUNCTION`` or ``SCALAR_RESPONSE``.
-        present: Whether matching evidence was found.
-        sources: Source paths or labels that contributed evidence.
-        source_backed: Whether any evidence came from code/config rather than docs.
-        provenance_present: Whether the same scanned source mentions DEC/closure evidence.
-        snippets: Short matched lines for diagnostics only.
+        source_surfaces: Source/config files to scan. Missing files are
+            reported as blockers rather than raising exceptions.
+        provenance: DEC identifier or record tying observed WLS functions to
+            thesis Ch. 5 and the closure sample.
+        closure_artifact: Optional artifact path; existence can satisfy the
+            provenance gate even without a DEC string.
     """
 
+    source_surfaces: tuple[str | Path, ...] = ()
+    provenance: str | None = None
+    closure_artifact: str | Path | None = None
+
+
+@dataclass(frozen=True)
+class ObservedWLSSurface:
+    """One diagnostic observation from a scanned WLS-related surface.
+
+    Args:
+        path: Source/config surface that was scanned.
+        kind: Stable category such as ``wls_radial_function``.
+        status: ``source_backed`` for WLS functions or ``diagnostic_only`` for
+            scalar/constants evidence.
+        evidence: Short text label describing the pattern that matched.
+        message: Deterministic human-readable summary.
+    """
+
+    path: Path
     kind: str
-    present: bool
-    sources: tuple[str, ...] = ()
-    source_backed: bool = False
-    provenance_present: bool = False
-    snippets: tuple[str, ...] = ()
-
-
-@dataclass(frozen=True)
-class TextScan:
-    """Diagnostic scan result for one text surface.
-
-    Args:
-        path: Path or label scanned.
-        radial_function: Evidence for explicit ``f(r)`` behavior.
-        longitudinal_function: Evidence for explicit ``f(z)`` behavior.
-        scalar_response: Evidence for scalar yield/attenuation behavior.
-        provenance_present: Whether DEC or closure-artifact text was present.
-    """
-
-    path: str
-    radial_function: EvidenceFinding
-    longitudinal_function: EvidenceFinding
-    scalar_response: EvidenceFinding
-    provenance_present: bool
-
-
-@dataclass(frozen=True)
-class SurfaceStatus:
-    """Status for a candidate source/config/docs surface.
-
-    Args:
-        path: Relative path or directory label.
-        status: ``scanned`` or ``missing``.
-        message: Diagnostic message; never a readiness claim by itself.
-    """
-
-    path: str
     status: str
+    evidence: str
     message: str
 
 
 @dataclass(frozen=True)
-class WlsBlocker:
-    """Concrete blocker needed before WLS light-collection closure.
+class WLSBlocker:
+    """Fail-closed blocker for missing WLS contract evidence.
 
     Args:
-        code: Stable machine-readable blocker code.
-        needed_sample: Sample or artifact required to resolve the blocker.
-        observable: Observable that must be measured.
-        figure_of_merit: Figure of merit required for closure.
-        message: Human-readable fail-closed summary.
+        code: Stable blocker identifier.
+        sample: Needed sample/evidence package.
+        observable: Observable required to resolve the blocker.
+        figure_of_merit: Metric that must pass before promotion.
+        message: Deterministic summary suitable for task notes.
     """
 
     code: str
-    needed_sample: str
+    sample: str
     observable: str
     figure_of_merit: str
     message: str
 
 
 @dataclass(frozen=True)
-class WlsAuditReport:
-    """Aggregated scintillator WLS contract audit result.
+class ScintillatorWLSAudit:
+    """Combined WLS light-collection contract audit.
 
     Args:
-        ready: True only when both WLS functions are source-backed and provenanced.
-        radial_function: Aggregate evidence for ``f(r)``.
-        longitudinal_function: Aggregate evidence for ``f(z)``.
-        scalar_response: Aggregate evidence for scalar yield/attenuation.
-        surfaces: Candidate surfaces that were scanned or missing.
-        blockers: Explicit blockers when ``ready`` is false.
+        ready: True only when both WLS functions and DEC/closure provenance are
+            present and no scanned surface is missing.
+        observed_surfaces: Diagnostic observations from source/config scans.
+        blockers: Fail-closed blockers for absent functions or provenance.
+        required_sample: Closure sample needed for unresolved blockers.
     """
 
     ready: bool
-    radial_function: EvidenceFinding
-    longitudinal_function: EvidenceFinding
-    scalar_response: EvidenceFinding
-    surfaces: tuple[SurfaceStatus, ...]
-    blockers: tuple[WlsBlocker, ...]
+    observed_surfaces: tuple[ObservedWLSSurface, ...]
+    blockers: tuple[WLSBlocker, ...]
+    required_sample: str = WLS_CLOSURE_SAMPLE
 
 
-def scan_text_for_wls_evidence(text: str, source_name: str) -> TextScan:
-    """Classify one text blob for WLS and scalar scintillator-response evidence.
-
-    Args:
-        text: Source/config/docs text to scan.
-        source_name: Diagnostic path or label for the text.
-
-    Returns:
-        A ``TextScan`` separating radial WLS, longitudinal WLS, scalar response,
-        and DEC/closure-artifact provenance evidence.
-    """
-    provenance_present = _matches_any(text, _PROVENANCE_PATTERNS)
-    source_backed = _is_source_backed(source_name)
-    return TextScan(
-        path=source_name,
-        radial_function=_finding(
-            WLS_FUNCTION, text, source_name, _RADIAL_PATTERNS, source_backed, provenance_present
-        ),
-        longitudinal_function=_finding(
-            WLS_FUNCTION, text, source_name, _LONGITUDINAL_PATTERNS, source_backed, provenance_present
-        ),
-        scalar_response=_finding(
-            SCALAR_RESPONSE, text, source_name, _SCALAR_PATTERNS, source_backed, provenance_present
-        ),
-        provenance_present=provenance_present,
-    )
-
-
-def audit_current_scintillator_wls_contract(root: str | Path = ".") -> WlsAuditReport:
-    """Audit the current repository for scintillator WLS contract evidence.
+def audit_scintillator_wls_contract(
+    package: EvidencePackage | None = None,
+    *,
+    root: str | Path = ".",
+) -> ScintillatorWLSAudit:
+    """Audit source-backed WLS ``f(r)`` and ``f(z)`` evidence.
 
     Args:
-        root: Repository root. Defaults to the current directory.
+        package: Evidence surfaces and provenance to audit. Missing fields fail
+            closed; scalar constants are recorded but not accepted as WLS
+            functions.
+        root: Repository root used to resolve relative source/artifact paths.
 
     Returns:
-        Fail-closed WLS audit report.
+        Immutable audit report. ``ready`` is true only when both WLS functions
+        are source-backed and tied to a DEC or closure artifact.
     """
-    return audit_scintillator_wls_contract(root)
-
-
-def audit_scintillator_wls_contract(root: str | Path = ".") -> WlsAuditReport:
-    """Audit repository text surfaces for source-backed ``f(r)`` and ``f(z)``.
-
-    Args:
-        root: Repository root containing optional ``NNBAR_Detector`` and Python
-            reconstruction/config surfaces.
-
-    Returns:
-        ``WlsAuditReport``. ``ready`` is false unless both WLS functions are
-        found in code/config and each source also carries DEC or closure evidence.
-    """
+    evidence = package or EvidencePackage()
     root_path = Path(root)
-    scans: list[TextScan] = []
-    surfaces: list[SurfaceStatus] = []
+    observed: list[ObservedWLSSurface] = []
+    blockers: list[WLSBlocker] = []
 
-    for candidate in _candidate_files(root_path):
-        if candidate.exists() and candidate.is_file():
-            text = candidate.read_text(errors="replace")
-            rel = _relative_label(candidate, root_path)
-            scans.append(scan_text_for_wls_evidence(text, rel))
-            surfaces.append(SurfaceStatus(rel, "scanned", "surface scanned"))
-        elif not _is_generated_by_directory_walk(candidate, root_path):
-            rel = _relative_label(candidate, root_path)
-            surfaces.append(SurfaceStatus(rel, "missing", "optional audit surface is absent"))
+    for surface in evidence.source_surfaces:
+        surface_observed, surface_blockers = _scan_surface(surface, root_path)
+        observed.extend(surface_observed)
+        blockers.extend(surface_blockers)
 
-    radial = _aggregate(WLS_FUNCTION, (scan.radial_function for scan in scans))
-    longitudinal = _aggregate(WLS_FUNCTION, (scan.longitudinal_function for scan in scans))
-    scalar = _aggregate(SCALAR_RESPONSE, (scan.scalar_response for scan in scans))
-    ready = _function_ready(radial) and _function_ready(longitudinal)
-    blockers = () if ready else _blockers(radial, longitudinal, scalar, surfaces)
-    return WlsAuditReport(
-        ready=ready,
-        radial_function=radial,
-        longitudinal_function=longitudinal,
-        scalar_response=scalar,
-        surfaces=tuple(surfaces),
-        blockers=blockers,
+    observed_kinds = {surface.kind for surface in observed}
+    has_radial = "wls_radial_function" in observed_kinds
+    has_longitudinal = "wls_longitudinal_function" in observed_kinds
+    has_scalar_only = bool(
+        observed_kinds & {"scalar_light_yield", "attenuation_length"}
+    ) and not (has_radial and has_longitudinal)
+
+    if not has_radial:
+        blockers.append(_missing_function_blocker("radial"))
+    if not has_longitudinal:
+        blockers.append(_missing_function_blocker("longitudinal"))
+    if not _has_dec_or_closure(evidence, root_path):
+        blockers.append(_missing_provenance_blocker(evidence))
+    if has_scalar_only:
+        blockers.append(_scalar_only_blocker())
+
+    return ScintillatorWLSAudit(
+        ready=not blockers,
+        observed_surfaces=tuple(observed),
+        blockers=tuple(blockers),
     )
 
 
-def _candidate_files(root: Path) -> tuple[Path, ...]:
-    direct = [
-        root / "nnbar_reconstruction" / "config" / "nnbar_geometry.yaml",
-        root / "nnbar_reconstruction" / "analysis" / "geometry_constants.py",
-        root / "nnbar_reconstruction" / "analysis" / "timing_windows.py",
-        root / "nnbar_reconstruction" / "reconstruction" / "timing_window.py",
-        root / "docs" / "rebuild_plans" / "18_intercalibration.md",
-        root
-        / "docs"
-        / "rebuild_plans"
-        / "24_reconstruction_question_tree"
-        / "24_2_calorimetry.md",
-    ]
-    detector_dir = root / "NNBAR_Detector"
-    if detector_dir.exists():
-        direct.extend(_iter_scintillator_detector_files(detector_dir))
-    else:
-        direct.append(detector_dir)
-    return tuple(direct)
+def audit_current_scintillator_wls_contract(
+    root: str | Path = ".",
+) -> ScintillatorWLSAudit:
+    """Audit the current checkout's known scintillator WLS-related surfaces.
+
+    Args:
+        root: Repository root used for relative path resolution.
+
+    Returns:
+        Fail-closed current-checkout report. The C++ mirror is optional at scan
+        time: absent files become diagnostic blockers instead of tracebacks.
+    """
+    return audit_scintillator_wls_contract(
+        EvidencePackage(source_surfaces=CURRENT_WLS_SOURCE_SURFACES),
+        root=root,
+    )
 
 
-def _iter_scintillator_detector_files(detector_dir: Path) -> tuple[Path, ...]:
-    files = []
-    for path in detector_dir.rglob("*"):
-        if not path.is_file() or path.name.startswith("._"):
-            continue
-        if path.suffix not in _TEXT_SUFFIXES:
-            continue
-        haystack = str(path).lower()
-        if "scint" in haystack or "wls" in haystack or "sipm" in haystack:
-            files.append(path)
-    return tuple(sorted(files))
+def _scan_surface(
+    surface: str | Path, root: Path
+) -> tuple[tuple[ObservedWLSSurface, ...], tuple[WLSBlocker, ...]]:
+    path, display = _resolve_surface(surface, root)
+    if not path.exists():
+        return (), (_missing_surface_blocker(display),)
+
+    raw_text = path.read_text(errors="replace")
+    code_text = _strip_comments(raw_text)
+    observed: list[ObservedWLSSurface] = []
+
+    if _RADIAL_FUNCTION_PATTERN.search(code_text):
+        observed.append(
+            _observed(display, "wls_radial_function", "source_backed", "f(r)")
+        )
+    if _LONGITUDINAL_FUNCTION_PATTERN.search(code_text):
+        observed.append(
+            _observed(display, "wls_longitudinal_function", "source_backed", "f(z)")
+        )
+    if _SCALAR_LIGHT_YIELD_PATTERN.search(code_text):
+        observed.append(
+            _observed(
+                display,
+                "scalar_light_yield",
+                "diagnostic_only",
+                "scalar photons/MeV yield",
+            )
+        )
+    if _ATTENUATION_PATTERN.search(code_text):
+        observed.append(
+            _observed(
+                display,
+                "attenuation_length",
+                "diagnostic_only",
+                "attenuation/ABSLENGTH constant",
+            )
+        )
+    if _WLS_COMMENT_PATTERN.search(raw_text) and not (
+        _RADIAL_FUNCTION_PATTERN.search(code_text)
+        or _LONGITUDINAL_FUNCTION_PATTERN.search(code_text)
+    ):
+        observed.append(
+            _observed(display, "wls_geometry_comment", "diagnostic_only", "WLS comment")
+        )
+
+    return tuple(observed), ()
 
 
-def _is_generated_by_directory_walk(candidate: Path, root: Path) -> bool:
-    try:
-        rel = candidate.relative_to(root)
-    except ValueError:
-        rel = candidate
-    return len(rel.parts) > 0 and rel.parts[0] == "NNBAR_Detector" and candidate.suffix in _TEXT_SUFFIXES
-
-
-def _finding(
-    kind: str,
-    text: str,
-    source_name: str,
-    patterns: Sequence[re.Pattern[str]],
-    source_backed: bool,
-    provenance_present: bool,
-) -> EvidenceFinding:
-    snippets = _snippets(text, patterns)
-    present = bool(snippets)
-    return EvidenceFinding(
+def _observed(
+    display: str, kind: str, status: str, evidence: str
+) -> ObservedWLSSurface:
+    return ObservedWLSSurface(
+        path=Path(display),
         kind=kind,
-        present=present,
-        sources=(source_name,) if present else (),
-        source_backed=source_backed if present else False,
-        provenance_present=provenance_present if present else False,
-        snippets=snippets,
+        status=status,
+        evidence=evidence,
+        message=f"{display}: observed {evidence} as {kind} ({status})",
     )
 
 
-def _aggregate(kind: str, findings: Iterable[EvidenceFinding]) -> EvidenceFinding:
-    present = False
-    source_backed = False
-    provenance_present = False
-    sources: list[str] = []
-    snippets: list[str] = []
-    for finding in findings:
-        if not finding.present:
-            continue
-        present = True
-        source_backed = source_backed or finding.source_backed
-        provenance_present = provenance_present or finding.provenance_present
-        sources.extend(source for source in finding.sources if source not in sources)
-        snippets.extend(snippet for snippet in finding.snippets if snippet not in snippets)
-    return EvidenceFinding(
-        kind=kind,
-        present=present,
-        sources=tuple(sources),
-        source_backed=source_backed,
-        provenance_present=provenance_present,
-        snippets=tuple(snippets[:8]),
-    )
+def _resolve_surface(surface: str | Path, root: Path) -> tuple[Path, str]:
+    original = Path(surface)
+    if original.is_absolute():
+        return original, str(original)
+    return root / original, str(original)
 
 
-def _function_ready(finding: EvidenceFinding) -> bool:
-    return finding.present and finding.source_backed and finding.provenance_present
+def _strip_comments(text: str) -> str:
+    without_blocks = _BLOCK_COMMENT_PATTERN.sub(" ", text)
+    code_lines = []
+    for line in without_blocks.splitlines():
+        line = line.split("//", 1)[0]
+        line = line.split("#", 1)[0]
+        code_lines.append(line)
+    return "\n".join(code_lines)
 
 
-def _blockers(
-    radial: EvidenceFinding,
-    longitudinal: EvidenceFinding,
-    scalar: EvidenceFinding,
-    surfaces: Sequence[SurfaceStatus],
-) -> tuple[WlsBlocker, ...]:
-    blockers: list[WlsBlocker] = []
-    if not _function_ready(radial):
-        blockers.append(
-            _wls_blocker(
-                "missing_radial_wls_function",
-                "n_SiPM / n_scint versus radial distance r",
-                "fit residual and pull width for f(r)",
-                radial,
-            )
-        )
-    if not _function_ready(longitudinal):
-        blockers.append(
-            _wls_blocker(
-                "missing_longitudinal_wls_function",
-                "n_SiPM / n_WLS versus longitudinal distance z",
-                "fit residual and pull width for f(z)",
-                longitudinal,
-            )
-        )
-    if scalar.present and blockers:
-        blockers.append(
-            WlsBlocker(
-                code="scalar_response_only",
-                needed_sample="cal_scintillator_wls_muon200_v1",
-                observable="scalar light_yield/attenuation contrasted with SiPM collection maps",
-                figure_of_merit="closure residual after replacing scalar response with f(r)*f(z)",
-                message=(
-                    "Current evidence includes scalar scintillator light-yield or attenuation "
-                    "surfaces, but not a provenanced source-backed WLS f(r)*f(z) contract."
-                ),
-            )
-        )
-    if any(surface.status == "missing" for surface in surfaces):
-        missing = ", ".join(surface.path for surface in surfaces if surface.status == "missing")
-        blockers.append(
-            WlsBlocker(
-                code="missing_optional_surfaces",
-                needed_sample="source inventory before cal_scintillator_wls_muon200_v1 promotion",
-                observable="presence of source/config surfaces that define WLS response",
-                figure_of_merit="all required source/config surfaces scanned or explicitly waived",
-                message=f"Optional WLS audit surfaces are absent: {missing}",
-            )
-        )
-    return tuple(blockers)
+def _has_dec_or_closure(evidence: EvidencePackage, root: Path) -> bool:
+    if evidence.provenance and _DEC_PATTERN.search(evidence.provenance):
+        return True
+    if evidence.closure_artifact is None:
+        return False
+    artifact = Path(evidence.closure_artifact)
+    if not artifact.is_absolute():
+        artifact = root / artifact
+    return artifact.exists()
 
 
-def _wls_blocker(
-    code: str,
-    observable: str,
-    figure_of_merit: str,
-    finding: EvidenceFinding,
-) -> WlsBlocker:
-    if not finding.present:
-        reason = "no matching function evidence was found"
-    elif not finding.source_backed:
-        reason = "matching text is docs-only rather than source/config evidence"
+def _missing_function_blocker(axis: str) -> WLSBlocker:
+    if axis == "radial":
+        code = "missing_wls_radial_function"
+        observable = "detected light-collection response vs local radial coordinate r"
     else:
-        reason = "source evidence lacks a DEC or closure artifact tie"
-    return WlsBlocker(
+        code = "missing_wls_longitudinal_function"
+        observable = "detected light-collection response vs local longitudinal coordinate z"
+    return WLSBlocker(
         code=code,
-        needed_sample="cal_scintillator_wls_muon200_v1",
+        sample=WLS_CLOSURE_SAMPLE,
         observable=observable,
-        figure_of_merit=figure_of_merit,
+        figure_of_merit=WLS_CLOSURE_FIGURE_OF_MERIT,
         message=(
-            f"{code}: {reason}; require cal_scintillator_wls_muon200_v1, "
-            f"observable {observable}, and figure of merit {figure_of_merit}."
+            f"{code}: need {WLS_CLOSURE_SAMPLE} with {observable}; "
+            f"figure of merit: {WLS_CLOSURE_FIGURE_OF_MERIT}"
         ),
     )
 
 
-def _matches_any(text: str, patterns: Sequence[re.Pattern[str]]) -> bool:
-    return any(pattern.search(text) for pattern in patterns)
+def _missing_provenance_blocker(evidence: EvidencePackage) -> WLSBlocker:
+    supplied = evidence.provenance or evidence.closure_artifact or "none"
+    return WLSBlocker(
+        code="missing_wls_provenance",
+        sample="scintillator-wls evidence package",
+        observable="DEC record or closure artifact tying f(r)/f(z) to Ch. 5",
+        figure_of_merit="sample ID, command, artifact hash, fit covariance, closure residual",
+        message=(
+            "missing_wls_provenance: need DEC or closure artifact tying source "
+            f"functions to Ch. 5; supplied={supplied}"
+        ),
+    )
 
 
-def _snippets(text: str, patterns: Sequence[re.Pattern[str]]) -> tuple[str, ...]:
-    snippets: list[str] = []
-    for line in text.splitlines():
-        if any(pattern.search(line) for pattern in patterns):
-            cleaned = " ".join(line.strip().split())
-            if cleaned and cleaned not in snippets:
-                snippets.append(cleaned[:160])
-        if len(snippets) >= 4:
-            break
-    return tuple(snippets)
+def _scalar_only_blocker() -> WLSBlocker:
+    return WLSBlocker(
+        code="scalar_scintillator_response_without_wls_contract",
+        sample=WLS_CLOSURE_SAMPLE,
+        observable="joint f(r) and f(z) light-collection map, not a scalar yield only",
+        figure_of_merit=WLS_CLOSURE_FIGURE_OF_MERIT,
+        message=(
+            "scalar_scintillator_response_without_wls_contract: current scalar "
+            "light-yield/attenuation evidence cannot replace WLS f(r)/f(z); "
+            f"needed sample={WLS_CLOSURE_SAMPLE}; figure of merit: "
+            f"{WLS_CLOSURE_FIGURE_OF_MERIT}"
+        ),
+    )
 
 
-def _is_source_backed(source_name: str) -> bool:
-    path = Path(source_name)
-    if path.suffix not in _SOURCE_SUFFIXES:
-        return False
-    parts = set(path.parts)
-    return bool({"NNBAR_Detector", "nnbar_reconstruction"} & parts) or path.suffix in {
-        ".cc",
-        ".hh",
-        ".cpp",
-        ".cxx",
-        ".hpp",
-    }
-
-
-def _relative_label(path: Path, root: Path) -> str:
-    try:
-        return path.relative_to(root).as_posix()
-    except ValueError:
-        return path.as_posix()
+def _missing_surface_blocker(display: str) -> WLSBlocker:
+    return WLSBlocker(
+        code=f"missing_surface:{display}",
+        sample="source/config checkout",
+        observable="scintillator WLS source/config surface",
+        figure_of_merit="file exists or optional mirror is explicitly absent in task notes",
+        message=f"missing_surface:{display}",
+    )

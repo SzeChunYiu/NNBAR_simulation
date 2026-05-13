@@ -1,0 +1,6 @@
+JobIDRaw     JobName                     Partition      State    Elapsed ExitCode 
+------------ -------------------------- ---------- ---------- ---------- -------- 
+3041518      mcaccel-adept                  gpua40 CANCELLED+   00:00:00      0:0 
+3041525      mcaccel-adept-smoke           gpua40i     FAILED   00:00:17      3:0 
+3041525.bat+ batch                                     FAILED   00:00:17      3:0 
+3041525.ext+ extern                                 COMPLETED   00:00:17      0:0 

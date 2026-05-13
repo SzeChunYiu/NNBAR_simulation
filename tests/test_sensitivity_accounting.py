@@ -70,6 +70,14 @@ def test_acceptance_edge_cases_reject_impossible_counts():
         compute_acceptance(generated_count=-1, surviving_count=0)
 
 
+def test_acceptance_rejects_non_integral_counts_before_coercion():
+    with pytest.raises(ValueError, match="integer"):
+        compute_acceptance(generated_count=1.5, surviving_count=1)
+
+    with pytest.raises(ValueError, match="integer"):
+        compute_acceptance(generated_count=1, surviving_count=0.5)
+
+
 def test_zero_survivor_limit_uses_explicit_confidence_level():
     assert zero_survivor_poisson_mean_limit(0.90) == pytest.approx(-math.log(0.10))
     assert zero_survivor_poisson_mean_limit(0.95) == pytest.approx(-math.log(0.05))

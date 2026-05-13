@@ -146,3 +146,20 @@ Stop when the 27-bin nonzero matrix is covered and accounted for:
 Write "DONE: cosmic array/recovery JOBID(s) submitted, 27 nonzero bins covered"
 only if every submitted task is complete or explicitly handed off; otherwise
 leave `MASTER_PLAN.md` `RUNNING` with the remaining job IDs.
+
+### Proton-bin5 recovery and thread-probe chronology
+
+Detailed 2026-05-12 proton-bin5 recovery, diagnostic, and thread-probe
+handoffs moved to
+`docs/parallel-sessions/cosmic-slurm-array-proton-bin5-thread-probe.md` to
+keep this umbrella lane doc within the file-size policy.
+
+Current authorization rule from the latest handoff: proton-bin5 production
+recovery remains blocked while diagnostic job `3047491` still has active or
+pending array tasks. As of the 2026-05-12 09:20 CEST refresh, `_4` and `_5`
+were RUNNING on `cn135`, `_6` and `_7` were PENDING on `JobArrayTaskLimit`,
+`thread_probe_0` and `thread_probe_2` were the only non-stub thread-probe
+Parquet outputs, and no production recovery job or output mutation occurred.
+Inspect final `sacct`, logs, and `thread_probe_*` row counts in the companion
+doc before any future recovery design.
+

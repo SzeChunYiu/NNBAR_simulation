@@ -1,1 +1,3 @@
-/goal You are PANE 1, lane scintillator-wls-parameterization. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/scintillator-wls-parameterization.md in /Volumes/MyDrive/nnbar/nnbar/simulation, then complete one compact-safe iteration.
+# MIGRATED 2026-05-11: this queue is INACTIVE.
+# Active queues live on LUNARC under NNBAR_Detector_sim/codex-tasks/{recon,sim,g4gpu,review}/.
+# See docs/parallel-sessions/MASTER_PLAN.md and .codex-supervisor.toml.

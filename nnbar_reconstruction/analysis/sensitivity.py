@@ -180,17 +180,20 @@ def compute_acceptance(generated_count: int, surviving_count: int) -> Acceptance
     """Compute acceptance from generated and surviving event counts.
 
     Raises:
-        ValueError: If counts are negative or surviving events exceed generated
-            events.
+        ValueError: If counts are non-integral, negative, or surviving events
+            exceed generated events.
     """
+
+    generated_count = _coerce_event_count("generated_count", generated_count)
+    surviving_count = _coerce_event_count("surviving_count", surviving_count)
 
     if generated_count < 0 or surviving_count < 0:
         raise ValueError("generated_count and surviving_count must be non-negative")
     if surviving_count > generated_count:
         raise ValueError("surviving_count cannot exceed generated_count")
     return AcceptanceSummary(
-        generated_count=int(generated_count),
-        surviving_count=int(surviving_count),
+        generated_count=generated_count,
+        surviving_count=surviving_count,
     )
 
 
@@ -248,3 +251,15 @@ def _extract_weight(record: Any, weight_key: str | None) -> float:
     if isinstance(record, Mapping):
         return float(record[weight_key])
     return float(getattr(record, weight_key))
+
+
+def _coerce_event_count(name: str, value: Any) -> int:
+    if isinstance(value, bool):
+        raise ValueError(f"{name} must be an integer count")
+    try:
+        integer_value = int(value)
+    except (TypeError, ValueError, OverflowError) as exc:
+        raise ValueError(f"{name} must be an integer count") from exc
+    if value != integer_value:
+        raise ValueError(f"{name} must be an integer count")
+    return integer_value

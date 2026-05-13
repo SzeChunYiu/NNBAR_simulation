@@ -1,93 +1,99 @@
 # Parallel codex sessions — coordination protocol
 
-This repo is currently being worked on by **4 parallel codex sessions**
-running in tmux panes via `codex-supervisor` (session name
-`nnbar-rebuild`). **Each lane is file-disjoint** by design; merges into
-`main` cannot conflict.
+This repo is currently run by the LUNARC `codex-supervisor` layout described in
+`docs/parallel-sessions/MASTER_PLAN.md`: **five tmux sessions / 22 panes**
+(`recon`, `sim`, `g4gpu`, `review`, and `meta`) launched from the
+`codex-prompts-*.txt` files at the repo root. The older local
+`nnbar-gpu-batch` six-pane layout and Wave-6 `L0`--`L3` plan lanes are kept
+below only as historical context for plan-audit work; they are not the active
+supervisor topology.
 
-**Read this file at the start of every iteration** — assume the
-protocol may have evolved since you last looked.
+**Read this file at the start of every iteration** — assume the protocol may
+have evolved since you last looked.
 
-## Lanes
+## Active LUNARC sessions
 
-| Pane | Lane | Branch | Worktree | Repo | Target file(s) |
-| ---- | ---- | ------ | -------- | ---- | -------------- |
-| 0 | L0 | `lane/L0-sim-walkthrough` | `/Volumes/MyDrive/nnbar/nnbar/simulation-L0` | simulation (this) | `docs/rebuild_plans/07_simulation_atomic_walkthrough.md` |
-| 1 | L1 | `lane/L1-reco-walkthrough` | `/Volumes/MyDrive/nnbar/nnbar/simulation-L1` | simulation (this) | `docs/rebuild_plans/08_reconstruction_atomic_walkthrough.md` |
-| 2 | L2 | `lane/L2-io-macros` | `/Volumes/MyDrive/nnbar/nnbar/simulation-L2` | simulation (this) | `docs/rebuild_plans/09_io_schema_data_dictionary.md`, `docs/rebuild_plans/10_macro_and_sample_inventory.md` |
-| 3 | L3 | `lane/L3-foundations-code` | `/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3` | **NNBAR_Detector** (separate) | new files under `nnbar_reconstruction/{audit,registry,statistics}/` and `tests/` |
+All active panes work from the LUNARC checkout
+`/projects/hep/fs10/shared/nnbar/billy/NNBAR_Detector_sim/` unless a lane spec
+explicitly names an external repo (for example the isolated `geant4-gpu` or
+`geant4-fork` trees). The local checkout mirrors coordination docs and prompt
+files. Queue files are one-line FIFO `/goal` prompts under
+`codex-tasks/<session>/`; the legacy local `codex-tasks/worker-{0..4}.txt`
+files are migrated/inert and must not receive new active work.
 
-L0/L1/L2 work in the orchestration repo (this repo, simulation/). L3
-works in the NNBAR_Detector repo (sibling worktree). The plan-set lives
-in the orchestration repo and is read-only for L3.
+| Session | Panes | Prompt file | Queue dir | Ownership summary |
+| ------- | ----- | ----------- | --------- | ----------------- |
+| `nnbar-recon-lunarc` | 7 | `codex-prompts-recon.txt` | `codex-tasks/recon/` | Python reconstruction/audit lanes; pane 0 is `planner-recon`. |
+| `nnbar-sim-lunarc` | 7 | `codex-prompts-sim.txt` | `codex-tasks/sim/` | C++/SLURM/cosmic recovery and simulation evidence lanes; pane 0 is `planner-sim`. |
+| `nnbar-g4gpu-lunarc` | 4 | `codex-prompts-g4gpu.txt` | `codex-tasks/g4gpu/` | Isolated G4GPU implementation/research lanes. |
+| `nnbar-review-lunarc` | 2 | `codex-prompts-review.txt` | `codex-tasks/review/` | Geant4/OpenMC/source-review lanes. |
+| `nnbar-meta-lunarc` | 2 | `codex-prompts-meta.txt` | `codex-tasks/meta/` | Cross-cutting DEBUGGER and VALIDATOR-PLANNER only. |
 
-Per-lane spec files:
+Per-pane lane names, specs, and writable scopes are in the prompt files and in
+the lane-specific markdown referenced by those prompts. `MASTER_PLAN.md` is the
+authoritative status table when it differs from this summary.
 
-- `docs/parallel-sessions/L0.md`
-- `docs/parallel-sessions/L1.md`
-- `docs/parallel-sessions/L2.md`
-- `docs/parallel-sessions/L3.md`
+## Active iteration rules
 
-## Rules every session follows
+1. **Re-read this file and your lane spec at the start of every iteration.**
+2. **Stay inside your declared writable scope.** Do not edit another worker's
+   task files unless your spec explicitly says to update shared coordination
+   docs such as `MASTER_PLAN.md`.
+3. **Use RTK for repo commands.** The repo `AGENTS.md` imports
+   `/Users/billy/.codex/RTK.md`; prefix shell commands with `rtk`, or use
+   `rtk proxy ...` for raw/compound commands.
+4. **500-line file cap** per `CODING_STANDARDS.md` §1. When a file approaches
+   450 lines, split before adding. Test files included.
+5. **One compact unit per iteration.** A unit is the single task or subtask in
+   your lane spec; do not bundle unrelated fixes.
+6. **Commit only your own paths.** Other panes may leave dirty files in the
+   shared worktree. Stage explicit paths and never clean, reset, or overwrite
+   unrelated work.
+7. **Status commits.** Queue-driven workers mark `NEXT` → `RUNNING`, commit the
+   claim, implement and verify, then mark `RUNNING` → `DONE` in
+   `MASTER_PLAN.md` and commit the completion. Queue pops should be committed
+   with the claim when the queue file is tracked.
+8. **G4GPU isolation is mandatory.** Worker-3/4 output must remain separated
+   from NNBAR thesis-production code and data; see
+   `docs/policies/g4gpu-isolation.md`.
+9. **Decision-log entries** (`docs/governance/DECISION_LOG.md`, plan 05) are
+   required for methodology changes: changing a numerical threshold,
+   adding/removing an MVA feature, replacing an algorithm at any leaf, or
+   pinning a dependency version.
 
-1. **Re-read this file at the start of every iteration.**
-2. **Stay in your worktree.** Each pane has a designated worktree path
-   (table above). Do not edit files outside your worktree, and do not
-   touch files outside your declared writable targets.
-3. **500-line file cap** per `CODING_STANDARDS.md` §1. When a file
-   approaches 450 lines, split before adding. Test files included.
-4. **One unit per iteration.** A "unit" is one builder, one SD, one
-   reconstruction module, one parquet column-table, one macro cluster,
-   or one code module + tests. Do not bundle.
-5. **Commit on your branch.** Format:
-   ```
-   <type>(<scope>): <subject under 72 chars>
+## Active iteration cycle (template)
 
-   <optional body>
+For non-planner workers in `recon`, `sim`, `g4gpu`, and `review` sessions:
 
-   Plan: <plan IDs touched>
-   Lane: L<n>
-   ```
-   `<type>` ∈ {feat, fix, refactor, docs, test, build, ci, chore}.
-6. **L0/L1/L2: merge after every commit** by running
-   `bash /Volumes/MyDrive/nnbar/nnbar/simulation/scripts/codex-supervisor/merge.sh lane/L<n>-<topic>`.
-   The script holds a directory lock so concurrent calls serialise.
-7. **L3: do NOT auto-merge.** L3 commits stay on
-   `lane/L3-foundations-code` for human review. NNBAR_Detector master
-   is dirty with the user's in-flight rebuild work and L3 must not
-   collide with it.
-8. **Decision-log entries** (`docs/governance/DECISION_LOG.md`,
-   plan 05) for any methodology change: changing a numerical
-   threshold, adding/removing an MVA feature, replacing an algorithm
-   at any leaf, pinning a dependency version. The DEC entry is
-   committed *with* the code change.
+1. Re-read `docs/parallel-sessions.md` and your lane-specific markdown spec.
+2. Check your session queue file first (`codex-tasks/<session>/worker-N.txt`)
+   if your spec defines one; otherwise inspect `MASTER_PLAN.md` for a matching
+   unassigned `NEXT` task.
+3. Claim exactly one task (`NEXT` → `RUNNING`) and commit the claim.
+4. Read the task spec and every plan/source section it references.
+5. Make the scoped change, respecting lane isolation and file caps.
+6. Run the verification command named by the task spec.
+7. Commit the implementation, update `MASTER_PLAN.md` to `DONE`, commit the
+   completion, then stop.
 
-## Iteration cycle (template)
+For planner panes: review new commits, maintain queue depth across the active
+LUNARC queue dirs, write compact lane specs, update `MASTER_PLAN.md`, then stop.
 
-For lanes L0, L1, L2:
+## Legacy Wave-6 lanes (historical plan-audit context)
 
-1. Re-read `docs/parallel-sessions.md` and your lane spec.
-2. Read every plan section your task references.
-3. Pick one unit per the lane spec.
-4. Make the change in your worktree.
-5. Verify file size ≤ 500 lines.
-6. `git add <files>` and `git commit -m "<message per §5>"`.
-7. `bash /Volumes/MyDrive/nnbar/nnbar/simulation/scripts/codex-supervisor/merge.sh lane/L<n>-<topic>`.
-8. Continue until stop condition (lane spec) or rate-limited.
+The previous `nnbar-rebuild` tmux batch used four file-disjoint lanes. Keep
+these references only when maintaining old Wave-6 plan-audit material; do not
+use them to decide active pane ownership.
 
-For lane L3: same cycle, but step 7 is replaced by `pytest tests/ -x
---tb=short` and the commit is left on the branch (no merge).
+| Legacy pane | Lane | Branch | Worktree | Repo | Target file(s) |
+| ----------- | ---- | ------ | -------- | ---- | -------------- |
+| 0 | L0 | `lane/L0-sim-walkthrough` | `/Volumes/MyDrive/nnbar/nnbar/simulation-L0` | simulation | `docs/rebuild_plans/07_simulation_atomic_walkthrough.md` |
+| 1 | L1 | `lane/L1-reco-walkthrough` | `/Volumes/MyDrive/nnbar/nnbar/simulation-L1` | simulation | `docs/rebuild_plans/08_reconstruction_atomic_walkthrough.md` |
+| 2 | L2 | `lane/L2-io-macros` | `/Volumes/MyDrive/nnbar/nnbar/simulation-L2` | simulation | `docs/rebuild_plans/09_io_schema_data_dictionary.md`, `docs/rebuild_plans/10_macro_and_sample_inventory.md` |
+| 3 | L3 | `lane/L3-foundations-code` | `/Volumes/MyDrive/nnbar/nnbar/NNBAR_Detector-L3` | `NNBAR_Detector` | new files under `nnbar_reconstruction/{audit,registry,statistics}/` and `tests/` |
 
-## Git contention
-
-Sessions run inside their own git worktrees, but `simulation/main` is
-shared by L0/L1/L2 merges. The `merge.sh` mkdir-lock serialises
-concurrent merges. If `merge.sh` reports "could not acquire lock",
-wait and retry — do NOT remove the lock directory unless it's been
-stuck for > 120 seconds.
-
-If `git push` ever appears in a script, ignore it for now — there is
-no remote configured for the orchestration repo.
+Legacy per-lane specs: `docs/parallel-sessions/L0.md` through
+`docs/parallel-sessions/L3.md`.
 
 ## Atomic scientific derivation (Wave 6 — academic-grade understanding)
 
@@ -246,15 +252,18 @@ Otherwise: keep iterating.
 ## Read-only files (every lane)
 
 - `CODING_STANDARDS.md`
-- `docs/parallel-sessions.md` (this file)
+- `docs/parallel-sessions.md` (this file), unless the active task spec
+  explicitly assigns the shared protocol refresh
 - `docs/rebuild_plans/00_README.md` and 01–06 (foundations)
-- Other lanes' `docs/parallel-sessions/L*.md`
+- Other lanes' `docs/parallel-sessions/*.md` lane specs unless your task
+  explicitly assigns shared coordination-doc maintenance
 - Other lanes' writable targets
 
 ## Required reading (every lane, every iteration)
 
 - `docs/parallel-sessions.md` (this file)
-- Your `docs/parallel-sessions/L<n>.md`
+- Your lane-specific `docs/parallel-sessions/*.md` spec (or legacy `L<n>.md`
+  for old Wave-6 plan-audit tasks)
 - Plan sections your task references (the relevant
   `docs/rebuild_plans/*.md`)
 - `CODING_STANDARDS.md` (only on first iteration; sessions remember)

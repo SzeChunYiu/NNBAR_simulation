@@ -12,6 +12,7 @@ Implements Chapter 9 from thesis:
 from __future__ import annotations
 
 import numpy as np
+import pandas as pd
 from typing import Dict, List, Optional, TYPE_CHECKING
 from dataclasses import dataclass
 
@@ -20,6 +21,8 @@ from ..utils.coordinates import (
     compute_total_invariant_mass,
     normalize_vector,
 )
+from .event_particle_counts import count_particles
+from ..reconstruction.electron_pair import electron_pair_event_counts
 
 if TYPE_CHECKING:
     from ..reconstruction.charged_reconstruction import ChargedObject
@@ -55,6 +58,9 @@ class EventVariables:
     # Vertex quality
     vertex_r: float                 # Radial distance of vertex from z-axis
     n_tracks_to_vertex: int         # Tracks used in vertex reconstruction
+    n_electron_pairs: int = 0       # Number of identified e+/e- conversion pairs
+    electron_pair_count_blocked: bool = False  # True when pair count is unsafe
+    electron_pair_blocker_reason: str = ""  # Machine-readable pair-count blocker
     filtered_scintillator_upper_mev: float = 0.0  # Out-of-time scintillator energy for y > 0
     filtered_scintillator_lower_mev: float = 0.0  # Out-of-time scintillator energy for y < 0
 
@@ -74,6 +80,9 @@ class EventVariables:
             'n_neutral': self.n_neutral,
             'n_pions': self.n_pions,
             'n_protons': self.n_protons,
+            'n_electron_pairs': self.n_electron_pairs,
+            'electron_pair_count_blocked': self.electron_pair_count_blocked,
+            'electron_pair_blocker_reason': self.electron_pair_blocker_reason,
             'vertex_r': self.vertex_r,
             'n_tracks_to_vertex': self.n_tracks_to_vertex,
             'filtered_scintillator_upper_mev': self.filtered_scintillator_upper_mev,
@@ -341,47 +350,6 @@ def compute_forward_backward_asymmetry(
     return (e_forward - e_backward) / total
 
 
-def count_particles(
-    charged_objects: List[ChargedObject],
-    neutral_objects: List[NeutralObject],
-) -> Dict[str, int]:
-    """
-    Count particles by type.
-
-    Args:
-        charged_objects: List of charged particles.
-        neutral_objects: List of neutral particles.
-
-    Returns:
-        Dictionary with counts.
-    """
-    counts = {
-        'charged': len(charged_objects),
-        'neutral': len(neutral_objects),
-        'pions': 0,
-        'protons': 0,
-        'photons': 0,
-        'pi0': 0,
-    }
-
-    for obj in charged_objects:
-        if obj.particle_type in ['PION_PLUS', 'PION_MINUS']:
-            counts['pions'] += 1
-        elif obj.particle_type == 'PROTON':
-            counts['protons'] += 1
-
-    for obj in neutral_objects:
-        if obj.is_pi0_candidate:
-            counts['pi0'] += 1
-        else:
-            counts['photons'] += 1
-
-    # Count pi0 as pions
-    counts['pions'] += counts['pi0']
-
-    return counts
-
-
 def compute_event_variables(
     charged_objects: List[ChargedObject],
     neutral_objects: List[NeutralObject],
@@ -430,6 +398,7 @@ def compute_event_variables(
 
     # Particle counts
     counts = count_particles(charged_objects, neutral_objects)
+    pair_counts = electron_pair_event_counts(charged_objects)
 
     # Vertex quality
     vertex_r = np.sqrt(vertex[0]**2 + vertex[1]**2)
@@ -463,93 +432,11 @@ def compute_event_variables(
         n_neutral=counts['neutral'],
         n_pions=counts['pions'],
         n_protons=counts['protons'],
+        n_electron_pairs=pair_counts['n_electron_pairs'],
+        electron_pair_count_blocked=pair_counts['electron_pair_count_blocked'],
+        electron_pair_blocker_reason=pair_counts['electron_pair_blocker_reason'],
         vertex_r=vertex_r,
         n_tracks_to_vertex=n_tracks_to_vertex,
         filtered_scintillator_upper_mev=filtered_upper,
         filtered_scintillator_lower_mev=filtered_lower,
     )
-
-
-if __name__ == "__main__":
-    # Test event variables
-    from ..reconstruction.charged_reconstruction import ChargedObject
-    from ..reconstruction.neutral_reconstruction import NeutralObject
-    from ..tracking.track_fitting import Track
-
-    # Create mock event
-    vertex = np.array([0, 0, 0])
-
-    # Mock tracks
-    tracks = []
-    for i in range(3):
-        theta = np.random.uniform(0.5, 1.5)
-        phi = np.random.uniform(0, 2 * np.pi)
-        direction = np.array([np.sin(theta) * np.cos(phi),
-                              np.sin(theta) * np.sin(phi),
-                              np.cos(theta)])
-
-        track = Track(
-            track_id=i,
-            center=vertex + direction * 150,
-            direction=direction,
-            head=vertex + direction * 120,
-            tail=vertex + direction * 180,
-            length=60.0,
-            n_hits=20,
-            rms_residual=0.3,
-            linearity=0.97,
-            hit_indices=np.arange(20),
-            is_signal=True,
-        )
-        tracks.append(track)
-
-    # Create charged objects
-    charged = []
-    for i, track in enumerate(tracks):
-        obj = ChargedObject(
-            object_id=i,
-            track=track,
-            energy=300.0,
-            momentum=track.direction,
-            momentum_magnitude=280.0,
-            dedx_truncated=1.8,
-            dedx_layers=np.array([]),
-            scint_energy=50.0,
-            lg_energy=200.0,
-            scint_range=3,
-            tpc_entry=track.head,
-            tpc_exit=track.tail,
-            particle_type='PION_PLUS',
-            pid_confidence=0.85,
-        )
-        charged.append(obj)
-
-    # Create neutral objects
-    neutral = []
-    for i in range(2):
-        direction = np.random.randn(3)
-        direction = direction / np.linalg.norm(direction)
-
-        obj = NeutralObject(
-            object_id=i,
-            energy=150.0,
-            direction=direction,
-            position=vertex + direction * 300,
-            scint_energy=30.0,
-            lg_energy=120.0,
-            n_scint_hits=5,
-            n_lg_hits=10,
-            shower_width=5.0,
-            lg_fraction=0.8,
-        )
-        neutral.append(obj)
-
-    # Compute event variables
-    ev = compute_event_variables(charged, neutral, vertex, n_tracks_to_vertex=3)
-
-    print("Event Variables:")
-    print(f"  Invariant mass: {ev.invariant_mass:.1f} MeV ({ev.invariant_mass/1000:.3f} GeV)")
-    print(f"  Sphericity: {ev.sphericity:.3f}")
-    print(f"  Total energy: {ev.total_energy:.1f} MeV")
-    print(f"  N charged: {ev.n_charged}, N neutral: {ev.n_neutral}")
-    print(f"  N pions: {ev.n_pions}")

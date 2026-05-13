@@ -1,0 +1,51 @@
+{
+  "benchmarks_hash": "ba41bee54320",
+  "build_dir": "/projects/hep/fs10/shared/nnbar/billy/openmc/build-lunarc",
+  "build_log": "/projects/hep/fs10/shared/nnbar/billy/openmc/build-lunarc-build.log",
+  "configure_log": "/projects/hep/fs10/shared/nnbar/billy/openmc/build-lunarc-configure.log",
+  "ctest_log": "/projects/hep/fs10/shared/nnbar/billy/openmc/build-lunarc-ctest.log",
+  "ctest_no_mcpl_log": "/projects/hep/fs10/shared/nnbar/billy/openmc/build-lunarc-ctest-no-mcpl.log",
+  "openmc_hash": "27e38e894697",
+  "openmc_tag": "v0.15.3",
+  "results": [
+    {
+      "benchmark": "HEU-MET-FAST-001 case 1",
+      "exit_code": 255,
+      "log_tail": "                #######################     %%%%%%%%%%%%%%%%%%\n                 #######################     %%%%%%%%%%%%%%%%%\n                 ######################     %%%%%%%%%%%%%%%%%\n                  ####################     %%%%%%%%%%%%%%%%%\n                    #################     %%%%%%%%%%%%%%%%%\n                     ###############     %%%%%%%%%%%%%%%%\n                       ############     %%%%%%%%%%%%%%%\n                          ########     %%%%%%%%%%%%%%\n                                      %%%%%%%%%%%\n\n                 | The OpenMC Monte Carlo Code\n       Copyright | 2011-2025 MIT, UChicago Argonne LLC, and contributors\n         License | https://docs.openmc.org/en/latest/license.html\n         Version | 0.15.3\n     Commit Hash | 27e38e894697bb32a1dac7848d2618818b6b8daf\n       Date/Time | 2026-05-11 14:38:09\n   MPI Processes | 1\n  OpenMP Threads | 96\n\n Reading settings XML file...\n ERROR: No cross_sections.xml file was specified in materials.xml or in the\n        OPENMC_CROSS_SECTIONS environment variable. OpenMC needs such a file to\n        identify where to find data libraries. Please consult the user's guide\n        at https://docs.openmc.org/ for information on how to set up data\n        libraries.",
+      "run_dir": "/projects/hep/fs10/shared/nnbar/billy/openmc-baseline-worker0-20260511/heu-met-fast-001-case1",
+      "source": "mit-crpg/benchmarks icsbep/heu-met-fast-001/openmc/case-1",
+      "statepoints": [],
+      "status": "blocked_or_failed",
+      "summary_exists": false,
+      "timestamp_cest": "2026-05-11 14:38:09 CEST",
+      "wall_seconds": 0.603
+    },
+    {
+      "benchmark": "PWR pin cell",
+      "exit_code": 255,
+      "log_tail": "                #######################     %%%%%%%%%%%%%%%%%%\n                 #######################     %%%%%%%%%%%%%%%%%\n                 ######################     %%%%%%%%%%%%%%%%%\n                  ####################     %%%%%%%%%%%%%%%%%\n                    #################     %%%%%%%%%%%%%%%%%\n                     ###############     %%%%%%%%%%%%%%%%\n                       ############     %%%%%%%%%%%%%%%\n                          ########     %%%%%%%%%%%%%%\n                                      %%%%%%%%%%%\n\n                 | The OpenMC Monte Carlo Code\n       Copyright | 2011-2025 MIT, UChicago Argonne LLC, and contributors\n         License | https://docs.openmc.org/en/latest/license.html\n         Version | 0.15.3\n     Commit Hash | 27e38e894697bb32a1dac7848d2618818b6b8daf\n       Date/Time | 2026-05-11 14:38:11\n   MPI Processes | 1\n  OpenMP Threads | 96\n\n Reading settings XML file...\n ERROR: No cross_sections.xml file was specified in materials.xml or in the\n        OPENMC_CROSS_SECTIONS environment variable. OpenMC needs such a file to\n        identify where to find data libraries. Please consult the user's guide\n        at https://docs.openmc.org/ for information on how to set up data\n        libraries.",
+      "run_dir": "/projects/hep/fs10/shared/nnbar/billy/openmc-baseline-worker0-20260511/pwr-pin-cell",
+      "source": "openmc.examples.pwr_pin_cell (BEAVRS-derived)",
+      "statepoints": [],
+      "status": "blocked_or_failed",
+      "summary_exists": false,
+      "timestamp_cest": "2026-05-11 14:38:11 CEST",
+      "wall_seconds": 0.515
+    },
+    {
+      "benchmark": "C5G7 2D MOX/UO2 assembly proxy",
+      "exit_code": 0,
+      "log_tail": "\n Total time for initialization     = 6.9233e-02 seconds\n   Reading cross sections          = 7.2499e-03 seconds\n Total time in simulation          = 5.3649e-01 seconds\n   Time in transport only          = 3.0252e-01 seconds\n   Time in inactive batches        = 2.4656e-02 seconds\n   Time in active batches          = 5.1183e-01 seconds\n   Time synchronizing fission bank = 6.0930e-04 seconds\n     Sampling source sites         = 4.3750e-04 seconds\n     SEND/RECV source sites        = 1.5423e-04 seconds\n   Time accumulating tallies       = 2.1243e-01 seconds\n   Time writing statepoints        = 2.0502e-02 seconds\n Total time for finalization       = 6.2658e-03 seconds\n Total time elapsed                = 6.2070e-01 seconds\n Calculation Rate (inactive)       = 40557.9 particles/second\n Calculation Rate (active)         = 7815.02 particles/second\n\n ============================>     RESULTS     <============================\n\n k-effective (Collision)     = 1.15583 +/- 0.01726\n k-effective (Track-length)  = 1.14510 +/- 0.01320\n k-effective (Absorption)    = 1.15763 +/- 0.00817\n Combined k-effective        = 1.17463 +/- 0.00277\n Leakage Fraction            = 0.00300 +/- 0.00041\n",
+      "run_dir": "/projects/hep/fs10/shared/nnbar/billy/openmc-baseline-worker0-20260511/c5g7-2d-mox-proxy/2d",
+      "source": "mit-crpg/benchmarks c5g7/openmc/2d (multi-group)",
+      "statepoints": [
+        "statepoint.5.h5"
+      ],
+      "status": "completed",
+      "summary_exists": true,
+      "timestamp_cest": "2026-05-11 14:38:13 CEST",
+      "wall_seconds": 1.324
+    }
+  ],
+  "timestamp_cest": "2026-05-11 14:38:13 CEST"
+}

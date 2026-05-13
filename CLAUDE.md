@@ -10,6 +10,66 @@ gate that must pass before any switchover.
 This rule overrides anything else in this file or in lane specs. If a task
 appears to violate it, refuse the task and flag it to the planner.
 
+## The codex-supervisor holder node is for codex only — never run compute on it
+
+The LUNARC node hosting the `nnbar-csup` SLURM holder (cn018 etc.) exists
+ONLY to run codex CLI panes inside tmux. NEVER run any actual
+computation directly inside that node — no Geant4 simulations, no
+pytest/training runs, no `nnbar-detector-simulation.bin`, no python
+workers, nothing that consumes >1 core or >1 GB sustained.
+
+If a lane needs to do real work, it MUST submit a separate SLURM batch
+job via `sbatch` (with its own allocation, walltime, partition) — the
+codex pane only writes/edits the sbatch script and watches its
+output. The holder allocation is sized for codex panes only; compute
+inside it starves the tmux server, the dashboard, and every other
+codex pane.
+
+If you see compute running on the holder, kill it and re-queue as
+sbatch. Update the responsible lane spec to spell out
+"`sbatch ...`, do not run directly" so codex re-reads it.
+
+## Never write to $HOME on LUNARC — use the work directory
+
+LUNARC `$HOME` (`/home/scyiu/`) is quota-restricted and frequently full.
+Never write any file, log, lock, flag, cache, or state under `~`/`$HOME`.
+Always direct writes to the project work directory or per-user shared dir:
+
+- Project work dir: `/projects/hep/fs10/shared/nnbar/billy/NNBAR_Detector_sim/`
+- Per-user shared dir: `/projects/hep/fs10/shared/codex-tooling/per-user/scyiu/`
+
+If a tool defaults to `$HOME` for state (codex-supervisor's `.disabled`
+flags, `.codex` config, gh/git config, npm cache, etc.), redirect via env
+vars (`CODEX_HOME`, `GH_CONFIG_DIR`, `GIT_CONFIG_GLOBAL`, `NPM_CONFIG_*`,
+etc. — already wired in `env-shared.sh`). If a script hardcodes `$HOME`
+writes that can't be redirected, treat the quota-exceeded message as
+benign and proceed; never delete files in `$HOME` to make space without
+explicit user OK.
+
+## Find the root cause recursively — mandatory for every session
+
+For every problem encountered (simulation stalls, build failures, test failures,
+incorrect results, unexpected behaviour), find the root cause **recursively**
+until no deeper cause exists, then fix **that** root cause — not a symptom.
+
+Protocol:
+1. Identify the proximate failure (e.g., "event stalls").
+2. Ask "why does this happen?" — find the mechanism.
+3. Repeat step 2 on the mechanism until the answer is a concrete code or
+   configuration change, not another "because of…".
+4. Fix the deepest cause found.
+
+Do not paper over symptoms with watchdog timers, retries, or event-skipping
+unless the true root cause is physically unfixable. Never mark a problem DONE
+until the deepest fixable cause is addressed and tested.
+
+## Do not gate on credit/limit reset dates
+
+Never refuse or defer an action because of a credit-reset date, rate-limit
+window, or "wait until X" timer. If the user asks for a restart or any
+cluster action, just do it. Mentioning credits/limits as a blocker is
+explicitly disallowed.
+
 ## Role Split
 
 **Claude Code:** Project manager. Plans work, reviews codex output, handles LUNARC/cluster operations, directs next steps. Does NOT write production code.
