@@ -1,1 +1,0 @@
-/goal lane g4-cpu-opt-hadronic-xs. Read docs/parallel-sessions/g4-cpu-opt-hadronic-xs.md. In geant4-fork branch opt/hadronic-xs-cache implement BD-geant4-122/123/125/126 dataset index cache and Glauber-Gribov memoization. Validate proton-Fe XS within 0.01%. Push branch.
