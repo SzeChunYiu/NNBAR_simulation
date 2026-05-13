@@ -203,11 +203,24 @@ Heavy runs go via `sbatch` from inside the panes.
 
 ## Codex Self-Check Protocol
 
+**IMPORTANT: Thesis values are not ground truth.** The thesis contains claims that may be
+wrong or approximate. The goal is to verify and correct them through actual simulation and
+analysis. Do not just build scaffolding that checks IF evidence exists — generate the
+evidence, compare with thesis, and flag discrepancies.
+
 At the end of every lane goal, the codex agent MUST:
 1. Re-read this file (MASTER_PLAN.md)
 2. Check: are there tasks marked NEXT that match your expertise? If yes, start one.
 3. Check: does your completed work unlock a BLOCKED task? If yes, update this file.
 4. If no new work available, write "IDLE: no NEXT tasks match this lane's scope" to stdout.
+5. **Auto-PR**: push your lane branch and open a PR into main:
+   ```bash
+   bash /projects/hep/fs10/shared/codex-tooling/per-user/scyiu/auto_pr.sh \
+     "$(git rev-parse --abbrev-ref HEAD)" \
+     "Merge $(git rev-parse --abbrev-ref HEAD)" \
+     "Codex lane task complete."
+   ```
+   The script pushes, creates the PR, and merges it automatically.
 
 ---
 
