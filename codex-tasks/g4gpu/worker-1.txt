@@ -1,1 +1,0 @@
-/goal lane g4gpu-phase4-opticks. Read docs/parallel-sessions/g4gpu-phase4.md. In geant4-gpu branch lane/g4gpu-phase4-opticks add G4GPU_WITH_OPTICKS CMake option OFF, bridge header, smoke test. Verify clean build with OPTICKS=OFF. Commit and push.
