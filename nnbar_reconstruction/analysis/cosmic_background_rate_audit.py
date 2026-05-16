@@ -175,7 +175,11 @@ def _records_by_bin(
     for record in bin_records:
         particle = str(record.get("particle", ""))
         ebin_value = _numeric_value(record.get("ebin"))
-        if particle in PARTICLES and ebin_value is not None:
+        if (
+            particle in PARTICLES
+            and ebin_value is not None
+            and ebin_value.is_integer()
+        ):
             records[(particle, int(ebin_value))] = record
     return records
 

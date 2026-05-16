@@ -58,6 +58,21 @@ def test_missing_expected_bin_is_reported_as_fail_closed_blocker():
     assert audit.bin_evidence[("proton", 5)].status == "missing"
 
 
+def test_fractional_energy_bin_does_not_satisfy_expected_bin():
+    records = _complete_bin_records(
+        {
+            ("proton", 5): {
+                "ebin": 5.7,
+            }
+        }
+    )
+
+    audit = audit_cosmic_background_rate(records, rate_summary=_valid_rate_summary())
+
+    assert not audit.ready
+    assert "missing_bin:proton:5" in {blocker.code for blocker in audit.blockers}
+
+
 def test_invalid_normalization_livetime_and_rate_fields_block_readiness():
     audit = audit_cosmic_background_rate(
         _complete_bin_records(),
