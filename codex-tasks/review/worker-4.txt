@@ -1,1 +1,0 @@
-/goal lane g4-source-review-event-stack. Read docs/parallel-sessions/g4-source-review-event-stack.md and produce shard docs/reports/g4_bottleneck_database_event_stack.md with BD-geant4-191 through BD-geant4-200. Update MASTER_PLAN.md row when done.
