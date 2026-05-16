@@ -1,1 +1,0 @@
-/goal You are PANE 0, lane lunarc-build-verify. SSH to LUNARC; verify the NNBAR_Detector_sim binary reflects RC1/RC2/RC3/RC4 patches (check build commit hash, sha256 of nnbar-detector-simulation.bin); confirm no stale cosmic-proton-bin5 jobs in squeue. Write docs/reports/lunarc_build_verification_20260513.md.
