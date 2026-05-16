@@ -87,10 +87,16 @@ _PUBLIC_EVENT_VARIABLE_DEFAULTS = {
     "vertex_r": 0.0,
     "n_tracks_to_vertex": 0,
 }
+_INVALID_FEATURE_COLUMNS_NAME = "<invalid_feature_columns>"
+_INVALID_FEATURE_COLUMNS_BLOCKER = "invalid_feature_column_contract"
+_INVALID_FEATURE_COLUMNS_DETAIL = (
+    "feature_columns must be a sequence of column-name strings; scalar strings, "
+    "bytes, and non-iterable values are rejected to avoid character-wise audits."
+)
 
 
 def audit_rfc_feature_provenance(
-    feature_columns: tuple[str, ...] | list[str] | None = None,
+    feature_columns: tuple[str, ...] | list[str] | object | None = None,
     *,
     weight_column: str | None = None,
     cosmic_energy_bin: int | None = None,
@@ -108,18 +114,44 @@ def audit_rfc_feature_provenance(
         Audit result containing one status row per feature and one cosmic-weight
         evidence row. Missing evidence is represented as explicit blockers.
     """
-    columns = tuple(feature_columns or RFC_FEATURE_COLUMNS)
+    columns = _normalize_feature_columns(feature_columns)
     event_variable_columns = _event_variable_columns()
-    return RFCFeatureProvenanceAudit(
-        features=tuple(
+    if columns is None:
+        features = (
+            FeatureProvenance(
+                name=_INVALID_FEATURE_COLUMNS_NAME,
+                status=_INVALID_FEATURE_COLUMNS_BLOCKER,
+                source="audit_rfc_feature_provenance(feature_columns=...)",
+                blocker=_INVALID_FEATURE_COLUMNS_BLOCKER,
+                detail=_INVALID_FEATURE_COLUMNS_DETAIL,
+            ),
+        )
+    else:
+        features = tuple(
             _feature_provenance(column, event_variable_columns) for column in columns
-        ),
+        )
+    return RFCFeatureProvenanceAudit(
+        features=features,
         cosmic_weight=_cosmic_weight_provenance(
             weight_column=weight_column,
             cosmic_energy_bin=cosmic_energy_bin,
             particle_idx=particle_idx,
         ),
     )
+
+
+def _normalize_feature_columns(feature_columns: object | None) -> tuple[str, ...] | None:
+    if feature_columns is None:
+        return tuple(RFC_FEATURE_COLUMNS)
+    if isinstance(feature_columns, (str, bytes, bytearray)):
+        return None
+    try:
+        columns = tuple(feature_columns)  # type: ignore[arg-type]
+    except TypeError:
+        return None
+    if not all(isinstance(column, str) for column in columns):
+        return None
+    return columns
 
 
 def _feature_provenance(

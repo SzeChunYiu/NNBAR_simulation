@@ -56,3 +56,15 @@ def test_missing_cosmic_weight_evidence_is_a_blocker():
 
     assert audit.cosmic_weight.status == "missing_weight_evidence"
     assert audit.cosmic_weight.blocker == "missing_cosmic_weight_evidence"
+
+
+def test_invalid_feature_column_contracts_fail_closed_without_type_errors():
+    for bad_columns in ["total_energy", b"total_energy", 7, ("total_energy", 7)]:
+        audit = audit_rfc_feature_provenance(feature_columns=bad_columns)
+
+        assert len(audit.features) == 1
+        feature = audit.features[0]
+        assert feature.name == "<invalid_feature_columns>"
+        assert feature.status == "invalid_feature_column_contract"
+        assert feature.blocker == "invalid_feature_column_contract"
+        assert "sequence of column-name strings" in feature.detail
