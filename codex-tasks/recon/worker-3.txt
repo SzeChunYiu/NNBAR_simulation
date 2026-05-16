@@ -1,1 +1,1 @@
-/goal You are PANE 3, lane pi0-multiplicity-response-audit. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/pi0-multiplicity-response-audit.md, then complete one compact-safe iteration.
+# STALE-CONSUMED 2026-05-17 by worker-2 lane-swap: pi0-multiplicity-response-audit is already DONE in docs/parallel-sessions/MASTER_PLAN.md with nnbar_reconstruction/analysis/pi0_multiplicity_response_audit.py, tests/test_pi0_multiplicity_response_audit.py, and focused/full-test evidence.
