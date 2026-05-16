@@ -1,1 +1,0 @@
-/goal lane g4gpu-hadronic-xs-kernel. Read docs/parallel-sessions/g4gpu-hadronic-xs-kernel.md. In geant4-gpu branch lane/g4gpu-hadronic-xs-kernel create HadronicXSKernel.cu, HadronicXSKernel.hh, test, CMake wiring. Validate max error < 0.1% vs CPU. Push branch.
