@@ -58,6 +58,13 @@ def test_missing_cosmic_weight_evidence_is_a_blocker():
     assert audit.cosmic_weight.blocker == "missing_cosmic_weight_evidence"
 
 
+def test_blank_weight_column_is_not_accepted_as_weight_evidence():
+    audit = audit_rfc_feature_provenance(weight_column="   ")
+
+    assert audit.cosmic_weight.status == "missing_weight_evidence"
+    assert audit.cosmic_weight.blocker == "missing_cosmic_weight_evidence"
+
+
 def test_invalid_feature_column_contracts_fail_closed_without_type_errors():
     for bad_columns in ["total_energy", b"total_energy", 7, ("total_energy", 7)]:
         audit = audit_rfc_feature_provenance(feature_columns=bad_columns)
