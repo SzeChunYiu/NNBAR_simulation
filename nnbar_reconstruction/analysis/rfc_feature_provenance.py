@@ -90,8 +90,9 @@ _PUBLIC_EVENT_VARIABLE_DEFAULTS = {
 _INVALID_FEATURE_COLUMNS_NAME = "<invalid_feature_columns>"
 _INVALID_FEATURE_COLUMNS_BLOCKER = "invalid_feature_column_contract"
 _INVALID_FEATURE_COLUMNS_DETAIL = (
-    "feature_columns must be a sequence of column-name strings; scalar strings, "
-    "bytes, and non-iterable values are rejected to avoid character-wise audits."
+    "feature_columns must be a sequence of column-name strings; strings must "
+    "be non-blank. Scalar strings, bytes, non-iterable values, and blank "
+    "names are rejected to avoid character-wise audits."
 )
 
 
@@ -149,7 +150,7 @@ def _normalize_feature_columns(feature_columns: object | None) -> tuple[str, ...
         columns = tuple(feature_columns)  # type: ignore[arg-type]
     except TypeError:
         return None
-    if not all(isinstance(column, str) for column in columns):
+    if not all(isinstance(column, str) and column.strip() for column in columns):
         return None
     return columns
 
