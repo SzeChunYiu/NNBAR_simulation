@@ -122,3 +122,14 @@ def test_whitespace_padded_feature_column_names_fail_closed_as_invalid_contracts
     assert feature.name == "<invalid_feature_columns>"
     assert feature.status == "invalid_feature_column_contract"
     assert feature.blocker == "invalid_feature_column_contract"
+
+
+def test_non_integer_cosmic_weight_lookup_handles_fail_closed_as_missing_weight_evidence():
+    for energy_bin, particle_idx in [(0.0, 0), (0, False)]:
+        audit = audit_rfc_feature_provenance(
+            cosmic_energy_bin=energy_bin,
+            particle_idx=particle_idx,
+        )
+
+        assert audit.cosmic_weight.status == "missing_weight_evidence"
+        assert audit.cosmic_weight.blocker == "missing_cosmic_weight_evidence"

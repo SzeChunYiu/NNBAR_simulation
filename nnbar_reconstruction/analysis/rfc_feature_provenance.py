@@ -217,6 +217,11 @@ def _cosmic_weight_provenance(
         )
 
     if cosmic_energy_bin is not None and particle_idx is not None:
+        if not (_is_exact_int(cosmic_energy_bin) and _is_exact_int(particle_idx)):
+            return CosmicWeightProvenance(
+                status="missing_weight_evidence",
+                blocker="missing_cosmic_weight_evidence",
+            )
         value = get_weight(cosmic_energy_bin, particle_idx)
         if value > 0.0:
             return CosmicWeightProvenance(
@@ -235,6 +240,10 @@ def _cosmic_weight_provenance(
         status="missing_weight_evidence",
         blocker="missing_cosmic_weight_evidence",
     )
+
+
+def _is_exact_int(value: object) -> bool:
+    return isinstance(value, int) and not isinstance(value, bool)
 
 
 def _event_variable_columns() -> set[str]:
