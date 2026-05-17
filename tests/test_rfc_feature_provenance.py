@@ -114,6 +114,16 @@ def test_duplicate_feature_column_names_fail_closed_as_invalid_contracts():
     assert "duplicate feature names" in feature.detail
 
 
+def test_empty_feature_column_sequence_fails_closed_as_invalid_contract():
+    audit = audit_rfc_feature_provenance(feature_columns=())
+
+    assert len(audit.features) == 1
+    feature = audit.features[0]
+    assert feature.name == "<invalid_feature_columns>"
+    assert feature.status == "invalid_feature_column_contract"
+    assert feature.blocker == "invalid_feature_column_contract"
+
+
 def test_whitespace_padded_feature_column_names_fail_closed_as_invalid_contracts():
     audit = audit_rfc_feature_provenance(feature_columns=("total_energy", " vertex_x"))
 

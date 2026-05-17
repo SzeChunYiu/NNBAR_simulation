@@ -92,8 +92,9 @@ _INVALID_FEATURE_COLUMNS_BLOCKER = "invalid_feature_column_contract"
 _INVALID_FEATURE_COLUMNS_DETAIL = (
     "feature_columns must be a sequence of column-name strings; strings must "
     "be exact, non-blank, and unique. Scalar strings, bytes, non-iterable "
-    "values, blank names, whitespace-padded names, and duplicate feature names "
-    "are rejected to avoid character-wise, typo-prone, or ambiguous audits."
+    "values, empty sequences, blank names, whitespace-padded names, and "
+    "duplicate feature names are rejected to avoid character-wise, vacuous, "
+    "typo-prone, or ambiguous audits."
 )
 
 
@@ -150,6 +151,8 @@ def _normalize_feature_columns(feature_columns: object | None) -> tuple[str, ...
     try:
         columns = tuple(feature_columns)  # type: ignore[arg-type]
     except TypeError:
+        return None
+    if not columns:
         return None
     if not all(
         isinstance(column, str) and column.strip() and column == column.strip()
