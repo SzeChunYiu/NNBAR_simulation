@@ -124,6 +124,17 @@ def test_empty_feature_column_sequence_fails_closed_as_invalid_contract():
     assert feature.blocker == "invalid_feature_column_contract"
 
 
+def test_unordered_feature_column_iterables_fail_closed_as_invalid_contracts():
+    for bad_columns in [{"total_energy"}, {"total_energy": object()}]:
+        audit = audit_rfc_feature_provenance(feature_columns=bad_columns)
+
+        assert len(audit.features) == 1
+        feature = audit.features[0]
+        assert feature.name == "<invalid_feature_columns>"
+        assert feature.status == "invalid_feature_column_contract"
+        assert feature.blocker == "invalid_feature_column_contract"
+
+
 def test_whitespace_padded_feature_column_names_fail_closed_as_invalid_contracts():
     audit = audit_rfc_feature_provenance(feature_columns=("total_energy", " vertex_x"))
 
