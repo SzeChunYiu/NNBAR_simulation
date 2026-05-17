@@ -10,6 +10,7 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 from dataclasses import dataclass
+from math import isfinite
 
 from nnbar_reconstruction.analysis.event_variables import EventVariables
 from nnbar_reconstruction.data_pipeline.cosmic_weights import get_weight
@@ -229,7 +230,7 @@ def _cosmic_weight_provenance(
                 blocker="missing_cosmic_weight_evidence",
             )
         value = get_weight(cosmic_energy_bin, particle_idx)
-        if value > 0.0:
+        if isfinite(value) and value > 0.0:
             return CosmicWeightProvenance(
                 status="get_weight",
                 source=f"get_weight({cosmic_energy_bin}, {particle_idx})",

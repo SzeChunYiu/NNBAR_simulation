@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import nnbar_reconstruction.analysis.rfc_feature_provenance as provenance
 from nnbar_reconstruction.analysis.rfc_feature_provenance import (
     audit_rfc_feature_provenance,
 )
@@ -154,3 +155,18 @@ def test_non_integer_cosmic_weight_lookup_handles_fail_closed_as_missing_weight_
 
         assert audit.cosmic_weight.status == "missing_weight_evidence"
         assert audit.cosmic_weight.blocker == "missing_cosmic_weight_evidence"
+
+
+def test_non_finite_cosmic_weight_lookup_fails_closed_as_missing_weight_evidence(
+    monkeypatch,
+):
+    monkeypatch.setattr(
+        provenance,
+        "get_weight",
+        lambda _energy_bin, _particle_idx: float("inf"),
+    )
+
+    audit = audit_rfc_feature_provenance(cosmic_energy_bin=0, particle_idx=0)
+
+    assert audit.cosmic_weight.status == "missing_weight_evidence"
+    assert audit.cosmic_weight.blocker == "missing_cosmic_weight_evidence"
