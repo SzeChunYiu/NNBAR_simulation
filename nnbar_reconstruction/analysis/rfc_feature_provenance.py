@@ -100,7 +100,7 @@ _INVALID_FEATURE_COLUMNS_DETAIL = (
 def audit_rfc_feature_provenance(
     feature_columns: tuple[str, ...] | list[str] | object | None = None,
     *,
-    weight_column: str | None = None,
+    weight_column: object | None = None,
     cosmic_energy_bin: int | None = None,
     particle_idx: int | None = None,
 ) -> RFCFeatureProvenanceAudit:
@@ -202,11 +202,11 @@ def _feature_provenance(
 
 def _cosmic_weight_provenance(
     *,
-    weight_column: str | None,
+    weight_column: object | None,
     cosmic_energy_bin: int | None,
     particle_idx: int | None,
 ) -> CosmicWeightProvenance:
-    if weight_column and weight_column.strip():
+    if isinstance(weight_column, str) and weight_column.strip():
         return CosmicWeightProvenance(
             status="supplied_weight_column",
             source=weight_column,
