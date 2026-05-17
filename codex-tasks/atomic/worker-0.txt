@@ -1,1 +1,1 @@
-/goal lane signal-mass-bias-truth-match. Read docs/parallel-sessions/signal-mass-bias-truth-matching.md. Write slurm/sig_foil_v3_truth_match.sbatch that submits LUNARC batch job to read sig_foil_v3 parquets, truth-match pi0 clusters, split correct vs cross-paired mass distributions, write truth_matching_report.json. Push.
+# DONE 2026-05-17 worker-0: signal-mass-bias-truth-match wrote slurm/sig_foil_v3_truth_match.sbatch; verified bash syntax and embedded Python compile; job not submitted locally.
