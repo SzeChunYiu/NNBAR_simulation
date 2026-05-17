@@ -113,7 +113,7 @@ Isolation check: documentation only. No `NNBAR_Detector/`, `nnbar_reconstruction
 | Field | Value |
 |-------|-------|
 | File | `source/event/src/G4StackManager.cc` |
-| Lines | 270-330 |
+| Lines | `G4StackManager.cc`: 270-330 |
 | Hot-path % (profile-measured) | OPEN: pending perf aggregate; per-line self% `OPEN:` pending perf. |
 | Category | 2 — Algorithm |
 | Current pattern | Snippet: `postponeStack->TransferTo(&tmpStack)` followed by a loop that pops, re-runs default/user classification, rewrites parent/track IDs, and `SortOut`s each postponed track. |
@@ -130,7 +130,7 @@ Isolation check: documentation only. No `NNBAR_Detector/`, `nnbar_reconstruction
 | Field | Value |
 |-------|-------|
 | File | `source/event/src/G4EventManager.cc` |
-| Lines | 170-199, 285-290 |
+| Lines | `G4EventManager.cc`: 170-199, 285-290 |
 | Hot-path % (profile-measured) | OPEN: pending perf aggregate; per-line self% `OPEN:` pending perf. |
 | Category | 3 — Data structure |
 | Current pattern | Snippet: `std::unordered_set<G4VTrackingManager *> trackingManagersToFlush;` inserts each custom particle tracking manager pointer and flushes the set after the stack loop. |
