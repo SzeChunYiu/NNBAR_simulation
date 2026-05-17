@@ -1,1 +1,0 @@
-/goal You are PANE 2, lane pion-multiplicity-closure. Read docs/parallel-sessions/MASTER_PLAN.md and docs/parallel-sessions/pion-multiplicity-closure.md, then complete one compact-safe iteration. sig_foil_v3 Parquet is available locally at build_lunarc/output/sig_foil_v3/.

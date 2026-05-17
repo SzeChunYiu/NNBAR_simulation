@@ -206,7 +206,11 @@ def _cosmic_weight_provenance(
     cosmic_energy_bin: int | None,
     particle_idx: int | None,
 ) -> CosmicWeightProvenance:
-    if isinstance(weight_column, str) and weight_column.strip():
+    if (
+        isinstance(weight_column, str)
+        and weight_column.strip()
+        and weight_column == weight_column.strip()
+    ):
         return CosmicWeightProvenance(
             status="supplied_weight_column",
             source=weight_column,
